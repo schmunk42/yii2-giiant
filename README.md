@@ -40,7 +40,9 @@ Don't forget to setup a database application component, eg.
          'username' => 'test',
          'password' => 'test',
          'charset' => 'utf8',
-    ],	
+    ],
+    
+> Note: You can use the MySQL sakila demo database for testing.
 
 Open Gii...
 
