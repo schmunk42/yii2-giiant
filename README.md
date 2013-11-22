@@ -7,7 +7,8 @@ Extended CRUDs for Yii2
 Project Goal
 ------------
 
-Create a sophisticated CRUD generator with relations for Yii 2.
+Create a sophisticated and modular CRUD template with relations for Yii 2.
+Port (all) the features and learnings from gtc, giix, awecrud and others into one solution.
 
 
 Installation
