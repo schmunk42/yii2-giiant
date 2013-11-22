@@ -12,6 +12,11 @@
             "homepage": "http://www.usrbin.de"
         }
     ],
+    "autoload": {
+        "psr-0": {
+            "schmunk42\\giiant": "."
+        }
+    },
     "require": {
         "yiisoft/yii2": "*"
     }
