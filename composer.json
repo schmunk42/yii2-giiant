@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "schmunk42\\giiant": ""
+            "schmunk42\\giiant\\": ""
         }
     },
     "require": {
