@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace schmunk42\giiant;
+namespace schmunk42\giiant\crud;
 
 use Yii;
 use yii\db\ActiveRecord;
