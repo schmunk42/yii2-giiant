@@ -3,7 +3,7 @@
     "description": "Gii CRUD generator for Yii 2 Framework",
     "keywords": ["yii2", "gii", "crud"],
     "homepage": "https://github.com/schmunk42/yii2-giiant",
-    "type": "library",
+    "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "authors": [
         {
