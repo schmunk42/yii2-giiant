@@ -93,8 +93,7 @@ And configure the settings of the provider:
         ]
     ];
 
-This will render a Ckeditor widget for every field which is a text-field (see provider code) and has the name
-`description`.
+This will render a Ckeditor widget for every column named `description`.
 
     <?= $form->field($model, 'description')->widget(
     \dosamigos\ckeditor\CKEditor::className(),
