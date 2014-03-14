@@ -54,8 +54,23 @@ Open Gii...
     
 ...and select the **Giiant** template, you may need to create some models in advance.
 
+Features
+--------
 
-### Customization with providers
+* Shows relations on index page
+* Customize inputs with provider queue
+
+### SelectProvider
+
+- Renders a `Selectize` widget, more to come...
+
+### EditorProvider
+
+- Renders a `Ckeditor` widget, more to come...
+
+
+Customization with providers
+----------------------------
 
 In many cases you want to exchange i.e. some inputs with a customized version for your project.
 Examples for this use-case are editors, file-uploads or choosers, complex input widget with a modal screen, getting
@@ -87,11 +102,6 @@ This will render a Ckeditor widget for every field which is a text-field (see pr
         'options' => ['rows' => 6],
         'preset' => 'basic'
     ]) ?>
-
-Feature
--------
-
-* Shows relations on index page
 
 Screenshots
 -----------
