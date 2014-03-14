@@ -96,12 +96,20 @@ Feature
 Screenshots
 -----------
 
-### Ckeditor and Selectize Input
+### Form with provider list
+
+![](https://lh4.googleusercontent.com/-IEhBUQmnXxE/UyM2Wru_xsI/AAAAAAAAAF0/P7B-bLBv8N4/w1382-h1214-no/Bildschirmfoto+2014-03-14+um+18.00.57.png)
+
+### Composer hints after generation
+
+![](https://lh4.googleusercontent.com/-NC4tVJL1V-w/UyM2WsRkWJI/AAAAAAAAAFw/Zsi9V0zE7MQ/w1440-h334-no/Bildschirmfoto+2014-03-14+um+18.01.18.png)
+
+### Ckeditor and Selectize input
 
 ![](https://lh3.googleusercontent.com/-4cFNRsSLPWk/UyMz00Gz4cI/AAAAAAAAAE0/C2kukUnDCL0/w703-h604-no/Bildschirmfoto+2014-03-14+um+17.15.21.png)
 
 
-### Relation Links
+### Relation links
 
 ![](https://lh5.googleusercontent.com/-kmeGiuJZEoQ/UyMz055TdHI/AAAAAAAAAE4/swHY85UMSwQ/w846-h581-no/Bildschirmfoto+2014-03-14+um+17.35.34.png)
 
