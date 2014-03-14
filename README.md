@@ -3,7 +3,7 @@ yii2-giiant
 
 Extended CRUDs for Yii2
 
-**PROJECT IN DEVELOPMENT STAGE!**
+**PROJECT IS IN DEVELOPMENT STAGE!**
 
 
 Project Goal
