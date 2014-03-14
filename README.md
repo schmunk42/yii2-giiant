@@ -91,6 +91,20 @@ Feature
 
 * Shows relations on index page
 
+Screenshots
+-----------
+
+### Ckeditor and Selectize Input
+
+![](https://lh3.googleusercontent.com/-4cFNRsSLPWk/UyMz00Gz4cI/AAAAAAAAAE0/C2kukUnDCL0/w703-h604-no/Bildschirmfoto+2014-03-14+um+17.15.21.png)
+
+
+### Relation Links
+
+![](https://lh5.googleusercontent.com/-kmeGiuJZEoQ/UyMz055TdHI/AAAAAAAAAE4/swHY85UMSwQ/w846-h581-no/Bildschirmfoto+2014-03-14+um+17.35.34.png)
+
+
+
 Roadmap
 -------
 
