@@ -31,9 +31,9 @@ Edit the application config...
 
 ... and add the giiant generator in the `YII_ENV_DEV` section
 
-	$config['modules']['gii'] = array();	
-	$config['modules']['gii']['class'] = 'yii\gii\Module';
-    $config['modules']['gii']['generators'] = ['giiant' => ['class' => 'schmunk42\giiant\Generator']];
+    $config['modules']['gii'] = array();	
+    $config['modules']['gii']['class'] = 'yii\gii\Module';
+    $config['modules']['gii']['generators'] = ['giiant' => ['class' => 'schmunk42\giiant\crud\Generator']];
     
 Don't forget to setup a database application component, eg.
 
