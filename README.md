@@ -23,7 +23,7 @@ Create a basic yii application
 Go to the project directory and install `giiant`
     
     cd yii-basic
-    php composer.phar require schmunk42/giiant @dev
+    php composer.phar require schmunk42/yii2-giiant @dev
 
 Edit the application config...
     
