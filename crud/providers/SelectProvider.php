@@ -8,19 +8,15 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-class SelectProvider extends \yii\base\Object
+use schmunk42\giiant\base\Provider;
+use yii\base\Object;
+use yii\log\Logger;
+
+class SelectProvider extends Provider
 {
-
-    /**
-     * @var
-     */
-    public $generator;
-    public $columnNames = [''];
-
     public function generateActiveField($attribute)
     {
         $column = $this->generator->getTableSchema()->columns[$attribute];
-
         switch (true) {
             case (in_array($column->name, $this->columnNames)):
                 $this->generator->requires[] = '2amigos/yii2-selectize-widget';

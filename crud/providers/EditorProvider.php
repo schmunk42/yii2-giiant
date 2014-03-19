@@ -8,19 +8,15 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-class EditorProvider extends \yii\base\Object
-{
+use yii\log\Logger;
 
-    /**
-     * @var
-     */
-    public $generator;
-    public $columnNames = [''];
+class EditorProvider extends \schmunk42\giiant\base\Provider
+{
+    #public $columnNames = [''];
 
     public function generateActiveField($attribute)
     {
         $column = $this->generator->getTableSchema()->columns[$attribute];
-
         switch (true) {
             case (in_array($column->name, $this->columnNames)):
                 $this->generator->requires[] = '2amigos/yii2-ckeditor-widget';
