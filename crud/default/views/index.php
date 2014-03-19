@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php
             $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', StringHelper::basename($relation->modelClass)));
             ?>
-		    <?= "<?= " ?>Html::a('Go To <?= StringHelper::basename($relation->modelClass) ?>', ['/<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
+		    <?= "<?= " ?>Html::a('Go To <?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
         <?php endforeach; ?>
 	</p>
 
