@@ -22,10 +22,43 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
         }
     }
 
-    // TODO: params
+    // TODO: params is an array, because we need the name
     public function generateRelationGrid($data)
     {
         $name = $data[1];
+        $relation = $data[0];
+        $model = new $relation->modelClass;
+        $counter = 0;
+        foreach($model->attributes AS $attr => $value){
+            if ($counter > 5) continue;
+            switch($attr){
+                case 'last_update':
+                    continue 2;
+                    break;
+                // TODO: move to closure?
+                case ($attr == 'customer_id' && $relation->modelClass != 'schmunk42\sakila\models\Customer'):
+                    $columns[] = 'customer.last_name';
+                    break;
+                case ($attr == 'inventory_id' && $relation->modelClass != 'schmunk42\sakila\models\Inventory'):
+                    $columns[] = 'inventory.film.title';
+                    break;
+                case ($attr == 'film_id' && $relation->modelClass != 'schmunk42\sakila\models\Film'):
+                    $columns[] = 'film.title';
+                    break;
+                default:
+                    $columns[] = $attr;
+                    break;
+            }
+
+            $counter++;
+        }
+        $reflection = new \ReflectionClass($relation->modelClass);
+        $columns[] = [
+            'class' => 'yii\grid\ActionColumn',
+            'controller' => Inflector::slug($reflection->getShortName())
+        ];
+        $c = var_export($columns, true);
+
         $code = <<<EOS
 <?php
 \$provider = new \\yii\\data\\ActiveDataProvider([
@@ -36,7 +69,10 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
 ]);
 ?>
 <?php if(\$provider->count != 0): ?>
-    <?= \\yii\\grid\\GridView::widget(['dataProvider' => \$provider,]); ?>
+    <?= \\yii\\grid\\GridView::widget([
+            'dataProvider' => \$provider,
+            'columns' => $c
+        ]); ?>
 <?php endif; ?>
 EOS;
         return $code;

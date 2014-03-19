@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
     <?= "<?php " ?>$form = ActiveForm::begin(); ?>
 
     <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ?
+        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Save', ['class' => $model->isNewRecord ?
         'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
@@ -51,7 +51,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ?
+        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Save', ['class' => $model->isNewRecord ?
         'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
