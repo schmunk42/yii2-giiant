@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
 use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
+use yii\log\Logger;
 use yii\web\Controller;
 
 /**
@@ -46,16 +47,16 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * Instanciates
+     * Instanciates providers
      *
      * @param array $data
      * @param null  $formName
      *
      * @return bool|void
      */
-    public function load($data, $formName = null)
+    public function init()
     {
-        parent::load($data, $formName);
+        parent::init();
         // initialize provider objects
         if ($this->providerList) {
             foreach (explode(',', $this->providerList) AS $class) {
@@ -63,7 +64,6 @@ class Generator extends \yii\gii\generators\crud\Generator
                 if (!$class) {
                     continue;
                 }
-
                 $obj            = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
                 $this->_p[]     = $obj;
@@ -168,14 +168,12 @@ class Generator extends \yii\gii\generators\crud\Generator
     private function callProviderQueue($func, $args)
     {
         // walk through providers
-        \Yii::$app->log->log('Provider queue...', 'schmunk42/packaii');
-
         foreach ($this->_p AS $obj) {
             if (method_exists($obj, $func)) {
                 $c = call_user_func_array(array(&$obj, $func), [$args]);
                 // until a provider returns not null
                 if ($c !== null) {
-                    #echo 'Provider: '.$class."\n";
+                    \Yii::$app->log->log('Using '.get_class($obj).'::'.$func.' for '.$args, Logger::LEVEL_INFO, __NAMESPACE__);
                     return $c;
                 }
             }
