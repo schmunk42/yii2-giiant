@@ -8,7 +8,7 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-class DateTimeProvider extends \schmunk42\giiant\base\Provider
+class RangeProvider extends \schmunk42\giiant\base\Provider
 {
     public $columnNames = [''];
 
@@ -20,13 +20,11 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
             case (in_array($column->name, $this->columnNames)):
                 $this->generator->requires[] = 'zhuravljov\yii2-datetime-widgets';
                 return <<<EOS
-\$form->field(\$model, '{$column->name}')->widget(\zhuravljov\widgets\DateTimePicker::className(), [
-    'options' => ['class' => 'form-control'],
-    'clientOptions' => [
-        'autoclose' => true,
-        'todayHighlight' => true,
-    ],
-])
+\$form->field(\$model, '{$column->name}')->widget(\kartik\widgets\RangeInput::classname(), [
+    'options' => ['placeholder' => 'Rate (0 - 5)...'],
+    'html5Options' => ['min' => 0, 'max' => 5],
+    'addon' => ['append' => ['content' => '<i class="glyphicon glyphicon-star"></i>']]
+]);
 EOS;
             default:
                 return null;
