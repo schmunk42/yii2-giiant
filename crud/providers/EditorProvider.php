@@ -12,8 +12,6 @@ use yii\log\Logger;
 
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {
-    #public $columnNames = [''];
-
     public function generateActiveField($attribute)
     {
         $column = $this->generator->getTableSchema()->columns[$attribute];

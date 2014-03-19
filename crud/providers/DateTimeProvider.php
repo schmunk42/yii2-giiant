@@ -10,8 +10,6 @@ namespace schmunk42\giiant\crud\providers;
 
 class DateTimeProvider extends \schmunk42\giiant\base\Provider
 {
-    public $columnNames = [''];
-
     public function generateActiveField($attribute)
     {
         $column = $this->generator->getTableSchema()->columns[$attribute];
