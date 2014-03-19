@@ -50,4 +50,9 @@ foreach ($generator->getTableSchema()->columns as $column) {
 		],
 	]); ?>
 
+    <?php foreach ($generator->getModelRelations() as $name => $relation) {
+        echo "<h3><?= \\yii\\helpers\\Html::a('$name', ['".$generator->generateRelationTo($relation)."/index']) ?></h3>";
+        echo $generator->generateRelationGrid([$relation, $name]);
+    } ?>
+
 </div>

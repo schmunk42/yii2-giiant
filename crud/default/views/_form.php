@@ -44,11 +44,9 @@ use yii\widgets\ActiveForm;
             } ?>
         </div>
         <div class="col-md-3">
-            <?php foreach ($generator->getModelRelations() as $i => $relation) {
-                #var_dump($relation);
-                echo "\t\t{$relation->modelClass} {$relation->multiple}";/*<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";*/
+            <?php foreach ($generator->getModelRelations() as $name => $relation) {
+                echo "<h3><?= \\yii\\helpers\\Html::a('$name', ['".$generator->generateRelationTo($relation)."/index']) ?></h3>";
             } ?>
-            Relations (tbd)
         </div>
     </div>
 

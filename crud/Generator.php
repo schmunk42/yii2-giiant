@@ -64,9 +64,9 @@ class Generator extends \yii\gii\generators\crud\Generator
                 if (!$class) {
                     continue;
                 }
-                $obj            = \Yii::createObject(['class' => $class]);
+                $obj = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
-                $this->_p[]     = $obj;
+                $this->_p[] = $obj;
             }
         }
     }
@@ -116,37 +116,32 @@ class Generator extends \yii\gii\generators\crud\Generator
         $model     = new $this->modelClass;
         $stack     = array();
         foreach ($reflector->getMethods() AS $method) {
+            // look for getters
             if (substr($method->name, 0, 3) !== 'get') {
                 continue;
             }
-            /*echo $method->name."
-";*/
-            if ($method->name === 'getRelation') {
+            // skip class specific getters
+            $skipMethods = [
+                'getRelation',
+                'getBehavior',
+                'getFirstError',
+                'getAttribute',
+                'getAttributeLabel',
+                'getOldAttribute'
+            ];
+            if (in_array($method->name, $skipMethods)) {
                 continue;
             }
-            if ($method->name === 'getBehavior') {
-                continue;
-            }
-            if ($method->name === 'getFirstError') {
-                continue;
-            }
-            if ($method->name === 'getAttribute') {
-                continue;
-            }
-            if ($method->name === 'getAttributeLabel') {
-                continue;
-            }
-            if ($method->name === 'getOldAttribute') {
-                continue;
-            }
+            // check for relation
             $relation = call_user_func(array($model, $method->name));
             if ($relation instanceof yii\db\ActiveQuery) {
-                $stack[] = $relation;
+                $stack[substr($method->name,3)] = $relation;
             }
-            #var_dump($stack);exit;
         }
         return $stack;
     }
+
+
 
     /**
      * Generates code for active field by using the provider queue
@@ -165,6 +160,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         };
     }
 
+    public function generateRelationTo($attribute)
+    {
+        return $this->callProviderQueue(__FUNCTION__, $attribute);
+    }
+
+    public function generateRelationGrid($attribute)
+    {
+        return $this->callProviderQueue(__FUNCTION__, $attribute);
+    }
+
+
     private function callProviderQueue($func, $args)
     {
         // walk through providers
@@ -173,7 +179,11 @@ class Generator extends \yii\gii\generators\crud\Generator
                 $c = call_user_func_array(array(&$obj, $func), [$args]);
                 // until a provider returns not null
                 if ($c !== null) {
-                    \Yii::$app->log->log('Using '.get_class($obj).'::'.$func.' for '.$args, Logger::LEVEL_INFO, __NAMESPACE__);
+                    \Yii::$app->log->log(
+                                   'Using ' . get_class($obj) . '::' . $func, // TODO: get a string? . ' for ' . print_r($args),
+                                       Logger::LEVEL_INFO,
+                                       __NAMESPACE__
+                    );
                     return $c;
                 }
             }
