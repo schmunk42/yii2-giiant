@@ -38,25 +38,50 @@ $this->params['breadcrumbs'][] = $this->title;
 		]); ?>
 	</p>
 
+    <?php $label = StringHelper::basename($generator->modelClass); ?>
+
+    <?php echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>"; ?>
+
+    <?php echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('$label', ['".lcfirst($label)."/index'], ['class'=>'btn btn-primary']) ?></p>"; ?>
+
 	<?= "<?php " ?>echo DetailView::widget([
 		'model' => $model,
 		'attributes' => [
 <?php
 foreach ($generator->getTableSchema()->columns as $column) {
-	$format = $generator->generateColumnFormat($column);
-	echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+    #$name = $generator->generateColumnName($column);
+    $format = $generator->generateColumnFormat($column);
+
+    if($relation = $generator->getRelationByColumn($column)) {
+        #echo "\t\t\t'" . $column->name . ($format === 'link' ? "" : ":" . $format) . "',\n";
+        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> \\yii\\helpers\\Html::a(\$model->{$column->name}, ['".lcfirst(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
+    } else {
+        echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+    }
+
 }
 ?>
 		],
 	]); ?>
+    <?php echo "<?php \$this->endBlock(); ?>"; ?>
 
     <?php
-    $items = "";
+    $items = <<<EOS
+[
+    'label'   => '$label',
+    'content' => \$this->blocks['{$generator->modelClass}'],
+    'active'  => true,
+],
+EOS;
+
     foreach ($generator->getModelRelations() as $name => $relation) {
+        if (!$relation->multiple) continue;
         echo "<?php \$this->beginBlock('$name'); ?>";
         echo "<?php \\yii\\widgets\\Pjax::begin() ?>";
-        echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('Go to $name', ['".$generator->generateRelationTo($relation)."/index'], ['class'=>'btn btn-primary']) ?></p>";
+        echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('$name', ['".$generator->generateRelationTo($relation)."/index'], ['class'=>'btn btn-primary']) ?></p>";
+
         echo $generator->generateRelationGrid([$relation, $name]);
+
         echo "<?php \\yii\\widgets\\Pjax::end() ?>";
         echo "<?php \$this->endBlock() ?>";
         $items .= <<<EOS

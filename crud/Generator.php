@@ -141,6 +141,19 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $stack;
     }
 
+    public function getRelationByColumn($column){
+        if ($column->isPrimaryKey) return false;
+        $relations = $this->getModelRelations();
+        foreach($relations AS $relation){
+            // TODO: check multiple link(s)
+            #var_dump($relation,$column);
+            if (reset($relation->link) == $column->name){
+                return $relation;
+            }
+        }
+        return false;
+    }
+
 
 
     /**
@@ -160,9 +173,24 @@ class Generator extends \yii\gii\generators\crud\Generator
         };
     }
 
+    public function generateColumnFormat($attribute)
+    {
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($code !== null) {
+            return $code;
+        } else {
+            return parent::generateColumnFormat($attribute);
+        };
+    }
+
     public function generateRelationTo($attribute)
     {
         return $this->callProviderQueue(__FUNCTION__, $attribute);
+    }
+
+    public function generateRelationField($relation)
+    {
+        return $this->callProviderQueue(__FUNCTION__, $relation);
     }
 
     public function generateRelationGrid($attribute)
