@@ -34,7 +34,7 @@ Edit the application config...
     $config['modules']['gii'] = array();	
     $config['modules']['gii']['class'] = 'yii\gii\Module';
     $config['modules']['gii']['generators'] = [
-        'giiant-crud' => ['class' => 'schmunk42\giiant\crud\Generator']
+        'giiant-crud' => ['class' => 'schmunk42\giiant\crud\Generator'],
         'giiant-model' => ['class' => 'schmunk42\giiant\model\Generator'],
     ];
     
