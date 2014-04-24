@@ -87,14 +87,14 @@ Configure providers, add this to your provider list in the form:
     \schmunk42\giiant\crud\providers\EditorProvider,
     \schmunk42\giiant\crud\providers\SelectProvider,
 
-And configure the settings of the provider:
+And configure the settings of the provider, eg. add this to your `config/console.php`:
 
-    \Yii::$objectConfig = [
-        // giiant provider configuration
-        'schmunk42\giiant\crud\providers\EditorProvider' => [
+    \Yii::$container->set(
+        'schmunk42\giiant\crud\providers\EditorProvider',
+        [
             'columnNames' => ['description']
         ]
-    ];
+    );
 
 This will render a Ckeditor widget for every column named `description`.
 
