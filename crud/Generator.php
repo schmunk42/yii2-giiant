@@ -16,6 +16,7 @@ use yii\log\Logger;
 use yii\web\Controller;
 
 /**
+ * This generator generates an extended version of CRUDs.
  * @author Tobais Munk <schmunk@usrbin.de>
  * @since  2.0
  */
@@ -24,7 +25,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     #public $codeModel;
     public $providerList = null;
     public $requires = [];
-    public $_p = [];
+    private  $_p = [];
 
     public function getName()
     {
