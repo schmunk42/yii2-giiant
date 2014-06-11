@@ -24,6 +24,7 @@ use yii\base\NotSupportedException;
 class Generator extends \yii\gii\generators\model\Generator
 {
     public $generateModelClass = false;
+    public $tablePrefix = null;
 
     /**
      * @inheritdoc
@@ -50,6 +51,7 @@ class Generator extends \yii\gii\generators\model\Generator
             parent::rules(),
             [
                 [['generateModelClass'], 'boolean'],
+                [['tablePrefix'], 'safe'],
             ]
         );
     }
@@ -94,20 +96,27 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generate()
     {
-        $files       = parent::generate();
+        $files = [];
+        $relations = $this->generateRelations();
+        $db = $this->getDbConnection();
+        foreach ($this->getTableNames() as $tableName) {
+            $className = $this->generateClassName(str_replace($this->tablePrefix,'',$tableName));
+            $tableSchema = $db->getTableSchema($tableName);
+            $params = [
+                'tableName' => $tableName,
+                'className' => $className,
+                'tableSchema' => $tableSchema,
+                'labels' => $this->generateLabels($tableSchema),
+                'rules' => $this->generateRules($tableSchema),
+                'relations' => isset($relations[$className]) ? $relations[$className] : [],
+            ];
 
-        foreach($files AS $i => $file){
-            $files[$i]->path = str_replace('.php', 'Base.php', $files[$i]->path);
-            $files[$i]->id = md5($files[0]->path);
-        }
+            $files[] = new CodeFile(
+                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . 'Base.php',
+                $this->render('model.php', $params)
+            );
 
-        if ($this->generateModelClass) {
-            foreach ($this->getTableNames() as $tableName) {
-                $className   = $this->generateClassName($tableName);
-                $params      = [
-                    'tableName'   => $tableName,
-                    'className'   => $className,
-                ];
+            if ($this->generateModelClass) {
                 $files[]     = new CodeFile(
                     Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
                     $this->render('model-extended.php', $params)
@@ -115,5 +124,48 @@ class Generator extends \yii\gii\generators\model\Generator
             }
         }
         return $files;
+    }
+
+    private $_tableNames;
+    private $_classNames;
+
+    /**
+     * Generates a class name from the specified table name.
+     * @param string $tableName the table name (which may contain schema prefix)
+     * @return string the generated class name
+     */
+    protected function generateClassName($tableName)
+    {
+        if (isset($this->_classNames[$tableName])) {
+            return $this->_classNames[$tableName];
+        }
+
+        if (($pos = strrpos($tableName, '.')) !== false) {
+            $tableName = substr($tableName, $pos + 1);
+        }
+
+        $db = $this->getDbConnection();
+        $patterns = [];
+        # TODO - review ordering
+        $patterns[] = "/^{$this->tablePrefix}(.*?)$/";
+        $patterns[] = "/^(.*?){$this->tablePrefix}$/";
+        $patterns[] = "/^{$db->tablePrefix}(.*?)$/";
+        $patterns[] = "/^(.*?){$db->tablePrefix}$/";
+        if (strpos($this->tableName, '*') !== false) {
+            $pattern = $this->tableName;
+            if (($pos = strrpos($pattern, '.')) !== false) {
+                $pattern = substr($pattern, $pos + 1);
+            }
+            $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
+        }
+        $className = $tableName;
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $tableName, $matches)) {
+                $className = $matches[1];
+                break;
+            }
+        }
+#var_dump($className);
+        return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
     }
 }
