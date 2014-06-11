@@ -33,16 +33,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<?= "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>echo $this->render('_search', ['model' => $searchModel]); ?>
 
-	<p>
-		<?= "<?= " ?>Html::a('Create <?= StringHelper::basename($generator->modelClass) ?>', ['create'], ['class' => 'btn btn-success']) ?>
-
-        <?php foreach($generator->getModelRelations() AS $relation): ?>
-            <?php
-            $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', StringHelper::basename($relation->modelClass)));
-            ?>
-		    <?= "<?= " ?>Html::a('Go To <?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
-        <?php endforeach; ?>
-	</p>
+	<div class="clearfix">
+        <p class="pull-left">
+            <?= "<?= " ?>Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
+        <p class="pull-right">
+            <?php foreach($generator->getModelRelations() AS $relation): ?>
+                <?php
+                $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', StringHelper::basename($relation->modelClass)));
+                ?>
+                <?= "<?= " ?>Html::a('<?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
+            <?php endforeach; ?>
+        </p>
+    </div>
 
 <?php if ($generator->indexWidgetType === 'grid'): ?>
 	<?= "<?php " ?>echo GridView::widget([

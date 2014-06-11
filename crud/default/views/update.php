@@ -20,14 +20,14 @@ use yii\helpers\Html;
  * @var <?= ltrim($generator->modelClass, '\\') ?> $model
  */
 
-$this->title = 'Update <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>: ' . $model-><?= $generator->getNameAttribute() ?>;
+$this->title = '<?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?> <small>Update ' . $model-><?= $generator->getNameAttribute() ?> . '</small>';
 $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-update">
 
-	<h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
+	<h1><?= "<?= " ?>$this->title ?></h1>
 
 	<?= "<?php " ?>echo $this->render('_form', [
 		'model' => $model,
