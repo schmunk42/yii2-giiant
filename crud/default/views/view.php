@@ -54,7 +54,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 
     if($relation = $generator->getRelationByColumn($column)) {
         #echo "\t\t\t'" . $column->name . ($format === 'link' ? "" : ":" . $format) . "',\n";
-        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> \\yii\\helpers\\Html::a(\$model->{$column->name}, ['".lcfirst(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
+        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> \\yii\\helpers\\Html::a(\$model->{$column->name}, ['".Inflector::camel2id(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
     } else {
         echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
     }
