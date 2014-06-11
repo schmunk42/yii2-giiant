@@ -25,6 +25,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     #public $codeModel;
     public $actionButtonClass = null;
     public $providerList = null;
+    public $viewPath = null;
     public $requires = [];
     private  $_p = [];
 
@@ -95,7 +96,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::rules(),
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
-                [['actionButtonClass'], 'safe'],
+                [['actionButtonClass','viewPath'], 'safe'],
                 #[['providerList'], 'required'],
             ]
         );
@@ -157,7 +158,18 @@ class Generator extends \yii\gii\generators\crud\Generator
         return false;
     }
 
+    /**
+     * @return string the action view file path
+     */
+    public function getViewPath()
+    {
+        if ($this->viewPath !== null) {
+            return \Yii::getAlias($this->viewPath) . '/' . $this->getControllerID() ;
+        } else {
+            return parent::getViewPath();
+        }
 
+    }
 
     /**
      * Generates code for active field by using the provider queue
