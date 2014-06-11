@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p class="pull-right">
             <?php foreach($generator->getModelRelations() AS $relation): ?>
                 <?php
-                $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', StringHelper::basename($relation->modelClass)));
+                $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $generator->pathPrefix.StringHelper::basename($relation->modelClass)));
                 ?>
                 <?= "<?= " ?>Html::a('<?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
             <?php endforeach; ?>

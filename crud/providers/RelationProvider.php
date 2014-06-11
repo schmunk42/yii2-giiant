@@ -109,7 +109,7 @@ EOS;
         $reflection = new \ReflectionClass($relation->modelClass);
         $columns[]  = [
             'class'      => 'yii\grid\ActionColumn',
-            'controller' => Inflector::camel2id($reflection->getShortName())
+            'controller' => $this->generator->pathPrefix.Inflector::camel2id($reflection->getShortName())
         ];
         $c          = var_export($columns, true);
 

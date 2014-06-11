@@ -26,6 +26,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $actionButtonClass = null;
     public $providerList = null;
     public $viewPath = null;
+    public $pathPrefix = null;
     public $requires = [];
     private  $_p = [];
 
@@ -96,7 +97,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::rules(),
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
-                [['actionButtonClass','viewPath'], 'safe'],
+                [['actionButtonClass','viewPath','pathPrefix'], 'safe'],
                 #[['providerList'], 'required'],
             ]
         );

@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>"; ?>
 
-    <?php echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('$label', ['".lcfirst($label)."/index'], ['class'=>'btn btn-primary']) ?></p>"; ?>
+    <?php echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('$label', ['".$generator->pathPrefix.lcfirst($label)."/index'], ['class'=>'btn btn-primary']) ?></p>"; ?>
 
 	<?= "<?php " ?>echo DetailView::widget([
 		'model' => $model,
@@ -54,7 +54,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 
     if($relation = $generator->getRelationByColumn($column)) {
         #echo "\t\t\t'" . $column->name . ($format === 'link' ? "" : ":" . $format) . "',\n";
-        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> \\yii\\helpers\\Html::a(\$model->{$column->name}, ['".Inflector::camel2id(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
+        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> \\yii\\helpers\\Html::a(\$model->{$column->name}, ['".$generator->pathPrefix.Inflector::camel2id(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
     } else {
         echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
     }
@@ -78,7 +78,7 @@ EOS;
         if (!$relation->multiple) continue;
         echo "<?php \$this->beginBlock('$name'); ?>";
         echo "<?php \\yii\\widgets\\Pjax::begin() ?>";
-        echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('$name', ['".$generator->generateRelationTo($relation)."/index'], ['class'=>'btn btn-primary']) ?></p>";
+        echo "<p class='pull-right'><?= \\yii\\helpers\\Html::a('".Inflector::camel2words($name)."', ['".$generator->pathPrefix.$generator->generateRelationTo($relation)."/index'], ['class'=>'btn btn-primary']) ?></p>";
 
         echo $generator->generateRelationGrid([$relation, $name]);
 
