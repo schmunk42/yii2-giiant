@@ -16,4 +16,10 @@ echo $form->field($generator, 'indexWidgetType')->dropDownList(
               'list' => 'ListView',
           ]
 );
+echo $form->field($generator, 'actionButtonClass')->dropDownList(
+    [
+        'yii\\grid\\ActionColumn' => 'Default',
+        'common\\helpers\\ActionColumn' => 'App Class',
+    ]
+);
 echo $form->field($generator, 'providerList')->textarea();

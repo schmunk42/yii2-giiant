@@ -63,7 +63,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 }
 ?>
 
-			['class' => 'yii\grid\ActionColumn'],
+			['class' => '<?= $generator->actionButtonClass ?>'],
 		],
 	]); ?>
 <?php else: ?>
