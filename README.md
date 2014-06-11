@@ -33,7 +33,10 @@ Edit the application config...
 
     $config['modules']['gii'] = array();	
     $config['modules']['gii']['class'] = 'yii\gii\Module';
-    $config['modules']['gii']['generators'] = ['giiant' => ['class' => 'schmunk42\giiant\crud\Generator']];
+    $config['modules']['gii']['generators'] = [
+        'giiant-crud' => ['class' => 'schmunk42\giiant\crud\Generator'],
+        'giiant-model' => ['class' => 'schmunk42\giiant\model\Generator'],
+    ];
     
 Don't forget to setup a database application component, eg.
 
@@ -84,14 +87,14 @@ Configure providers, add this to your provider list in the form:
     \schmunk42\giiant\crud\providers\EditorProvider,
     \schmunk42\giiant\crud\providers\SelectProvider,
 
-And configure the settings of the provider:
+And configure the settings of the provider, eg. add this to your config file:
 
-    \Yii::$objectConfig = [
-        // giiant provider configuration
-        'schmunk42\giiant\crud\providers\EditorProvider' => [
+    \Yii::$container->set(
+        'schmunk42\giiant\crud\providers\EditorProvider',
+        [
             'columnNames' => ['description']
         ]
-    ];
+    );
 
 This will render a Ckeditor widget for every column named `description`.
 
