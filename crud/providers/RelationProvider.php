@@ -48,10 +48,10 @@ EOS;
         #$column = $this->generator->getTableSchema()->columns[$attribute];
         switch (true) {
             case ($data[0]->multiple && $data[0]->via):
-            #case (true):
+                #case (true):
                 $this->generator->requires[] = '2amigos/yii2-selectize-widget';
-                $attribute = reset($data[0]->link);
-                $relatedClass = lcfirst($data[1]);
+                $attribute                   = reset($data[0]->link);
+                $relatedClass                = lcfirst($data[1]);
                 return <<<EOS
 '<label>Relation</label>'.\dosamigos\selectize\Selectize::widget([
     #'model' => \$model->{$relatedClass},
@@ -69,7 +69,7 @@ EOS;
                 break;
             default:
                 return "''";
-            break;
+                break;
 
         }
     }
@@ -109,7 +109,7 @@ EOS;
         $reflection = new \ReflectionClass($relation->modelClass);
         $columns[]  = [
             'class'      => 'yii\grid\ActionColumn',
-            'controller' => $this->generator->pathPrefix.Inflector::camel2id($reflection->getShortName())
+            'controller' => $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName())
         ];
         $c          = var_export($columns, true);
 
