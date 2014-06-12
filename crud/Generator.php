@@ -226,6 +226,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 $c = call_user_func_array(array(&$obj, $func), [$args]);
                 // until a provider returns not null
                 if ($c !== null) {
+                    # TODO: fix logging
                     /*\Yii::$app->log->log(
                                    'Using ' . get_class($obj) . '::' . $func, // TODO: get a string? . ' for ' . print_r($args),
                                        Logger::LEVEL_INFO,
