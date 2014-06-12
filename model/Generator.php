@@ -132,7 +132,9 @@ class Generator extends \yii\gii\generators\model\Generator
 
     /**
      * Generates a class name from the specified table name.
+     *
      * @param string $tableName the table name (which may contain schema prefix)
+     *
      * @return string the generated class name
      */
     protected function generateClassName($tableName)

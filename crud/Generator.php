@@ -28,7 +28,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $viewPath = null;
     public $pathPrefix = null;
     public $requires = [];
-    private  $_p = [];
+    private $_p = [];
 
     public function getName()
     {
@@ -54,7 +54,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      * Instanciates providers
      *
      * @param array $data
-     * @param null  $formName
+     * @param null $formName
      *
      * @return bool|void
      */
@@ -68,9 +68,9 @@ class Generator extends \yii\gii\generators\crud\Generator
                 if (!$class) {
                     continue;
                 }
-                $obj = \Yii::createObject(['class' => $class]);
+                $obj            = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
-                $this->_p[] = $obj;
+                $this->_p[]     = $obj;
             }
         }
     }
@@ -97,7 +97,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::rules(),
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
-                [['actionButtonClass','viewPath','pathPrefix'], 'safe'],
+                [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 #[['providerList'], 'required'],
             ]
         );
@@ -108,7 +108,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function stickyAttributes()
     {
-        return array_merge(parent::stickyAttributes(), ['providerList','actionButtonClass']);
+        return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass']);
     }
 
     /**
@@ -140,19 +140,22 @@ class Generator extends \yii\gii\generators\crud\Generator
             // check for relation
             $relation = call_user_func(array($model, $method->name));
             if ($relation instanceof yii\db\ActiveQuery) {
-                $stack[substr($method->name,3)] = $relation;
+                $stack[substr($method->name, 3)] = $relation;
             }
         }
         return $stack;
     }
 
-    public function getRelationByColumn($column){
-        if ($column->isPrimaryKey) return false;
+    public function getRelationByColumn($column)
+    {
+        if ($column->isPrimaryKey) {
+            return false;
+        }
         $relations = $this->getModelRelations();
-        foreach($relations AS $relation){
+        foreach ($relations AS $relation) {
             // TODO: check multiple link(s)
             #var_dump($relation,$column);
-            if (reset($relation->link) == $column->name){
+            if (reset($relation->link) == $column->name) {
                 return $relation;
             }
         }
@@ -165,7 +168,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getViewPath()
     {
         if ($this->viewPath !== null) {
-            return \Yii::getAlias($this->viewPath) . '/' . $this->getControllerID() ;
+            return \Yii::getAlias($this->viewPath) . '/' . $this->getControllerID();
         } else {
             return parent::getViewPath();
         }
