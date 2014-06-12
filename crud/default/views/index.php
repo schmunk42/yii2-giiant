@@ -33,14 +33,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="clearfix">
         <p class="pull-left">
-            <?= "<?= " ?>Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= "<?= " ?>Html::a('New', ['create'], ['class' => 'btn btn-success']) ?>
         </p>
         <p class="pull-right">
             <?php foreach($generator->getModelRelations() AS $relation): ?>
                 <?php
                 $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $generator->pathPrefix.StringHelper::basename($relation->modelClass)));
                 ?>
-                <?= "<?= " ?>Html::a('<?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-info']) ?>
+                <?= "<?= " ?>Html::a('<?= Inflector::camel2words(StringHelper::basename($relation->modelClass)) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-default']) ?>
             <?php endforeach; ?>
         </p>
     </div>
@@ -50,8 +50,6 @@ $this->params['breadcrumbs'][] = $this->title;
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
 		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
-
 <?php
 $count = 0;
 foreach ($generator->getTableSchema()->columns as $column) {

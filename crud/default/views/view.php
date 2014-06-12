@@ -31,13 +31,10 @@ $this->params['breadcrumbs'][] = 'View';
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
 
 	<p>
-		<?= "<?= " ?>Html::a('Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
-		<?= "<?php " ?>echo Html::a('Delete', ['delete', <?= $urlParams ?>], [
-			'class' => 'btn btn-danger',
-			'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-			'data-method' => 'post',
-		]); ?>
-	</p>
+		<?= "<?= " ?>Html::a('Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('New', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
 
     <?php $label = StringHelper::basename($generator->modelClass); ?>
 
@@ -66,7 +63,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
 	]); ?>
     <?php
     echo "    <p class='pull-right'>\n";
-    echo "        <?= Html::a('$label', ['".$generator->pathPrefix.Inflector::camel2id($label)."/index'], ['class'=>'btn btn-info']) ?>\n";
+    echo "        <?= Html::a('$label', ['".$generator->pathPrefix.Inflector::camel2id($label)."/index'], ['class'=>'btn btn-default']) ?>\n";
     echo "    </p>\n";
     ?>
     <?php echo "<?php \$this->endBlock(); ?>"; ?>
@@ -89,13 +86,15 @@ EOS;
         echo "<?php Pjax::end() ?>\n";
 
         echo "<p class='pull-right'>\n";
-        echo "  <?= \\yii\\helpers\\Html::a('".Inflector::camel2words($name)."', ['".$generator->pathPrefix.Inflector::camel2id($generator->generateRelationTo($relation))."/index'], ['class'=>'btn btn-info']) ?>\n";
+        echo "  <?= \\yii\\helpers\\Html::a('".Inflector::camel2words($name)."', ['".$generator->pathPrefix.Inflector::camel2id($generator->generateRelationTo($relation))."/index'], ['class'=>'btn btn-default']) ?>\n";
         echo "</p>\n";
 
         echo "<?php \$this->endBlock() ?>\n";
+
+        $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
-    'label'   => '$name',
+    'label'   => '$label',
     'content' => \$this->blocks['$name'],
     'active'  => false,
 ],
@@ -112,4 +111,10 @@ EOS;
     );
     ?>";
     ?>
+
+    <?= "<?php " ?>echo Html::a('Delete', ['delete', <?= $urlParams ?>], [
+    'class' => 'btn btn-danger',
+    'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
+    'data-method' => 'post',
+    ]); ?>
 </div>
