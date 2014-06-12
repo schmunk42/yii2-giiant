@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = 'Edit';
 
 
     <p>
-        <?= "<?= " ?>Html::a('View', ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>
+        <?= "<?= " ?>Html::a('View', ['view', <?= $urlParams ?>], ['class' => 'btn btn-success']) ?>
     </p>
 
 	<?= "<?php " ?>echo $this->render('_form', [

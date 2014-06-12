@@ -35,13 +35,15 @@ use yii\widgets\ActiveForm;
     <div class="form-group">
 
         <?php echo "<?php \$this->beginBlock('main'); ?>"; ?>
+        <p>
         <?php foreach ($safeAttributes as $attribute) {
             echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
         } ?>
+        </p>
         <?php echo "<?php \$this->endBlock(); ?>"; ?>
 
         <?php
-        $label = 'main';
+        $label = substr(strrchr($model::className(), "\\"), 1);;
 
         $items = <<<EOS
 [
@@ -88,9 +90,11 @@ EOS;
     ?>";
         ?>
 
+        <hr/>
+
         <div class="form-group">
-            <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ?
-            'btn btn-success' : 'btn btn-primary']) ?>
+            <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Save', ['class' => $model->isNewRecord ?
+            'btn btn-primary' : 'btn btn-primary']) ?>
         </div>
 
         <?= "<?php " ?>ActiveForm::end(); ?>
