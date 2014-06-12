@@ -122,12 +122,10 @@ EOS;
     ],
 ]);
 ?>
-<?php if(\$provider->count != 0): ?>
     <?= \\yii\\grid\\GridView::widget([
             'dataProvider' => \$provider,
             'columns' => $c
         ]); ?>
-<?php endif; ?>
 EOS;
         return $code;
     }

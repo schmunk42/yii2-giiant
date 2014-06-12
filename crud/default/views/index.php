@@ -29,8 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-index">
 
-	<h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
-
 	<?= "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<div class="clearfix">
@@ -42,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 $controller = strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $generator->pathPrefix.StringHelper::basename($relation->modelClass)));
                 ?>
-                <?= "<?= " ?>Html::a('<?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-primary']) ?>
+                <?= "<?= " ?>Html::a('<?= StringHelper::basename($relation->modelClass) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-info']) ?>
             <?php endforeach; ?>
         </p>
     </div>

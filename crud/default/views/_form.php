@@ -34,65 +34,65 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
 
-    <?php echo "<?php \$this->beginBlock('main'); ?>"; ?>
-    <?php foreach ($safeAttributes as $attribute) {
-        echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
-    } ?>
-    <?php echo "<?php \$this->endBlock(); ?>"; ?>
+        <?php echo "<?php \$this->beginBlock('main'); ?>"; ?>
+        <?php foreach ($safeAttributes as $attribute) {
+            echo "\t\t<?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+        } ?>
+        <?php echo "<?php \$this->endBlock(); ?>"; ?>
 
-    <?php
-    $label = 'main';
+        <?php
+        $label = 'main';
 
-    $items = <<<EOS
+        $items = <<<EOS
 [
     'label'   => '$label',
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],
 EOS;
-    ?>
+        ?>
 
-    <?php foreach ($generator->getModelRelations() as $name => $relation) {
+        <?php foreach ($generator->getModelRelations() as $name => $relation) {
 
-        if (!$relation->multiple) {
-            continue;
-        }
+            if (!$relation->multiple) {
+                continue;
+            }
 
-        echo "<?php \$this->beginBlock('$name'); ?>";
+            echo "<?php \$this->beginBlock('$name'); ?>\n";
 
-        echo "<h3><?= \\yii\\helpers\\Html::a('$name', ['" . $generator->generateRelationTo(
-                                                                       $relation
-            ) . "/index']) ?></h3>\n";
+            echo "<h3>\n";
+            echo "    <?= \\yii\\helpers\\Html::a('$name', ['" . $generator->generateRelationTo($relation) . "/index']) ?>\n";
+            echo "</h3>\n";
 
-        # TODO
-        echo "<?php echo ".$generator->generateRelationField([$relation,$name])." ?>";
+            # TODO
+            echo "<?php echo " . $generator->generateRelationField([$relation, $name]) . " ?>";
 
-        echo "<?php \$this->endBlock(); ?>";
+            echo "<?php \$this->endBlock(); ?>";
 
-        $items .= <<<EOS
+            $items .= <<<EOS
 [
     'label'   => '$name',
     'content' => \$this->blocks['$name'],
     'active'  => false,
 ],
 EOS;
-    } ?>
+        } ?>
 
-    <?=
-    "<?=
+        <?=
+        "<?=
     \yii\bootstrap\Tabs::widget(
                  [
                      'items' => [ $items ]
                  ]
     );
     ?>";
-    ?>
+        ?>
 
-    <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ?
-        'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="form-group">
+            <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ?
+            'btn btn-success' : 'btn btn-primary']) ?>
+        </div>
+
+        <?= "<?php " ?>ActiveForm::end(); ?>
+
     </div>
-
-    <?= "<?php " ?>ActiveForm::end(); ?>
-
-</div>
