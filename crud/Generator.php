@@ -110,7 +110,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function stickyAttributes()
     {
-        return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass']);
+        return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
     /**
