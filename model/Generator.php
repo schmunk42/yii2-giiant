@@ -77,8 +77,9 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::hints(),
             [
-                'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be
-              done only once. The model-base class is always generated.',
+                'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be done only once. The model-base class is always generated.',
+                'tablePrefix'        => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
+
             ]
         );
     }
@@ -96,19 +97,19 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generate()
     {
-        $files = [];
+        $files     = [];
         $relations = $this->generateRelations();
-        $db = $this->getDbConnection();
+        $db        = $this->getDbConnection();
         foreach ($this->getTableNames() as $tableName) {
-            $className = $this->generateClassName(str_replace($this->tablePrefix,'',$tableName));
+            $className   = $this->generateClassName(str_replace($this->tablePrefix, '', $tableName));
             $tableSchema = $db->getTableSchema($tableName);
-            $params = [
-                'tableName' => $tableName,
-                'className' => $className,
+            $params      = [
+                'tableName'   => $tableName,
+                'className'   => $className,
                 'tableSchema' => $tableSchema,
-                'labels' => $this->generateLabels($tableSchema),
-                'rules' => $this->generateRules($tableSchema),
-                'relations' => isset($relations[$className]) ? $relations[$className] : [],
+                'labels'      => $this->generateLabels($tableSchema),
+                'rules'       => $this->generateRules($tableSchema),
+                'relations'   => isset($relations[$className]) ? $relations[$className] : [],
             ];
 
             $files[] = new CodeFile(
@@ -117,7 +118,7 @@ class Generator extends \yii\gii\generators\model\Generator
             );
 
             if ($this->generateModelClass) {
-                $files[]     = new CodeFile(
+                $files[] = new CodeFile(
                     Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
                     $this->render('model-extended.php', $params)
                 );
@@ -144,7 +145,7 @@ class Generator extends \yii\gii\generators\model\Generator
             $tableName = substr($tableName, $pos + 1);
         }
 
-        $db = $this->getDbConnection();
+        $db       = $this->getDbConnection();
         $patterns = [];
         # TODO - review ordering
         $patterns[] = "/^{$this->tablePrefix}(.*?)$/";
@@ -165,7 +166,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 break;
             }
         }
-#var_dump($className);
+        #var_dump($className);
         return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
     }
 }
