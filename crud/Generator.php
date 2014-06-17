@@ -117,11 +117,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @todo docs
      * @return array
      */
-    public function getModelRelations()
+    public function getModelRelations($types = ['belongs_to','many_many','has_many','has_one'])
     {
         $reflector = new \ReflectionClass($this->modelClass);
         $model     = new $this->modelClass;
-        $stack     = array();
+        $stack     = [];
         foreach ($reflector->getMethods() AS $method) {
             // look for getters
             if (substr($method->name, 0, 3) !== 'get') {
@@ -142,7 +142,18 @@ class Generator extends \yii\gii\generators\crud\Generator
             // check for relation
             $relation = call_user_func(array($model, $method->name));
             if ($relation instanceof yii\db\ActiveQuery) {
-                $stack[substr($method->name, 3)] = $relation;
+                #var_dump($relation->primaryModel->primaryKey);
+                if ($relation->multiple === false) {
+                    $relationType = 'belongs_to';
+                } elseif (strstr($relation->modelClass,"X")) { # TODO: detecttion
+                    $relationType = 'many_many';
+                } else {
+                    $relationType = 'has_many';
+                }
+
+                if (in_array($relationType, $types)) {
+                    $stack[substr($method->name, 3)] = $relation;
+                }
             }
         }
         return $stack;

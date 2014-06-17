@@ -54,21 +54,35 @@ use yii\widgets\ActiveForm;
 EOS;
         ?>
 
-        <?php foreach ($generator->getModelRelations() as $name => $relation) {
+        <?php foreach ($generator->getModelRelations(['has_many','many_many']) as $name => $relation) {
 
+
+
+           /* #var_dump($name,$relation->primaryModel->tableSchema->primaryKey);
+            echo "<pre>";
+            $relatedModel = Yii::createObject($relation->modelClass);
+            echo \yii\helpers\VarDumper::dump($name);
+            #echo \yii\helpers\VarDumper::dump($relatedModel->tableSchema->foreignKeys);
+            echo "</pre>";
+
+            echo "<pre>";
+            echo \yii\helpers\VarDumper::dump($relation->via);
+            #echo \yii\helpers\VarDumper::dump($relation->primaryModel->tableSchema->name);
+            echo "</pre><hr/>";*/
+
+            // ignore pivot tables and belongs to relations
             if (!$relation->multiple) {
-                continue;
+                #continue; # TODO
+            }
+            if (!$relation->via || !$relation->multiple) {
+                #continue; # TODO
             }
 
             echo "<?php \$this->beginBlock('$name'); ?>\n";
 
-            echo "<h3>\n";
-            echo "    <?= \\yii\\helpers\\Html::a('$name', ['" . $generator->generateRelationTo($relation) . "/index']) ?>\n";
-            echo "</h3>\n";
-
             # TODO
             echo "<?php echo " . $generator->generateRelationField([$relation, $name]) . " ?>";
-
+            echo $generator->generateRelationGrid([$relation, $name], $model->isNewRecord)."\n";
             echo "<?php \$this->endBlock(); ?>";
 
             $items .= <<<EOS

@@ -20,21 +20,13 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
         if ($relation) {
             switch (true) {
                 case (!$relation->multiple):
-                    $this->generator->requires[] = '2amigos/yii2-selectize-widget';
-                    return <<<EOS
-'<label>{$column->name}</label>'.\dosamigos\selectize\Selectize::widget([
-    'model' => \$model,
-    'attribute' => '$column->name',
-    'clientOptions' => [
-        'delimiter' => ',',
-        'plugins' => ['remove_button'],
-        'persist' => false,
-        'create' => new \yii\web\JsExpression('function(input){
-            return {value: input, text: input};
-        }'),
-    ]
-])
+                    $code                        = <<<EOS
+\$form->field(\$model, '{$column->name}')->dropDownList(
+    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'id','{$this->generator->getNameAttribute()}'),
+    ['prompt'=>'Choose...']    // options
+);
 EOS;
+                    return $code;
                 default:
                     return null;
 
@@ -45,26 +37,19 @@ EOS;
     // TODO: params
     public function generateRelationField($data)
     {
-        #$column = $this->generator->getTableSchema()->columns[$attribute];
         switch (true) {
             case ($data[0]->multiple && $data[0]->via):
-                #case (true):
-                $this->generator->requires[] = '2amigos/yii2-selectize-widget';
-                $attribute                   = reset($data[0]->link);
-                $relatedClass                = lcfirst($data[1]);
+                $relation                    = $data[0];
+                $attribute                         = key($data[0]->link);
+                $code                        = <<<EOS
+\$form->field(\$model, '{$attribute}')->listBox(
+    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'id', '{$this->generator->getNameAttribute()}'),
+    ['prompt'=>'Choose...', 'options'=>['multiple'=>true]]    // options
+);
+EOS;
+
                 return <<<EOS
-'<label>Relation</label>'.\dosamigos\selectize\Selectize::widget([
-    #'model' => \$model->{$relatedClass},
-    'name' => '{$attribute}',
-    'clientOptions' => [
-        'delimiter' => ',',
-        'plugins' => ['remove_button'],
-        'persist' => false,
-        'create' => new \yii\web\JsExpression('function(input){
-            return {value: input, text: input};
-        }'),
-    ]
-])
+'<div class="alert alert-warning">Select field not implemented yet.</div>'
 EOS;
                 break;
             default:
@@ -74,7 +59,7 @@ EOS;
         }
     }
 
-    // TODO: params is an array, because we need the name
+    // TODO: params is an array, because we need the name, improve params
     public function generateRelationGrid($data)
     {
         $name     = $data[1];
@@ -113,10 +98,15 @@ EOS;
         ];
         $c          = var_export($columns, true);
 
-        $code = <<<EOS
+        # TODO: move provider generation to controller
+        $isRelation = true;
+        $query = $isRelation?"'query' => \$model->get{$name}(),":"'query' => \\{$relation->modelClass}::find(),";
+        $code = '<div class="alert alert-info">Showing related records.</div>';
+        #
+        $code .= <<<EOS
 <?php
 \$provider = new \\yii\\data\\ActiveDataProvider([
-    'query' => \$model->get{$name}(),
+    $query
     'pagination' => [
         'pageSize' => 10,
     ],

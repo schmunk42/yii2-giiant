@@ -64,7 +64,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
     <?php
     echo "    <p class='pull-right'>\n";
     echo "        <?= Html::a('$label', ['".$generator->pathPrefix.Inflector::camel2id($label)."/index'], ['class'=>'btn btn-default']) ?>\n";
-    echo "    </p>\n";
+    echo "    </p><div class='clearfix'></div> \n";
     ?>
     <?php echo "<?php \$this->endBlock(); ?>"; ?>
 
@@ -78,7 +78,12 @@ foreach ($generator->getTableSchema()->columns as $column) {
 EOS;
 
     foreach ($generator->getModelRelations() as $name => $relation) {
+
+        # TODO: make tab selection more flexible
+        #if (!$relation->via) continue; // ignore pivot tables in CRUD
+
         if (!$relation->multiple) continue;
+
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         echo "<?php Pjax::begin() ?>\n";
@@ -87,7 +92,7 @@ EOS;
 
         echo "<p class='pull-right'>\n";
         echo "  <?= \\yii\\helpers\\Html::a('".Inflector::camel2words($name)."', ['".$generator->pathPrefix.Inflector::camel2id($generator->generateRelationTo($relation))."/index'], ['class'=>'btn btn-default']) ?>\n";
-        echo "</p>\n";
+        echo "</p><div class='clearfix'></div>\n";
 
         echo "<?php \$this->endBlock() ?>\n";
 
@@ -111,6 +116,8 @@ EOS;
     );
     ?>";
     ?>
+
+    <hr/>
 
     <?= "<?php " ?>echo Html::a('Delete', ['delete', <?= $urlParams ?>], [
     'class' => 'btn btn-danger',
