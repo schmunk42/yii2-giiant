@@ -55,7 +55,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
                             'index',
                             'create',
                             'update',
-                            'delete'
+                            'delete',
+                            'view'
                         ],
                         'allow'   => true,
                         'roles'   => ['@'],
