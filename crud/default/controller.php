@@ -31,6 +31,7 @@ use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModel
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -46,6 +47,21 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 					'delete' => ['post'],
 				],
 			],
+            'access' => [
+                'class' => AccessControl::className(),
+                    'rules' => [
+                    [
+                        'actions' => [
+                            'index',
+                            'create',
+                            'update',
+                            'delete'
+                        ],
+                        'allow'   => true,
+                        'roles'   => ['@'],
+                    ],
+                ],
+            ]
 		];
 	}
 
