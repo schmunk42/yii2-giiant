@@ -49,23 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (strstr($relation->modelClass, 'X')) { # TODO: pivot detection, move to getModelRelations
                     $iconType = 'random';
                 }
-                $controller = strtolower(
-                    preg_replace(
-                        '/([a-z])([A-Z])/',
-                        '$1-$2',
-                        $generator->pathPrefix . StringHelper::basename($relation->modelClass)
-                    )
-                );
-                ?>
-
-                <!--
-                <?= "<?= " ?>Html::a('<i class="glyphicon glyphicon-<?= $iconType ?>"></i> <?=
-                Inflector::camel2words(
-                    StringHelper::basename($relation->modelClass)
-                ) ?>', ['<?= $controller ?>/index'], ['class' => 'btn btn-default']) ?>
-                -->
-
-                <?php
+                $controller = $generator->pathPrefix . Inflector::camel2id(StringHelper::basename($relation->modelClass));
                 $label = Inflector::titleize(StringHelper::basename($relation->modelClass),true);
                 $items[] = [
                     'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> '.$label.'</i>',
