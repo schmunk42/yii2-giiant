@@ -94,18 +94,60 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
+
         <?= "<?php " ?>echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'layout' =>"{summary}\n{pager}\n{items}\n{pager}",
         'columns' => [
         <?php
         $count = 0;
+        $test = new \common\components\RelationProvider();
+        $modelClasses = $test->columnAttributes;
+
         foreach ($generator->getTableSchema()->columns as $column) {
-            $format = $generator->generateColumnFormat($column);
+            $format     = $generator->generateColumnFormat($column);
+            $relation   = $generator->getRelationByColumn($column);
+
             if (++$count < 6) {
-                echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                if($relation && array_key_exists($relation->modelClass,$modelClasses) ) {
+
+//                    if ($relation)
+//                        echo \Yii::$app->log->logger->log($relation->modelClass, 10, 'relation') . PHP_EOL;
+
+                    echo $format . ",\n";
+                }elseif($column->name === 'path' && !$relation){
+                    echo '
+                       "path" =>  [
+                            "class" => yii\\grid\\DataColumn::className(),
+                            "attribute" => "path",
+                            "value" => function($model){
+                                return yii\bootstrap\Button::widget(
+                                    [
+                                        "label"     => yii\helpers\Html::img(\Yii::getAlias("@web")."/".$model->path,["class" => "image-responsive col-lg-3"]),
+                                        "encodeLabel" => false,
+                                        "options"   => [
+                                            "type"          =>"button",
+                                            "class"         => "img-preview btn col-sm-6",
+                                            "data-toggle"   => "popover",
+                                            "data-content"  => yii\helpers\Html::img(\Yii::getAlias("@web")."/".$model->path),
+                                            "data-html"     => "true",
+                                            "data-placement"=> "bottom",
+                                            "data-template" => "<div style=\"text-align:center;max-width:100%;width:auto !important;\" class=\"popover col-lg-12\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-title\"></h3><div class=\"popover-content\"></div></div>"
+                                        ]
+                                    ]
+                                );
+                            },
+                            "format" => "raw"
+                        ]
+                    '. ",\n";
+                }else{
+                    echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                }
             } else {
-                echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                if($relation && !array_key_exists($relation->modelClass,$modelClasses)){
+                    echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                }
             }
         }
         ?>

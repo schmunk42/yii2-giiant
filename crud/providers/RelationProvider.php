@@ -15,6 +15,9 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
 {
     public function generateActiveField($attribute)
     {
+        if(!isset($this->generator->getTableSchema()->columns[$attribute])){
+            return \Yii::$app->log->logger->log($attribute.' is not defined',10,'not-exist-attribute');
+        }
         $column   = $this->generator->getTableSchema()->columns[$attribute];
         $relation = $this->generator->getRelationByColumn($column);
         if ($relation) {

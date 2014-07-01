@@ -23,7 +23,7 @@ use yii\web\Controller;
 class Generator extends \yii\gii\generators\crud\Generator
 {
     #public $codeModel;
-    public $actionButtonClass = 'yii\grid\ActionColumn';
+    public $actionButtonClass = 'common\helpers\ActionColumn';
     public $providerList = null;
     public $viewPath = null;
     public $pathPrefix = null;
