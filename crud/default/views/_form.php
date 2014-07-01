@@ -30,7 +30,7 @@ use yii\bootstrap\ActiveForm;
 
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin(['layout' => 'horizontal', 'enableClientValidation' => false]); ?>
 
     <div class="form-group">
 
