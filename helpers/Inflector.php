@@ -1,17 +1,11 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace schmunk42\giiant\helpers;
 
 /**
- * Inflector pluralizes and singularizes English nouns. It also contains some other useful methods.
+ * @inheritdoc
  *
- * @author Antonio Ramirez <amigo.cobos@gmail.com>
- * @since 2.0
+ * @author Tobias Munk <tobias@diemeisterei.de>
  */
 class Inflector extends \yii\helpers\BaseInflector
 {
