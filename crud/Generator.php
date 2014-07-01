@@ -113,6 +113,26 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
+    public function getNameAttribute($modelClass = null)
+    {
+        $oldModelClass = $this->modelClass;
+        if ($modelClass !== null) {
+            $this->modelClass = $modelClass;
+        }
+        foreach ($this->getColumnNames() as $name) {
+            if (!strcasecmp($name, 'name') || !strcasecmp($name, 'title')) {
+                return $name;
+            }
+        }
+        /** @var \yii\db\ActiveRecord $class */
+        $class = $this->modelClass;
+        $pk = $class::primaryKey();
+
+        $this->modelClass = $oldModelClass;
+
+        return $pk[0];
+    }
+
     /**
      * @todo docs
      * @return array
@@ -161,9 +181,9 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     public function getRelationByColumn($column)
     {
-        if ($column->isPrimaryKey) {
-            return false;
-        }
+        #if ($column->isPrimaryKey) {
+        #    return false;
+        #}
         $relations = $this->getModelRelations();
         foreach ($relations AS $relation) {
             // TODO: check multiple link(s)
