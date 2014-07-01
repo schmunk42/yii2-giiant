@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Inflector;
+use schmunk42\giiant\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
  */
 ?>
 
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-search">
+<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-search">
 
 	<?= "<?php " ?>$form = ActiveForm::begin([
 		'action' => ['index'],

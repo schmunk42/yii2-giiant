@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Inflector;
+use schmunk42\giiant\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector
 $this->params['breadcrumbs'][] = ['label' => $model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'Edit';
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-update">
+<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-update">
 
     <p>
         <?= "<?= " ?>Html::a('View', ['view', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>

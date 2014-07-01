@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Inflector;
+use schmunk42\giiant\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector
 $this->params['breadcrumbs'][] = ['label' => $model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'View';
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
+<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-view">
 
 	<p class='pull-left'>
 		<?= "<?= " ?>Html::a('Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
@@ -58,7 +58,7 @@ foreach ($generator->getTableSchema()->columns as $column) {
     $format = $generator->generateColumnFormat($column);
     if($relation = $generator->getRelationByColumn($column)) {
         #echo "\t\t\t'" . $column->name . ($format === 'link' ? "" : ":" . $format) . "',\n";
-        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> Html::a(\$model->{$column->name}, ['".$generator->pathPrefix.Inflector::camel2id(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
+        echo "['format'=>'raw','attribute'=>'$column->name', 'value'=> Html::a(\$model->{$column->name}, ['".$generator->pathPrefix.Inflector::class2id(StringHelper::basename($relation->modelClass))."/view', 'id'=>\$model->{$column->name}])],";
     } else {
         echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
     }
@@ -91,8 +91,8 @@ EOS;
         echo "<?php Pjax::end() ?>\n";
 
         echo "<p class='pull-right'>\n";
-        echo "  <?= \\yii\\helpers\\Html::a('List ".Inflector::camel2words($name)."', ['".$generator->pathPrefix.Inflector::camel2id($generator->generateRelationTo($relation))."/index'], ['class'=>'btn btn-default btn-xs']) ?>\n";
-        echo "  <?= \\yii\\helpers\\Html::a('Create ".Inflector::singularize(Inflector::camel2words($name))."', ['".$generator->pathPrefix.Inflector::camel2id($generator->generateRelationTo($relation))."/create'], ['class'=>'btn btn-success btn-xs']) ?>\n";
+        echo "  <?= \\yii\\helpers\\Html::a('List ".Inflector::camel2words($name)."', ['".$generator->pathPrefix.Inflector::class2id($generator->generateRelationTo($relation))."/index'], ['class'=>'btn btn-default btn-xs']) ?>\n";
+        echo "  <?= \\yii\\helpers\\Html::a('Create ".Inflector::singularize(Inflector::camel2words($name))."', ['".$generator->pathPrefix.Inflector::class2id($generator->generateRelationTo($relation))."/create'], ['class'=>'btn btn-success btn-xs']) ?>\n";
         echo "</p><div class='clearfix'></div>\n";
 
         echo "<?php \$this->endBlock() ?>\n\n";

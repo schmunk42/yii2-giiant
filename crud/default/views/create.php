@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Inflector;
+use schmunk42\giiant\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -22,7 +22,7 @@ $this->title = 'Create';
 $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-create">
+<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-create">
 
     <?= "<?php " ?>echo $this->render('_form', [
 		'model' => $model,
