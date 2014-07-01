@@ -20,12 +20,16 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
         if ($relation) {
             switch (true) {
                 case (!$relation->multiple):
+                    // $name = $this->generator->getNameAttribute(get_class($relation->primaryModel));
+                    $pk = 'id'; // TODO - fix detection
+                    $name = 'id'; // TODO - fix line above for many many relations (crud of pivot table)
                     $code                        = <<<EOS
 \$form->field(\$model, '{$column->name}')->dropDownList(
-    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'id','{$this->generator->getNameAttribute()}'),
-    ['prompt'=>'Choose...']    // options
+    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'{$pk}','{$name}'),
+    ['prompt'=>'Choose...']    // active field
 );
 EOS;
+                    $code .= "echo '".print_r($relation)."'";
                     return $code;
                 default:
                     return null;
@@ -43,8 +47,8 @@ EOS;
                 $attribute                         = key($data[0]->link);
                 $code                        = <<<EOS
 \$form->field(\$model, '{$attribute}')->listBox(
-    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'id', '{$this->generator->getNameAttribute()}'),
-    ['prompt'=>'Choose...', 'options'=>['multiple'=>true]]    // options
+    \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'id', '{$this->generator->getNameAttribute(get_class($relation->primaryModel))}'),
+    ['prompt'=>'Choose...', 'options'=>['multiple'=>true]]    // relation field
 );
 EOS;
 
