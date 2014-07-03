@@ -83,17 +83,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
         <?php
-        $count = 0;
+        $count        = 0;
+        $test         = new \common\components\RelationProvider();
+        $modelClasses = $test->columnAttributes;
         foreach ($generator->getTableSchema()->columns as $column) {
+            $format   = $generator->generateColumnFormat($column);
+            $relation = $generator->getRelationByColumn($column);
+
             $format = $generator->generateColumnFormat($column);
             if (++$count < 6) {
-                echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                if ($relation && array_key_exists($relation->modelClass, $modelClasses)) {
+                    echo $format . ",\n";
+                } else {
+                    echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                }
             } else {
-                echo "\t\t\t// '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                if ($relation && !array_key_exists($relation->modelClass, $modelClasses)) {
+                    echo "\t\t\t/* '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "', */\n";
+                }
+                echo "\t\t\t/* '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "', */\n";
             }
         }
         ?>
-
         ['class' => '<?= $generator->actionButtonClass ?>'],
         ],
         ]); ?>
