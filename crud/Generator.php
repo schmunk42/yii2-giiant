@@ -232,23 +232,30 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($code !== null) {
             return $code;
         } else {
-            if ($attribute->phpType === 'boolean') {
-                $format = 'boolean';
-            } elseif ($attribute->type === 'text') {
-                $format = 'ntext';
-            } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
-                $format = 'datetime';
-            } elseif (stripos($attribute->name, 'email') !== false) {
-                $format = 'email';
-            } elseif (stripos($attribute->name, 'url') !== false) {
-                $format = 'url';
-            } else {
-                $format = 'text';
-            }
-
-            return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
-            // don't call parent anymore
+            return $this->generateAttributeFormat($attribute);
+            // don't call parent anymore, we can use the same rules for the Yii2 shorthands
         };
+    }
+
+    public function generateAttributeFormat($attribute)
+    {
+
+        if ($attribute->phpType === 'boolean') {
+            $format = 'boolean';
+        } elseif ($attribute->type === 'text') {
+            $format = 'ntext';
+        } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
+            $format = 'datetime';
+        } elseif (stripos($attribute->name, 'email') !== false) {
+            $format = 'email';
+        } elseif (stripos($attribute->name, 'url') !== false) {
+            $format = 'url';
+        } else {
+            $format = 'text';
+        }
+
+        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
+        // don't call parent anymore
     }
 
     public function generateRelationTo($attribute)

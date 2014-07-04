@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = 'View';
     'attributes' => [
     <?php
     foreach ($generator->getTableSchema()->columns as $column) {
-        $format = $generator->generateColumnFormat($column);
+        $format = $generator->generateAttributeFormat($column);
         if ($relation = $generator->getRelationByColumn($column)) {
             echo "    ['format'=>'raw','attribute'=>'$column->name', 'value'=> Html::a(\$model->{$column->name}, ['" . $generator->pathPrefix . Inflector::class2id(
                     StringHelper::basename($relation->modelClass)
