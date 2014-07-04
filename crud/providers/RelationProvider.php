@@ -53,7 +53,7 @@ EOS;
 EOS;
 
                 return <<<EOS
-'<div class="alert alert-warning">Select field not implemented yet.</div>'
+'<!--<div class="alert alert-notice">Select field not implemented yet.</div>-->'
 EOS;
                 break;
             default:
@@ -78,16 +78,6 @@ EOS;
                 case 'last_update':
                     continue 2;
                     break;
-                // TODO: move to closure?
-                case ($attr == 'customer_id' && $relation->modelClass != 'schmunk42\sakila\models\Customer'):
-                    $columns[] = 'customer.last_name';
-                    break;
-                case ($attr == 'inventory_id' && $relation->modelClass != 'schmunk42\sakila\models\Inventory'):
-                    $columns[] = 'inventory.film.title';
-                    break;
-                case ($attr == 'film_id' && $relation->modelClass != 'schmunk42\sakila\models\Film'):
-                    $columns[] = 'film.title';
-                    break;
                 default:
                     $columns[] = $attr;
                     break;
@@ -105,8 +95,8 @@ EOS;
         # TODO: move provider generation to controller
         $isRelation = true;
         $query = $isRelation?"'query' => \$model->get{$name}(),":"'query' => \\{$relation->modelClass}::find(),";
-        $code = '<div class="alert alert-info">Showing related records.</div>';
-        #
+
+        $code = '';
         $code .= <<<EOS
 <?php
 \$provider = new \\yii\\data\\ActiveDataProvider([
@@ -121,6 +111,7 @@ EOS;
             'columns' => $c
         ]); ?>
 EOS;
+        $code .= '<div class="alert alert-info">Showing related records.</div>';
         return $code;
     }
 
