@@ -70,27 +70,29 @@ EOS;
         $relation = $data[0];
         $model    = new $relation->modelClass;
         $counter  = 0;
+        $columns = '';
         foreach ($model->attributes AS $attr => $value) {
             if ($counter > 5) {
                 continue;
             }
             switch ($attr) {
+                case 'folder':
                 case 'last_update':
                     continue 2;
                     break;
                 default:
-                    $columns[] = $attr;
+                    $columns .= $this->generator->generateColumnFormat($model->tableSchema->columns[$attr]).",";
                     break;
             }
 
             $counter++;
         }
         $reflection = new \ReflectionClass($relation->modelClass);
-        $columns[]  = [
+        $actionColumn  = [
             'class'      => 'yii\grid\ActionColumn',
             'controller' => $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName())
         ];
-        $c          = var_export($columns, true);
+        $columns .= var_export($actionColumn, true).",";
 
         # TODO: move provider generation to controller
         $isRelation = true;
@@ -108,7 +110,7 @@ EOS;
 ?>
     <?= \\yii\\grid\\GridView::widget([
             'dataProvider' => \$provider,
-            'columns' => $c
+            'columns' => [$columns]
         ]); ?>
 EOS;
         $code .= '<div class="alert alert-info">Showing related records.</div>';
