@@ -23,7 +23,14 @@ use yii\base\NotSupportedException;
  */
 class Generator extends \yii\gii\generators\model\Generator
 {
+    /**
+     * @var bool whether to overwrite (extended) model classes, will be always created, if file does not exist
+     */
     public $generateModelClass = false;
+
+    /**
+     * @var null string for the table prefix, which is ignored in generated class name
+     */
     public $tablePrefix = null;
 
     /**
@@ -117,9 +124,10 @@ class Generator extends \yii\gii\generators\model\Generator
                 $this->render('model.php', $params)
             );
 
-            if ($this->generateModelClass) {
+            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php';
+            if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
-                    Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php',
+                    $modelClassFile,
                     $this->render('model-extended.php', $params)
                 );
             }
