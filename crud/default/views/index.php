@@ -49,11 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (strstr($relation->modelClass, 'X')) { # TODO: pivot detection, move to getModelRelations
                     $iconType = 'random';
                 }
-                $controller = $generator->pathPrefix . Inflector::class2id(StringHelper::basename($relation->modelClass));
-                $label = Inflector::titleize(StringHelper::basename($relation->modelClass),true);
+                $controller = $generator->pathPrefix . Inflector::class2id(
+                        StringHelper::basename($relation->modelClass)
+                    );
+                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), true);
                 $items[] = [
-                    'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> '.$label.'</i>',
-                    'url' => [$controller.'/index']
+                    'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> ' . $label . '</i>',
+                    'url'   => [$controller . '/index']
                 ]
                 ?>
             <?php endforeach; ?>
@@ -64,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'id'       => 'giiant-relations',
                     'label'    => 'Relations',
                     'dropdown' => [
-                        'options' => [
+                        'options'      => [
                             'class' => 'dropdown-menu-right'
                         ],
                         'encodeLabels' => false,
@@ -83,25 +85,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
         <?php
-        $count        = 0;
-        $test         = new \common\components\RelationProvider();
-        $modelClasses = $test->columnAttributes;
+        $count = 0;
         foreach ($generator->getTableSchema()->columns as $column) {
-            $format   = $generator->generateColumnFormat($column);
-            $relation = $generator->getRelationByColumn($column);
-
             $format = $generator->generateColumnFormat($column);
             if (++$count < 6) {
-                if ($relation && array_key_exists($relation->modelClass, $modelClasses)) {
-                    echo $format . ",\n";
-                } else {
-                    echo "\t\t\t'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-                }
+                echo $format . ",\n";
             } else {
-                if ($relation && !array_key_exists($relation->modelClass, $modelClasses)) {
-                    echo "\t\t\t/* '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "', */\n";
-                }
-                echo "\t\t\t/* '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "', */\n";
+                echo "\t\t\t/* " . $format . ", */\n";
             }
         }
         ?>

@@ -195,6 +195,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return false;
     }
 
+
     /**
      * @return string the action view file path
      */
@@ -231,7 +232,22 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($code !== null) {
             return $code;
         } else {
-            return parent::generateColumnFormat($attribute);
+            if ($attribute->phpType === 'boolean') {
+                $format = 'boolean';
+            } elseif ($attribute->type === 'text') {
+                $format = 'ntext';
+            } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
+                $format = 'datetime';
+            } elseif (stripos($attribute->name, 'email') !== false) {
+                $format = 'email';
+            } elseif (stripos($attribute->name, 'url') !== false) {
+                $format = 'url';
+            } else {
+                $format = 'text';
+            }
+
+            return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
+            // don't call parent anymore
         };
     }
 
