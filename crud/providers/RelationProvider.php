@@ -29,7 +29,6 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
     ['prompt'=>'Choose...']    // active field
 );
 EOS;
-                    $code .= "echo '".print_r($relation)."'";
                     return $code;
                 default:
                     return null;
