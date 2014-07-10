@@ -110,6 +110,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
+    /**
+     * @return string the controller ID (without the module ID prefix)
+     */
+    public function getControllerID()
+    {
+        $pos = strrpos($this->controllerClass, '\\');
+        $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
+
+        return Inflector::camel2id($class,'-',true);
+    }
+
     public function getNameAttribute($modelClass = null)
     {
         $oldModelClass = $this->modelClass;

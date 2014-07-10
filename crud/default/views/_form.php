@@ -54,8 +54,8 @@ use yii\bootstrap\ActiveForm;
 EOS;
         ?>
 
-        <?php
 
+        <?php
         foreach ($generator->getModelRelations(['has_many', 'many_many']) as $name => $relation) {
             // render block
             echo "<?php \$this->beginBlock('$name'); ?>\n";
@@ -69,11 +69,13 @@ EOS;
     'label'   => '<small>$name</small>',
     'content' => \$this->blocks['$name'],
     'active'  => false,
+    // TODO: don't show tabs on create --> 'visible' => false,
 ],
 EOS;
-        }
 
+}
         ?>
+
 
         <?=
         "<?=
