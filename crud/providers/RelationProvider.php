@@ -82,6 +82,8 @@ EOS;
                     continue 2;
                     break;
                 default:
+                    $code = $this->generator->generateColumnFormat($model->tableSchema->columns[$attr]);
+                    if ($code === false) continue;
                     $columns .= $this->generator->generateColumnFormat($model->tableSchema->columns[$attr]) . ",";
                     break;
             }
