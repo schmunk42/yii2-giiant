@@ -32,6 +32,7 @@ use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -75,6 +76,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		$searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
 		$dataProvider = $searchModel->search($_GET);
 
+        Url::remember();
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,
@@ -88,7 +90,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionView(<?= $actionParams ?>)
 	{
-		return $this->render('view', [
+        Url::remember();
+        return $this->render('view', [
 			'model' => $this->findModel(<?= $actionParams ?>),
 		]);
 	}
@@ -103,8 +106,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		$model = new <?= $modelClass ?>;
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(['view', <?= $urlParams ?>]);
+			return $this->redirect(Url::previous());
 		} else {
+            $model->load($_GET);
 			return $this->render('create', [
 				'model' => $model,
 			]);
@@ -122,7 +126,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		$model = $this->findModel(<?= $actionParams ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(Url::previous());
 		} else {
 			return $this->render('update', [
 				'model' => $model,

@@ -1,6 +1,6 @@
 <?php
 
-use schmunk42\giiant\helpers\Inflector;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -27,7 +27,7 @@ $this->title = '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::ba
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-index">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
     <?=
     "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>
@@ -42,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="pull-right">
 
 
+            <?php $items = []; ?>
             <?php foreach ($generator->getModelRelations() AS $relation): ?>
                 <?php
                 // ignore pivot tables
@@ -49,10 +50,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (strstr($relation->modelClass, 'X')) { # TODO: pivot detection, move to getModelRelations
                     $iconType = 'random';
                 }
-                $controller = $generator->pathPrefix . Inflector::class2id(
-                        StringHelper::basename($relation->modelClass)
+                $controller = $generator->pathPrefix . Inflector::camel2id(
+                        StringHelper::basename($relation->modelClass),
+                        true
                     );
-                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), true);
+                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
                 $items[] = [
                     'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> ' . $label . '</i>',
                     'url'   => [$controller . '/index']

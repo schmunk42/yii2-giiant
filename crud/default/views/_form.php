@@ -1,6 +1,6 @@
 <?php
 
-use schmunk42\giiant\helpers\Inflector;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -28,7 +28,7 @@ use yii\bootstrap\ActiveForm;
 */
 ?>
 
-<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-form">
+<div class="<?= \yii\helpers\Inflector::camel2id(StringHelper::basename($generator->modelClass),true) ?>-form">
 
     <?= "<?php " ?>$form = ActiveForm::begin(['layout' => 'horizontal', 'enableClientValidation' => false]); ?>
 

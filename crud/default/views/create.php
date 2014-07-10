@@ -1,6 +1,6 @@
 <?php
 
-use schmunk42\giiant\helpers\Inflector;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -14,18 +14,20 @@ echo "<?php\n";
 use yii\helpers\Html;
 
 /**
- * @var yii\web\View $this
- * @var <?= ltrim($generator->modelClass, '\\') ?> $model
- */
+* @var yii\web\View $this
+* @var <?= ltrim($generator->modelClass, '\\') ?> $model
+*/
 
 $this->title = 'Create';
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(
+    Inflector::camel2words(StringHelper::basename($generator->modelClass))
+) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?= Inflector::class2id(StringHelper::basename($generator->modelClass)) ?>-create">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">
 
     <?= "<?php " ?>echo $this->render('_form', [
-		'model' => $model,
-	]); ?>
+    'model' => $model,
+    ]); ?>
 
 </div>

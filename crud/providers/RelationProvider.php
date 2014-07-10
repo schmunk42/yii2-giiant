@@ -115,11 +115,6 @@ EOS;
         return $code;
     }
 
-    public function generateRelationTo($relation)
-    {
-        $class = new \ReflectionClass($relation->modelClass);
-        $route = Inflector::variablize($class->getShortName());
-        return $route;
-    }
+
 
 }

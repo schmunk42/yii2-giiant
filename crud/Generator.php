@@ -8,6 +8,9 @@
 namespace schmunk42\giiant\crud;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
+use yii\helpers\Url;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -271,9 +274,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $stack;
     }
 
-    public function generateRelationTo($attribute)
+    public function createRelationRoute($relation, $action)
     {
-        return $this->callProviderQueue(__FUNCTION__, $attribute);
+        $route = $this->pathPrefix . Inflector::camel2id($this->generateRelationTo($relation), '-', true) . "/" . $action;
+        return $route;
+    }
+
+    public function generateRelationTo($relation)
+    {
+        $class = new \ReflectionClass($relation->modelClass);
+        $route = Inflector::variablize($class->getShortName());
+        return $route;
     }
 
     public function generateRelationField($relation)
