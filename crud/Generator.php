@@ -8,12 +8,6 @@
 namespace schmunk42\giiant\crud;
 
 use Yii;
-use yii\db\ActiveRecord;
-use yii\db\Schema;
-use yii\gii\CodeFile;
-use yii\helpers\Inflector;
-use yii\log\Logger;
-use yii\web\Controller;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -84,8 +78,8 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::hints(),
             [
                 'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
-                'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
-                'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
+                'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
             ]
         );
     }
@@ -126,75 +120,12 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
         /** @var \yii\db\ActiveRecord $class */
         $class = $this->modelClass;
-        $pk = $class::primaryKey();
+        $pk    = $class::primaryKey();
 
         $this->modelClass = $oldModelClass;
 
         return $pk[0];
     }
-
-    /**
-     * @todo docs
-     * @return array
-     */
-    public function getModelRelations($types = ['belongs_to','many_many','has_many','has_one'])
-    {
-        $reflector = new \ReflectionClass($this->modelClass);
-        $model     = new $this->modelClass;
-        $stack     = [];
-        foreach ($reflector->getMethods() AS $method) {
-            // look for getters
-            if (substr($method->name, 0, 3) !== 'get') {
-                continue;
-            }
-            // skip class specific getters
-            $skipMethods = [
-                'getRelation',
-                'getBehavior',
-                'getFirstError',
-                'getAttribute',
-                'getAttributeLabel',
-                'getOldAttribute'
-            ];
-            if (in_array($method->name, $skipMethods)) {
-                continue;
-            }
-            // check for relation
-            $relation = call_user_func(array($model, $method->name));
-            if ($relation instanceof yii\db\ActiveQuery) {
-                #var_dump($relation->primaryModel->primaryKey);
-                if ($relation->multiple === false) {
-                    $relationType = 'belongs_to';
-                } elseif (strstr($relation->modelClass,"X")) { # TODO: detecttion
-                    $relationType = 'many_many';
-                } else {
-                    $relationType = 'has_many';
-                }
-
-                if (in_array($relationType, $types)) {
-                    $stack[substr($method->name, 3)] = $relation;
-                }
-            }
-        }
-        return $stack;
-    }
-
-    public function getRelationByColumn($column)
-    {
-        #if ($column->isPrimaryKey) {
-        #    return false;
-        #}
-        $relations = $this->getModelRelations();
-        foreach ($relations AS $relation) {
-            // TODO: check multiple link(s)
-            #var_dump($relation,$column);
-            if (reset($relation->link) == $column->name) {
-                return $relation;
-            }
-        }
-        return false;
-    }
-
 
     /**
      * @return string the action view file path
@@ -237,6 +168,26 @@ class Generator extends \yii\gii\generators\crud\Generator
         };
     }
 
+    private function callProviderQueue($func, $args)
+    {
+        // walk through providers
+        foreach ($this->_p AS $obj) {
+            if (method_exists($obj, $func)) {
+                $c = call_user_func_array(array(&$obj, $func), [$args]);
+                // until a provider returns not null
+                if ($c !== null) {
+                    # TODO: fix logging
+                    /*\Yii::$app->log->log(
+                                   'Using ' . get_class($obj) . '::' . $func, // TODO: get a string? . ' for ' . print_r($args),
+                                       Logger::LEVEL_INFO,
+                                       __NAMESPACE__
+                    );*/
+                    return $c;
+                }
+            }
+        }
+    }
+
     public function generateAttributeFormat($attribute)
     {
 
@@ -258,6 +209,68 @@ class Generator extends \yii\gii\generators\crud\Generator
         // don't call parent anymore
     }
 
+    public function getRelationByColumn($column)
+    {
+        #if ($column->isPrimaryKey) {
+        #    return false;
+        #}
+        $relations = $this->getModelRelations();
+        foreach ($relations AS $relation) {
+            // TODO: check multiple link(s)
+            #var_dump($relation,$column);
+            if (reset($relation->link) == $column->name) {
+                return $relation;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @todo docs
+     * @return array
+     */
+    public function getModelRelations($types = ['belongs_to', 'many_many', 'has_many', 'has_one'])
+    {
+        $reflector = new \ReflectionClass($this->modelClass);
+        $model     = new $this->modelClass;
+        $stack     = [];
+        foreach ($reflector->getMethods() AS $method) {
+            // look for getters
+            if (substr($method->name, 0, 3) !== 'get') {
+                continue;
+            }
+            // skip class specific getters
+            $skipMethods = [
+                'getRelation',
+                'getBehavior',
+                'getFirstError',
+                'getAttribute',
+                'getAttributeLabel',
+                'getOldAttribute'
+            ];
+            if (in_array($method->name, $skipMethods)) {
+                continue;
+            }
+            // check for relation
+            $relation = call_user_func(array($model, $method->name));
+            if ($relation instanceof yii\db\ActiveQuery) {
+                #var_dump($relation->primaryModel->primaryKey);
+                if ($relation->multiple === false) {
+                    $relationType = 'belongs_to';
+                } elseif (strstr($relation->modelClass, "X")) { # TODO: detecttion
+                    $relationType = 'many_many';
+                } else {
+                    $relationType = 'has_many';
+                }
+
+                if (in_array($relationType, $types)) {
+                    $stack[substr($method->name, 3)] = $relation;
+                }
+            }
+        }
+        return $stack;
+    }
+
     public function generateRelationTo($attribute)
     {
         return $this->callProviderQueue(__FUNCTION__, $attribute);
@@ -271,26 +284,5 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function generateRelationGrid($attribute)
     {
         return $this->callProviderQueue(__FUNCTION__, $attribute);
-    }
-
-
-    private function callProviderQueue($func, $args)
-    {
-        // walk through providers
-        foreach ($this->_p AS $obj) {
-            if (method_exists($obj, $func)) {
-                $c = call_user_func_array(array(&$obj, $func), [$args]);
-                // until a provider returns not null
-                if ($c !== null) {
-                    # TODO: fix logging
-                    /*\Yii::$app->log->log(
-                                   'Using ' . get_class($obj) . '::' . $func, // TODO: get a string? . ' for ' . print_r($args),
-                                       Logger::LEVEL_INFO,
-                                       __NAMESPACE__
-                    );*/
-                    return $c;
-                }
-            }
-        }
     }
 }
