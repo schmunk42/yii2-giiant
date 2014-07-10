@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
                 $controller = $generator->pathPrefix . Inflector::camel2id(
                         StringHelper::basename($relation->modelClass),
+                        '-',
                         true
                     );
                 $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
