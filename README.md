@@ -105,6 +105,53 @@ This will render a Ckeditor widget for every column named `description`.
         'preset' => 'basic'
     ]) ?>
 
+
+### Universal `CallbackProvider`
+
+Configuration via DI container:
+
+```
+\Yii::$container->set(
+    'schmunk42\giiant\crud\providers\CallbackProvider',
+    [
+        'activeFields'  => [
+            'common\models\Foo.bar' => function($attribute, $generator){...}
+        ],
+        'columnFormats' => []
+    ]
+);
+```
+
+Generate the code for a checkbox:
+
+```
+'common\models\Foo.bar' => function ($attribute, $generator) {
+    $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
+    $code = <<<EOS
+\$form->field(\$model, '{$attribute}')->checkbox({$data});
+EOS;
+    return $code;
+}
+```
+
+Generate custom HTML in column:
+
+```
+'common\models\Foo.bar' => function ($attribute, $generator) {
+    $code = <<<EOS
+[
+    'format' => 'html',
+    'label'=>'FOOFOO',
+    'attribute' => 'item_id',
+    'value'=> function(\$model){return \yii\helpers\Html::a(\$model->bar,['/crud/item/view', 'id' => \$model->link_id]);}
+]
+EOS;
+    return $code;
+}
+```
+
+
+
 Screenshots
 -----------
 
