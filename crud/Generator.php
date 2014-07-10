@@ -232,7 +232,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @todo docs
      * @return array
      */
-    public function getModelRelations($types = ['belongs_to', 'many_many', 'has_many', 'has_one'])
+    public function getModelRelations($types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
     {
         $reflector = new \ReflectionClass($this->modelClass);
         $model     = new $this->modelClass;
@@ -261,7 +261,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 if ($relation->multiple === false) {
                     $relationType = 'belongs_to';
                 } elseif (strstr($relation->modelClass, "X")) { # TODO: detecttion
-                    $relationType = 'many_many';
+                    $relationType = 'pivot';
                 } else {
                     $relationType = 'has_many';
                 }

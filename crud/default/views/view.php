@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = ['label' => $model-><?=
 $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'View';
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass),'-', true) ?>-view">
+<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <p class='pull-left'>
         <?= "<?= " ?>Html::a('Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
@@ -84,8 +84,7 @@ $this->params['breadcrumbs'][] = 'View';
 ],
 EOS;
 
-    foreach ($generator->getModelRelations() as $name => $relation) {
-
+    foreach ($generator->getModelRelations(['has_many']) as $name => $relation) {
         # TODO: make tab selection more flexible
         #if (!$relation->via) continue; // ignore pivot tables in CRUD
         if (!$relation->multiple) {
@@ -94,8 +93,31 @@ EOS;
 
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
+
+        // render pivot table
+        $model = new $generator->modelClass;
+        $showAllRecords = false;
+        if ($relation->via !== null) {
+            $pivotName = Inflector::pluralize(
+                Inflector::id2camel(str_replace('app_', '', $relation->via->from[0]), '_')
+            );
+            $pivotRelation = $model->{'get' . $pivotName}();
+            echo $generator->generateRelationGrid([$pivotRelation, $pivotName, false]) . "\n";
+            echo "<p class='pull-right'>\n";
+            echo "  <?= \\yii\\helpers\\Html::a(
+            'Add " . Inflector::singularize(Inflector::camel2words($name)) . "',
+            ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" . Inflector::singularize(
+                    $pivotName
+                ) . "'=>['" . key($pivotRelation->link) . "'=>\$model->id]],
+            ['class'=>'btn btn-primary btn-xs']
+        ) ?>\n";
+            echo "</p><div class='clearfix'></div><hr/>\n";
+            $showAllRecords = true;
+        }
+
+        // render relation table
         echo "<?php Pjax::begin() ?>\n";
-        echo $generator->generateRelationGrid([$relation, $name]) . "\n";
+        echo $generator->generateRelationGrid([$relation, $name, $showAllRecords]) . "\n";
         echo "<?php Pjax::end() ?>\n";
 
         echo "<p class='pull-right'>\n";
