@@ -9,7 +9,6 @@
 namespace schmunk42\giiant\crud\providers;
 
 use yii\helpers\Inflector;
-use yii\log\Logger;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {

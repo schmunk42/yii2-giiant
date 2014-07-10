@@ -9,8 +9,6 @@
 namespace schmunk42\giiant\crud\providers;
 
 use schmunk42\giiant\base\Provider;
-use yii\base\Object;
-use yii\log\Logger;
 
 class SelectProvider extends Provider
 {

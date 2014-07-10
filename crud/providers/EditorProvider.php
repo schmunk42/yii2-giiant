@@ -8,8 +8,6 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-use yii\log\Logger;
-
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {
     public function generateActiveField($attribute)
