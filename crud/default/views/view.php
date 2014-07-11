@@ -54,22 +54,20 @@ $this->params['breadcrumbs'][] = 'View';
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
     ?>
 
+    <h3>
+        <?= "<?= \$model->id ?>" ?>
+    </h3>
+
     <?= "<?php " ?>echo DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
     foreach ($generator->getTableSchema()->columns as $column) {
         $format = trim($generator->generateAttributeFormat($column));
-        if ($format === false) continue;
-        /*if ($relation = $generator->getRelationByColumn($column)) {
-            echo "    ['format'=>'raw','attribute'=>'$column->name', 'value'=> Html::a(\$model->{$column->name}, ['" . $generator->pathPrefix . Inflector::camel2id(
-                    StringHelper::basename($relation->modelClass),
-                    '-',
-                    true
-                ) . "/view', 'id'=>\$model->{$column->name}])],\n";
-        } else {*/
-            echo $format . ",\n";
-        //}
+        if ($format === false) {
+            continue;
+        }
+        echo $format . ",\n";
     }
     ?>
     ],
@@ -94,26 +92,51 @@ EOS;
 
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
-
-        // render pivot table
-        $model = new $generator->modelClass;
+        // get relation info $ prepare button
+        $model          = new $generator->modelClass;
         $showAllRecords = false;
         if ($relation->via !== null) {
-            $pivotName = Inflector::pluralize(
+            echo "<h4>Attached</h4>";
+
+            $pivotName     = Inflector::pluralize(
                 Inflector::id2camel(str_replace('app_', '', $relation->via->from[0]), '_')
             );
             $pivotRelation = $model->{'get' . $pivotName}();
-            echo $generator->generateRelationGrid([$pivotRelation, $pivotName, false]) . "\n";
-            echo "<p class='pull-right'>\n";
-            echo "  <?= \\yii\\helpers\\Html::a(
-            'Add " . Inflector::singularize(Inflector::camel2words($name)) . "',
+
+            $addButton      = "  <?= \\yii\\helpers\\Html::a(
+            'Attach " . Inflector::singularize(Inflector::camel2words($name)) . "',
             ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" . Inflector::singularize(
                     $pivotName
                 ) . "'=>['" . key($pivotRelation->link) . "'=>\$model->id]],
             ['class'=>'btn btn-primary btn-xs']
         ) ?>\n";
-            echo "</p><div class='clearfix'></div><hr/>\n";
             $showAllRecords = true;
+        } else {
+            $addButton = '';
+            echo "<h4>Attached</h4>";
+        }
+
+        // relation list, add, create buttons
+        echo "<p class='pull-right'>\n";
+        $createUrlParams = \yii\helpers\VarDumper::export($relation->primaryModel->primaryKey);
+        echo "  <?= \\yii\\helpers\\Html::a(
+            'List All " . Inflector::camel2words($name) . "',
+            ['" . $generator->pathPrefix . Inflector::camel2id($generator->generateRelationTo($relation), '-', true) . "/index'],
+            ['class'=>'btn btn-default btn-xs']) ?>\n";
+        echo "  <?= \\yii\\helpers\\Html::a(
+            'New " . Inflector::singularize(Inflector::camel2words($name)) . "',
+            ['" . $generator->createRelationRoute($relation, 'create') . "', '" . Inflector::singularize(
+                $name
+            ) . "'=>['" . key($relation->link) . "'=>\$model->id]],
+            ['class'=>'btn btn-success btn-xs']
+        ) ?>\n";
+        echo $addButton;
+        echo "</p><div class='clearfix'></div>\n";
+
+        if ($relation->via !== null) {
+            echo $generator->generateRelationGrid([$pivotRelation, $pivotName, $showAllRecords]) . "\n";
+            echo "<hr/>";
+            echo "<h4>All</h4>";
         }
 
         // render relation table
@@ -121,20 +144,6 @@ EOS;
         echo $generator->generateRelationGrid([$relation, $name, $showAllRecords]) . "\n";
         echo "<?php Pjax::end() ?>\n";
 
-        echo "<p class='pull-right'>\n";
-
-        $createUrlParams = \yii\helpers\VarDumper::export($relation->primaryModel->primaryKey);
-
-        echo "  <?= \\yii\\helpers\\Html::a(
-            'List " . Inflector::camel2words($name) . "',
-            ['" . $generator->pathPrefix . Inflector::camel2id($generator->generateRelationTo($relation), '-', true) . "/index'],
-            ['class'=>'btn btn-default btn-xs']) ?>\n";
-        echo "  <?= \\yii\\helpers\\Html::a(
-            'Create " . Inflector::singularize(Inflector::camel2words($name)) . "',
-            ['" . $generator->createRelationRoute($relation, 'create') . "', '".Inflector::singularize($name)."'=>['".key($relation->link)."'=>\$model->id]],
-            ['class'=>'btn btn-success btn-xs']
-        ) ?>\n";
-        echo "</p><div class='clearfix'></div>\n";
 
         echo "<?php \$this->endBlock() ?>\n\n";
 

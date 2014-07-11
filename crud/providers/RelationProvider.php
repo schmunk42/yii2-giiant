@@ -101,7 +101,7 @@ EOS;
         $code .= <<<EOS
 <?=
 \\yii\\grid\\GridView::widget([
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 5]]),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
     'columns' => [$columns]
 ]);
 ?>

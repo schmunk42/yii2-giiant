@@ -53,27 +53,6 @@ use yii\bootstrap\ActiveForm;
 EOS;
         ?>
 
-        <?php
-        foreach ($generator->getModelRelations(['has_many', 'many_many']) as $name => $relation) {
-            // render block
-            echo "<?php \$this->beginBlock('$name'); ?>\n";
-            echo $generator->generateRelationGrid([$relation, $name], $model->isNewRecord) . "\n";
-            echo "<?php \$this->endBlock(); ?>";
-
-            // prepare tab items with blocks
-            $items .= <<<EOS
-[
-    'label'   => '<small>$name</small>',
-    'content' => \$this->blocks['$name'],
-    'active'  => false,
-    // TODO: don't show tabs on create --> 'visible' => false,
-],
-EOS;
-
-}
-        ?>
-
-
         <?=
         "<?=
     \yii\bootstrap\Tabs::widget(
