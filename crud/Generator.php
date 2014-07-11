@@ -8,9 +8,7 @@
 namespace schmunk42\giiant\crud;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
-use yii\helpers\Url;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -110,18 +108,8 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
-    /**
-     * @return string the controller ID (without the module ID prefix)
-     */
-    public function getControllerID()
-    {
-        $pos = strrpos($this->controllerClass, '\\');
-        $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
-
-        return Inflector::camel2id($class,'-',true);
-    }
-
-    public function getNameAttribute($modelClass = null)
+    // TODO method signature
+    /*public function getNameAttribute($modelClass = null)
     {
         $oldModelClass = $this->modelClass;
         if ($modelClass !== null) {
@@ -132,13 +120,32 @@ class Generator extends \yii\gii\generators\crud\Generator
                 return $name;
             }
         }
-        /** @var \yii\db\ActiveRecord $class */
+
         $class = $this->modelClass;
         $pk    = $class::primaryKey();
 
         $this->modelClass = $oldModelClass;
 
         return $pk[0];
+    }*/
+
+    public function getModelNameAttribute($model){
+        foreach ($model::getTableSchema()->getColumnNames() as $name){
+            switch (strtolower($name)) {
+                case 'name':
+                case 'title':
+                case 'name_id':
+                case 'default_title':
+                case 'default_name':
+                    return $name;
+                    break;
+                default:
+                    continue;
+                    break;
+            }
+
+        }
+        return $model::primaryKey()[0];
     }
 
     /**
@@ -155,73 +162,16 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * Generates code for active field by using the provider queue
-     *
-     * @param string $attribute
-     *
-     * @return string
+     * @return string the controller ID (without the module ID prefix)
      */
-    public function generateActiveField($attribute)
+    public function getControllerID()
     {
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
-        if ($code !== null) {
-            return $code;
-        } else {
-            return parent::generateActiveField($attribute);
-        };
+        $pos   = strrpos($this->controllerClass, '\\');
+        $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
+
+        return Inflector::camel2id($class, '-', true);
     }
 
-    public function generateColumnFormat($attribute)
-    {
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
-        if ($code !== null) {
-            return $code;
-        } else {
-            return $this->generateAttributeFormat($attribute);
-            // don't call parent anymore, we can use the same rules for the Yii2 shorthands
-        };
-    }
-
-    private function callProviderQueue($func, $args)
-    {
-        // walk through providers
-        foreach ($this->_p AS $obj) {
-            if (method_exists($obj, $func)) {
-                $c = call_user_func_array(array(&$obj, $func), [$args]);
-                // until a provider returns not null
-                if ($c !== null) {
-                    # TODO: fix logging
-                    /*\Yii::$app->log->log(
-                                   'Using ' . get_class($obj) . '::' . $func, // TODO: get a string? . ' for ' . print_r($args),
-                                       Logger::LEVEL_INFO,
-                                       __NAMESPACE__
-                    );*/
-                    return $c;
-                }
-            }
-        }
-    }
-
-    public function generateAttributeFormat($attribute)
-    {
-
-        if ($attribute->phpType === 'boolean') {
-            $format = 'boolean';
-        } elseif ($attribute->type === 'text') {
-            $format = 'ntext';
-        } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
-            $format = 'datetime';
-        } elseif (stripos($attribute->name, 'email') !== false) {
-            $format = 'email';
-        } elseif (stripos($attribute->name, 'url') !== false) {
-            $format = 'url';
-        } else {
-            $format = 'text';
-        }
-
-        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
-        // don't call parent anymore
-    }
 
     public function getRelationByColumn($column)
     {
@@ -285,9 +235,57 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $stack;
     }
 
+    /**
+     * Generates code for active field by using the provider queue
+     *
+     * @param string $attribute
+     *
+     * @return string
+     */
+    public function generateActiveField($attribute)
+    {
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($code !== null) {
+            return $code;
+        } else {
+            return parent::generateActiveField($attribute);
+        };
+    }
+
+    // TODO: naming -_> columnFormat();
+    public function generateColumnFormat($attribute)
+    {
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($code !== null) {
+            return $code;
+        } else {
+            return $this->shorthandAttributeFormat($attribute);
+        };
+    }
+
+    public function generateAttributeFormat($attribute)
+    {
+
+        if ($code = $this->callProviderQueue(__FUNCTION__, $attribute)) {
+            return $code;
+        }
+        return $this->shorthandAttributeFormat($attribute);
+        // don't call parent anymore
+    }
+
+    public function generateRelationGrid($attribute)
+    {
+        return $this->callProviderQueue(__FUNCTION__, $attribute);
+    }
+
+
     public function createRelationRoute($relation, $action)
     {
-        $route = $this->pathPrefix . Inflector::camel2id($this->generateRelationTo($relation), '-', true) . "/" . $action;
+        $route = $this->pathPrefix . Inflector::camel2id(
+                $this->generateRelationTo($relation),
+                '-',
+                true
+            ) . "/" . $action;
         return $route;
     }
 
@@ -298,13 +296,38 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $route;
     }
 
-    public function generateRelationField($relation)
+    private function callProviderQueue($func, $args)
     {
-        return $this->callProviderQueue(__FUNCTION__, $relation);
+        // walk through providers
+        foreach ($this->_p AS $obj) {
+            if (method_exists($obj, $func)) {
+                $c = call_user_func_array(array(&$obj, $func), [$args]);
+                // until a provider returns not null
+                if ($c !== null) {
+                    $msg = 'Using ' . get_class($obj) . '::' . $func;
+                    Yii::trace($msg, __NAMESPACE__);
+                    return $c;#.'/*provider*/';
+                }
+            }
+        }
     }
 
-    public function generateRelationGrid($attribute)
+    private function shorthandAttributeFormat($attribute)
     {
-        return $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($attribute->phpType === 'boolean') {
+            $format = 'boolean';
+        } elseif ($attribute->type === 'text') {
+            $format = 'ntext';
+        } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
+            $format = 'datetime';
+        } elseif (stripos($attribute->name, 'email') !== false) {
+            $format = 'email';
+        } elseif (stripos($attribute->name, 'url') !== false) {
+            $format = 'url';
+        } else {
+            $format = 'text';
+        }
+
+        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
     }
 }

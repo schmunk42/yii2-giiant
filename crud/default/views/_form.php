@@ -33,7 +33,6 @@ use yii\bootstrap\ActiveForm;
     <?= "<?php " ?>$form = ActiveForm::begin(['layout' => 'horizontal', 'enableClientValidation' => false]); ?>
 
     <div class="">
-
         <?php echo "<?php \$this->beginBlock('main'); ?>"; ?>
         <p>
             <?php foreach ($safeAttributes as $attribute) {
@@ -54,12 +53,10 @@ use yii\bootstrap\ActiveForm;
 EOS;
         ?>
 
-
         <?php
         foreach ($generator->getModelRelations(['has_many', 'many_many']) as $name => $relation) {
             // render block
             echo "<?php \$this->beginBlock('$name'); ?>\n";
-            echo "<?php echo " . $generator->generateRelationField([$relation, $name]) . " ?>";
             echo $generator->generateRelationGrid([$relation, $name], $model->isNewRecord) . "\n";
             echo "<?php \$this->endBlock(); ?>";
 

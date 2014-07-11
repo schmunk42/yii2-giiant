@@ -59,17 +59,17 @@ $this->params['breadcrumbs'][] = 'View';
     'attributes' => [
     <?php
     foreach ($generator->getTableSchema()->columns as $column) {
-        $format = $generator->generateAttributeFormat($column);
+        $format = trim($generator->generateAttributeFormat($column));
         if ($format === false) continue;
-        if ($relation = $generator->getRelationByColumn($column)) {
+        /*if ($relation = $generator->getRelationByColumn($column)) {
             echo "    ['format'=>'raw','attribute'=>'$column->name', 'value'=> Html::a(\$model->{$column->name}, ['" . $generator->pathPrefix . Inflector::camel2id(
                     StringHelper::basename($relation->modelClass),
                     '-',
                     true
                 ) . "/view', 'id'=>\$model->{$column->name}])],\n";
-        } else {
+        } else {*/
             echo $format . ",\n";
-        }
+        //}
     }
     ?>
     ],
@@ -117,7 +117,7 @@ EOS;
         }
 
         // render relation table
-        echo "<?php Pjax::begin() ?>\n";
+        echo "<?php Pjax::begin() ?>\n"; // TODO add linkSelector for PJAX (pagination only)
         echo $generator->generateRelationGrid([$relation, $name, $showAllRecords]) . "\n";
         echo "<?php Pjax::end() ?>\n";
 

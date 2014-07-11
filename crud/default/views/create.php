@@ -26,6 +26,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">
 
+    <p class="pull-left">
+        <?= "<?= " ?>Html::a('Cancel', \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
+    </p>
+    <div class="clearfix"></div>
+
     <?= "<?php " ?>echo $this->render('_form', [
     'model' => $model,
     ]); ?>

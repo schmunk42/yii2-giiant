@@ -90,8 +90,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
         $count = 0;
         foreach ($generator->getTableSchema()->columns as $column) {
-            $format = $generator->generateColumnFormat($column);
-            if ($format === false) continue;
+            $format = trim($generator->generateColumnFormat($column));
+            if ($format == false) continue;
             if (++$count < 6) {
                 echo $format . ",\n";
             } else {
