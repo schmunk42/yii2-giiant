@@ -21,7 +21,7 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
                 case (!$relation->multiple):
                     // $name = $this->generator->getNameAttribute(get_class($relation->primaryModel));
                     $pk   = 'id'; // TODO - fix detection, see generateAttribute...
-                    $name = 'id'; // TODO - fix line above for many many relations (crud of pivot table)
+                    $name = $this->generator->getModelNameAttribute($relation->modelClass);
                     $code = <<<EOS
 \$form->field(\$model, '{$column->name}')->dropDownList(
     \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'{$pk}','{$name}'),
@@ -60,6 +60,39 @@ EOS;
         }
     }
 
+    public function generateColumnFormat($column)
+    {
+        $relation = $this->generator->getRelationByColumn($column);
+        if ($relation) {
+            if ($relation->multiple) {
+                return null;
+            }
+            $title          = $this->generator->getModelNameAttribute($relation->modelClass);
+            $route          = $this->generator->createRelationRoute($relation, 'view');
+            $relationGetter = 'get' . Inflector::id2camel(
+                    str_replace('_id', '', $column->name),
+                    '_'
+                ) . '()'; // TODO: improve detection
+            $code           = <<<EOS
+[
+            "class" => yii\\grid\\DataColumn::className(),
+            "attribute" => "{$column->name}",
+            "value" => function(\$model){
+                \$rel = \$model->{$relationGetter}->one();
+                return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->id]);
+            },
+            "format" => "raw",
+
+]
+EOS;
+            return $code;
+        }
+    }
+
+    /*"filter" => yii\helpers\ArrayHelper::map(
+        common\models\starrag\Spectrum::find()->all(),'id','default_title'
+    )*/
+
 
     // TODO: params is an array, because we need the name, improve params
     public function generateRelationGrid($data)
@@ -84,6 +117,7 @@ EOS;
             $columns .= $code . ",\n";
             $counter++;
         }
+
         $reflection   = new \ReflectionClass($relation->modelClass);
         $actionColumn = [
             'class'      => 'yii\grid\ActionColumn',
@@ -91,12 +125,9 @@ EOS;
         ];
         $columns .= var_export($actionColumn, true) . ",";
 
-        # TODO: move provider generation to controller
-        #$isRelation = true;
         $query = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
-
         $code = '';
         $code .= <<<EOS
 <?=
@@ -106,7 +137,6 @@ EOS;
 ]);
 ?>
 EOS;
-        #$code .= '<div class="alert alert-info">Showing related records.</div>';
         return $code;
     }
 
