@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = 'View';
     ?>
 
     <h3>
-        <?= "<?= \$model->id ?>" ?>
+        <?= "<?= \$model->".$generator->getModelNameAttribute($generator->modelClass)." ?>" ?>
     </h3>
 
     <?= "<?php " ?>echo DetailView::widget([

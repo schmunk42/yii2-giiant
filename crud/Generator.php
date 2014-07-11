@@ -108,26 +108,6 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
-    // TODO method signature
-    /*public function getNameAttribute($modelClass = null)
-    {
-        $oldModelClass = $this->modelClass;
-        if ($modelClass !== null) {
-            $this->modelClass = $modelClass;
-        }
-        foreach ($this->getColumnNames() as $name) {
-            if (!strcasecmp($name, 'name') || !strcasecmp($name, 'title')) {
-                return $name;
-            }
-        }
-
-        $class = $this->modelClass;
-        $pk    = $class::primaryKey();
-
-        $this->modelClass = $oldModelClass;
-
-        return $pk[0];
-    }*/
 
     public function getModelNameAttribute($model){
         foreach ($model::getTableSchema()->getColumnNames() as $name){
@@ -145,6 +125,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
 
         }
+
         return $model::primaryKey()[0];
     }
 
@@ -173,6 +154,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
 
+    /**
+     * @param $column
+     *
+     * @return null|\yii\db\ActiveQuery
+     */
     public function getRelationByColumn($column)
     {
         #if ($column->isPrimaryKey) {
@@ -186,7 +172,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 return $relation;
             }
         }
-        return false;
+        return null;
     }
 
     /**

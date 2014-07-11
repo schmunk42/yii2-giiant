@@ -13,7 +13,7 @@ use yii\base\Object;
 
 class Provider extends Object {
     /**
-     * @var
+     * @var \schmunk42\giiant\crud\Generator
      */
     public $generator;
     public $columnNames = [''];
