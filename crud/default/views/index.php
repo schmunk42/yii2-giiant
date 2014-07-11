@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php $items = []; ?>
             <?php foreach ($generator->getModelRelations() AS $relation): ?>
                 <?php
-                // ignore pivot tables
+                // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
                 if (strstr($relation->modelClass, 'X')) { # TODO: pivot detection, move to getModelRelations
                     $iconType = 'random';
@@ -89,19 +89,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
         <?php
         $count = 0;
+        echo "\n"; // code-formatting
         foreach ($generator->getTableSchema()->columns as $column) {
             $format = trim($generator->generateColumnFormat($column));
             if ($format == false) continue;
             if (++$count < 6) {
-                echo $format . ",\n";
+                echo "\t\t\t{$format},\n";
             } else {
-                echo "\t\t\t/* " . $format . ", */\n";
+                echo "\t\t\t/*{$format}*/\n";
             }
         }
         ?>
-        ['class' => '<?= $generator->actionButtonClass ?>'],
+            ['class' => '<?= $generator->actionButtonClass ?>'],
         ],
-        ]); ?>
+    ]); ?>
     <?php else: ?>
         <?= "<?php " ?>echo ListView::widget([
         'dataProvider' => $dataProvider,
