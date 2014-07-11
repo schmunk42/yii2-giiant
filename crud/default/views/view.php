@@ -110,7 +110,6 @@ EOS;
                 ) . "'=>['" . key($pivotRelation->link) . "'=>\$model->id]],
             ['class'=>'btn btn-primary btn-xs']
         ) ?>\n";
-            $showAllRecords = true;
         } else {
             $addButton = '';
             echo "<h4>Attached</h4>";
@@ -135,6 +134,7 @@ EOS;
 
         if ($relation->via !== null) {
             echo $generator->generateRelationGrid([$pivotRelation, $pivotName, $showAllRecords]) . "\n";
+            $showAllRecords = true;
             echo "<hr/>";
             echo "<h4>All</h4>";
         }
