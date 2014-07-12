@@ -38,13 +38,13 @@ $this->params['breadcrumbs'][] = 'View';
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('New', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> Edit', ['update', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php
     echo "    <p class='pull-right'>\n";
-    echo "        <?= Html::a('List', ['index'], ['class'=>'btn btn-default']) ?>\n";
+    echo "        <?= Html::a('<span class=\"glyphicon glyphicon-list\"></span> List', ['index'], ['class'=>'btn btn-default']) ?>\n";
     echo "    </p><div class='clearfix'></div> \n";
     ?>
 
@@ -72,12 +72,21 @@ $this->params['breadcrumbs'][] = 'View';
     ?>
     ],
     ]); ?>
+
+    <hr/>
+
+    <?= "<?php " ?>echo Html::a('<span class="glyphicon glyphicon-trash"></span> Delete', ['delete', <?= $urlParams ?>], [
+    'class' => 'btn btn-danger',
+    'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
+    'data-method' => 'post',
+    ]); ?>
+
     <?php echo "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
     $items = <<<EOS
 [
-    'label'   => '$label',
+    'label'   => '<span class="glyphicon glyphicon-asterisk"></span> $label',
     'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
@@ -150,7 +159,7 @@ EOS;
         $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
-    'label'   => '<small>$label</small>',
+    'label'   => '<small><span class="glyphicon glyphicon-paperclip"></span> $label</small>',
     'content' => \$this->blocks['$name'],
     'active'  => false,
 ],
@@ -168,13 +177,5 @@ EOS;
     );
     ?>";
     ?>
-
-    <hr/>
-
-    <?= "<?php " ?>echo Html::a('Delete', ['delete', <?= $urlParams ?>], [
-    'class' => 'btn btn-danger',
-    'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
-    'data-method' => 'post',
-    ]); ?>
 </div>
 

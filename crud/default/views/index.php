@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="clearfix">
         <p class="pull-left">
-            <?= "<?= " ?>Html::a('New', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New', ['create'], ['class' => 'btn btn-success']) ?>
         </p>
 
         <div class="pull-right">
@@ -70,7 +70,8 @@ $this->params['breadcrumbs'][] = $this->title;
             echo \yii\bootstrap\ButtonDropdown::widget(
                 [
                     'id'       => 'giiant-relations',
-                    'label'    => 'Relations',
+                    'encodeLabel' => false,
+                    'label'    => '<span class="glyphicon glyphicon-paperclip"></span> Relations',
                     'dropdown' => [
                         'options'      => [
                             'class' => 'dropdown-menu-right'

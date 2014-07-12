@@ -71,7 +71,7 @@ EOS;
 
         <hr/>
 
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? 'Create' : 'Save', ['class' => $model->isNewRecord ?
+        <?= "<?= " ?>Html::submitButton('<span class="glyphicon glyphicon-check"></span> '.($model->isNewRecord ? 'Create' : 'Save'), ['class' => $model->isNewRecord ?
         'btn btn-primary' : 'btn btn-primary']) ?>
 
         <?= "<?php " ?>ActiveForm::end(); ?>

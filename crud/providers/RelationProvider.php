@@ -128,6 +128,7 @@ EOS;
         $reflection   = new \ReflectionClass($relation->modelClass);
         $actionColumn = [
             'class'      => 'yii\grid\ActionColumn',
+            'template'   => $showAllRecords?'{view} {update}':'{delete}',
             'controller' => $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true)
         ];
         $columns .= var_export($actionColumn, true) . ",";

@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = 'Edit';
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass),'-', true) ?>-update">
 
     <p>
-        <?= "<?= " ?>Html::a('View', ['view', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> View', ['view', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
     </p>
 
 	<?= "<?php " ?>echo $this->render('_form', [
