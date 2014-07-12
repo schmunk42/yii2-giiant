@@ -19,7 +19,7 @@ use Yii;
 class Generator extends \yii\gii\generators\crud\Generator
 {
     #public $codeModel;
-    public $actionButtonClass = 'common\helpers\ActionColumn';
+    public $actionButtonClass = 'yii\grid\ActionColumn';
     public $providerList = null;
     public $viewPath = null;
     public $pathPrefix = null;

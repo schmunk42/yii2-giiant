@@ -20,7 +20,7 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
             switch (true) {
                 case (!$relation->multiple):
                     // $name = $this->generator->getNameAttribute(get_class($relation->primaryModel));
-                    $pk   = 'id'; // TODO - fix detection, see generateAttribute...
+                    $pk   = key($relation->link); // TODO - fix detection, see generateAttribute...
                     $name = $this->generator->getModelNameAttribute($relation->modelClass);
                     $code = <<<EOS
 \$form->field(\$model, '{$column->name}')->dropDownList(
@@ -76,14 +76,14 @@ EOS;
 
             // TODO: improve closure style, implement filter
             /* "filter" => yii\helpers\ArrayHelper::map(common\models\starrag\Spectrum::find()->all(),'id','default_title') */
-
-            $code           = <<<EOS
+            $pk   = key($relation->link);
+            $code = <<<EOS
 [
             "class" => yii\\grid\\DataColumn::className(),
             "attribute" => "{$column->name}",
             "value" => function(\$model){
                 if (\$rel = \$model->{$relationGetter}->one()) {
-                    return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->id]);
+                    return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->{$pk}]);
                 } else {
                     return '';
                 }
@@ -94,7 +94,6 @@ EOS;
             return $code;
         }
     }
-
 
 
     // TODO: params is an array, because we need the name, improve params
@@ -127,7 +126,7 @@ EOS;
         $reflection   = new \ReflectionClass($relation->modelClass);
         $actionColumn = [
             'class'      => 'yii\grid\ActionColumn',
-            'template'   => $showAllRecords?'{view} {update}':'{delete}',
+            'template'   => $showAllRecords ? '{view} {update}' : '{delete}',
             'controller' => $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true)
         ];
         $columns .= var_export($actionColumn, true) . ",";
@@ -135,7 +134,7 @@ EOS;
         $query = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
-        $code = '';
+        $code  = '';
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
