@@ -74,7 +74,9 @@ EOS;
                     '_'
                 ) . '()'; // TODO: improve detection
 
-            // TODO: improve closure style
+            // TODO: improve closure style, implement filter
+            /* "filter" => yii\helpers\ArrayHelper::map(common\models\starrag\Spectrum::find()->all(),'id','default_title') */
+
             $code           = <<<EOS
 [
             "class" => yii\\grid\\DataColumn::className(),
@@ -93,9 +95,6 @@ EOS;
         }
     }
 
-    /*"filter" => yii\helpers\ArrayHelper::map(
-        common\models\starrag\Spectrum::find()->all(),'id','default_title'
-    )*/
 
 
     // TODO: params is an array, because we need the name, improve params

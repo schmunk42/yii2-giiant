@@ -93,15 +93,10 @@ $this->params['breadcrumbs'][] = 'View';
 EOS;
 
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
-        # TODO: make tab selection more flexible
-        #if (!$relation->via) continue; // ignore pivot tables in CRUD
-        if (!$relation->multiple) {
-            continue;
-        }
 
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
-        // get relation info $ prepare button
+        // get relation info $ prepare add button
         $model          = new $generator->modelClass;
         $showAllRecords = false;
         if ($relation->via !== null) {
@@ -141,6 +136,7 @@ EOS;
         echo $addButton;
         echo "</p><div class='clearfix'></div>\n";
 
+        // render pivot grid
         if ($relation->via !== null) {
             echo "<?=" . $generator->relationGrid([$pivotRelation, $pivotName, $showAllRecords]) . "?>\n";
             $showAllRecords = true;
@@ -148,7 +144,7 @@ EOS;
             echo "<h4>All</h4>";
         }
 
-        // render relation table
+        // render relation grid
         echo "<?php Pjax::begin() ?>\n"; // TODO add linkSelector for PJAX (pagination only)
         echo "<?= ".$generator->relationGrid([$relation, $name, $showAllRecords]) . "?>\n";
         echo "<?php Pjax::end() ?>\n";

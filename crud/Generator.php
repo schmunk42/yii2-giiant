@@ -47,7 +47,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * Instanciates providers
+     * Prepare providers
      *
      * @param array $data
      * @param null $formName
@@ -110,6 +110,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
 
+
     public function getModelNameAttribute($model)
     {
         foreach ($model::getTableSchema()->getColumnNames() as $name) {
@@ -163,14 +164,9 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function getRelationByColumn($model, $column)
     {
-        #if ($column->isPrimaryKey) {
-        #    return false;
-        #}
-        #echo "/*XXX--$column->name---XXXX*/";
         $relations = $this->getModelRelations($model);
         foreach ($relations AS $relation) {
             // TODO: check multiple link(s)
-            #            var_dump($relation->link);
             if (reset($relation->link) == $column->name) {
                 return $relation;
             }
