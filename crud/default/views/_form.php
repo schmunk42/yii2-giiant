@@ -35,7 +35,12 @@ use yii\bootstrap\ActiveForm;
         <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
         <p>
             <?php foreach ($safeAttributes as $attribute) {
-                echo "\n\t\t\t<?= " . $generator->generateActiveField($attribute) . " ?>";
+                $column   = $generator->getTableSchema()->columns[$attribute];
+                $field = $generator->activeField($column, $model);
+                if (!$field) {
+                    continue;
+                }
+                echo "\n\t\t\t<?= " . $field . " ?>";
             } ?>
 
         </p>

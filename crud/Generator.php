@@ -7,8 +7,9 @@
 
 namespace schmunk42\giiant\crud;
 
-use Yii;
 use yii\helpers\Inflector;
+use yii\helpers\Json;
+use Yii;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -109,8 +110,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
 
-    public function getModelNameAttribute($model){
-        foreach ($model::getTableSchema()->getColumnNames() as $name){
+    public function getModelNameAttribute($model)
+    {
+        foreach ($model::getTableSchema()->getColumnNames() as $name) {
             switch (strtolower($name)) {
                 case 'name':
                 case 'title':
@@ -159,15 +161,16 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @return null|\yii\db\ActiveQuery
      */
-    public function getRelationByColumn($column)
+    public function getRelationByColumn($model, $column)
     {
         #if ($column->isPrimaryKey) {
         #    return false;
         #}
-        $relations = $this->getModelRelations();
+        #echo "/*XXX--$column->name---XXXX*/";
+        $relations = $this->getModelRelations($model);
         foreach ($relations AS $relation) {
             // TODO: check multiple link(s)
-            #var_dump($relation,$column);
+            #            var_dump($relation->link);
             if (reset($relation->link) == $column->name) {
                 return $relation;
             }
@@ -179,10 +182,10 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @todo docs
      * @return array
      */
-    public function getModelRelations($types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
+    public function getModelRelations($modelClass, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
     {
-        $reflector = new \ReflectionClass($this->modelClass);
-        $model     = new $this->modelClass;
+        $reflector = new \ReflectionClass($modelClass);
+        $model     = new $modelClass;
         $stack     = [];
         foreach ($reflector->getMethods() AS $method) {
             // look for getters
@@ -228,38 +231,45 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @return string
      */
-    public function generateActiveField($attribute)
+    public function activeField($column, $model = null)
     {
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
         if ($code !== null) {
             return $code;
         } else {
-            return parent::generateActiveField($attribute);
+            return parent::generateActiveField($column->name);
         };
     }
 
-    // TODO: naming -_> columnFormat();
-    public function generateColumnFormat($attribute)
+    public function columnFormat($column, $model = null)
     {
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
         if ($code !== null) {
             return $code;
         } else {
-            return $this->shorthandAttributeFormat($attribute);
+            return $this->shorthandAttributeFormat($column);
         };
     }
 
-    public function generateAttributeFormat($attribute)
+    public function attributeFormat($column, $model = null)
     {
-
-        if ($code = $this->callProviderQueue(__FUNCTION__, $attribute)) {
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        if ($code = $this->callProviderQueue(__FUNCTION__, $column, $model)) {
             return $code;
         }
-        return $this->shorthandAttributeFormat($attribute);
+        return $this->shorthandAttributeFormat($column);
         // don't call parent anymore
     }
 
-    public function generateRelationGrid($attribute)
+    public function relationGrid($attribute)
     {
         return $this->callProviderQueue(__FUNCTION__, $attribute);
     }
@@ -284,15 +294,24 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     private function callProviderQueue($func, $args)
     {
+        $args = func_get_args();
+        unset($args[0]);
         // walk through providers
         foreach ($this->_p AS $obj) {
             if (method_exists($obj, $func)) {
-                $c = call_user_func_array(array(&$obj, $func), [$args]);
+                $c = call_user_func_array(array(&$obj, $func), $args);
                 // until a provider returns not null
                 if ($c !== null) {
-                    $msg = 'Using ' . get_class($obj) . '::' . $func;
-                    Yii::trace($msg, __NAMESPACE__);
-                    return $c;#.'/*provider*/';
+                    if (is_object($args)) {
+                        $argsString = get_class($args);
+                    } elseif (is_array($args)) {
+                        $argsString = Json::encode($args);
+                    } else {
+                        $argsString = $args;
+                    }
+                    $msg = 'Code generated from ' . get_class($obj) . '::' . $func . ' '. $argsString;
+                    Yii::trace($msg, __METHOD__);
+                    return $c;
                 }
             }
         }
@@ -314,6 +333,6 @@ class Generator extends \yii\gii\generators\crud\Generator
             $format = 'text';
         }
 
-        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'\n";
+        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'";
     }
 }

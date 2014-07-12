@@ -12,10 +12,10 @@ use yii\helpers\Inflector;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {
-    public function generateActiveField($attribute)
+    public function activeField($column)
     {
-        $column   = $this->generator->getTableSchema()->columns[$attribute];
-        $relation = $this->generator->getRelationByColumn($column);
+        #$column   = $this->generator->getTableSchema()->columns[$attribute];
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation) {
             switch (true) {
                 case (!$relation->multiple):
@@ -36,9 +36,9 @@ EOS;
         }
     }
 
-    public function generateAttributeFormat($column)
+    public function attributeFormat($column)
     {
-        $relation = $this->generator->getRelationByColumn($column);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation) {
             if ($relation->multiple) {
                 return null;
@@ -60,9 +60,9 @@ EOS;
         }
     }
 
-    public function generateColumnFormat($column)
+    public function columnFormat($column, $model)
     {
-        $relation = $this->generator->getRelationByColumn($column);
+        $relation = $this->generator->getRelationByColumn($model, $column);
         if ($relation) {
             if ($relation->multiple) {
                 return null;
@@ -73,16 +73,20 @@ EOS;
                     str_replace('_id', '', $column->name),
                     '_'
                 ) . '()'; // TODO: improve detection
+
+            // TODO: improve closure style
             $code           = <<<EOS
 [
             "class" => yii\\grid\\DataColumn::className(),
             "attribute" => "{$column->name}",
             "value" => function(\$model){
-                \$rel = \$model->{$relationGetter}->one();
-                return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->id]);
+                if (\$rel = \$model->{$relationGetter}->one()) {
+                    return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->id]);
+                } else {
+                    return '';
+                }
             },
             "format" => "raw",
-
 ]
 EOS;
             return $code;
@@ -95,7 +99,7 @@ EOS;
 
 
     // TODO: params is an array, because we need the name, improve params
-    public function generateRelationGrid($data)
+    public function relationGrid($data)
     {
         $name           = $data[1];
         $relation       = $data[0];
@@ -104,13 +108,14 @@ EOS;
         $counter        = 0;
         $columns        = '';
         foreach ($model->attributes AS $attr => $value) {
-            if ($counter > 5) {
+            if ($counter > 8) {
                 continue;
             }
             if (!isset($model->tableSchema->columns[$attr])) {
                 continue; // virtual attributes
             }
-            $code = $this->generator->generateColumnFormat($model->tableSchema->columns[$attr]);
+
+            $code = $this->generator->columnFormat($model->tableSchema->columns[$attr], $model);
             if ($code == false) {
                 continue;
             }
@@ -118,6 +123,8 @@ EOS;
             $counter++;
         }
 
+
+        // TODO: implement extended action column with attach and detach buttons
         $reflection   = new \ReflectionClass($relation->modelClass);
         $actionColumn = [
             'class'      => 'yii\grid\ActionColumn',
@@ -130,12 +137,10 @@ EOS;
             "'query' => \$model->get{$name}()";
         $code = '';
         $code .= <<<EOS
-<?=
 \\yii\\grid\\GridView::widget([
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
     'columns' => [$columns]
 ]);
-?>
 EOS;
         return $code;
     }

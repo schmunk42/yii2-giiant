@@ -42,8 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="pull-right">
 
 
-            <?php $items = []; ?>
-            <?php foreach ($generator->getModelRelations() AS $relation): ?>
+            <?php
+            $items = [];
+            $model = new $generator->modelClass;
+            ?>
+            <?php foreach ($generator->getModelRelations($model) AS $relation): ?>
                 <?php
                 // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
@@ -91,9 +94,10 @@ $this->params['breadcrumbs'][] = $this->title;
         $count = 0;
         echo "\n"; // code-formatting
         foreach ($generator->getTableSchema()->columns as $column) {
-            $format = trim($generator->generateColumnFormat($column));
+            #$format = trim($generator->columnFormat($column,$model));
+            $format = $generator->columnFormat($column,$model);
             if ($format == false) continue;
-            if (++$count < 6) {
+            if (++$count < 8) {
                 echo "\t\t\t{$format},\n";
             } else {
                 echo "\t\t\t/*{$format}*/\n";

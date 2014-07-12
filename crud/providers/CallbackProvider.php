@@ -10,33 +10,45 @@ namespace schmunk42\giiant\crud\providers;
 
 class CallbackProvider extends \schmunk42\giiant\base\Provider
 {
-    public $activeFields;
-    public $attributeFormats;
-    public $columnFormats;
+    public $activeFields = [];
+    public $attributeFormats = [];
+    public $columnFormats = [];
 
-    public function generateActiveField($attribute)
+    public function activeField($column, $model)
     {
-        if (isset($this->activeFields[$this->getModelKey($attribute)])) {
-            return $this->activeFields[$this->getModelKey($attribute)]($attribute, $this->generator);
+        $key = $this->findValue($this->getModelKey($column->name, $model), $this->activeFields);
+        if ($key) {
+            return $this->activeFields[$key]($column->name, $model);
         }
     }
 
-    private function getModelKey($attribute)
+    public function attributeFormat($column, $model)
     {
-        return $this->generator->modelClass . '.' . $attribute;
-    }
-
-    public function attributeFormat($attribute)
-    {
-        if (isset($this->columnFormats[$this->getModelKey($attribute)])) {
-            return $this->columnFormats[$this->getModelKey($attribute)]($attribute, $this->generator);
+        $key = $this->findValue($this->getModelKey($column->name, $model), $this->attributeFormats);
+        if ($key) {
+            return $this->attributeFormats[$key]($column->name, $model);
         }
     }
 
-    public function generateColumnFormat($column)
+    public function columnFormat($column, $model)
     {
-        if (isset($this->columnFormats[$this->getModelKey($column->name)])) {
-            return $this->columnFormats[$this->getModelKey($column->name)]($column->name, $this->generator);
+        $key = $this->findValue($this->getModelKey($column->name, $model), $this->columnFormats);
+        if ($key) {
+            return $this->columnFormats[$key]($column->name, $model);
+        }
+    }
+
+    private function getModelKey($attribute, $model)
+    {
+        return $model::className() . '.' . $attribute;
+    }
+
+    private function findValue($subject, $array)
+    {
+        foreach ($array AS $key => $value) {
+            if (preg_match('/' . $key . '$/', $subject)) {
+                return $key;
+            }
         }
     }
 
