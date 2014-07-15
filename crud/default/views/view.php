@@ -173,6 +173,7 @@ EOS;
     "<?=
     \yii\bootstrap\Tabs::widget(
                  [
+                     'id' => 'relation-tabs',
                      'encodeLabels' => false,
                      'items' => [ $items ]
                  ]
@@ -180,4 +181,3 @@ EOS;
     ?>";
     ?>
 </div>
-
