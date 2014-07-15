@@ -7,14 +7,16 @@
 
 namespace schmunk42\giiant\crud;
 
+use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
-use Yii;
 
 /**
  * This generator generates an extended version of CRUDs.
  * @author Tobais Munk <schmunk@usrbin.de>
- * @since  2.0
+ * @since 1.0
  */
 class Generator extends \yii\gii\generators\crud\Generator
 {
@@ -57,6 +59,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function init()
     {
         parent::init();
+        \Yii::trace("Initializing giiant CRUD generator for model '{$this->modelClass}'", __METHOD__);
         // initialize provider objects
         if ($this->providerList) {
             foreach (explode(',', $this->providerList) AS $class) {
@@ -67,6 +70,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 $obj            = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
                 $this->_p[]     = $obj;
+                \Yii::trace("Initialized provider '{$class}'", __METHOD__);
             }
         }
     }
@@ -110,10 +114,13 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
 
-
-    public function getModelNameAttribute($model)
+    public function getModelNameAttribute($modelClass)
     {
-        foreach ($model::getTableSchema()->getColumnNames() as $name) {
+        $model = new $modelClass;
+        if ($model->hasMethod('getLabel')) {
+            return 'label';
+        }
+        foreach ($modelClass::getTableSchema()->getColumnNames() as $name) {
             switch (strtolower($name)) {
                 case 'name':
                 case 'title':
@@ -129,7 +136,7 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         }
 
-        return $model::primaryKey()[0];
+        return $modelClass::primaryKey()[0];
     }
 
     /**
@@ -206,7 +213,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 #var_dump($relation->primaryModel->primaryKey);
                 if ($relation->multiple === false) {
                     $relationType = 'belongs_to';
-                } elseif (strstr($relation->modelClass, "X")) { # TODO: detecttion
+                } elseif ($this->isPivotRelation($relation)) { # TODO: detecttion
                     $relationType = 'pivot';
                 } else {
                     $relationType = 'has_many';
@@ -218,56 +225,6 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
         }
         return $stack;
-    }
-
-    /**
-     * Generates code for active field by using the provider queue
-     *
-     * @param string $attribute
-     *
-     * @return string
-     */
-    public function activeField($column, $model = null)
-    {
-        if ($model === null) {
-            $model = $this->modelClass;
-        }
-        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
-        if ($code !== null) {
-            return $code;
-        } else {
-            return parent::generateActiveField($column->name);
-        };
-    }
-
-    public function columnFormat($column, $model = null)
-    {
-        if ($model === null) {
-            $model = $this->modelClass;
-        }
-        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
-        if ($code !== null) {
-            return $code;
-        } else {
-            return $this->shorthandAttributeFormat($column);
-        };
-    }
-
-    public function attributeFormat($column, $model = null)
-    {
-        if ($model === null) {
-            $model = $this->modelClass;
-        }
-        if ($code = $this->callProviderQueue(__FUNCTION__, $column, $model)) {
-            return $code;
-        }
-        return $this->shorthandAttributeFormat($column);
-        // don't call parent anymore
-    }
-
-    public function relationGrid($attribute)
-    {
-        return $this->callProviderQueue(__FUNCTION__, $attribute);
     }
 
 
@@ -288,6 +245,88 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $route;
     }
 
+    /**
+     * Generates code for active field by using the provider queue
+     *
+     * @param string $attribute
+     *
+     * @return string
+     */
+    public function activeField(ColumnSchema $column, $model = null)
+    {
+        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        if ($code !== null) {
+            return $code;
+        } else {
+            return parent::generateActiveField($column->name);
+        };
+    }
+
+    public function columnFormat(ColumnSchema $column, $model = null)
+    {
+        Yii::trace("Rendering columnFormat for '{$column->name}'", __METHOD__);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        if ($code !== null) {
+            return $code;
+        } else {
+            return $this->shorthandAttributeFormat($column);
+        };
+    }
+
+
+    public function attributeFormat(ColumnSchema $column, $model = null)
+    {
+        Yii::trace("Rendering attributeFormat for '{$column->name}'", __METHOD__);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        if ($code = $this->callProviderQueue(__FUNCTION__, $column, $model)) {
+            return $code;
+        }
+        return $this->shorthandAttributeFormat($column);
+        // don't call parent anymore
+    }
+
+    public function relationGrid($attribute)
+    {
+        Yii::trace("Rendering relationGrid", __METHOD__);
+        return $this->callProviderQueue(__FUNCTION__, $attribute);
+    }
+
+    public function isPivotRelation(ActiveQuery $relation)
+    {
+        #return ($relation->via === null);
+        #return true;
+        $model = new $relation->modelClass;
+        $table = $model->tableSchema;
+        $pk = $table->primaryKey;
+        if (count($pk) !== 2) {
+            return false;
+        }
+        $fks = [];
+        foreach ($table->foreignKeys as $refs) {
+            if (count($refs) === 2) {
+                if (isset($refs[$pk[0]])) {
+                    $fks[$pk[0]] = [$refs[0], $refs[$pk[0]]];
+                } elseif (isset($refs[$pk[1]])) {
+                    $fks[$pk[1]] = [$refs[0], $refs[$pk[1]]];
+                }
+            }
+        }
+        if (count($fks) === 2 && $fks[$pk[0]][0] !== $fks[$pk[1]][0]) {
+            return $fks;
+        } else {
+            return false;
+        }
+    }
+
     private function callProviderQueue($func, $args)
     {
         $args = func_get_args();
@@ -305,7 +344,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     } else {
                         $argsString = $args;
                     }
-                    $msg = 'Code generated from ' . get_class($obj) . '::' . $func . ' '. $argsString;
+                    $msg = 'Using provider ' . get_class($obj) . '::' . $func . ' ' . $argsString;
                     Yii::trace($msg, __METHOD__);
                     return $c;
                 }

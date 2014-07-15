@@ -83,7 +83,7 @@ EOS;
             "attribute" => "{$column->name}",
             "value" => function(\$model){
                 if (\$rel = \$model->{$relationGetter}->one()) {
-                    return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->{$pk}]);
+                    return yii\helpers\Html::a(\$rel->{$title},["{$route}","id" => \$rel->{$pk}],["data-pjax"=>0]);
                 } else {
                     return '';
                 }
@@ -121,15 +121,38 @@ EOS;
             $counter++;
         }
 
-
         // TODO: implement extended action column with attach and detach buttons
-        $reflection   = new \ReflectionClass($relation->modelClass);
-        $actionColumn = [
-            'class'      => 'yii\grid\ActionColumn',
-            'template'   => $showAllRecords ? '{view} {update}' : '{delete}',
-            'controller' => $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true)
-        ];
-        $columns .= var_export($actionColumn, true) . ",";
+        $reflection = new \ReflectionClass($relation->modelClass);
+        if (!$this->generator->isPivotRelation($relation)) {
+            $template = '{view} {update}';
+            $deleteButtonPivot = '';
+        } else {
+            $template = '{view} {delete}';
+            $deleteButtonPivot = <<<EOS
+'delete' => function (\$url, \$model) {
+                return Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                    'class' => 'text-danger',
+                    'title' => Yii::t('yii', 'Remove'),
+                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete the related item?'),
+                    'data-method' => 'post',
+                    'data-pjax' => '0',
+                ]);
+            },
+EOS;
+        }
+
+        $controller        = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
+        $actionColumn      = <<<EOS
+[
+'class'      => 'yii\grid\ActionColumn',
+'template'   => '$template',
+'buttons'    => [
+    $deleteButtonPivot
+],
+'controller' => '$controller'
+]
+EOS;
+        $columns .= $actionColumn . ",";
 
         $query = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :

@@ -143,7 +143,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	public function actionDelete(<?= $actionParams ?>)
 	{
 		$this->findModel(<?= $actionParams ?>)->delete();
-		return $this->redirect(['index']);
+		return $this->redirect(Url::previous());
 	}
 
 	/**

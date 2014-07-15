@@ -5,7 +5,7 @@ use yii\helpers\StringHelper;
 
 /**
  * @var yii\web\View $this
- * @var yii\gii\generators\crud\Generator $generator
+ * @var schmunk42\giiant\crud\Generator $generator
  */
 
 $urlParams = $generator->generateUrlParams();
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php
                 // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
-                if (strstr($relation->modelClass, 'X')) { # TODO: pivot detection, move to getModelRelations
+                if ($generator->isPivotRelation($relation)) {
                     $iconType = 'random';
                 }
                 $controller = $generator->pathPrefix . Inflector::camel2id(
@@ -58,15 +58,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         '-',
                         true
                     );
+                $route = $generator->createRelationRoute($relation,'index');
                 $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
                 $items[] = [
                     'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> ' . $label . '</i>',
-                    'url'   => [$controller . '/index']
+                    'url'   => [$route]
                 ]
                 ?>
             <?php endforeach; ?>
 
-            <?php
+            <?= "<?php " ?>
             echo \yii\bootstrap\ButtonDropdown::widget(
                 [
                     'id'       => 'giiant-relations',
@@ -77,12 +78,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'dropdown-menu-right'
                         ],
                         'encodeLabels' => false,
-                        'items'        => $items
+                        'items'        => <?= \yii\helpers\VarDumper::export($items) ?>
                     ],
                 ]
             );
-
-            ?>
+            <?= "?>" ?>
         </div>
     </div>
 
