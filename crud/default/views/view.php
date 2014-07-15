@@ -113,7 +113,7 @@ EOS;
             '<span class=\"glyphicon glyphicon-link\"></span> Attach " .
                 Inflector::singularize(Inflector::camel2words($name)) .
                 "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
-                Inflector::singularize($pivotName) . "'=>['" . key($pivotRelation->link) . "'=>\$model->{$pivotPk}]],
+                Inflector::singularize($pivotName) . "'=>['" . key($pivotRelation->link) . "'=>\$model->{$model->primaryKey()[0]}]],
             ['class'=>'btn btn-primary btn-xs']
         ) ?>\n";
         } else {
