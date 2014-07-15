@@ -21,9 +21,10 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
                     $pk   = key($relation->link);
                     $name = $this->generator->getModelNameAttribute($relation->modelClass);
                     $code = <<<EOS
+// from RelationProvider
 \$form->field(\$model, '{$column->name}')->dropDownList(
     \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(),'{$pk}','{$name}'),
-    ['prompt'=>'Choose...']    // active field
+    ['prompt'=>'Choose...']
 );
 EOS;
                     return $code;
