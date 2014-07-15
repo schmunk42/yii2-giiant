@@ -14,13 +14,11 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
 {
     public function activeField($column)
     {
-        #$column   = $this->generator->getTableSchema()->columns[$attribute];
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation) {
             switch (true) {
                 case (!$relation->multiple):
-                    // $name = $this->generator->getNameAttribute(get_class($relation->primaryModel));
-                    $pk   = key($relation->link); // TODO - fix detection, see generateAttribute...
+                    $pk   = key($relation->link);
                     $name = $this->generator->getModelNameAttribute($relation->modelClass);
                     $code = <<<EOS
 \$form->field(\$model, '{$column->name}')->dropDownList(
@@ -74,8 +72,6 @@ EOS;
                     '_'
                 ) . '()'; // TODO: improve detection
 
-            // TODO: improve closure style, implement filter
-            /* "filter" => yii\helpers\ArrayHelper::map(common\models\starrag\Spectrum::find()->all(),'id','default_title') */
             $pk   = key($relation->link);
             $code = <<<EOS
 [
@@ -105,6 +101,7 @@ EOS;
         $model          = new $relation->modelClass;
         $counter        = 0;
         $columns        = '';
+
         foreach ($model->attributes AS $attr => $value) {
             if ($counter > 8) {
                 continue;
@@ -121,13 +118,12 @@ EOS;
             $counter++;
         }
 
-        // TODO: implement extended action column with attach and detach buttons
         $reflection = new \ReflectionClass($relation->modelClass);
         if (!$this->generator->isPivotRelation($relation)) {
-            $template = '{view} {update}';
+            $template          = '{view} {update}';
             $deleteButtonPivot = '';
         } else {
-            $template = '{view} {delete}';
+            $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
                 return Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
@@ -141,15 +137,15 @@ EOS;
 EOS;
         }
 
-        $controller        = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
-        $actionColumn      = <<<EOS
+        $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
+        $actionColumn = <<<EOS
 [
-'class'      => 'yii\grid\ActionColumn',
-'template'   => '$template',
-'buttons'    => [
-    $deleteButtonPivot
-],
-'controller' => '$controller'
+    'class'      => 'yii\grid\ActionColumn',
+    'template'   => '$template',
+    'buttons'    => [
+        $deleteButtonPivot
+    ],
+    'controller' => '$controller'
 ]
 EOS;
         $columns .= $actionColumn . ",";

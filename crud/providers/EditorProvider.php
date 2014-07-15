@@ -22,7 +22,8 @@ class EditorProvider extends \schmunk42\giiant\base\Provider
     [
         'options' => ['rows' => 6],
         'preset' => 'basic'
-    ])
+    ]
+)
 EOS;
             default:
                 return null;

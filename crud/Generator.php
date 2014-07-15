@@ -302,8 +302,6 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     public function isPivotRelation(ActiveQuery $relation)
     {
-        #return ($relation->via === null);
-        #return true;
         $model = new $relation->modelClass;
         $table = $model->tableSchema;
         $pk = $table->primaryKey;
