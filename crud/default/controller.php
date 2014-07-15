@@ -105,14 +105,16 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
 		$model = new <?= $modelClass ?>;
 
-		if ($model->load($_POST) && $model->save()) {
-			return $this->redirect(Url::previous());
-		} else {
-            $model->load($_GET);
-			return $this->render('create', [
-				'model' => $model,
-			]);
+		try {
+            if ($model->load($_POST) && $model->save()) {
+                return $this->redirect(Url::previous());
+            } else {
+                $model->load($_GET);
+            }
+        } catch (\Exception $e) {
+            $model->addError('<?= $pks[0] ?>', $e->errorInfo[2]);
 		}
+        return $this->render('create', ['model' => $model,]);
 	}
 
 	/**
