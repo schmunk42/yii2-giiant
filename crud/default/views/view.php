@@ -40,7 +40,10 @@ $this->params['breadcrumbs'][] = 'View';
     <p class='pull-left'>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> Edit', ['update', <?= $urlParams ?>],
         ['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New', ['create'], ['class' => 'btn
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New <?=
+        Inflector::camel2words(
+            StringHelper::basename($generator->modelClass)
+        ) ?>', ['create'], ['class' => 'btn
         btn-success']) ?>
     </p>
 
@@ -52,13 +55,14 @@ $this->params['breadcrumbs'][] = 'View';
 
     <?php $label = StringHelper::basename($generator->modelClass); ?>
 
-    <?php
-    echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
-    ?>
-
     <h3>
         <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
     </h3>
+
+
+    <?php
+    echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
+    ?>
 
     <?= "<?php " ?>echo DetailView::widget([
     'model' => $model,
@@ -102,10 +106,9 @@ EOS;
         // get relation info $ prepare add button
         $model          = new $generator->modelClass;
         $showAllRecords = false;
+
         if ($relation->via !== null) {
-            $pivotName     = Inflector::pluralize(
-                Inflector::id2camel(str_replace('app_', '', $relation->via->from[0]), '_')
-            );
+            $pivotName     = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
             $pivotRelation = $model->{'get' . $pivotName}();
             $pivotPk       = key($pivotRelation->link);
 
@@ -113,51 +116,55 @@ EOS;
             '<span class=\"glyphicon glyphicon-link\"></span> Attach " .
                 Inflector::singularize(Inflector::camel2words($name)) .
                 "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
-                Inflector::singularize($pivotName) . "'=>['" . key($pivotRelation->link) . "'=>\$model->{$model->primaryKey()[0]}]],
-            ['class'=>'btn btn-primary btn-xs']
+                Inflector::singularize($pivotName) . "'=>['" . key(
+                    $pivotRelation->link
+                ) . "'=>\$model->{$model->primaryKey()[0]}]],
+            ['class'=>'btn btn-info btn-xs']
         ) ?>\n";
         } else {
             $addButton = '';
         }
 
-        echo "<p class='pull-left'>\n";
-        echo $addButton;
-        echo "</p>\n";
-
-
         // relation list, add, create buttons
         echo "<p class='pull-right'>\n";
 
+        echo "  <?= \\yii\\helpers\\Html::a(
+            '<span class=\"glyphicon glyphicon-list\"></span> List All " .
+            Inflector::camel2words($name) . "',
+            ['" . $generator->createRelationRoute($relation, 'index') . "'],
+            ['class'=>'btn text-muted btn-xs']
+        ) ?>\n";
         // TODO: support multiple PKs, VarDumper?
         echo "  <?= \\yii\\helpers\\Html::a(
-            'New " . Inflector::singularize(Inflector::camel2words($name)) . "',
+            '<span class=\"glyphicon glyphicon-plus\"></span> New " .
+            Inflector::singularize(Inflector::camel2words($name)) . "',
             ['" . $generator->createRelationRoute($relation, 'create') . "', '" .
             Inflector::singularize($name) . "'=>['" . key($relation->link) . "'=>\$model->" . $model->primaryKey()[0] . "]],
-            ['class'=>'btn btn-default btn-xs']
+            ['class'=>'btn btn-success btn-xs']
         ) ?>\n";
-        echo "  <?= \\yii\\helpers\\Html::a(
-            'List All " . Inflector::camel2words($name) . "',
-            ['" . $generator->createRelationRoute($relation, 'index') . "'],
-            ['class'=>'btn btn-default btn-xs']
-        ) ?>\n";
+        echo $addButton;
 
         echo "</p><div class='clearfix'></div>\n";
 
         // render pivot grid
         if ($relation->via !== null) {
-            echo "<?php Pjax::begin() ?>\n";
-            echo "<?=" . $generator->relationGrid([$pivotRelation, $pivotName, $showAllRecords]) . "?>\n";
-            $showAllRecords = true;
-            echo "<?php Pjax::end() ?>\n";
+            $pjaxId       = "pjax-{$pivotName}";
+            $gridRelation = $pivotRelation;
+            $gridName     = $pivotName;
         } else {
-            echo "<?php Pjax::begin() ?>\n"; // TODO add linkSelector for PJAX (pagination only)
-            // render relation grid
-            echo "<?= " . $generator->relationGrid([$relation, $name, $showAllRecords]) . "?>\n";
-            echo "<?php Pjax::end() ?>\n";
+            $pjaxId       = "pjax-{$name}";
+            $gridRelation = $relation;
+            $gridName     = $name;
         }
+
+        // render relation grid
+        echo "<?php Pjax::begin(['id'=>'pjax-{$name}','linkSelector'=>'#pjax-{$name} ul.pagination a']) ?>\n";
+        echo "<?= " . $generator->relationGrid([$gridRelation, $gridName, $showAllRecords]) . "?>\n";
+        echo "<?php Pjax::end() ?>\n";
 
         echo "<?php \$this->endBlock() ?>\n\n";
 
+        // build tab items
         $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
@@ -170,6 +177,7 @@ EOS;
     ?>
 
     <?=
+    // render tabs
     "<?=
     \yii\bootstrap\Tabs::widget(
                  [
