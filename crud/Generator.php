@@ -24,6 +24,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $actionButtonClass = 'yii\grid\ActionColumn';
     public $providerList = null;
     public $viewPath = null;
+    public $tablePrefix = null;
     public $pathPrefix = null;
     public $requires = [];
     private $_p = [];
@@ -137,6 +138,10 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         return $modelClass::primaryKey()[0];
+    }
+
+    public function getModelByTableName($name){
+        return Inflector::id2camel(str_replace($this->tablePrefix, '', $name), '_');
     }
 
     /**
