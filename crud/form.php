@@ -1,7 +1,7 @@
 <?php
 /**
- * @var yii\web\View                      $this
- * @var yii\widgets\ActiveForm            $form
+ * @var yii\web\View $this
+ * @var yii\widgets\ActiveForm $form
  * @var yii\gii\generators\crud\Generator $generator
  */
 
@@ -13,14 +13,22 @@ echo $form->field($generator, 'moduleID');
 echo $form->field($generator, 'viewPath');
 echo $form->field($generator, 'pathPrefix');
 echo $form->field($generator, 'indexWidgetType')->dropDownList(
-          [
-              'grid' => 'GridView',
-              'list' => 'ListView',
-          ]
+    [
+        'grid' => 'GridView',
+        'list' => 'ListView',
+    ]
+);
+echo $form->field($generator, 'formLayout')->dropDownList(
+    [
+        /* Form Types */
+        'vertical'   => 'vertical',
+        'horizontal' => 'horizontal',
+        'inline'     => 'inline'
+    ]
 );
 echo $form->field($generator, 'actionButtonClass')->dropDownList(
     [
-        'yii\\grid\\ActionColumn' => 'Default',
+        'yii\\grid\\ActionColumn'       => 'Default',
         'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );

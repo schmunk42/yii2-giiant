@@ -7,6 +7,7 @@
 
 namespace schmunk42\giiant\crud;
 
+use kartik\widgets\ActiveForm;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
@@ -26,6 +27,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $viewPath = null;
     public $tablePrefix = null;
     public $pathPrefix = null;
+    public $formLayout = ActiveForm::TYPE_HORIZONTAL;
     public $requires = [];
     private $_p = [];
 
