@@ -18,7 +18,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     {
         $key = $this->findValue($this->getModelKey($column->name, $model), $this->activeFields);
         if ($key) {
-            return $this->activeFields[$key]($column->name, $model);
+            return $this->activeFields[$key]($column, $model);
         }
     }
 
@@ -26,7 +26,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     {
         $key = $this->findValue($this->getModelKey($column->name, $model), $this->attributeFormats);
         if ($key) {
-            return $this->attributeFormats[$key]($column->name, $model);
+            return $this->attributeFormats[$key]($column, $model);
         }
     }
 
@@ -34,7 +34,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     {
         $key = $this->findValue($this->getModelKey($column->name, $model), $this->columnFormats);
         if ($key) {
-            return $this->columnFormats[$key]($column->name, $model);
+            return $this->columnFormats[$key]($column, $model);
         }
     }
 
