@@ -32,7 +32,9 @@ use yii\bootstrap\ActiveForm;
     <?= "<?php " ?>$form = ActiveForm::begin(['layout' => 'horizontal', 'enableClientValidation' => false]); ?>
 
     <div class="">
+        <?= "<?php " ?>echo $form->errorSummary($model); ?>
         <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
+
         <p>
             <?php foreach ($safeAttributes as $attribute) {
                 $column   = $generator->getTableSchema()->columns[$attribute];

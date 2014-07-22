@@ -112,7 +112,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
                 $model->load($_GET);
             }
         } catch (\Exception $e) {
-            $model->addError('<?= $pks[0] ?>', $e->errorInfo[2]);
+            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
+            $model->addError('_exception', $msg);
 		}
         return $this->render('create', ['model' => $model,]);
 	}
