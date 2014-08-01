@@ -99,7 +99,7 @@ class BatchController extends Controller
                 'generate'            => $this->generate,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'    => $this->modelNamespace . '\\' . $name . 'Search',
+                'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,
