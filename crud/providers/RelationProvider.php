@@ -64,7 +64,7 @@ EOS;
 [
     'format'=>'html',
     'attribute'=>'$column->name',
-    'value' => (\$model->{$relationGetter}->one() ? Html::a(\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : ''),
+    'value' => (\$model->{$relationGetter}->one() ? Html::a(\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : '<span class="label label-warning">?</span>'),
 ]
 EOS;
             return $code;
