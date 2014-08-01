@@ -34,6 +34,11 @@ class Generator extends \yii\gii\generators\model\Generator
     public $tablePrefix = null;
 
     /**
+     * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
+     */
+    public $tableNameMap = [];
+
+    /**
      * @inheritdoc
      */
     public function getName()
@@ -108,7 +113,10 @@ class Generator extends \yii\gii\generators\model\Generator
         $relations = $this->generateRelations();
         $db        = $this->getDbConnection();
         foreach ($this->getTableNames() as $tableName) {
-            $className   = $this->generateClassName(str_replace($this->tablePrefix, '', $tableName));
+
+            // TODO: move prefix handling to generate ClassName
+            $className   = $this->generateClassName($tableName);
+
             $tableSchema = $db->getTableSchema($tableName);
             $params      = [
                 'tableName'   => $tableName,
@@ -135,9 +143,6 @@ class Generator extends \yii\gii\generators\model\Generator
         return $files;
     }
 
-    private $_tableNames;
-    private $_classNames;
-
     /**
      * Generates a class name from the specified table name.
      *
@@ -147,13 +152,20 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     protected function generateClassName($tableName)
     {
+
         if (isset($this->_classNames[$tableName])) {
             return $this->_classNames[$tableName];
+        }
+
+        if (isset($this->tableNameMap[$tableName])) {
+            return $this->_classNames[$tableName] = $this->tableNameMap[$tableName];
         }
 
         if (($pos = strrpos($tableName, '.')) !== false) {
             $tableName = substr($tableName, $pos + 1);
         }
+
+        // TODO: remiplement ... str_replace($this->tablePrefix, '', $tableName)
 
         $db       = $this->getDbConnection();
         $patterns = [];
@@ -179,4 +191,41 @@ class Generator extends \yii\gii\generators\model\Generator
         #var_dump($className);
         return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
     }
+
+    // TODO: DRY see below
+    private $_tableNames;
+    private $_classNames;
+
+    protected function getTableNames(){
+        // TODO: DRY this is copied just to fill private vars, see https://github.com/yiisoft/yii2/issues/4551
+        if ($this->_tableNames !== null) {
+            return $this->_tableNames;
+        }
+        $db = $this->getDbConnection();
+        if ($db === null) {
+            return [];
+        }
+        $tableNames = [];
+        if (strpos($this->tableName, '*') !== false) {
+            if (($pos = strrpos($this->tableName, '.')) !== false) {
+                $schema = substr($this->tableName, 0, $pos);
+                $pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
+            } else {
+                $schema = '';
+                $pattern = '/^' . str_replace('*', '\w+', $this->tableName) . '$/';
+            }
+
+            foreach ($db->schema->getTableNames($schema) as $table) {
+                if (preg_match($pattern, $table)) {
+                    $tableNames[] = $schema === '' ? $table : ($schema . '.' . $table);
+                }
+            }
+        } elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
+            $tableNames[] = $this->tableName;
+            $this->_classNames[$this->tableName] = $this->modelClass;
+        }
+
+        return $this->_tableNames = $tableNames;
+    }
+
 }
