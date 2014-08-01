@@ -7,7 +7,6 @@
 
 namespace schmunk42\giiant\crud;
 
-use kartik\widgets\ActiveForm;
 use schmunk42\giiant\crud\providers\CallbackProvider;
 use schmunk42\giiant\crud\providers\DateTimeProvider;
 use schmunk42\giiant\crud\providers\EditorProvider;
@@ -33,7 +32,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $viewPath = null;
     public $tablePrefix = null;
     public $pathPrefix = null;
-    public $formLayout = ActiveForm::TYPE_HORIZONTAL;
+    public $formLayout = 'horizontal';
     public $requires = [];
     private $_p = [];
 
