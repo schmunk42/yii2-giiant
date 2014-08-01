@@ -7,13 +7,9 @@
 
 namespace schmunk42\giiant\model;
 
-use Yii;
-use yii\db\ActiveRecord;
-use yii\db\Connection;
-use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
-use yii\base\NotSupportedException;
+use Yii;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -115,7 +111,7 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($this->getTableNames() as $tableName) {
 
             // TODO: move prefix handling to generate ClassName
-            $className   = $this->generateClassName($tableName);
+            $className = $this->generateClassName($tableName);
 
             $tableSchema = $db->getTableSchema($tableName);
             $params      = [
@@ -196,7 +192,8 @@ class Generator extends \yii\gii\generators\model\Generator
     private $_tableNames;
     private $_classNames;
 
-    protected function getTableNames(){
+    protected function getTableNames()
+    {
         // TODO: DRY this is copied just to fill private vars, see https://github.com/yiisoft/yii2/issues/4551
         if ($this->_tableNames !== null) {
             return $this->_tableNames;
@@ -208,10 +205,10 @@ class Generator extends \yii\gii\generators\model\Generator
         $tableNames = [];
         if (strpos($this->tableName, '*') !== false) {
             if (($pos = strrpos($this->tableName, '.')) !== false) {
-                $schema = substr($this->tableName, 0, $pos);
+                $schema  = substr($this->tableName, 0, $pos);
                 $pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
             } else {
-                $schema = '';
+                $schema  = '';
                 $pattern = '/^' . str_replace('*', '\w+', $this->tableName) . '$/';
             }
 
@@ -221,7 +218,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 }
             }
         } elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
-            $tableNames[] = $this->tableName;
+            $tableNames[]                        = $this->tableName;
             $this->_classNames[$this->tableName] = $this->modelClass;
         }
 

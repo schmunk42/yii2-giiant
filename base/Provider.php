@@ -11,7 +11,8 @@ namespace schmunk42\giiant\base;
 
 use yii\base\Object;
 
-class Provider extends Object {
+class Provider extends Object
+{
     /**
      * @var \schmunk42\giiant\crud\Generator
      */

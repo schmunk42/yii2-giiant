@@ -82,7 +82,8 @@ class BatchController extends Controller
                 'tableName'          => $table,
                 'tablePrefix'        => $this->tablePrefix,
                 'generateModelClass' => $this->extendedModels,
-                'modelClass'         => isset($this->tableNameMap[$table])?$this->tableNameMap[$table]:Inflector::camelize($table), // TODO: setting is not recognized in giiant
+                'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
+                        Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap
             ];
@@ -93,18 +94,18 @@ class BatchController extends Controller
 
         foreach ($this->tables AS $table) {
             // TODO $table  = str_replace($this->tablePrefix, '', $table);
-            $name = isset($this->tableNameMap[$table])?$this->tableNameMap[$table]:Inflector::camelize($table);
+            $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
-                'generate'                => $this->generate,
-                'template'                => 'default',
-                'modelClass'              => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'        => $this->modelNamespace . '\\' . $name . 'Search',
-                'controllerClass'         => $this->crudControllerNamespace . '\\' . $name . 'Controller',
-                'viewPath'                => $this->crudViewPath,
-                'pathPrefix'              => $this->crudPathPrefix,
-                'actionButtonClass'       => 'yii\\grid\\ActionColumn',
+                'generate'            => $this->generate,
+                'template'            => 'default',
+                'modelClass'          => $this->modelNamespace . '\\' . $name,
+                'searchModelClass'    => $this->modelNamespace . '\\' . $name . 'Search',
+                'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
+                'viewPath'            => $this->crudViewPath,
+                'pathPrefix'          => $this->crudPathPrefix,
+                'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
-                'providerList'            => implode(',', $providers),
+                'providerList'        => implode(',', $providers),
             ];
             $route  = 'giic/giiant-crud';
             \Yii::$app->runAction(ltrim($route, '/'), $params);

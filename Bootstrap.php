@@ -35,5 +35,5 @@ class Bootstrap implements BootstrapInterface
                 $app->controllerMap['giiant-batch'] = 'schmunk42\giiant\commands\BatchController';
             }
         }
-     }
+    }
 }

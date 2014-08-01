@@ -159,7 +159,8 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $modelClass::primaryKey()[0];
     }
 
-    public function getModelByTableName($name){
+    public function getModelByTableName($name)
+    {
         return Inflector::id2camel(str_replace($this->tablePrefix, '', $name), '_');
     }
 
@@ -328,7 +329,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         $model = new $relation->modelClass;
         $table = $model->tableSchema;
-        $pk = $table->primaryKey;
+        $pk    = $table->primaryKey;
         if (count($pk) !== 2) {
             return false;
         }
