@@ -15,7 +15,7 @@ use Yii;
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
  *
  * @author Tobias Munk <schmunk@usrbin.de>
- * @since 0.1
+ * @since 0.0.1
  */
 class Generator extends \yii\gii\generators\model\Generator
 {
@@ -110,7 +110,6 @@ class Generator extends \yii\gii\generators\model\Generator
         $db        = $this->getDbConnection();
         foreach ($this->getTableNames() as $tableName) {
 
-            // TODO: move prefix handling to generate ClassName
             $className = $this->generateClassName($tableName);
 
             $tableSchema = $db->getTableSchema($tableName);
@@ -161,6 +160,7 @@ class Generator extends \yii\gii\generators\model\Generator
             $tableName = substr($tableName, $pos + 1);
         }
 
+        // TODO: move prefix handling to generate ClassName
         // TODO: remiplement ... str_replace($this->tablePrefix, '', $tableName)
 
         $db       = $this->getDbConnection();
