@@ -8,6 +8,12 @@
 namespace schmunk42\giiant\crud;
 
 use kartik\widgets\ActiveForm;
+use schmunk42\giiant\crud\providers\CallbackProvider;
+use schmunk42\giiant\crud\providers\DateTimeProvider;
+use schmunk42\giiant\crud\providers\EditorProvider;
+use schmunk42\giiant\crud\providers\RangeProvider;
+use schmunk42\giiant\crud\providers\RelationProvider;
+use schmunk42\giiant\crud\providers\SelectProvider;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
@@ -30,6 +36,18 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $formLayout = ActiveForm::TYPE_HORIZONTAL;
     public $requires = [];
     private $_p = [];
+
+    static public function getCoreProviders()
+    {
+        return [
+            CallbackProvider::className(),
+            EditorProvider::className(),
+            SelectProvider::className(),
+            DateTimeProvider::className(),
+            RangeProvider::className(),
+            RelationProvider::className()
+        ];
+    }
 
     public function getName()
     {
