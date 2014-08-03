@@ -106,6 +106,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
             [
                 'class' => '<?= $generator->actionButtonClass ?>',
+                'urlCreator' => function($action, $model, $key, $index) {
+                    // using the column name as key, not mapping to 'id' like the standard generator
+                    $params = is_array($key) ? $key : [$model->primaryKey()[0] => (string) $key];
+                    $params[0] = \Yii::$app->controller->id ? \Yii::$app->controller->id . '/' . $action : $action;
+                    return \yii\helpers\Url::toRoute($params);
+                },
                 'contentOptions' => ['nowrap'=>'nowrap']
             ],
         ],

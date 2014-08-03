@@ -160,7 +160,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
 <?php
 if (count($pks) === 1) {
-	$condition = '$id';
+	$condition = '$'.$pks[0];
 } else {
 	$condition = [];
 	foreach ($pks as $pk) {

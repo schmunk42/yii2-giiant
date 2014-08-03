@@ -325,6 +325,47 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $this->callProviderQueue(__FUNCTION__, $attribute);
     }
 
+    public function generateActionParams()
+    {
+        /* @var $class ActiveRecord */
+        $class = $this->modelClass;
+        $pks = $class::primaryKey();
+        if (count($pks) === 1) {
+            return '$'.$pks[0]; // fix for non-id columns
+         } else {
+            return '$' . implode(', $', $pks);
+        }
+    }
+
+    /**
+     * Generates URL parameters
+     * @return string
+     */
+    public function generateUrlParams()
+    {
+        /* @var $class ActiveRecord */
+        $class = $this->modelClass;
+        $pks = $class::primaryKey();
+        if (count($pks) === 1) {
+            if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
+                return "'id' => (string)\$model->{$pks[0]}";
+            } else {
+                return "'{$pks[0]}' => \$model->{$pks[0]}";
+            }
+        } else {
+            $params = [];
+            foreach ($pks as $pk) {
+                if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
+                    $params[] = "'$pk' => (string)\$model->$pk";
+                } else {
+                    $params[] = "'$pk' => \$model->$pk";
+                }
+            }
+
+            return implode(', ', $params);
+        }
+    }
+
     public function isPivotRelation(ActiveQuery $relation)
     {
         $model = new $relation->modelClass;
