@@ -148,12 +148,12 @@ class Generator extends \yii\gii\generators\model\Generator
     protected function generateClassName($tableName)
     {
 
-        if (isset($this->_classNames[$tableName])) {
-            return $this->_classNames[$tableName];
+        if (isset($this->classNames[$tableName])) {
+            return $this->classNames[$tableName];
         }
 
         if (isset($this->tableNameMap[$tableName])) {
-            return $this->_classNames[$tableName] = $this->tableNameMap[$tableName];
+            return $this->classNames[$tableName] = $this->tableNameMap[$tableName];
         }
 
         if (($pos = strrpos($tableName, '.')) !== false) {
@@ -185,44 +185,21 @@ class Generator extends \yii\gii\generators\model\Generator
             }
         }
         #var_dump($className);
-        return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
+        return $this->classNames[$tableName] = Inflector::id2camel($className, '_');
     }
 
-    // TODO: DRY see below
-    private $_tableNames;
-    private $_classNames;
+    protected function generateRelations(){
+        $relations = parent::generateRelations();
+        // inject namespace
+        #var_dump($relations);exit;
+        $ns = "\\{$this->ns}\\";
+        foreach($relations AS $model => $relInfo) {
+            foreach ($relInfo AS $relName => $relData) {
 
-    protected function getTableNames()
-    {
-        // TODO: DRY this is copied just to fill private vars, see https://github.com/yiisoft/yii2/issues/4551
-        if ($this->_tableNames !== null) {
-            return $this->_tableNames;
-        }
-        $db = $this->getDbConnection();
-        if ($db === null) {
-            return [];
-        }
-        $tableNames = [];
-        if (strpos($this->tableName, '*') !== false) {
-            if (($pos = strrpos($this->tableName, '.')) !== false) {
-                $schema  = substr($this->tableName, 0, $pos);
-                $pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
-            } else {
-                $schema  = '';
-                $pattern = '/^' . str_replace('*', '\w+', $this->tableName) . '$/';
+                $relations[$model][$relName][0] = preg_replace('/(has[A-Za-z]+\()([a-zA-Z]+::)/','$1__NS__$2', $relations[$model][$relName][0]);
+                $relations[$model][$relName][0] = str_replace('__NS__', $ns, $relations[$model][$relName][0]);
             }
-
-            foreach ($db->schema->getTableNames($schema) as $table) {
-                if (preg_match($pattern, $table)) {
-                    $tableNames[] = $schema === '' ? $table : ($schema . '.' . $table);
-                }
-            }
-        } elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
-            $tableNames[]                        = $this->tableName;
-            $this->_classNames[$this->tableName] = $this->modelClass;
         }
-
-        return $this->_tableNames = $tableNames;
+        return $relations;
     }
-
 }
