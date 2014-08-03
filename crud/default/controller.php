@@ -39,34 +39,6 @@ use yii\helpers\Url;
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
-	public function behaviors()
-	{
-		return [
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
-            'access' => [
-                'class' => AccessControl::className(),
-                    'rules' => [
-                    [
-                        'actions' => [
-                            'index',
-                            'create',
-                            'update',
-                            'delete',
-                            'view'
-                        ],
-                        'allow'   => true,
-                        'roles'   => ['@'],
-                    ],
-                ],
-            ]
-		];
-	}
-
 	/**
 	 * Lists all <?= $modelClass ?> models.
 	 * @return mixed
