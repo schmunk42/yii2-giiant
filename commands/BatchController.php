@@ -59,6 +59,8 @@ class BatchController extends Controller
                 'modelDb',
                 'modelNamespace',
                 'modelBaseClass',
+                'crudControllerNamespace',
+                'crudViewPath',
                 'crudBaseControllerClass'
             ]
         );
