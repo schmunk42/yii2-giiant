@@ -41,9 +41,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return [
             CallbackProvider::className(),
             EditorProvider::className(),
-            SelectProvider::className(),
             DateTimeProvider::className(),
-            RangeProvider::className(),
             RelationProvider::className()
         ];
     }
