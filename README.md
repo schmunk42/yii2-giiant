@@ -1,76 +1,57 @@
 yii2-giiant
 ===========
 
-Extended CRUDs for Yii2
+Extended models and CRUDs for Gii, the code generator of Yii2 Framework
 
 **PROJECT IS IN DEVELOPMENT STAGE!**
 
 
-Project Goal
-------------
+What is it?
+-----------
 
-Create a sophisticated and modular CRUD template with relations for Yii 2.
-Port (all) the features and learnings from gtc, giix, awecrud and others into one solution.
+Giiant provides templates for model and CRUD generation with relation support and a sophisticated UI.
+A main project goal is porting many features and learnings from gtc, giix, awecrud and others into one solution.
 
 
 Installation
------------- 
+------------
 
-Create a basic yii application
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-    php composer.phar create-project --stability=dev yiisoft/yii2-app-basic yii-basic
-    
-Go to the project directory and install `giiant`
-    
-    cd yii-basic
-    php composer.phar require schmunk42/yii2-giiant @dev
+    composer.phar require schmunk42/yii2-giiant:"*"
 
-Edit the application config...
-    
-    edit config/web.php
+The generators are registered automatically in the application bootstrap process, if the Gii module is enabled
 
-... and add the giiant generator in the `YII_ENV_DEV` section
+Usage
+-----
 
-    $config['modules']['gii'] = array();	
-    $config['modules']['gii']['class'] = 'yii\gii\Module';
-    $config['modules']['gii']['generators'] = [
-        'giiant-crud' => ['class' => 'schmunk42\giiant\crud\Generator'],
-        'giiant-model' => ['class' => 'schmunk42\giiant\model\Generator'],
-    ];
-    
-Don't forget to setup a database application component, eg.
+Visit your application's Gii (eg. `index.php?r=gii` and choose one of the generators from the main menu screen.
 
-    'db' => [
-         'class' => 'yii\db\Connection',
-         'dsn' => 'mysql:host=localhost;dbname=sakila', // MySQL, MariaDB
-         'username' => 'test',
-         'password' => 'test',
-         'charset' => 'utf8',
-    ],
-    
-> Note: You can use the MySQL sakila demo database for testing.
+For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yiiframework.com/doc-2.0/guide-gii.html#how-to-use-it).
 
-
-Open Gii...
-
-    http://localhost/index.php?r=gii
-    
-...and select the **Giiant** template, you may need to create some models in advance.
 
 Features
 --------
 
-* Shows relations on index page
-* Customize inputs with provider queue
+### Model generator
 
-### SelectProvider
+- generates separate model classes to customize and base models classes to regenerate
+- table prefixes can be stipped off model class names (not bound to db connection setting)
 
-- Renders a `Selectize` widget, more to come...
+### CRUD generator
 
-### EditorProvider
+- model, view and controller locations can be customized to use subfolders
+- horizontal and vertical form layout
+- action button class customization
+- input, attribute, column and relation customization with provider queue
+- callback provider to inject any kind of code for inputs, attributes and columns via dependency injection
 
-- Renders a `Ckeditor` widget, more to come...
+#### Providers
 
+- *CallbackProvider* universal provider to modify any input, attribute or column with highly flexible callback functions
+- *RelationProvider* renders code for relations (eg. links, dropdowns)
+- *EditorProvider* renders RTE, like `Ckeditor` as input widget
+- *DateTimeProvider* renders date inputs
 
 Customization with providers
 ----------------------------
@@ -114,10 +95,41 @@ Configuration via DI container:
 \Yii::$container->set(
     'schmunk42\giiant\crud\providers\CallbackProvider',
     [
+
         'activeFields'  => [
-            'common\models\Foo.bar' => function($attribute, $generator){...}
+
+           'common\models\Foo.isAvailable' => function ($attribute, $generator) {
+               $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
+               return <<<INPUT
+
+// Generate the code for a checkbox
+\$form->field(\$model, '{$attribute}')->checkbox({$data});
+
+INPUT;
+           },
         ],
-        'columnFormats' => []
+
+
+        'columnFormats' => [
+
+           'common\models\Foo.html' => function ($attribute, $generator) {
+
+               return <<<FORMAT
+
+// generate custom HTML in column
+[
+    'format' => 'html',
+    'label'=>'FOOFOO',
+    'attribute' => 'item_id',
+    'value'=> function(\$model){
+        return \yii\helpers\Html::a(\$model->bar,['/crud/item/view', 'id' => \$model->link_id]);
+    }
+]
+
+FORMAT;
+           }
+
+        ]
     ]
 );
 ```
@@ -125,29 +137,12 @@ Configuration via DI container:
 Generate the code for a checkbox:
 
 ```
-'common\models\Foo.bar' => function ($attribute, $generator) {
-    $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
-    $code = <<<EOS
-\$form->field(\$model, '{$attribute}')->checkbox({$data});
-EOS;
-    return $code;
-}
+
 ```
 
 Generate custom HTML in column:
 
 ```
-'common\models\Foo.bar' => function ($attribute, $generator) {
-    $code = <<<EOS
-[
-    'format' => 'html',
-    'label'=>'FOOFOO',
-    'attribute' => 'item_id',
-    'value'=> function(\$model){return \yii\helpers\Html::a(\$model->bar,['/crud/item/view', 'id' => \$model->link_id]);}
-]
-EOS;
-    return $code;
-}
 ```
 
 
@@ -155,26 +150,9 @@ EOS;
 Screenshots
 -----------
 
-### Form with provider list
-
-![](https://lh4.googleusercontent.com/-IEhBUQmnXxE/UyM2Wru_xsI/AAAAAAAAAF0/P7B-bLBv8N4/w1382-h1214-no/Bildschirmfoto+2014-03-14+um+18.00.57.png)
-
-### Composer hints after generation
-
-![](https://lh4.googleusercontent.com/-NC4tVJL1V-w/UyM2WsRkWJI/AAAAAAAAAFw/Zsi9V0zE7MQ/w1440-h334-no/Bildschirmfoto+2014-03-14+um+18.01.18.png)
-
-### Ckeditor and Selectize input
-
-![](https://lh3.googleusercontent.com/-4cFNRsSLPWk/UyMz00Gz4cI/AAAAAAAAAE0/C2kukUnDCL0/w703-h604-no/Bildschirmfoto+2014-03-14+um+17.15.21.png)
+TODO: update
 
 
-### Relation links
+Links
+-----
 
-![](https://lh5.googleusercontent.com/-kmeGiuJZEoQ/UyMz055TdHI/AAAAAAAAAE4/swHY85UMSwQ/w846-h581-no/Bildschirmfoto+2014-03-14+um+17.35.34.png)
-
-
-
-Roadmap
--------
-
-tbd
