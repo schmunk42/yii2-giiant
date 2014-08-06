@@ -33,6 +33,7 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
      */
     public $tableNameMap = [];
+    protected $classNames2;
 
     /**
      * @inheritdoc
@@ -148,28 +149,28 @@ class Generator extends \yii\gii\generators\model\Generator
     protected function generateClassName($tableName)
     {
 
-        if (isset($this->classNames[$tableName])) {
-            return $this->classNames[$tableName];
+        Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
+        if (isset($this->classNames2[$tableName])) {
+            Yii::trace("Using '{$this->classNames2[$tableName]}' for '{$tableName}' from classNames2.", __METHOD__);
+            return $this->classNames2[$tableName];
         }
 
         if (isset($this->tableNameMap[$tableName])) {
-            return $this->classNames[$tableName] = $this->tableNameMap[$tableName];
+            Yii::trace("Converted '{$tableName}' from tableNameMap.", __METHOD__);
+            return $this->classNames2[$tableName] = $this->tableNameMap[$tableName];
         }
 
         if (($pos = strrpos($tableName, '.')) !== false) {
             $tableName = substr($tableName, $pos + 1);
         }
 
-        // TODO: move prefix handling to generate ClassName
-        // TODO: remiplement ... str_replace($this->tablePrefix, '', $tableName)
-
-        $db       = $this->getDbConnection();
-        $patterns = [];
-        # TODO - review ordering
+        $db         = $this->getDbConnection();
+        $patterns   = [];
         $patterns[] = "/^{$this->tablePrefix}(.*?)$/";
         $patterns[] = "/^(.*?){$this->tablePrefix}$/";
         $patterns[] = "/^{$db->tablePrefix}(.*?)$/";
         $patterns[] = "/^(.*?){$db->tablePrefix}$/";
+
         if (strpos($this->tableName, '*') !== false) {
             $pattern = $this->tableName;
             if (($pos = strrpos($pattern, '.')) !== false) {
@@ -177,29 +178,38 @@ class Generator extends \yii\gii\generators\model\Generator
             }
             $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
         }
+
         $className = $tableName;
         foreach ($patterns as $pattern) {
             if (preg_match($pattern, $tableName, $matches)) {
                 $className = $matches[1];
+                Yii::trace("Mapping '{$tableName}' to '{$className}' from pattern '{$pattern}'.", __METHOD__);
                 break;
             }
         }
-        #var_dump($className);
-        return $this->classNames[$tableName] = Inflector::id2camel($className, '_');
+
+        Yii::trace("Converted '{$tableName}' with inflector.", __METHOD__);
+        return $this->classNames2[$tableName] = Inflector::id2camel($className, '_');
     }
 
-    protected function generateRelations(){
+    protected function generateRelations()
+    {
         $relations = parent::generateRelations();
+
         // inject namespace
-        #var_dump($relations);exit;
         $ns = "\\{$this->ns}\\";
-        foreach($relations AS $model => $relInfo) {
+        foreach ($relations AS $model => $relInfo) {
             foreach ($relInfo AS $relName => $relData) {
 
-                $relations[$model][$relName][0] = preg_replace('/(has[A-Za-z]+\()([a-zA-Z]+::)/','$1__NS__$2', $relations[$model][$relName][0]);
+                $relations[$model][$relName][0] = preg_replace(
+                    '/(has[A-Za-z]+\()([a-zA-Z]+::)/',
+                    '$1__NS__$2',
+                    $relations[$model][$relName][0]
+                );
                 $relations[$model][$relName][0] = str_replace('__NS__', $ns, $relations[$model][$relName][0]);
             }
         }
         return $relations;
     }
+
 }
