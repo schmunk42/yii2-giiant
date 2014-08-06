@@ -69,11 +69,12 @@ $this->params['breadcrumbs'][] = 'View';
     'attributes' => [
     <?php
     foreach ($generator->getTableSchema()->columns as $column) {
-        $format = trim($generator->attributeFormat($column));
+        $format = $generator->attributeFormat($column);
         if ($format === false) {
             continue;
+        } else {
+            echo $format . ",\n";
         }
-        echo $format . ",\n";
     }
     ?>
     ],

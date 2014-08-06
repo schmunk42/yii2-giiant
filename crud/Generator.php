@@ -310,7 +310,8 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        if ($code = $this->callProviderQueue(__FUNCTION__, $column, $model)) {
+        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        if ($code !== null) {
             return $code;
         }
         return $this->shorthandAttributeFormat($column);
