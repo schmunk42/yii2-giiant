@@ -149,9 +149,9 @@ class Generator extends \yii\gii\generators\model\Generator
     protected function generateClassName($tableName)
     {
 
-        Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
+        #Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
         if (isset($this->classNames2[$tableName])) {
-            Yii::trace("Using '{$this->classNames2[$tableName]}' for '{$tableName}' from classNames2.", __METHOD__);
+            #Yii::trace("Using '{$this->classNames2[$tableName]}' for '{$tableName}' from classNames2.", __METHOD__);
             return $this->classNames2[$tableName];
         }
 
@@ -188,8 +188,9 @@ class Generator extends \yii\gii\generators\model\Generator
             }
         }
 
-        Yii::trace("Converted '{$tableName}' with inflector.", __METHOD__);
-        return $this->classNames2[$tableName] = Inflector::id2camel($className, '_');
+        $returnName = Inflector::id2camel($className, '_');
+        Yii::trace("Converted '{$tableName}' to '{$returnName}'.", __METHOD__);
+        return $this->classNames2[$tableName] = $returnName;
     }
 
     protected function generateRelations()
