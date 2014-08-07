@@ -76,8 +76,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function init()
     {
-        parent::init();
         \Yii::trace("Initializing giiant CRUD generator for model '{$this->modelClass}'", __METHOD__);
+        parent::init();
         // initialize provider objects
         if ($this->providerList) {
             foreach (explode(',', $this->providerList) AS $class) {
@@ -88,7 +88,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 $obj            = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
                 $this->_p[]     = $obj;
-                \Yii::trace("Initialized provider '{$class}'", __METHOD__);
+                #\Yii::trace("Initialized provider '{$class}'", __METHOD__);
             }
         }
     }
