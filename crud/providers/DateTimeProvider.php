@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tobias
- * Date: 19.03.14
- * Time: 01:01
- */
 
 namespace schmunk42\giiant\crud\providers;
 
@@ -26,6 +20,7 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
     ],
 ])
 EOS;
+                break;
             default:
                 return null;
         }
