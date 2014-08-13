@@ -46,7 +46,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     private function findValue($subject, $array)
     {
         foreach ($array AS $key => $value) {
-            if (preg_match('/' . $key . '$/', $subject)) {
+            if (preg_match('/' . $key . '/', $subject)) {
                 return $key;
             }
         }
