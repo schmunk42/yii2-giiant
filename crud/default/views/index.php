@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
             <?php endforeach; ?>
 
-            <?= "<?php " ?>
+            <?= "<?php \n" ?>
             echo \yii\bootstrap\ButtonDropdown::widget(
                 [
                     'id'       => 'giiant-relations',
