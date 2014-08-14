@@ -80,7 +80,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		try {
             if ($model->load($_POST) && $model->save()) {
                 return $this->redirect(Url::previous());
-            } else {
+            } elseif (!\Yii::$app->request->isPost) {
                 $model->load($_GET);
             }
         } catch (\Exception $e) {
