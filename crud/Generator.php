@@ -289,6 +289,24 @@ class Generator extends \yii\gii\generators\crud\Generator
         };
     }
 
+    public function prependActiveField(ColumnSchema $column, $model = null)
+    {
+        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        return $this->callProviderQueue(__FUNCTION__, $column, $model);
+    }
+
+    public function appendActiveField(ColumnSchema $column, $model = null)
+    {
+        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        return $this->callProviderQueue(__FUNCTION__, $column, $model);
+    }
+
     public function columnFormat(ColumnSchema $column, $model = null)
     {
         Yii::trace("Rendering columnFormat for '{$column->name}'", __METHOD__);

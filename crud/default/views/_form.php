@@ -38,11 +38,20 @@ use yii\bootstrap\ActiveForm;
         <p>
             <?php foreach ($safeAttributes as $attribute) {
                 $column   = $generator->getTableSchema()->columns[$attribute];
+
+                $prepend = $generator->prependActiveField($column, $model);
                 $field = $generator->activeField($column, $model);
-                if (!$field) {
-                    continue;
+                $append = $generator->appendActiveField($column, $model);
+
+                if ($prepend) {
+                    echo "\n\t\t\t<?= " . $prepend . " ?>";
                 }
-                echo "\n\t\t\t<?= " . $field . " ?>";
+                if ($field) {
+                    echo "\n\t\t\t<?= " . $field . " ?>";
+                }
+                if ($append) {
+                    echo "\n\t\t\t<?= " . $append . " ?>";
+                }
             } ?>
 
         </p>

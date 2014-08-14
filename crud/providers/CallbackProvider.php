@@ -11,6 +11,8 @@ namespace schmunk42\giiant\crud\providers;
 class CallbackProvider extends \schmunk42\giiant\base\Provider
 {
     public $activeFields = [];
+    public $prependActiveFields = [];
+    public $appendActiveFields = [];
     public $attributeFormats = [];
     public $columnFormats = [];
 
@@ -21,6 +23,23 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
             return $this->activeFields[$key]($column, $model);
         }
     }
+
+    public function prependActiveField($column, $model)
+    {
+        $key = $this->findValue($this->getModelKey($column->name, $model), $this->prependActiveFields);
+        if ($key) {
+            return $this->prependActiveFields[$key]($column, $model);
+        }
+    }
+
+    public function appendActiveField($column, $model)
+    {
+        $key = $this->findValue($this->getModelKey($column->name, $model), $this->appendActiveFields);
+        if ($key) {
+            return $this->appendActiveFields[$key]($column, $model);
+        }
+    }
+
 
     public function attributeFormat($column, $model)
     {
