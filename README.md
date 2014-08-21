@@ -29,6 +29,8 @@ Visit your application's Gii (eg. `index.php?r=gii` and choose one of the genera
 
 For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yiiframework.com/doc-2.0/guide-gii.html#how-to-use-it).
 
+A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
+
 
 Features
 --------
@@ -98,13 +100,13 @@ Configuration via DI container:
 
         'activeFields'  => [
 
+           /**
+            * Generate a checkbox for specific column (model attribute)
+            */
            'common\models\Foo.isAvailable' => function ($attribute, $generator) {
                $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
                return <<<INPUT
-
-// Generate the code for a checkbox
 \$form->field(\$model, '{$attribute}')->checkbox({$data});
-
 INPUT;
            },
         ],
@@ -112,11 +114,12 @@ INPUT;
 
         'columnFormats' => [
 
+           /**
+            * generate custom HTML in column
+            */
            'common\models\Foo.html' => function ($attribute, $generator) {
 
                return <<<FORMAT
-
-// generate custom HTML in column
 [
     'format' => 'html',
     'label'=>'FOOFOO',
@@ -125,34 +128,35 @@ INPUT;
         return \yii\helpers\Html::a(\$model->bar,['/crud/item/view', 'id' => \$model->link_id]);
     }
 ]
-
 FORMAT;
-           }
+           },
+
+
+           /**
+            * hide all text fields in grid
+            */
+           '.+' => function ($column, $model) {
+                    if ($column->dbType == 'text') {
+                        return false;
+                    }
+           },
+
+           /**
+            * hide system fields in grid
+            */
+           'created_at$|updated_at$' => function () {
+                   return false;
+           },
 
         ]
     ]
 );
 ```
 
-Generate the code for a checkbox:
-
-```
-
-```
-
-Generate custom HTML in column:
-
-```
-```
-
-
-
-Screenshots
------------
-
-TODO: update
-
 
 Links
 -----
 
+- [Phundament.com](http://phundament.com)
+- [GitHub](https://github.com/schmunk42/yii2-giiant)
+- [Packagist](https://packagist.org/packages/schmunk42/yii2-giiant)
