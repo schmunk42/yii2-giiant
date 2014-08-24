@@ -21,6 +21,7 @@
         "bootstrap": "schmunk42\\giiant\\Bootstrap"
     },    
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "dmstr/yii2-gii-command": "*"
     }
 }
