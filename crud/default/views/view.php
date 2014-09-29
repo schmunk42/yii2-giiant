@@ -31,8 +31,7 @@ $this->params['breadcrumbs'][] = ['label' => '<?=
 Inflector::pluralize(
     Inflector::camel2words(StringHelper::basename($generator->modelClass))
 ) ?>', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model-><?=
-$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'View';
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
