@@ -38,6 +38,11 @@ EOS;
 
     public function attributeFormat($column)
     {
+        // do not handle columns with a primary key
+        if ($column->isPrimaryKey) {
+            return null;
+        }
+
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation) {
             if ($relation->multiple) {
@@ -73,6 +78,11 @@ EOS;
 
     public function columnFormat($column, $model)
     {
+        // do not handle columns with a primary key
+        if ($column->isPrimaryKey) {
+            return null;
+        }
+
         $relation = $this->generator->getRelationByColumn($model, $column);
         if ($relation) {
             if ($relation->multiple) {
