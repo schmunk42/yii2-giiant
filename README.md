@@ -27,7 +27,7 @@ Usage
 
 Visit your application's Gii (eg. `index.php?r=gii` and choose one of the generators from the main menu screen.
 
-For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yiiframework.com/doc-2.0/guide-gii.html#how-to-use-it).
+For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yiiframework.com/doc-2.0/guide-tool-gii.html).
 
 A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
 
