@@ -74,10 +74,11 @@ class BatchController extends Controller
     public function actionIndex()
     {
         echo "Running batch...\n";
+
+        // create models
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
             $params = [
-                'generate'           => $this->generate,
                 'template'           => 'default',
                 'ns'                 => $this->modelNamespace,
                 'db'                 => $this->modelDb,
@@ -89,16 +90,16 @@ class BatchController extends Controller
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap
             ];
-            $route  = 'giic/giiant-model';
+            $route  = 'gii/giiant-model';
             \Yii::$app->runAction(ltrim($route, '/'), $params);
         }
-        $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
 
+
+        // create CRUDs
+        $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
-            // TODO $table  = str_replace($this->tablePrefix, '', $table);
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
-                'generate'            => $this->generate,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
@@ -109,7 +110,7 @@ class BatchController extends Controller
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => implode(',', $providers),
             ];
-            $route  = 'giic/giiant-crud';
+            $route  = 'gii/giiant-crud';
             \Yii::$app->runAction(ltrim($route, '/'), $params);
         }
     }

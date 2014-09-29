@@ -78,7 +78,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         \Yii::trace("Initializing giiant CRUD generator for model '{$this->modelClass}'", __METHOD__);
         parent::init();
-        // initialize provider objects
+    }
+
+    private function initializeProviders(){
         if ($this->providerList) {
             foreach (explode(',', $this->providerList) AS $class) {
                 $class = trim($class);
@@ -410,6 +412,8 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     private function callProviderQueue($func, $args)
     {
+        $this->initializeProviders(); // TODO: should be done on init, but providerList is empty
+        //var_dump($this->_p);exit;
         $args = func_get_args();
         unset($args[0]);
         // walk through providers
