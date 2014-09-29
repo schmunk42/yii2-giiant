@@ -29,7 +29,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     #public $codeModel;
     public $actionButtonClass = 'yii\grid\ActionColumn';
     public $providerList = null;
-    public $viewPath = null;
+    public $viewPath = '@backend/views';
     public $tablePrefix = null;
     public $pathPrefix = null;
     public $formLayout = 'horizontal';
@@ -120,7 +120,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
                 [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
-                #[['providerList'], 'required'],
+                [['viewPath'], 'required'],
             ]
         );
     }
