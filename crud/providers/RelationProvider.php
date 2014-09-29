@@ -38,7 +38,7 @@ EOS;
 
     public function attributeFormat($column)
     {
-        // do not handle columns with a primary key
+        // do not handle columns with a primary key, TOOD: review(!) should not be omitted in every case
         if ($column->isPrimaryKey) {
             return null;
         }
@@ -78,7 +78,7 @@ EOS;
 
     public function columnFormat($column, $model)
     {
-        // do not handle columns with a primary key
+        // do not handle columns with a primary key, TOOD: review(!) should not be omitted in every case
         if ($column->isPrimaryKey) {
             return null;
         }
