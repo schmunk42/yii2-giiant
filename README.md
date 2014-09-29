@@ -29,7 +29,13 @@ Visit your application's Gii (eg. `index.php?r=gii` and choose one of the genera
 
 For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yiiframework.com/doc-2.0/guide-tool-gii.html).
 
-A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
+### Command Line Batches
+
+You can run batches of base-model and CRUD generation with the build in batch command:
+
+    ./yii giiant-batch --tables=profile,social_account,user,token
+
+It will process the given tables, for more details see `./yii help giiant-batch`.
 
 
 Features
@@ -152,6 +158,11 @@ FORMAT;
     ]
 );
 ```
+
+Extras
+------
+
+A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
 
 
 Links
