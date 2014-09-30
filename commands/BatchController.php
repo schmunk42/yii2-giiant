@@ -75,6 +75,9 @@ class BatchController extends Controller
     {
         echo "Running batch...\n";
 
+        $config       = $this->getYiiConfiguration();
+        $config['id'] = 'temp';
+
         // create models
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
@@ -90,8 +93,13 @@ class BatchController extends Controller
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap
             ];
-            $route  = 'gii/giiant-model';
-            \Yii::$app->runAction(ltrim($route, '/'), $params);
+            $route   = 'gii/giiant-model';
+
+            $app  = \Yii::$app;
+            $temp = new \yii\console\Application($config);
+            $temp->runAction(ltrim($route, '/'), $params);
+            unset($temp);
+            \Yii::$app = $app;
         }
 
 
@@ -111,7 +119,22 @@ class BatchController extends Controller
                 'providerList'        => implode(',', $providers),
             ];
             $route  = 'gii/giiant-crud';
-            \Yii::$app->runAction(ltrim($route, '/'), $params);
+            $app  = \Yii::$app;
+            $temp = new \yii\console\Application($config);
+            $temp->runAction(ltrim($route, '/'), $params);
+            unset($temp);
+            \Yii::$app = $app;
         }
+    }
+
+    private function getYiiConfiguration()
+    {
+        $config = \yii\helpers\ArrayHelper::merge(
+            require(\Yii::getAlias('@app') . '/../common/config/main.php'),
+            require(\Yii::getAlias('@app') . '/../common/config/main-local.php'),
+            require(\Yii::getAlias('@app') . '/../console/config/main.php'),
+            require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
+        );
+        return $config;
     }
 }
