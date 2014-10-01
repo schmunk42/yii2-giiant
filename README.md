@@ -164,6 +164,8 @@ Extras
 
 A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
 
+Special thanks to [motin](https://github.com/motin), [thyseus](https://github.com/thyseus), [uldisn](https://github.com/uldisn) and [rcoelho](https://github.com/rcoelho) for their work, inspirations and feedback.
+
 
 Links
 -----
