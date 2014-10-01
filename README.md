@@ -76,7 +76,7 @@ Configure providers, add this to your provider list in the form:
     \schmunk42\giiant\crud\providers\EditorProvider,
     \schmunk42\giiant\crud\providers\SelectProvider,
 
-And configure the settings of the provider, eg. add this to your config file:
+And configure the settings of the provider, add setting via dependecy injection this to your application config, eg. in `console/config/bootstrap.php`:
 
     \Yii::$container->set(
         'schmunk42\giiant\crud\providers\EditorProvider',
