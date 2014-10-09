@@ -203,7 +203,7 @@ class Generator extends \yii\gii\generators\model\Generator
             foreach ($relInfo AS $relName => $relData) {
 
                 $relations[$model][$relName][0] = preg_replace(
-                    '/(has[A-Za-z]+\()([a-zA-Z]+::)/',
+                    '/(has[A-Za-z]+\()([a-zA-Z0-9]+::)/',
                     '$1__NS__$2',
                     $relations[$model][$relName][0]
                 );
