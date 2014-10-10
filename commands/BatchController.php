@@ -130,7 +130,7 @@ class BatchController extends Controller
         }
     }
 
-    private function getYiiConfiguration()
+    protected function getYiiConfiguration()
     {
         $config = \yii\helpers\ArrayHelper::merge(
             require(\Yii::getAlias('@app') . '/../common/config/main.php'),
