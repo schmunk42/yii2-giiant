@@ -81,6 +81,10 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     private function initializeProviders(){
+        // TODO: this is a hotfix for an already initialized provider queue on action re-entry
+        if ($this->_p !== []) {
+            return;
+        }
         if ($this->providerList) {
             foreach (explode(',', $this->providerList) AS $class) {
                 $class = trim($class);
