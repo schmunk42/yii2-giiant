@@ -157,10 +157,14 @@ EOS;
             $gridName     = $name;
         }
 
+        $output = $generator->relationGrid([$gridRelation, $gridName, $showAllRecords]);
+
         // render relation grid
-        echo "<?php Pjax::begin(['id'=>'pjax-{$name}','linkSelector'=>'#pjax-{$name} ul.pagination a']) ?>\n";
-        echo "<?= " . $generator->relationGrid([$gridRelation, $gridName, $showAllRecords]) . "?>\n";
-        echo "<?php Pjax::end() ?>\n";
+        if (!empty($output)):
+            echo "<?php Pjax::begin(['id'=>'pjax-{$name}','linkSelector'=>'#pjax-{$name} ul.pagination a']) ?>\n";
+            echo "<?= " . $output . "?>\n";
+            echo "<?php Pjax::end() ?>\n";
+        endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";
 
