@@ -83,6 +83,7 @@ class BatchController extends Controller
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
             $params = [
+                'interactive'        => $this->interactive,
                 'template'           => 'default',
                 'ns'                 => $this->modelNamespace,
                 'db'                 => $this->modelDb,
@@ -109,6 +110,7 @@ class BatchController extends Controller
         foreach ($this->tables AS $table) {
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
+                'interactive'         => $this->interactive,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
