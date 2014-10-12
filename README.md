@@ -20,6 +20,26 @@ The preferred way to install this extension is through [composer](http://getcomp
 
     composer.phar require schmunk42/yii2-giiant:"*"
 
+You can also add 
+    
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/schmunk42/yii2-giiant.git"
+      }
+    ],
+    "require": {
+        .....(your required modules)....
+        "schmunk42/yii2-giiant":"dev-master"
+    },
+
+to your *** composer.json ***  file and run
+    
+    composer update
+    
+if you are having trouble with "Not found" errors using the preferred method. 
+    
+
 The generators are registered automatically in the application bootstrap process, if the Gii module is enabled
 
 Usage
