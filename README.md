@@ -50,7 +50,7 @@ Features
 
 - model, view and controller locations can be customized to use subfolders
 - horizontal and vertical form layout
-- action button class customization
+- action button class customization (Select "App Class" option on the  Action Button Class option on CRUD generator to customize)
 - input, attribute, column and relation customization with provider queue
 - callback provider to inject any kind of code for inputs, attributes and columns via dependency injection
 
