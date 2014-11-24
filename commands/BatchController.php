@@ -115,6 +115,7 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
+            $table  = str_replace($this->tablePrefix,'',$table);
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
                 'interactive'         => $this->interactive,
