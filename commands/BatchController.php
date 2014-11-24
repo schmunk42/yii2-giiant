@@ -18,6 +18,11 @@ class BatchController extends Controller
     public $generate = false;
 
     /**
+     * @var bool whether to generate and overwrite all files
+     */
+    public $overwrite = false;
+
+    /**
      * @var bool whether to overwrite extended models (from ModelBase)
      */
     public $extendedModels = false;
@@ -53,6 +58,7 @@ class BatchController extends Controller
             parent::options($id),
             [
                 'generate',
+                'overwrite',
                 'extendedModels',
                 'tables',
                 'tablePrefix',
@@ -112,6 +118,7 @@ class BatchController extends Controller
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
                 'interactive'         => $this->interactive,
+                'overwrite'           => $this->overwrite,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
