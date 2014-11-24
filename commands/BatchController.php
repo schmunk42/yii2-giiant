@@ -139,13 +139,21 @@ class BatchController extends Controller
         }
     }
 
+    /**
+     * TODO should be removed, if this issue is closed -> https://github.com/yiisoft/yii2/pull/5687
+     * @return array
+     */
     protected function getYiiConfiguration()
     {
         $config = \yii\helpers\ArrayHelper::merge(
             require(\Yii::getAlias('@app') . '/../common/config/main.php'),
-            require(\Yii::getAlias('@app') . '/../common/config/main-local.php'),
+            (is_file(\Yii::getAlias('@app') . '/../common/config/main-local.php')) ?
+                require(\Yii::getAlias('@app') . '/../common/config/main-local.php')
+                : [],
             require(\Yii::getAlias('@app') . '/../console/config/main.php'),
+            (is_file(\Yii::getAlias('@app') . '/../console/config/main-local.php')) ?
             require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
+                : []
         );
         return $config;
     }
