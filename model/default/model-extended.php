@@ -22,6 +22,6 @@ use Yii;
 /**
  * This is the model class for table "<?= $tableName ?>".
  */
-class <?= $className ?> extends \<?= $generator->ns ?>\base\<?= $className . "Base\n" ?>
+class <?= $className ?> extends \<?= $generator->ns ?>\base\<?= $className . "\n" ?>
 {
 }

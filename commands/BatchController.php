@@ -18,6 +18,11 @@ class BatchController extends Controller
     public $generate = false;
 
     /**
+     * @var bool whether to generate and overwrite all files
+     */
+    public $overwrite = false;
+
+    /**
      * @var bool whether to overwrite extended models (from ModelBase)
      */
     public $extendedModels = false;
@@ -53,6 +58,7 @@ class BatchController extends Controller
             parent::options($id),
             [
                 'generate',
+                'overwrite',
                 'extendedModels',
                 'tables',
                 'tablePrefix',
@@ -109,9 +115,11 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
+            $table  = str_replace($this->tablePrefix,'',$table);
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
                 'interactive'         => $this->interactive,
+                'overwrite'           => $this->overwrite,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
@@ -131,13 +139,21 @@ class BatchController extends Controller
         }
     }
 
+    /**
+     * TODO should be removed, if this issue is closed -> https://github.com/yiisoft/yii2/pull/5687
+     * @return array
+     */
     protected function getYiiConfiguration()
     {
         $config = \yii\helpers\ArrayHelper::merge(
             require(\Yii::getAlias('@app') . '/../common/config/main.php'),
-            require(\Yii::getAlias('@app') . '/../common/config/main-local.php'),
+            (is_file(\Yii::getAlias('@app') . '/../common/config/main-local.php')) ?
+                require(\Yii::getAlias('@app') . '/../common/config/main-local.php')
+                : [],
             require(\Yii::getAlias('@app') . '/../console/config/main.php'),
+            (is_file(\Yii::getAlias('@app') . '/../console/config/main-local.php')) ?
             require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
+                : []
         );
         return $config;
     }
