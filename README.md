@@ -61,6 +61,31 @@ Features
 - *EditorProvider* renders RTE, like `Ckeditor` as input widget
 - *DateTimeProvider* renders date inputs
 
+Use custom generators, model and crud templates
+----------------------------
+```
+
+    $config['modules']['gii'] = [
+            'class'      => 'yii\gii\Module',
+            'allowedIPs' => ['127.0.0.1'],
+            'generators' => [
+                // generator name
+                'rb-model' => [
+                    //generator class
+                    'class'     => 'schmunk42\giiant\model\Generator',
+                    //setting for out templates
+                    'templates' => [
+                        // template name => path to template
+                        'rbModel' =>
+                            '@app/giiTemplates/model/default',
+    
+                    ]
+                ]
+            ],
+        ];
+    
+```
+
 Customization with providers
 ----------------------------
 
