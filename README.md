@@ -3,7 +3,7 @@ yii2-giiant
 
 Extended models and CRUDs for Gii, the code generator of Yii2 Framework
 
-**PROJECT IS IN DEVELOPMENT STAGE!**
+**PROJECT IS IN BETA STAGE!**
 
 
 What is it?
