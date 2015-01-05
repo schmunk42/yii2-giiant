@@ -98,11 +98,11 @@ class BatchController extends Controller
                 'tablePrefix'        => $this->tablePrefix,
                 'generateModelClass' => $this->extendedModels,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
-                        Inflector::camelize($table), // TODO: setting is not recognized in giiant
+                    Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap
             ];
-            $route   = 'gii/giiant-model';
+            $route  = 'gii/giiant-model';
 
             $app  = \Yii::$app;
             $temp = new \yii\console\Application($config);
@@ -115,7 +115,7 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
-            $table  = str_replace($this->tablePrefix,'',$table);
+            $table  = str_replace($this->tablePrefix, '', $table);
             $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
             $params = [
                 'interactive'         => $this->interactive,
@@ -131,8 +131,8 @@ class BatchController extends Controller
                 'providerList'        => implode(',', $providers),
             ];
             $route  = 'gii/giiant-crud';
-            $app  = \Yii::$app;
-            $temp = new \yii\console\Application($config);
+            $app    = \Yii::$app;
+            $temp   = new \yii\console\Application($config);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
@@ -145,16 +145,20 @@ class BatchController extends Controller
      */
     protected function getYiiConfiguration()
     {
-        $config = \yii\helpers\ArrayHelper::merge(
-            require(\Yii::getAlias('@app') . '/../common/config/main.php'),
-            (is_file(\Yii::getAlias('@app') . '/../common/config/main-local.php')) ?
-                require(\Yii::getAlias('@app') . '/../common/config/main-local.php')
-                : [],
-            require(\Yii::getAlias('@app') . '/../console/config/main.php'),
-            (is_file(\Yii::getAlias('@app') . '/../console/config/main-local.php')) ?
-            require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
-                : []
-        );
+        if (isset($GLOBALS['config'])) {
+            $config = $GLOBALS['config'];
+        } else {
+            $config = \yii\helpers\ArrayHelper::merge(
+                require(\Yii::getAlias('@app') . '/../common/config/main.php'),
+                (is_file(\Yii::getAlias('@app') . '/../common/config/main-local.php')) ?
+                    require(\Yii::getAlias('@app') . '/../common/config/main-local.php')
+                    : [],
+                require(\Yii::getAlias('@app') . '/../console/config/main.php'),
+                (is_file(\Yii::getAlias('@app') . '/../console/config/main-local.php')) ?
+                    require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
+                    : []
+            );
+        }
         return $config;
     }
 }
