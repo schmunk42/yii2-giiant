@@ -121,6 +121,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'labels'      => $this->generateLabels($tableSchema),
                 'rules'       => $this->generateRules($tableSchema),
                 'relations'   => isset($relations[$className]) ? $relations[$className] : [],
+                'ns'          => $this->ns,
             ];
 
             $files[] = new CodeFile(
