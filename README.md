@@ -226,3 +226,4 @@ Links
 - [Phundament.com](http://phundament.com)
 - [GitHub](https://github.com/schmunk42/yii2-giiant)
 - [Packagist](https://packagist.org/packages/schmunk42/yii2-giiant)
+- [Yii Extensions](http://www.yiiframework.com/extension/yii2-giiant/)
