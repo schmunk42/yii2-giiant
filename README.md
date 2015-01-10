@@ -214,6 +214,11 @@ to your *** composer.json ***  file and run
     
 if you are having trouble with "Not found" errors using the preferred method. 
 
+Screenshots
+-----------
+
+![giiant-0 2-screen-1](https://cloud.githubusercontent.com/assets/649031/5692432/c93fd82c-98f5-11e4-8b52-8f35df52986f.png)
+![giiant-0 2-screen-2](https://cloud.githubusercontent.com/assets/649031/5692429/c9189492-98f5-11e4-969f-02a302ca6974.png)
 
 Links
 -----
