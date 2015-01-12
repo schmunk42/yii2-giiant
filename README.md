@@ -122,7 +122,10 @@ This will render a Ckeditor widget for every column named `description`.
 
 ### Universal `CallbackProvider`
 
-Configuration via DI container:
+This provider has three properties `activeFields` (form), `columnFormats` (index) and `attributeFormats` (view) which all take an array of callback as input. The keys are evaluated as a regular expression the match the class and attribute name.
+While the callback function takes the current attribute and generator as input parameters.
+
+The configuration can be done via the dependency injection container of Yii2:
 
 ```
 \Yii::$container->set(
