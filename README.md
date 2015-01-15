@@ -76,7 +76,7 @@ Use custom generators, model and crud templates
                     //setting for out templates
                     'templates' => [
                         // template name => path to template
-                        'giiant-model' =>
+                        'mymodel' =>
                             '@app/giiTemplates/model/default',
     
                     ]
