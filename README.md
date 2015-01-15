@@ -70,13 +70,13 @@ Use custom generators, model and crud templates
             'allowedIPs' => ['127.0.0.1'],
             'generators' => [
                 // generator name
-                'rb-model' => [
+                'giiant-model' => [
                     //generator class
                     'class'     => 'schmunk42\giiant\model\Generator',
                     //setting for out templates
                     'templates' => [
                         // template name => path to template
-                        'rbModel' =>
+                        'giiant-model' =>
                             '@app/giiTemplates/model/default',
     
                     ]
