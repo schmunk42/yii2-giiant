@@ -70,10 +70,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
         Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
 
-        if (\Yii::$app->request->get('returnUrl') !== null) {
-            Url::remember(\Yii::$app->request->get('returnUrl'));
+        if ($returnUrl !== null) {
+            Url::remember($returnUrl);
         } else {
-            Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
             Url::remember(\Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id]));
         }
         return $this->render('view', [
