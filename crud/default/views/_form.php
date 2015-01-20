@@ -19,6 +19,7 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use \dmstr\bootstrap\Tabs;
 
 /**
 * @var yii\web\View $this
@@ -71,7 +72,7 @@ EOS;
 
         <?=
         "<?=
-    \yii\bootstrap\Tabs::widget(
+    Tabs::widget(
                  [
                    'encodeLabels' => false,
                      'items' => [ $items ]

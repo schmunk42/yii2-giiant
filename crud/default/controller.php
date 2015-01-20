@@ -33,6 +33,7 @@ use yii\web\HttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
+use dmstr\bootstrap\Tabs;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -47,8 +48,11 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
 		$searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
 		$dataProvider = $searchModel->search($_GET);
-
         Url::remember();
+
+        // clear all parent route information in cookies
+        Tabs::clearParentRelationRoute($this->id);
+
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,
 			'searchModel' => $searchModel,
@@ -58,11 +62,20 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	/**
 	 * Displays a single <?= $modelClass ?> model.
 	 * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * @param null $returnUrl
+     *
 	 * @return mixed
 	 */
-	public function actionView(<?= $actionParams ?>)
+	public function actionView(<?= $actionParams ?>, $returnUrl = null)
 	{
-        Url::remember();
+        Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
+
+        if (\Yii::$app->request->get('returnUrl') !== null) {
+            Url::remember(\Yii::$app->request->get('returnUrl'));
+        } else {
+            Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
+            Url::remember(\Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id]));
+        }
         return $this->render('view', [
 			'model' => $this->findModel(<?= $actionParams ?>),
 		]);
@@ -100,6 +113,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
 		$model = $this->findModel(<?= $actionParams ?>);
 
+        if (\Yii::$app->request->get('returnUrl') === null)
+        {
+            Url::remember(\Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id]));
+        }
 		if ($model->load($_POST) && $model->save()) {
             return $this->redirect(Url::previous());
 		} else {
@@ -117,7 +134,21 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionDelete(<?= $actionParams ?>)
 	{
-		$this->findModel(<?= $actionParams ?>)->delete();
+        try {
+            $this->findModel(<?= $actionParams ?>)->delete();
+        } catch (\Exception $e) {
+            \Yii::$app->getSession()->setFlash(
+                'deleteError',
+                \Yii::t('app', 'Entry can not be deleted. Please check your record!')
+            );
+            return $this->redirect(
+                \Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id])
+            );
+        }
+        if (\Yii::$app->request->get('returnUrl') === null)
+        {
+            return $this->redirect(\Yii::$app->urlManager->createUrl($this->id));
+        }
 		return $this->redirect(Url::previous());
 	}
 

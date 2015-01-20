@@ -15,6 +15,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 
 /**
@@ -110,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     // using the column name as key, not mapping to 'id' like the standard generator
                     $params = is_array($key) ? $key : [$model->primaryKey()[0] => (string) $key];
                     $params[0] = \Yii::$app->controller->id ? \Yii::$app->controller->id . '/' . $action : $action;
-                    return \yii\helpers\Url::toRoute($params);
+                    return Url::toRoute($params);
                 },
                 'contentOptions' => ['nowrap'=>'nowrap']
             ],

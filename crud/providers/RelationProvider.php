@@ -194,9 +194,11 @@ EOS;
     'contentOptions' => ['nowrap'=>'nowrap'],
     'urlCreator' => function(\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+        \$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
+                        Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
+        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key, 'returnUrl' => \$returnUrl];
         \$params[0] = '$controller' . '/' . \$action;
-        return \yii\helpers\Url::toRoute(\$params);
+        return Url::toRoute(\$params);
     },
     'buttons'    => [
         $deleteButtonPivot
@@ -211,8 +213,8 @@ EOS;
             "'query' => \$model->get{$name}()";
         $code  = '';
         $code .= <<<EOS
-\\yii\\grid\\GridView::widget([
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
+GridView::widget([
+    'dataProvider' => new ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
     'columns' => [$columns]
 ]);
 EOS;

@@ -14,9 +14,12 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
+use yii\data\ActiveDataProvider;
+use dmstr\bootstrap\Tabs;
 
 /**
 * @var yii\web\View $this
@@ -33,11 +36,13 @@ Inflector::pluralize(
 ) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'View';
+$returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null) ?
+                                    \Yii::$app->request->get('returnUrl') : null;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> Edit', ['update', <?= $urlParams ?>],
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> Edit', ['update', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
         ['class' => 'btn btn-info']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New <?=
         Inflector::camel2words(
@@ -81,14 +86,20 @@ $this->params['breadcrumbs'][] = 'View';
 
     <hr/>
 
-    <?= "<?php " ?>echo Html::a('<span class="glyphicon glyphicon-trash"></span> Delete', ['delete', <?= $urlParams ?>],
+    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> Delete', ['delete', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
     'data-method' => 'post',
     ]); ?>
-
-    <?php echo "<?php \$this->endBlock(); ?>\n\n"; ?>
+    <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
+        <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
+            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+            <span aria-hidden=\"true\">&times;</span></button>
+            <?= \\Yii::\$app->session->getFlash('deleteError') ?>
+        </span>
+    <?php endif; ?>" ?>
+    <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
     $items = <<<EOS
@@ -112,7 +123,7 @@ EOS;
             $pivotRelation = $model->{'get' . $pivotName}();
             $pivotPk       = key($pivotRelation->link);
 
-            $addButton = "  <?= \\yii\\helpers\\Html::a(
+            $addButton = "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-link\"></span> Attach " .
                 Inflector::singularize(Inflector::camel2words($name)) .
                 "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
@@ -128,20 +139,20 @@ EOS;
         // relation list, add, create buttons
         echo "<p class='pull-right'>\n";
 
-        echo "  <?= \\yii\\helpers\\Html::a(
+        echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> List All " .
             Inflector::camel2words($name) . "',
             ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs, VarDumper?
-        echo "  <?= \\yii\\helpers\\Html::a(
+        echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> New " .
             Inflector::singularize(Inflector::camel2words($name)) . "',
             ['" . $generator->createRelationRoute($relation, 'create') . "', '" .
             Inflector::singularize($name) . "'=>['" . key($relation->link) . "'=>\$model->" . $model->primaryKey()[0] . "]],
             ['class'=>'btn btn-success btn-xs']
-        ) ?>\n";
+        ); ?>\n";
         echo $addButton;
 
         echo "</p><div class='clearfix'></div>\n";
@@ -182,8 +193,7 @@ EOS;
 
     <?=
     // render tabs
-    "<?=
-    \yii\bootstrap\Tabs::widget(
+    "<?= Tabs::widget(
                  [
                      'id' => 'relation-tabs',
                      'encodeLabels' => false,
