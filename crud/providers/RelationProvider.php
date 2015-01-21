@@ -163,7 +163,7 @@ EOS;
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
-                return Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
                     'class' => 'text-danger',
                     'title' => Yii::t('yii', 'Remove'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete the related item?'),
@@ -172,7 +172,7 @@ EOS;
                 ]);
             },
 'view' => function (\$url, \$model) {
-                return Html::a(
+                return yii\helpers\Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
                     \$url,
                     [
@@ -213,8 +213,8 @@ EOS;
             "'query' => \$model->get{$name}()";
         $code  = '';
         $code .= <<<EOS
-GridView::widget([
-    'dataProvider' => new ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
+\\yii\\grid\\GridView::widget([
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
     'columns' => [$columns]
 ]);
 EOS;

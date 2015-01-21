@@ -18,7 +18,6 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
-use yii\data\ActiveDataProvider;
 use dmstr\bootstrap\Tabs;
 
 /**
@@ -36,8 +35,8 @@ Inflector::pluralize(
 ) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = 'View';
-$returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null) ?
-                                    \Yii::$app->request->get('returnUrl') : null;
+$returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null)
+                                    ? \Yii::$app->request->get('returnUrl') : null;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
