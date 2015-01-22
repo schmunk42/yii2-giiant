@@ -136,10 +136,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         try {
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
-            \Yii::$app->getSession()->setFlash(
-                'deleteError',
-                \Yii::t('app', 'Entry can not be deleted. Please check your record!')
-            );
+            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
+            \Yii::$app->getSession()->setFlash('error', $msg);
             return $this->redirect(
                 \Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id])
             );

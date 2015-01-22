@@ -49,7 +49,13 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
         ) ?>', ['create'], ['class' => 'btn
         btn-success']) ?>
     </p>
-
+    <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
+        <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
+            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+            <span aria-hidden=\"true\">&times;</span></button>
+            <?= \\Yii::\$app->session->getFlash('deleteError') ?>
+        </span>
+    <?php endif; ?>" ?>
     <?php
     echo "    <p class='pull-right'>\n";
     echo "        <?= Html::a('<span class=\"glyphicon glyphicon-list\"></span> List', ['index'], ['class'=>'btn btn-default']) ?>\n";
@@ -91,13 +97,6 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
     'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
     'data-method' => 'post',
     ]); ?>
-    <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
-        <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
-            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
-            <span aria-hidden=\"true\">&times;</span></button>
-            <?= \\Yii::\$app->session->getFlash('deleteError') ?>
-        </span>
-    <?php endif; ?>" ?>
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
