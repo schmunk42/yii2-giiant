@@ -126,6 +126,7 @@ class BatchController extends Controller
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,
+                'tablePrefix'         => $this->tablePrefix,
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => implode(',', $providers),
