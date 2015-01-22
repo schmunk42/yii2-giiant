@@ -32,7 +32,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $pathPrefix = null;
     public $formLayout = 'horizontal';
     public $requires = [];
-    public $messageCatalogStandard = 'app';
+    public $messageCatalog = 'app';
     private $_p = [];
 
     static public function getCoreProviders()

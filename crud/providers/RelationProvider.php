@@ -165,8 +165,8 @@ EOS;
 'delete' => function (\$url, \$model) {
                 return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
                     'class' => 'text-danger',
-                    'title'         => Yii::t('{$this->generator->messageCatalogStandard}', 'Remove'),
-                    'data-confirm'  => Yii::t('{$this->generator->messageCatalogStandard}', 'Are you sure you want to delete the related item?'),
+                    'title'         => Yii::t('{$this->generator->messageCatalog}', 'Remove'),
+                    'data-confirm'  => Yii::t('{$this->generator->messageCatalog}', 'Are you sure you want to delete the related item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
                 ]);
@@ -176,7 +176,7 @@ EOS;
                     '<span class="glyphicon glyphicon-cog"></span>',
                     \$url,
                     [
-                        'data-title'  => Yii::t('{$this->generator->messageCatalogStandard}', 'View Pivot Record'),
+                        'data-title'  => Yii::t('{$this->generator->messageCatalog}', 'View Pivot Record'),
                         'data-toggle' => 'tooltip',
                         'data-pjax'   => '0',
                         'class'        => 'text-muted'

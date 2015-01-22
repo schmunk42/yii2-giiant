@@ -42,6 +42,10 @@ class BatchController extends Controller
     public $modelDb = 'db';
     public $modelBaseClass = 'yii\db\ActiveRecord';
 
+    /**
+     * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
+     */
+    public $enableI18N = false;
 
     public $crudControllerNamespace = 'backend\\controllers\\crud';
     public $crudViewPath = '@backend/views/crud';
@@ -60,6 +64,7 @@ class BatchController extends Controller
                 'generate',
                 'overwrite',
                 'extendedModels',
+                'enableI18N',
                 'tables',
                 'tablePrefix',
                 'modelDb',
@@ -96,6 +101,7 @@ class BatchController extends Controller
                 'db'                 => $this->modelDb,
                 'tableName'          => $table,
                 'tablePrefix'        => $this->tablePrefix,
+                'enableI18N'         => $this->enableI18N,
                 'generateModelClass' => $this->extendedModels,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
@@ -126,6 +132,8 @@ class BatchController extends Controller
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,
+                'tablePrefix'         => $this->tablePrefix,
+                'enableI18N'          => $this->enableI18N,
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => implode(',', $providers),

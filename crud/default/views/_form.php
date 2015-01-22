@@ -85,8 +85,7 @@ EOS;
 
         <?= "<?= " ?>Html::submitButton(
                         '<span class="glyphicon glyphicon-check"></span> ' . ($model->isNewRecord
-                                    ? \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Create')
-                                    : \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Save')),
+                                    ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
                         ['class' => 'btn btn-primary']
             );
         ?>

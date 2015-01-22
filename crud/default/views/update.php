@@ -20,15 +20,15 @@ use yii\helpers\Html;
  * @var <?= ltrim($generator->modelClass, '\\') ?> $model
  */
 
-$this->title = '<?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', '' . $model-><?= $generator->getNameAttribute() ?> . '') . ' ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Edit');
+$this->title = '<?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?> ' . $model-><?= $generator->getNameAttribute() ?> . ', ' . <?= $generator->generateString('Edit') ?>;
 $this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
-$this->params['breadcrumbs'][] = \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Edit');
+$this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass),'-', true) ?>-update">
 
     <p>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', 'View'), ['view', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . <?= $generator->generateString('View') ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-info']) ?>
     </p>
 
 	<?= "<?php " ?>echo $this->render('_form', [
