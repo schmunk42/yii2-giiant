@@ -272,10 +272,11 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     /**
      * Generates code for active field by using the provider queue
+     * 
+     * @param ColumnSchema $column
+     * @param null $model
      *
-     * @param string $attribute
-     *
-     * @return string
+     * @return mixed|string
      */
     public function activeField(ColumnSchema $column, $model = null)
     {
