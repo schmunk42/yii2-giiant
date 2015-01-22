@@ -83,8 +83,13 @@ EOS;
 
         <hr/>
 
-        <?= "<?= " ?>Html::submitButton('<span class="glyphicon glyphicon-check"></span> '.($model->isNewRecord ? 'Create' : 'Save'), ['class' => $model->isNewRecord ?
-        'btn btn-primary' : 'btn btn-primary']) ?>
+        <?= "<?= " ?>Html::submitButton(
+                        '<span class="glyphicon glyphicon-check"></span> ' . ($model->isNewRecord
+                                    ? \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Create')
+                                    : \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Save')),
+                        ['class' => 'btn btn-primary']
+            );
+        ?>
 
         <?= "<?php " ?>ActiveForm::end(); ?>
 

@@ -28,22 +28,22 @@ use dmstr\bootstrap\Tabs;
 $this->title = '<?=
 Inflector::camel2words(
     StringHelper::basename($generator->modelClass)
-) ?> View ' . $model-><?= $generator->getNameAttribute() ?> . '';
+) ?> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', '' . $model-><?= $generator->getNameAttribute() ?> . '');
 $this->params['breadcrumbs'][] = ['label' => '<?=
 Inflector::pluralize(
     Inflector::camel2words(StringHelper::basename($generator->modelClass))
 ) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
-$this->params['breadcrumbs'][] = 'View';
+$this->params['breadcrumbs'][] = \Yii::t('<?= $generator->messageCatalogStandard ?>', 'View');
 $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null)
                                     ? \Yii::$app->request->get('returnUrl') : null;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> Edit', ['update', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Edit'), ['update', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
         ['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> New <?=
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', 'New') . ' <?=
         Inflector::camel2words(
             StringHelper::basename($generator->modelClass)
         ) ?>', ['create'], ['class' => 'btn
@@ -58,7 +58,7 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
     <?php endif; ?>" ?>
     <?php
     echo "    <p class='pull-right'>\n";
-    echo "        <?= Html::a('<span class=\"glyphicon glyphicon-list\"></span> List', ['index'], ['class'=>'btn btn-default']) ?>\n";
+    echo "        <?= Html::a('<span class=\"glyphicon glyphicon-list\"></span> ' . \Yii::t('$generator->messageCatalogStandard', 'List') . '', ['index'], ['class'=>'btn btn-default']) ?>\n";
     echo "    </p><div class='clearfix'></div> \n";
     ?>
 
@@ -91,10 +91,10 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
 
     <hr/>
 
-    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> Delete', ['delete', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
+    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Delete') . '', ['delete', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
     [
     'class' => 'btn btn-danger',
-    'data-confirm' => Yii::t('app', 'Are you sure to delete this item?'),
+    'data-confirm' => \Yii::t('<?= $generator->messageCatalogStandard ?>', 'Are you sure to delete this item?'),
     'data-method' => 'post',
     ]); ?>
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
@@ -122,7 +122,7 @@ EOS;
             $pivotPk       = key($pivotRelation->link);
 
             $addButton = "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-link\"></span> Attach " .
+            '<span class=\"glyphicon glyphicon-link\"></span> ' . \Yii::t('$generator->messageCatalogStandard', 'Attach') . ' " .
                 Inflector::singularize(Inflector::camel2words($name)) .
                 "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
                 Inflector::singularize($pivotName) . "'=>['" . key(
@@ -138,14 +138,14 @@ EOS;
         echo "<p class='pull-right'>\n";
 
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-list\"></span> List All " .
+            '<span class=\"glyphicon glyphicon-list\"></span> ' . \Yii::t('$generator->messageCatalogStandard', 'List All') . ' " .
             Inflector::camel2words($name) . "',
             ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs, VarDumper?
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> New " .
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . \Yii::t('$generator->messageCatalogStandard', 'New') . ' " .
             Inflector::singularize(Inflector::camel2words($name)) . "',
             ['" . $generator->createRelationRoute($relation, 'create') . "', '" .
             Inflector::singularize($name) . "'=>['" . key($relation->link) . "'=>\$model->" . $model->primaryKey()[0] . "]],
