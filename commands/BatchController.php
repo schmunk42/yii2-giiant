@@ -96,6 +96,7 @@ class BatchController extends Controller
             #var_dump($this->tableNameMap, $table);exit;
             $params = [
                 'interactive'        => $this->interactive,
+                'overwrite'          => $this->overwrite,
                 'template'           => 'default',
                 'ns'                 => $this->modelNamespace,
                 'db'                 => $this->modelDb,
