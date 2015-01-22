@@ -73,7 +73,7 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
     ?>
 
-    <?= "<?php " ?>echo DetailView::widget([
+    <?= "<?= " ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
@@ -148,7 +148,7 @@ EOS;
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . \Yii::t('$generator->messageCatalogStandard', 'New') . ' " .
             Inflector::singularize(Inflector::camel2words($name)) . "',
             ['" . $generator->createRelationRoute($relation, 'create') . "', '" .
-            Inflector::singularize($name) . "'=>['" . key($relation->link) . "'=>\$model->" . $model->primaryKey()[0] . "]],
+            Inflector::singularize($name) . "' => ['" . key($relation->link) . "' => \$model->" . $model->primaryKey()[0] . "]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;

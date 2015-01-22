@@ -68,8 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
             <?php endforeach; ?>
 
-            <?= "<?php \n" ?>
-            echo \yii\bootstrap\ButtonDropdown::widget(
+            <?= "<?= \n" ?>
+            \yii\bootstrap\ButtonDropdown::widget(
                 [
                     'id'       => 'giiant-relations',
                     'encodeLabel' => false,
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
-        <?= "<?php " ?>echo GridView::widget([
+        <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
     <?php else: ?>
-        <?= "<?php " ?>echo ListView::widget([
+        <?= "<?= " ?> ListView::widget([
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
         'itemView' => function ($model, $key, $index, $widget) {
