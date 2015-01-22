@@ -95,6 +95,7 @@ class BatchController extends Controller
         foreach ($this->tables AS $table) {
             $params = [
                 'interactive'        => $this->interactive,
+                'overwrite'          => $this->overwrite,
                 'template'           => 'default',
                 'ns'                 => $this->modelNamespace,
                 'db'                 => $this->modelDb,
