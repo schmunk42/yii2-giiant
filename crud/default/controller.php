@@ -40,7 +40,7 @@ use dmstr\bootstrap\Tabs;
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
-	/**
+    /**
      * @inheritdoc
      */
     public function beforeAction($action)
@@ -85,7 +85,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         if ($returnUrl !== null) {
             Url::remember($returnUrl);
         } else {
-            Url::remember(\Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id]));
+            Url::remember(\Yii::$app->urlManager->createUrl([\Yii::$app->request->pathInfo, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>]));
         }
         return $this->render('view', [
 			'model' => $this->findModel(<?= $actionParams ?>),
@@ -126,7 +126,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
         if (\Yii::$app->request->get('returnUrl') === null)
         {
-            Url::remember(\Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id]));
+            $returnUrl = ($this->module->id)
+                ? $this->module->id . '/' . $this->id . '/view'
+                : $this->id . '/view';
+            Url::remember(\Yii::$app->urlManager->createUrl([$returnUrl, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>]));
         }
 		if ($model->load($_POST) && $model->save()) {
             return $this->redirect(Url::previous());
@@ -150,13 +153,18 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         } catch (\Exception $e) {
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
             \Yii::$app->getSession()->setFlash('error', $msg);
+
+            $returnUrl = ($this->module->id)
+                ? $this->module->id . '/' . $this->id . '/view'
+                : $this->id . '/view';
             return $this->redirect(
-                \Yii::$app->urlManager->createUrl([$this->id . '/view', 'id' => $id])
+               \Yii::$app->urlManager->createUrl([$returnUrl, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>])
             );
         }
         if (\Yii::$app->request->get('returnUrl') === null)
         {
-            return $this->redirect(\Yii::$app->urlManager->createUrl($this->id));
+            $returnUrl = ($this->module->id) ? $this->module->id . '/' . $this->id : $this->id;
+            return $this->redirect(\Yii::$app->urlManager->createUrl($returnUrl));
         }
 		return $this->redirect(Url::previous());
 	}
