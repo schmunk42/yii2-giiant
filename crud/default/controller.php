@@ -41,6 +41,18 @@ use dmstr\bootstrap\Tabs;
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
 	/**
+     * @inheritdoc
+     */
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+	/**
 	 * Lists all <?= $modelClass ?> models.
 	 * @return mixed
 	 */
