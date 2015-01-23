@@ -47,6 +47,12 @@ class BatchController extends Controller
      */
     public $enableI18N = false;
 
+    /**
+     * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
+     * Defaults to `app`.
+     */
+    public $messageCategory = 'app';
+
     public $crudControllerNamespace = 'backend\\controllers\\crud';
     public $crudViewPath = '@backend/views/crud';
     public $crudPathPrefix = 'crud/';
@@ -65,6 +71,7 @@ class BatchController extends Controller
                 'overwrite',
                 'extendedModels',
                 'enableI18N',
+                'messageCategory',
                 'tables',
                 'tablePrefix',
                 'modelDb',
@@ -103,6 +110,7 @@ class BatchController extends Controller
                 'tableName'          => $table,
                 'tablePrefix'        => $this->tablePrefix,
                 'enableI18N'         => $this->enableI18N,
+                'messageCategory'    => $this->messageCategory,
                 'generateModelClass' => $this->extendedModels,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
@@ -135,6 +143,7 @@ class BatchController extends Controller
                 'pathPrefix'          => $this->crudPathPrefix,
                 'tablePrefix'         => $this->tablePrefix,
                 'enableI18N'          => $this->enableI18N,
+                'messageCategory'     => $this->messageCategory,
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => implode(',', $providers),
