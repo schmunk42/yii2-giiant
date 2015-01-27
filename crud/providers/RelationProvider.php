@@ -202,6 +202,9 @@ EOS;
         // using the column name as key, not mapping to 'id' like the standard generator
         \$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
                         Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
+        if (strpos(\$returnUrl, 'returnUrl') !== false) {
+            \$returnUrl = substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl));
+        }
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key, 'returnUrl' => \$returnUrl];
         \$params[0] = '$controller' . '/' . \$action;
         return Url::toRoute(\$params);
