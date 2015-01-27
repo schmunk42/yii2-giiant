@@ -156,19 +156,22 @@ EOS;
         }
 
         $reflection = new \ReflectionClass($relation->modelClass);
+        $returnUrl  = <<<EOS
+\$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
+                                Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
+        if (strpos(\$returnUrl, 'returnUrl') !== false) {
+            \$returnUrl = substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl));
+        }
+EOS;
         if (!$this->generator->isPivotRelation($relation)) {
             $template          = '{view} {update}';
             $deleteButtonPivot = '';
         } else {
             $template          = '{view} {delete}';
-            $returnUrl = <<<EOS
-(Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
-                                Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null
-EOS;
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
-                \$returnTo = {$returnUrl};
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url . '&returnUrl=' . \$returnTo, [
+                {$returnUrl}
+                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url . '&returnUrl=' . \$returnUrl, [
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
                     'data-confirm'  => {$this->generator->generateString('Are you sure you want to delete the related item?')},
@@ -177,15 +180,17 @@ EOS;
                 ]);
             },
 'view' => function (\$url, \$model) {
-                \$returnTo = {$returnUrl};
+                {$returnUrl}
                 return yii\helpers\Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
-                    \$url . '&returnUrl=' . \$returnTo,
+                    \$url . '&returnUrl=' . \$returnUrl,
                     [
                         'data-title'  => {$this->generator->generateString('View Pivot Record')},
                         'data-toggle' => 'tooltip',
                         'data-pjax'   => '0',
-                        'class'        => 'text-muted'
+                        'class'       => 'text-muted',
+                        'onClick'     => 'setRouteCookie("' . \$url . '", "' . \Yii::\$app->controller->id . '")'
+
                     ]
                 );
             },
@@ -200,10 +205,12 @@ EOS;
     'contentOptions' => ['nowrap'=>'nowrap'],
     'urlCreator' => function(\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
-        \$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
-                        Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
+        \$returnUrl = \Yii::\$app->request->url;
         if (strpos(\$returnUrl, 'returnUrl') !== false) {
-            \$returnUrl = substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl));
+            \$returnUrl = urldecode(substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl)));
+        } else {
+            \$returnUrl = (Tabs::getParentRelationRoute(\Yii::\$app->controller->id) !== null) ?
+                Tabs::getParentRelationRoute(\Yii::\$app->controller->id) : null;
         }
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key, 'returnUrl' => \$returnUrl];
         \$params[0] = '$controller' . '/' . \$action;

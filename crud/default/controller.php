@@ -52,6 +52,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
+            Tabs::registerAssets();
             return true;
         } else {
             return false;
@@ -87,7 +88,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionView(<?= $actionParams ?>, $returnUrl = null)
 	{
-        Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
+        Tabs::rememberActiveTab(\Yii::$app->request->url, $this->id);
 
         if ($returnUrl === null) {
             $returnUrl = \Yii::$app->urlManager->createUrl([\Yii::$app->request->pathInfo, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]);

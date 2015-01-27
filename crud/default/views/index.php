@@ -107,7 +107,17 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
             [
                 'class' => '<?= $generator->actionButtonClass ?>',
+                'buttons' => [
+                     'view' => function ($url, $model, $key) {
+                            return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                                'title' => <?= $generator->generateString('View') ?>,
+                                'data-pjax' => '0',
+                                'onClick' => 'setRouteCookie("' . $url . '", "' . \Yii::$app->controller->id . '")'
+                            ]);
+                     }
+                 ],
                 'urlCreator' => function($action, $model, $key, $index) {
+
                     // using the column name as key, not mapping to 'id' like the standard generator
                     $params = is_array($key) ? $key : [$model->primaryKey()[0] => (string) $key];
                     $params[0] = \Yii::$app->controller->id ? \Yii::$app->controller->id . '/' . $action : $action;
