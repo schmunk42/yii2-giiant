@@ -161,9 +161,14 @@ EOS;
             $deleteButtonPivot = '';
         } else {
             $template          = '{view} {delete}';
+            $returnUrl = <<<EOS
+(Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
+                                Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null
+EOS;
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                \$returnTo = {$returnUrl};
+                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url . '&returnUrl=' . \$returnTo, [
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
                     'data-confirm'  => {$this->generator->generateString('Are you sure you want to delete the related item?')},
@@ -172,9 +177,10 @@ EOS;
                 ]);
             },
 'view' => function (\$url, \$model) {
+                \$returnTo = {$returnUrl};
                 return yii\helpers\Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
-                    \$url,
+                    \$url . '&returnUrl=' . \$returnTo,
                     [
                         'data-title'  => {$this->generator->generateString('View Pivot Record')},
                         'data-toggle' => 'tooltip',
