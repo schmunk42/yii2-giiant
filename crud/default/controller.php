@@ -41,6 +41,12 @@ use dmstr\bootstrap\Tabs;
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
     /**
+     * @var boolean whether to enable CSRF validation for the actions in this controller.
+     * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
+     */
+    public $enableCsrfValidation = false;
+
+    /**
      * @inheritdoc
      */
     public function beforeAction($action)
@@ -58,8 +64,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionIndex()
 	{
-		$searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
+		$searchModel  = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
 		$dataProvider = $searchModel->search($_GET);
+
         Url::remember();
 
         // clear all parent route information in cookies
@@ -82,11 +89,11 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
         Tabs::setParentRelationRoute(\Yii::$app->request->url, $this->id);
 
-        if ($returnUrl !== null) {
-            Url::remember($returnUrl);
-        } else {
-            Url::remember(\Yii::$app->urlManager->createUrl([\Yii::$app->request->pathInfo, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>]));
+        if ($returnUrl === null) {
+            $returnUrl = \Yii::$app->urlManager->createUrl([\Yii::$app->request->pathInfo, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]);
         }
+        Url::remember($returnUrl);
+
         return $this->render('view', [
 			'model' => $this->findModel(<?= $actionParams ?>),
 		]);
@@ -111,7 +118,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
             $model->addError('_exception', $msg);
 		}
-        return $this->render('create', ['model' => $model,]);
+        return $this->render('create', ['model' => $model]);
 	}
 
 	/**
@@ -129,7 +136,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             $returnUrl = ($this->module->id)
                 ? $this->module->id . '/' . $this->id . '/view'
                 : $this->id . '/view';
-            Url::remember(\Yii::$app->urlManager->createUrl([$returnUrl, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>]));
+            Url::remember(\Yii::$app->urlManager->createUrl([$returnUrl, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]));
         }
 		if ($model->load($_POST) && $model->save()) {
             return $this->redirect(Url::previous());
@@ -144,24 +151,19 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 * Deletes an existing <?= $modelClass ?> model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+     * @param null $returnUrl
 	 * @return mixed
 	 */
-	public function actionDelete(<?= $actionParams ?>)
+	public function actionDelete(<?= $actionParams ?>, $returnUrl = null)
 	{
         try {
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
             \Yii::$app->getSession()->setFlash('error', $msg);
-
-            $returnUrl = ($this->module->id)
-                ? $this->module->id . '/' . $this->id . '/view'
-                : $this->id . '/view';
-            return $this->redirect(
-               \Yii::$app->urlManager->createUrl([$returnUrl, '<?= substr($actionParams, 1, strlen($actionParams)) ?>' => <?= $actionParams ?>])
-            );
+            return $this->redirect(Url::previous());
         }
-        if (\Yii::$app->request->get('returnUrl') === null)
+        if ($returnUrl === null)
         {
             $returnUrl = ($this->module->id) ? $this->module->id . '/' . $this->id : $this->id;
             return $this->redirect(\Yii::$app->urlManager->createUrl($returnUrl));
