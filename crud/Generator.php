@@ -325,7 +325,6 @@ class Generator extends \yii\gii\generators\crud\Generator
         };
     }
 
-
     public function attributeFormat(ColumnSchema $column, $model = null)
     {
         Yii::trace("Rendering attributeFormat for '{$column->name}'", __METHOD__);
@@ -346,6 +345,9 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $this->callProviderQueue(__FUNCTION__, $attribute);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function generateActionParams()
     {
         /* @var $class ActiveRecord */
@@ -358,6 +360,34 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function generateActionParamComments()
+    {
+        /* @var $class ActiveRecord */
+        $class = $this->modelClass;
+        $pks = $class::primaryKey();
+        if (($table = $this->getTableSchema()) === false) {
+            $params = [];
+            foreach ($pks as $pk) {
+                $params[] = '@param ' . (substr(strtolower($pk), -2) == 'id' ? 'integer' : 'string') . ' $' . $pk;
+            }
+
+            return $params;
+        }
+        if (count($pks) === 1) {
+            return ['@param ' . $table->columns[$pks[0]]->phpType . ' $' . $pks[0]];
+        } else {
+            $params = [];
+            foreach ($pks as $pk) {
+                $params[] = '@param ' . $table->columns[$pk]->phpType . ' $' . $pk;
+            }
+
+            return $params;
+        }
+    }
+    
     /**
      * Generates URL parameters
      * @return string
