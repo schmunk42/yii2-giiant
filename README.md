@@ -94,7 +94,7 @@ Examples for this use-case are editors, file-uploads or choosers, complex input 
 data via AJAX and so on.
 
 With Giiant Providers you can create a queue of instances which may provide custom code depending on more complex
-rules. Take a look at some existing [giiant providers](https://github.com/schmunk42/yii2-giiant/tree/develop/crud/providers).
+rules. Take a look at some existing [giiant providers](https://github.com/schmunk42/yii2-giiant/tree/master/crud/providers).
 
 Configure providers, add this to your provider list in the form:
 
