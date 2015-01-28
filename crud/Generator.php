@@ -323,7 +323,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             return $this->shorthandAttributeFormat($column);
         };
     }
-    
+
     public function attributeFormat(ColumnSchema $column, $model = null)
     {
         Yii::trace("Rendering attributeFormat for '{$column->name}'", __METHOD__);
