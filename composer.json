@@ -13,7 +13,8 @@
         }
     ],
     "require": {
-        "dmstr/yii2-bootstrap": "*"
+        "dmstr/yii2-bootstrap": "*",
+        "yiisoft/yii2-gii": "~2.0.1"
     },
     "autoload": {
         "psr-4": {
@@ -22,8 +23,5 @@
     },
     "extra": {
         "bootstrap": "schmunk42\\giiant\\Bootstrap"
-    },    
-    "require": {
-        "yiisoft/yii2-gii": "~2.0.1"
     }
 }
