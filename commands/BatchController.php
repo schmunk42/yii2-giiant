@@ -54,6 +54,7 @@ class BatchController extends Controller
     public $messageCategory = 'app';
 
     public $crudControllerNamespace = 'backend\\controllers\\crud';
+    public $crudSearchModelNamespace = 'backend\\models\\search';
     public $crudViewPath = '@backend/views/crud';
     public $crudPathPrefix = 'crud/';
     public $crudProviders = [];
@@ -78,6 +79,7 @@ class BatchController extends Controller
                 'modelNamespace',
                 'modelBaseClass',
                 'crudControllerNamespace',
+                'crudSearchModelNamespace',
                 'crudViewPath',
                 'crudPathPrefix',
                 'crudProviders',
@@ -137,7 +139,7 @@ class BatchController extends Controller
                 'overwrite'           => $this->overwrite,
                 'template'            => 'default',
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'    => $this->modelNamespace . '\\search\\' . $name . 'Search',
+                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name,
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,

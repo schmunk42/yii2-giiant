@@ -12,6 +12,7 @@ use schmunk42\giiant\crud\providers\DateTimeProvider;
 use schmunk42\giiant\crud\providers\EditorProvider;
 use schmunk42\giiant\crud\providers\RelationProvider;
 use Yii;
+use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
@@ -76,7 +77,8 @@ class Generator extends \yii\gii\generators\crud\Generator
         parent::init();
     }
 
-    private function initializeProviders(){
+    private function initializeProviders()
+    {
         // TODO: this is a hotfix for an already initialized provider queue on action re-entry
         if ($this->_p !== []) {
             return;
@@ -233,20 +235,24 @@ class Generator extends \yii\gii\generators\crud\Generator
                 continue;
             }
             // check for relation
-            $relation = call_user_func(array($model, $method->name));
-            if ($relation instanceof yii\db\ActiveQuery) {
-                #var_dump($relation->primaryModel->primaryKey);
-                if ($relation->multiple === false) {
-                    $relationType = 'belongs_to';
-                } elseif ($this->isPivotRelation($relation)) { # TODO: detecttion
-                    $relationType = 'pivot';
-                } else {
-                    $relationType = 'has_many';
-                }
+            try {
+                $relation = @call_user_func(array($model, $method->name));
+                if ($relation instanceof yii\db\ActiveQuery) {
+                    #var_dump($relation->primaryModel->primaryKey);
+                    if ($relation->multiple === false) {
+                        $relationType = 'belongs_to';
+                    } elseif ($this->isPivotRelation($relation)) { # TODO: detecttion
+                        $relationType = 'pivot';
+                    } else {
+                        $relationType = 'has_many';
+                    }
 
-                if (in_array($relationType, $types)) {
-                    $stack[substr($method->name, 3)] = $relation;
+                    if (in_array($relationType, $types)) {
+                        $stack[substr($method->name, 3)] = $relation;
+                    }
                 }
+            } catch (Exception $e) {
+                echo "Error: " . $e->getMessage();
             }
         }
         return $stack;
@@ -351,10 +357,10 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks = $class::primaryKey();
+        $pks   = $class::primaryKey();
         if (count($pks) === 1) {
-            return '$'.$pks[0]; // fix for non-id columns
-         } else {
+            return '$' . $pks[0]; // fix for non-id columns
+        } else {
             return '$' . implode(', $', $pks);
         }
     }
@@ -395,7 +401,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks = $class::primaryKey();
+        $pks   = $class::primaryKey();
         if (count($pks) === 1) {
             if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                 return "'id' => (string)\$model->{$pks[0]}";
