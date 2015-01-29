@@ -12,12 +12,6 @@
             "homepage": "http://www.usrbin.de"
         }
     ],
-    "repositories":[
-        {
-            "type": "git",
-            "url": "https://git.hrzg.de/dmstr/yii2-bootstrap.git"
-        }
-    ],
     "require": {
         "dmstr/yii2-bootstrap": "*"
     },
