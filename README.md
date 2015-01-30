@@ -60,6 +60,16 @@ Features
 - *RelationProvider* renders code for relations (eg. links, dropdowns)
 - *EditorProvider* renders RTE, like `Ckeditor` as input widget
 - *DateTimeProvider* renders date inputs
+- *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
+    ```
+    \Yii::$container->set(
+        'schmunk42\giiant\crud\providers\OptsProvider',
+        [
+            'columnNames' => ['ColumnName']
+        ]
+    );
+    ```
+    
 
 Use custom generators, model and crud templates
 ----------------------------
