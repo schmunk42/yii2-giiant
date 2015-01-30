@@ -61,10 +61,6 @@ Features
 - *EditorProvider* renders RTE, like `Ckeditor` as input widget
 - *DateTimeProvider* renders date inputs
 - *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
-    ```
-    
-    ```
-    
 
 Use custom generators, model and crud templates
 ----------------------------
