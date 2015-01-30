@@ -62,12 +62,7 @@ Features
 - *DateTimeProvider* renders date inputs
 - *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
     ```
-    \Yii::$container->set(
-        'schmunk42\giiant\crud\providers\OptsProvider',
-        [
-            'columnNames' => ['ColumnName']
-        ]
-    );
+    
     ```
     
 
@@ -117,6 +112,12 @@ And configure the settings of the provider, add setting via dependecy injection 
         'schmunk42\giiant\crud\providers\EditorProvider',
         [
             'columnNames' => ['description']
+        ]
+    );
+    \Yii::$container->set(
+        'schmunk42\giiant\crud\providers\OptsProvider',
+        [
+            'columnNames' => ['ColumnName']
         ]
     );
 
