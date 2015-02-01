@@ -106,7 +106,7 @@ EOS;
         ?>
         <?= "<?= " ?>(!$model->isNewRecord && \Yii::$app->request->getQueryParam('returnUrl') !== null) ? Html::submitButton(
                 '<span class="glyphicon glyphicon-fast-backward"></span> ' .
-                    <?= $generator->generateString('Go back and save') ?> . '',
+                    <?= $generator->generateString('Save and go back') ?> . '',
                     ['class' => 'btn btn-primary']
                 ) : null;
         ?>
