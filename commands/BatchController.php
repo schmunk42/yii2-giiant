@@ -45,7 +45,7 @@ class BatchController extends Controller
     /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
      */
-    public $enableI18N = false;
+    public $enableI18N = true;
 
     /**
      * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
