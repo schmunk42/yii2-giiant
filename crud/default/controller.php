@@ -91,7 +91,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         Tabs::rememberActiveTab(\Yii::$app->request->url, $this->id);
 
         if ($returnUrl === null) {
-            $returnUrl = \Yii::$app->urlManager->createUrl([\Yii::$app->request->pathInfo, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]);
+			$returnUrl = ($this->module->id)
+				? $this->module->id . '/' . $this->id . '/' . $this->action->id
+				: $this->id . '/' . $this->action->id;
+            $returnUrl = \Yii::$app->urlManager->createUrl([$returnUrl, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]);
         }
         Url::remember($returnUrl);
 
@@ -126,21 +129,23 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 * Updates an existing <?= $modelClass ?> model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * <?= implode("\n\t * ", $actionParamComments) . "\n" ?>
+	 * @param null $returnUrl
 	 * @return mixed
 	 */
-	public function actionUpdate(<?= $actionParams ?>)
+	public function actionUpdate(<?= $actionParams ?>, $returnUrl = null)
 	{
 		$model = $this->findModel(<?= $actionParams ?>);
 
-        if (\Yii::$app->request->get('returnUrl') === null)
+        if ($returnUrl === null)
         {
             $returnUrl = ($this->module->id)
                 ? $this->module->id . '/' . $this->id . '/view'
                 : $this->id . '/view';
-            Url::remember(\Yii::$app->urlManager->createUrl([$returnUrl, '<?= str_replace('$', '',$actionParams) ?>' => <?= $actionParams ?>]));
+			$returnUrl = \Yii::$app->urlManager->createUrl([$returnUrl, '<?= str_replace('$', '', $actionParams) ?>' => <?= $actionParams ?>]);
         }
+
 		if ($model->load($_POST) && $model->save()) {
-            return $this->redirect(Url::previous());
+            return $this->redirect($returnUrl);
 		} else {
 			return $this->render('update', [
 				'model' => $model,
