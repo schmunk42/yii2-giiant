@@ -112,12 +112,6 @@ And configure the settings of the provider, add setting via dependecy injection 
             'columnNames' => ['description']
         ]
     );
-    \Yii::$container->set(
-        'schmunk42\giiant\crud\providers\OptsProvider',
-        [
-            'columnNames' => ['ColumnName']
-        ]
-    );
 
 This will render a Ckeditor widget for every column named `description`.
 
@@ -128,6 +122,7 @@ This will render a Ckeditor widget for every column named `description`.
         'preset' => 'basic'
     ]) ?>
 
+**NOTE** The OptsProvider matches every model with opts methods for a field, i.e. method `optsMembers` matches for model attribute `members`.
 
 ### Universal `CallbackProvider`
 

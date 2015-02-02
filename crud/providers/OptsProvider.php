@@ -13,26 +13,20 @@ class OptsProvider extends \schmunk42\giiant\base\Provider
     {
         $column = $this->generator->getTableSchema()->columns[$attribute->name];
 
-        switch (true) {
+        // Render a dropdown list if the model has a method optsColumn().
+        $modelClass = $this->generator->modelClass;
+        $func       = 'opts' . str_replace("_", "", $column->name);
 
-            case (in_array($column->name, $this->columnNames)):
-                // Render a dropdown list if the model has a method optsColumn().
-                $modelClass = $this->generator->modelClass;
-                $func       = 'opts' . str_replace("_", "", $column->name);
-
-                if (method_exists($modelClass::className(), $func)) {
-                    return <<<EOS
+        if (method_exists($modelClass::className(), $func)) {
+            return <<<EOS
 \$form->field(\$model, '{$column->name}')->dropDownList(
     {$modelClass}::{$func}(),
     ['prompt' => {$this->generator->generateString('Select')}]
 );
 EOS;
-                } else {
-                    return null;
-                }
 
-            default:
-                return null;
+        } else {
+            return null;
         }
     }
 }
