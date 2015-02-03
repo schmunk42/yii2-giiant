@@ -60,6 +60,7 @@ Features
 - *RelationProvider* renders code for relations (eg. links, dropdowns)
 - *EditorProvider* renders RTE, like `Ckeditor` as input widget
 - *DateTimeProvider* renders date inputs
+- *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
 
 Use custom generators, model and crud templates
 ----------------------------
@@ -100,6 +101,8 @@ Configure providers, add this to your provider list in the form:
 
     \schmunk42\giiant\crud\providers\EditorProvider,
     \schmunk42\giiant\crud\providers\SelectProvider,
+    \schmunk42\giiant\crud\providers\OptsProvider,
+    
 
 And configure the settings of the provider, add setting via dependecy injection this to your application config, eg. in `console/config/bootstrap.php`:
 
@@ -119,6 +122,7 @@ This will render a Ckeditor widget for every column named `description`.
         'preset' => 'basic'
     ]) ?>
 
+**NOTE** The OptsProvider matches every model with opts methods for a field, i.e. method `optsMembers` matches for model attribute `members`.
 
 ### Universal `CallbackProvider`
 

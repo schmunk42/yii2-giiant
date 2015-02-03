@@ -26,11 +26,23 @@ use \dmstr\bootstrap\Tabs;
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 * @var yii\widgets\ActiveForm $form
 */
+
+// Cut off returnUrl from request url for only save record option
+$actionUrl = Yii::$app->request->url;
+if (strpos($actionUrl, 'returnUrl') !== false) {
+    $actionUrl = urldecode(substr($actionUrl, 0, strpos($actionUrl, 'returnUrl') - 1));
+}
 ?>
 
 <div class="<?= \yii\helpers\Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin(['layout' => '<?= $generator->formLayout ?>', 'enableClientValidation' => false]); ?>
+    <?= "<?php " ?>$form = ActiveForm::begin([
+                        'id'     => '<?= $model->formName() ?>',
+                        'layout' => '<?= $generator->formLayout ?>',
+                        'enableClientValidation' => false,
+                    ]
+                );
+    ?>
 
     <div class="">
         <?= "<?php " ?>echo $form->errorSummary($model); ?>
@@ -84,14 +96,35 @@ EOS;
         <hr/>
 
         <?= "<?= " ?>Html::submitButton(
-                        '<span class="glyphicon glyphicon-check"></span> ' . ($model->isNewRecord
-                                    ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
-                        ['class' => 'btn btn-primary']
+                '<span class="glyphicon glyphicon-check"></span> ' . ($model->isNewRecord
+                            ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
+                [
+                    'id'    => 'save-' . $model->formName(),
+                    'class' => 'btn btn-success'
+                ]
             );
         ?>
+        <?= "<?= " ?>(!$model->isNewRecord && \Yii::$app->request->getQueryParam('returnUrl') !== null) ? Html::submitButton(
+                '<span class="glyphicon glyphicon-fast-backward"></span> ' .
+                    <?= $generator->generateString('Save and go back') ?> . '',
+                    ['class' => 'btn btn-primary']
+                ) : null;
+        ?>
+
 
         <?= "<?php " ?>ActiveForm::end(); ?>
 
     </div>
 
 </div>
+
+<?php
+    echo "<?php\n";
+?>
+$js = <<<JS
+// get the form id and set the action url
+$('#save-{$model->formName()}').on('click', function(e) {
+    $('form#{$model->formName()}').attr("action","{$actionUrl}");
+});
+JS;
+$this->registerJs($js);
