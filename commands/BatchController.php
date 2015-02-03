@@ -105,6 +105,11 @@ class BatchController extends Controller
         $config       = $this->getYiiConfiguration();
         $config['id'] = 'temp';
 
+        if (!$this->tables) {
+            echo "No tables specified.";
+            exit;
+        }
+
         // create models
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
