@@ -166,7 +166,7 @@ EOS;
             $gridName     = $name;
         }
 
-        $output = $generator->relationGrid([$gridRelation, $gridName, $showAllRecords]);
+        $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
 
         // render relation grid
         if (!empty($output)):

@@ -36,10 +36,25 @@ class BatchController extends Controller
      * @var string eg. `app_`
      */
     public $tablePrefix = '';
+
+    /**
+     * @var array mapping for table name to model class names
+     */
     public $tableNameMap = [];
 
+    /**
+     * @var string namespace path for model classes
+     */
     public $modelNamespace = 'common\\models';
+
+    /**
+     * @var string database application component
+     */
     public $modelDb = 'db';
+
+    /**
+     * @var string base class for the generated models
+     */
     public $modelBaseClass = 'yii\db\ActiveRecord';
 
     /**
@@ -52,12 +67,29 @@ class BatchController extends Controller
      * Defaults to `app`.
      */
     public $messageCategory = 'app';
-
+    /**
+     * @var string namespace path for crud controller
+     */
     public $crudControllerNamespace = 'backend\\controllers\\crud';
+    /**
+     * @var string namespace path for crud search models
+     */
     public $crudSearchModelNamespace = 'backend\\models\\search';
+    /**
+     * @var string namespace path for crud views
+     */
     public $crudViewPath = '@backend/views/crud';
+    /**
+     * @var string route prefix for crud controller actions
+     */
     public $crudPathPrefix = 'crud/';
+    /**
+     * @var array list of code provider classes (fully namespaced path required)
+     */
     public $crudProviders = [];
+    /**
+     * @var string base class for crud controllers
+     */
     public $crudBaseControllerClass = 'yii\web\Controller';
     /**
      * @var array list of relations to skip, when generating `view`-views
@@ -94,7 +126,7 @@ class BatchController extends Controller
     }
 
     /**
-     * This command echoes what you have entered as the message.
+     * Run batch process to generate models and CRUDs for all given tables
      *
      * @param string $message the message to be echoed.
      */
@@ -171,7 +203,9 @@ class BatchController extends Controller
     }
 
     /**
-     * TODO should be removed, if this issue is closed -> https://github.com/yiisoft/yii2/pull/5687
+     * Returns Yii's initial configuration array
+     *
+     * @todo should be removed, if this issue is closed -> https://github.com/yiisoft/yii2/pull/5687
      * @return array
      */
     protected function getYiiConfiguration()

@@ -8,10 +8,21 @@
 
 namespace schmunk42\giiant\crud\providers;
 
+use yii\db\ActiveRecord;
+use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {
+    /**
+     * Formatter for relation form inputs
+     *
+     * Renders a drop-down list for a `hasOne`/`belongsTo` relation
+     *
+     * @param $column
+     *
+     * @return null|string
+     */
     public function activeField($column)
     {
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
@@ -36,6 +47,15 @@ EOS;
         }
     }
 
+    /**
+     * Formatter for detail view relation attributes
+     *
+     * Renders a link to the related detail view
+     *
+     * @param $column ColumnSchema
+     *
+     * @return null|string
+     */
     public function attributeFormat($column)
     {
         # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
@@ -78,6 +98,16 @@ EOS;
         }
     }
 
+    /**
+     * Formatter for relation grid columns
+     *
+     * Renders a link to the related detail view
+     *
+     * @param $column ColumnSchema
+     * @param $model ActiveRecord
+     *
+     * @return null|string
+     */
     public function columnFormat($column, $model)
     {
         # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
@@ -127,16 +157,24 @@ EOS;
     }
 
 
-    // TODO: params is an array, because we need the name, improve params
-    public function relationGrid($data)
+    /**
+     * Renders a grid view for a given relation
+     *
+     * @param $name
+     * @param $relation
+     * @param bool $showAllRecords
+     *
+     * @return mixed|string
+     */
+    public function relationGrid($name, $relation, $showAllRecords = false)
     {
-        $name           = $data[1];
-        $relation       = $data[0];
-        $showAllRecords = isset($data[2]) ? $data[2] : false;
-        $model          = new $relation->modelClass;
-        $counter        = 0;
-        $columns        = '';
+        $model   = new $relation->modelClass;
 
+        // column counter
+        $counter = 0;
+        $columns = '';
+
+        // prepare grid column formatters
         foreach ($model->attributes AS $attr => $value) {
             // max seven columns
             if ($counter > 8) {
@@ -159,7 +197,6 @@ EOS;
             $counter++;
         }
 
-        $reflection = new \ReflectionClass($relation->modelClass);
         $returnUrl  = <<<EOS
 \$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
                                 Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
@@ -167,10 +204,13 @@ EOS;
             \$returnUrl = substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl));
         }
 EOS;
+
         if (!$this->generator->isPivotRelation($relation)) {
+            // hasMany relations
             $template          = '{view} {update}';
             $deleteButtonPivot = '';
         } else {
+            // manyMany relations
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
@@ -178,7 +218,9 @@ EOS;
                 return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url . '&returnUrl=' . \$returnUrl, [
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
-                    'data-confirm'  => {$this->generator->generateString('Are you sure you want to delete the related item?')},
+                    'data-confirm'  => {$this->generator->generateString(
+                'Are you sure you want to delete the related item?'
+            )},
                     'data-method' => 'post',
                     'data-pjax' => '0',
                 ]);
@@ -201,6 +243,7 @@ EOS;
 EOS;
         }
 
+        $reflection = new \ReflectionClass($relation->modelClass);
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
 [

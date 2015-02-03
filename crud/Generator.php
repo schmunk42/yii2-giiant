@@ -14,6 +14,7 @@ use schmunk42\giiant\crud\providers\RelationProvider;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
@@ -210,7 +211,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * @todo docs
+     * Finds relations of a model class, return values can be filtered by types
+     *
+     * @param ActiveRecord $modelClass
+     * @param array $types
+     *
      * @return array
      */
     public function getModelRelations($modelClass, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
@@ -282,7 +287,7 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     /**
      * Generates code for active field by using the provider queue
-     * 
+     *
      * @param ColumnSchema $column
      * @param null $model
      *
@@ -348,10 +353,10 @@ class Generator extends \yii\gii\generators\crud\Generator
         // don't call parent anymore
     }
 
-    public function relationGrid($attribute)
+    public function relationGrid($name, $relation, $showAllRecords = false)
     {
         Yii::trace("Rendering relationGrid", __METHOD__);
-        return $this->callProviderQueue(__FUNCTION__, $attribute);
+        return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }
 
     /**
