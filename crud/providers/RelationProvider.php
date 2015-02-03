@@ -38,9 +38,11 @@ EOS;
 
     public function attributeFormat($column)
     {
-        // do not handle columns with a primary key, TOOD: review(!) should not be omitted in every case
+        # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
+        # TODO double check with primary keys not named `id` of non-pivot tables
+        # TODO Note: condition does not apply in every case
         if ($column->isPrimaryKey) {
-            return null;
+            #return null; #TODO: double check with primary keys not named `id` of non-pivot tables
         }
 
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
@@ -78,9 +80,11 @@ EOS;
 
     public function columnFormat($column, $model)
     {
-        // do not handle columns with a primary key, TOOD: review(!) should not be omitted in every case
+        # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
+        # TODO double check with primary keys not named `id` of non-pivot tables
+        # TODO Note: condition does not apply in every case
         if ($column->isPrimaryKey) {
-            return null;
+            #return null;
         }
 
         $relation = $this->generator->getRelationByColumn($model, $column);
