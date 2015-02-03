@@ -27,6 +27,7 @@ class Generator extends \yii\gii\generators\crud\Generator
 {
     #public $codeModel;
     public $actionButtonClass = 'yii\grid\ActionColumn';
+    public $skipRelations = [];
     public $providerList = null;
     public $viewPath = '@backend/views';
     public $tablePrefix = null;
@@ -218,6 +219,9 @@ class Generator extends \yii\gii\generators\crud\Generator
         $model     = new $modelClass;
         $stack     = [];
         foreach ($reflector->getMethods() AS $method) {
+            if (in_array(substr($method->name, 3), $this->skipRelations)) {
+                continue;
+            }
             // look for getters
             if (substr($method->name, 0, 3) !== 'get') {
                 continue;

@@ -59,6 +59,10 @@ class BatchController extends Controller
     public $crudPathPrefix = 'crud/';
     public $crudProviders = [];
     public $crudBaseControllerClass = 'yii\web\Controller';
+    /**
+     * @var array list of relations to skip, when generating `view`-views
+     */
+    public $crudSkipRelations = [];
 
     /**
      * @inheritdoc
@@ -83,6 +87,7 @@ class BatchController extends Controller
                 'crudViewPath',
                 'crudPathPrefix',
                 'crudProviders',
+                'crudSkipRelations',
                 'crudBaseControllerClass'
             ]
         );
@@ -149,6 +154,7 @@ class BatchController extends Controller
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => implode(',', $providers),
+                'skipRelations'       => $this->crudSkipRelations,
             ];
             $route  = 'gii/giiant-crud';
             $app    = \Yii::$app;
