@@ -46,6 +46,25 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public $enableCsrfValidation = false;
 
+	/**
+	 * @inheritdoc
+	 */
+	public function behaviors()
+	{
+		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' 	=> true,
+						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
+						'roles'     => ['@']
+					]
+				]
+			]
+		];
+	}
+
     /**
      * @inheritdoc
      */
