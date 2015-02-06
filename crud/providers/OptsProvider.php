@@ -12,21 +12,52 @@ class OptsProvider extends \schmunk42\giiant\base\Provider
     public function activeField(ColumnSchema $attribute)
     {
         $column = $this->generator->getTableSchema()->columns[$attribute->name];
-
-        // Render a dropdown list if the model has a method optsColumn().
         $modelClass = $this->generator->modelClass;
         $func       = 'opts' . str_replace("_", "", $column->name);
 
         if (method_exists($modelClass::className(), $func)) {
-            return <<<EOS
-\$form->field(\$model, '{$column->name}')->dropDownList(
-    {$modelClass}::{$func}(),
-    ['prompt' => {$this->generator->generateString('Select')}]
-);
-EOS;
-
+            $mode = isset($this->columnNames[$attribute->name])?$this->columnNames[$attribute->name]:null;
         } else {
             return null;
         }
+
+        switch ($mode) {
+            case 'radio':
+                return <<<EOS
+                    \$form->field(\$model, '{$column->name}')->radioList(
+                        {$modelClass}::{$func}(),
+                        ['prompt' => {$this->generator->generateString('Select')}]
+                    );
+EOS;
+                break;
+
+            case 'select2':
+                return <<<EOS
+                    \$form->field(\$model, '{$column->name}')->widget(\kartik\select2\Select2::classname(), [
+                        'name' => 'class_name',
+                        'model' => \$model,
+                        'attribute' => '{$column->name}',
+                        'data' => {$modelClass}::{$func}(),
+                        'options' => [
+                             'placeholder' => {$this->generator->generateString('Select')},
+                              'multiple' => false,
+                        ]
+                    ]);
+EOS;
+                break;
+
+            default:
+                // Render a dropdown list if the model has a method optsColumn().
+                return <<<EOS
+                        \$form->field(\$model, '{$column->name}')->dropDownList(
+                            {$modelClass}::{$func}(),
+                            ['prompt' => {$this->generator->generateString('Select')}]
+                        );
+EOS;
+
+        }
+
+        return null;
+
     }
 }
