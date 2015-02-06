@@ -27,11 +27,6 @@ use \dmstr\bootstrap\Tabs;
 * @var yii\widgets\ActiveForm $form
 */
 
-// Cut off returnUrl from request url for only save record option
-$actionUrl = Yii::$app->request->url;
-if (strpos($actionUrl, 'returnUrl') !== false) {
-    $actionUrl = urldecode(substr($actionUrl, 0, strpos($actionUrl, 'returnUrl') - 1));
-}
 ?>
 
 <div class="<?= \yii\helpers\Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-form">
@@ -104,12 +99,6 @@ EOS;
                 ]
             );
         ?>
-        <?= "<?= " ?>(!$model->isNewRecord && \Yii::$app->request->getQueryParam('returnUrl') !== null) ? Html::submitButton(
-                '<span class="glyphicon glyphicon-fast-backward"></span> ' .
-                    <?= $generator->generateString('Save and go back') ?> . '',
-                    ['class' => 'btn btn-primary']
-                ) : null;
-        ?>
 
 
         <?= "<?php " ?>ActiveForm::end(); ?>
@@ -117,14 +106,3 @@ EOS;
     </div>
 
 </div>
-
-<?php
-    echo "<?php\n";
-?>
-$js = <<<JS
-// get the form id and set the action url
-$('#save-{$model->formName()}').on('click', function(e) {
-    $('form#{$model->formName()}').attr("action","{$actionUrl}");
-});
-JS;
-$this->registerJs($js);

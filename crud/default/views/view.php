@@ -35,13 +35,11 @@ Inflector::pluralize(
 ) ?>', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
-$returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null)
-                                    ? \Yii::$app->request->get('returnUrl') : null;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],
         ['class' => 'btn btn-info']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?> . ' <?=
         Inflector::camel2words(
@@ -91,7 +89,7 @@ $returnUrl                     = (\Yii::$app->request->get('returnUrl') !== null
 
     <hr/>
 
-    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>, 'returnUrl' => $returnUrl],
+    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
@@ -170,7 +168,7 @@ EOS;
 
         // render relation grid
         if (!empty($output)):
-            echo "<?php Pjax::begin(['id'=>'pjax-{$name}','linkSelector'=>'#pjax-{$name} ul.pagination a']) ?>\n";
+            echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
             echo "<?= " . $output . "?>\n";
             echo "<?php Pjax::end() ?>\n";
         endif;

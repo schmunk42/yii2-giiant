@@ -197,14 +197,6 @@ EOS;
             $counter++;
         }
 
-        $returnUrl  = <<<EOS
-\$returnUrl = (Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) !== null) ?
-                                Tabs::getParentRelationRoute(\\Yii::\$app->controller->id) : null;
-        if (strpos(\$returnUrl, 'returnUrl') !== false) {
-            \$returnUrl = substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl));
-        }
-EOS;
-
         if (!$this->generator->isPivotRelation($relation)) {
             // hasMany relations
             $template          = '{view} {update}';
@@ -214,8 +206,7 @@ EOS;
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
-                {$returnUrl}
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url . '&returnUrl=' . \$returnUrl, [
+                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
                     'data-confirm'  => {$this->generator->generateString(
@@ -226,7 +217,6 @@ EOS;
                 ]);
             },
 'view' => function (\$url, \$model) {
-                {$returnUrl}
                 return yii\helpers\Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
                     \$url . '&returnUrl=' . \$returnUrl,
@@ -252,14 +242,7 @@ EOS;
     'contentOptions' => ['nowrap'=>'nowrap'],
     'urlCreator' => function(\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
-        \$returnUrl = \Yii::\$app->request->url;
-        if (strpos(\$returnUrl, 'returnUrl') !== false) {
-            \$returnUrl = urldecode(substr(\$returnUrl, strpos(\$returnUrl, 'returnUrl') + 10, strlen(\$returnUrl)));
-        } else {
-            \$returnUrl = (Tabs::getParentRelationRoute(\Yii::\$app->controller->id) !== null) ?
-                Tabs::getParentRelationRoute(\Yii::\$app->controller->id) : null;
-        }
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key, 'returnUrl' => \$returnUrl];
+        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
         return Url::toRoute(\$params);
     },
@@ -275,14 +258,13 @@ EOS;
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
         $code  = '';
+        $pageParam = Inflector::slug("page-{$name}");
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10]]),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10, 'pageParam'=>'{$pageParam}']]),
     'columns' => [$columns]
 ]);
 EOS;
         return $code;
     }
-
-
 }
