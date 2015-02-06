@@ -219,14 +219,12 @@ EOS;
 'view' => function (\$url, \$model) {
                 return yii\helpers\Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
-                    \$url . '&returnUrl=' . \$returnUrl,
+                    \$url,
                     [
                         'data-title'  => {$this->generator->generateString('View Pivot Record')},
                         'data-toggle' => 'tooltip',
                         'data-pjax'   => '0',
                         'class'       => 'text-muted',
-                        'onClick'     => 'setRouteCookie("' . \$url . '", "' . \Yii::\$app->controller->id . '")'
-
                     ]
                 );
             },
