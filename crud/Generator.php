@@ -10,6 +10,7 @@ namespace schmunk42\giiant\crud;
 use schmunk42\giiant\crud\providers\CallbackProvider;
 use schmunk42\giiant\crud\providers\DateTimeProvider;
 use schmunk42\giiant\crud\providers\EditorProvider;
+use schmunk42\giiant\crud\providers\OptsProvider;
 use schmunk42\giiant\crud\providers\RelationProvider;
 use Yii;
 use yii\base\Exception;
@@ -44,6 +45,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             CallbackProvider::className(),
             EditorProvider::className(),
             DateTimeProvider::className(),
+            OptsProvider::className(),
             RelationProvider::className()
         ];
     }
