@@ -13,9 +13,9 @@ use yii\helpers\Inflector;
 class BatchController extends Controller
 {
     /**
-     * @var bool whether to generate and overwrite all files
+     * @var string the generator template, defaults to 'default'
      */
-    public $generate = false;
+    public $template = 'default';
 
     /**
      * @var bool whether to generate and overwrite all files
@@ -104,7 +104,6 @@ class BatchController extends Controller
         return array_merge(
             parent::options($id),
             [
-                'generate',
                 'overwrite',
                 'extendedModels',
                 'enableI18N',
@@ -148,7 +147,7 @@ class BatchController extends Controller
             $params = [
                 'interactive'        => $this->interactive,
                 'overwrite'          => $this->overwrite,
-                'template'           => 'default',
+                'template'           => $this->template,
                 'ns'                 => $this->modelNamespace,
                 'db'                 => $this->modelDb,
                 'tableName'          => $table,
@@ -179,7 +178,7 @@ class BatchController extends Controller
             $params = [
                 'interactive'         => $this->interactive,
                 'overwrite'           => $this->overwrite,
-                'template'            => 'default',
+                'template'            => $this->template,
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name,
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
