@@ -104,6 +104,7 @@ class BatchController extends Controller
         return array_merge(
             parent::options($id),
             [
+                'template',
                 'overwrite',
                 'extendedModels',
                 'enableI18N',
