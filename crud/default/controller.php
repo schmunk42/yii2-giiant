@@ -179,10 +179,11 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         if ($isPivot == true) {
             $this->redirect(Url::previous());
         } elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
-            $url = \Yii::$app->session['__crudReturnUrl'];
-            \Yii::$app->getUser()->setReturnUrl(null);
-            \Yii::$app->session['__crudReturnUrl'] = null;
-            $this->redirect($url);
+			Url::remember(null);
+			$url = \Yii::$app->session['__crudReturnUrl'];
+			\Yii::$app->session['__crudReturnUrl'] = null;
+
+			$this->redirect($url);
         } else {
             $this->redirect(['index']);
         }
