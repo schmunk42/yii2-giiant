@@ -90,6 +90,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php if ($generator->indexWidgetType === 'grid'): ?>
         <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
+        'pager'        => [
+            'class'          => yii\widgets\LinkPager::className(),
+            'firstPageLabel' => <?= $generator->generateString('First') ?>,
+            'lastPageLabel'  => <?= $generator->generateString('Last') ?>
+        ],
         'filterModel' => $searchModel,
         'columns' => [
         <?php

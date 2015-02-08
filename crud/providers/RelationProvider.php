@@ -252,14 +252,21 @@ EOS;
 EOS;
         $columns .= $actionColumn . ",";
 
-        $query = $showAllRecords ?
+        $query          = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
-        $code  = '';
-        $pageParam = Inflector::slug("page-{$name}");
-        $code .= <<<EOS
+        $code           = '';
+        $pageParam      = Inflector::slug("page-{$name}");
+        $firstPageLabel = $this->generator->generateString('First');
+        $lastPageLabel  = $this->generator->generateString('Last');
+        $code          .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10, 'pageParam'=>'{$pageParam}']]),
+    'pager'        => [
+        'class'          => yii\widgets\LinkPager::className(),
+        'firstPageLabel' => {$firstPageLabel},
+        'lastPageLabel'  => {$lastPageLabel}
+    ],
     'columns' => [$columns]
 ]);
 EOS;
