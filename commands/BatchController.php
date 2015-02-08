@@ -13,7 +13,7 @@ use yii\helpers\Inflector;
 class BatchController extends Controller
 {
     /**
-     * @var string the generator template, defaults to 'default'
+     * @var string the generator template name
      */
     public $template = 'default';
 
