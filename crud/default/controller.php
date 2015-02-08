@@ -109,7 +109,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $url = Url::to(array_merge(['/'.$resolved[0]],$resolved[1]));
         \Yii::$app->session['__crudReturnUrl'] = Url::previous();
         Url::remember($url);
-        Tabs::rememberActiveTab($this->id.'-'.\yii\helpers\Inflector::slug(Url::to($resolved)));
+        Tabs::rememberActiveState();
 
         return $this->render('view', [
 			'model' => $this->findModel(<?= $actionParams ?>),
