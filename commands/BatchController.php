@@ -67,30 +67,37 @@ class BatchController extends Controller
      * Defaults to `app`.
      */
     public $messageCategory = 'app';
+
     /**
      * @var string namespace path for crud controller
      */
     public $crudControllerNamespace = 'backend\\controllers\\crud';
+
     /**
      * @var string namespace path for crud search models
      */
     public $crudSearchModelNamespace = 'backend\\models\\search';
+
     /**
      * @var string namespace path for crud views
      */
     public $crudViewPath = '@backend/views/crud';
+
     /**
      * @var string route prefix for crud controller actions
      */
     public $crudPathPrefix = 'crud/';
+
     /**
      * @var array list of code provider classes (fully namespaced path required)
      */
     public $crudProviders = [];
+
     /**
      * @var string base class for crud controllers
      */
     public $crudBaseControllerClass = 'yii\web\Controller';
+    
     /**
      * @var array list of relations to skip, when generating `view`-views
      */
