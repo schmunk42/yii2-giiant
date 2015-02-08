@@ -71,7 +71,6 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            Tabs::registerAssets();
             return true;
         } else {
             return false;
@@ -86,6 +85,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	{
 		$searchModel  = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
 		$dataProvider = $searchModel->search($_GET);
+
+		Tabs::clearLocalStorage();
 
         Url::remember();
         \Yii::$app->session['__crudReturnUrl'] = null;
