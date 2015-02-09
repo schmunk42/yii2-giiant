@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "dmstr/yii2-bootstrap": "*",
+        "dmstr/yii2-bootstrap": "dev-master",
         "yiisoft/yii2-gii": "~2.0.1"
     },
     "autoload": {
