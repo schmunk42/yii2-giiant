@@ -2,6 +2,7 @@
 namespace schmunk42\giiant\crud\providers;
 
 use yii\db\ColumnSchema;
+
 /**
  * Class OptsProvider
  * @package schmunk42\giiant\crud\providers
@@ -11,12 +12,12 @@ class OptsProvider extends \schmunk42\giiant\base\Provider
 {
     public function activeField(ColumnSchema $attribute)
     {
-        $column = $this->generator->getTableSchema()->columns[$attribute->name];
+        $column     = $this->generator->getTableSchema()->columns[$attribute->name];
         $modelClass = $this->generator->modelClass;
         $func       = 'opts' . str_replace("_", "", $column->name);
 
         if (method_exists($modelClass::className(), $func)) {
-            $mode = isset($this->columnNames[$attribute->name])?$this->columnNames[$attribute->name]:null;
+            $mode = isset($this->columnNames[$attribute->name]) ? $this->columnNames[$attribute->name] : null;
         } else {
             return null;
         }
@@ -25,8 +26,7 @@ class OptsProvider extends \schmunk42\giiant\base\Provider
             case 'radio':
                 return <<<EOS
                     \$form->field(\$model, '{$column->name}')->radioList(
-                        {$modelClass}::{$func}(),
-                        ['prompt' => {$this->generator->generateString('Select')}]
+                        {$modelClass}::{$func}()
                     );
 EOS;
                 break;
@@ -39,8 +39,8 @@ EOS;
                         'attribute' => '{$column->name}',
                         'data' => {$modelClass}::{$func}(),
                         'options' => [
-                             'placeholder' => {$this->generator->generateString('Select')},
-                              'multiple' => false,
+                            'placeholder' => {$this->generator->generateString('Type to autocomplete')},
+                            'multiple' => false,
                         ]
                     ]);
 EOS;
@@ -50,8 +50,7 @@ EOS;
                 // Render a dropdown list if the model has a method optsColumn().
                 return <<<EOS
                         \$form->field(\$model, '{$column->name}')->dropDownList(
-                            {$modelClass}::{$func}(),
-                            ['prompt' => {$this->generator->generateString('Select')}]
+                            {$modelClass}::{$func}()
                         );
 EOS;
 
