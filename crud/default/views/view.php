@@ -38,15 +38,17 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
+    <!-- menu buttons -->
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],
-        ['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?> . ' <?=
-        Inflector::camel2words(
-            StringHelper::basename($generator->modelClass)
-        ) ?>', ['create'], ['class' => 'btn
-        btn-success']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List') ?>, ['index'], ['class'=>'btn btn-default']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?> . '
+        <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+
+    <div class="clearfix"></div>
+
+    <!-- flash message -->
     <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
         <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
             <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
@@ -54,11 +56,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             <?= \\Yii::\$app->session->getFlash('deleteError') ?>
         </span>
     <?php endif; ?>" ?>
-    <?php
-    echo "    <p class='pull-right'>\n";
-    echo "        <?= Html::a('<span class=\"glyphicon glyphicon-list\"></span> ' . {$generator->generateString('List')}, ['index'], ['class'=>'btn btn-default']) ?>\n";
-    echo "    </p><div class='clearfix'></div> \n";
-    ?>
+
+
 
     <?php $label = StringHelper::basename($generator->modelClass); ?>
 

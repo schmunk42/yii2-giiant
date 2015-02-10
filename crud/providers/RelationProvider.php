@@ -174,29 +174,6 @@ EOS;
         $counter = 0;
         $columns = '';
 
-        // prepare grid column formatters
-        foreach ($model->attributes AS $attr => $value) {
-            // max seven columns
-            if ($counter > 8) {
-                continue;
-            }
-            // skip virtual attributes
-            if (!isset($model->tableSchema->columns[$attr])) {
-                continue;
-            }
-            // don't show current model
-            if (key($relation->link) == $attr) {
-                continue;
-            }
-
-            $code = $this->generator->columnFormat($model->tableSchema->columns[$attr], $model);
-            if ($code == false) {
-                continue;
-            }
-            $columns .= $code . ",\n";
-            $counter++;
-        }
-
         if (!$this->generator->isPivotRelation($relation)) {
             // hasMany relations
             $template          = '{view} {update}';
@@ -250,26 +227,52 @@ EOS;
     'controller' => '$controller'
 ]
 EOS;
+
+        // add action column
         $columns .= $actionColumn . ",";
+
+        // prepare grid column formatters
+        foreach ($model->attributes AS $attr => $value) {
+            // max seven columns
+            if ($counter > 8) {
+                continue;
+            }
+            // skip virtual attributes
+            if (!isset($model->tableSchema->columns[$attr])) {
+                continue;
+            }
+            // don't show current model
+            if (key($relation->link) == $attr) {
+                continue;
+            }
+
+            $code = $this->generator->columnFormat($model->tableSchema->columns[$attr], $model);
+            if ($code == false) {
+                continue;
+            }
+            $columns .= $code . ",\n";
+            $counter++;
+        }
 
         $query          = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
-        $code           = '';
         $pageParam      = Inflector::slug("page-{$name}");
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel  = $this->generator->generateString('Last');
+        $code           = '\'<div class="table-responsive">\'.';
         $code          .= <<<EOS
 \\yii\\grid\\GridView::widget([
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 10, 'pageParam'=>'{$pageParam}']]),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 25, 'pageParam'=>'{$pageParam}']]),
     'pager'        => [
         'class'          => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
         'lastPageLabel'  => {$lastPageLabel}
     ],
     'columns' => [$columns]
-]);
+])
 EOS;
+        $code           .= '.\'</div>\'';
         return $code;
     }
 }

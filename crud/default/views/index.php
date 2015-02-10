@@ -88,6 +88,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
+
+        <div class="table-responsive">
         <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
         'pager'        => [
@@ -97,9 +99,27 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'filterModel' => $searchModel,
         'columns' => [
+
         <?php
+        $actionButtonColumn = <<<PHP
+[
+    'class' => '{$generator->actionButtonClass}',
+    'urlCreator' => function(\$action, \$model, \$key, \$index) {
+        // using the column name as key, not mapping to 'id' like the standard generator
+        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+        \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
+        return Url::toRoute(\$params);
+    },
+    'contentOptions' => ['nowrap'=>'nowrap']
+],
+PHP;
+
+        // action buttons first
+        echo $actionButtonColumn;
+
         $count = 0;
         echo "\n"; // code-formatting
+
         foreach ($generator->getTableSchema()->columns as $column) {
             $format = trim($generator->columnFormat($column,$model));
             if ($format == false) continue;
@@ -109,21 +129,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo "\t\t\t/*{$format}*/\n";
             }
         }
-        ?>
-            [
-                'class' => '<?= $generator->actionButtonClass ?>',
-                'urlCreator' => function($action, $model, $key, $index) {
 
-                    // using the column name as key, not mapping to 'id' like the standard generator
-                    $params = is_array($key) ? $key : [$model->primaryKey()[0] => (string) $key];
-                    $params[0] = \Yii::$app->controller->id ? \Yii::$app->controller->id . '/' . $action : $action;
-                    return Url::toRoute($params);
-                },
-                'contentOptions' => ['nowrap'=>'nowrap']
-            ],
+        ?>
         ],
     ]); ?>
+        </div>
+
     <?php else: ?>
+
         <?= "<?= " ?> ListView::widget([
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
@@ -131,6 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
         return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
         },
         ]); ?>
+
     <?php endif; ?>
 
 </div>
