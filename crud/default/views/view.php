@@ -132,7 +132,7 @@ EOS;
         }
 
         // relation list, add, create buttons
-        echo "<p class='pull-right'>\n";
+        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top 0px;'>\n";
 
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
@@ -150,7 +150,7 @@ EOS;
         ); ?>\n";
         echo $addButton;
 
-        echo "</p><div class='clearfix'></div>\n";
+        echo "</div></div>";#<div class='clearfix'></div>\n";
 
         // render pivot grid
         if ($relation->via !== null) {
@@ -167,7 +167,7 @@ EOS;
 
         // render relation grid
         if (!empty($output)):
-            echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
+            echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
             echo "<?= " . $output . "?>\n";
             echo "<?php Pjax::end() ?>\n";
         endif;

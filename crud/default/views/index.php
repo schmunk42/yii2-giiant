@@ -91,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="table-responsive">
         <?= "<?= " ?>GridView::widget([
+        'layout' => '{summary}{pager}{items}{pager}',
         'dataProvider' => $dataProvider,
         'pager'        => [
             'class'          => yii\widgets\LinkPager::className(),

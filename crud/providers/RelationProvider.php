@@ -263,7 +263,8 @@ EOS;
         $code           = '\'<div class="table-responsive">\'.';
         $code          .= <<<EOS
 \\yii\\grid\\GridView::widget([
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 25, 'pageParam'=>'{$pageParam}']]),
+    'layout' => '{summary}{pager}<br/>{items}{pager}',
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
     'pager'        => [
         'class'          => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
