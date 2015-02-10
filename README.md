@@ -129,35 +129,34 @@ This will render a Ckeditor widget for every column named `description`.
 This provider has three properties `activeFields` (form), `columnFormats` (index) and `attributeFormats` (view) which all take an array of callback as input. The keys are evaluated as a regular expression the match the class and attribute name.
 While the callback function takes the current attribute and generator as input parameters.
 
-The configuration can be done via the dependency injection container of Yii2:
+The configuration can be done via the dependency injection container of Yii2.
+
+Define callbacks for input fields in `_form` view
 
 ```
-\Yii::$container->set(
-    'schmunk42\giiant\crud\providers\CallbackProvider',
-    [
+$activeFields = [
 
-        'activeFields'  => [
-
-           /**
-            * Generate a checkbox for specific column (model attribute)
-            */
-           'common\models\Foo.isAvailable' => function ($attribute, $generator) {
-               $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
-               return <<<INPUT
+   /**
+    * Generate a checkbox for specific column (model attribute)
+    */
+   'common\models\Foo.isAvailable' => function ($attribute, $generator) {
+       $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
+       return <<<INPUT
 \$form->field(\$model, '{$attribute}')->checkbox({$data});
 INPUT;
-           },
-        ],
+   },
+   
+];
+```
 
+Define callbacks for grid columns in `index` view
 
-        'columnFormats' => [
+```
+columnFormats = [
 
-           /**
-            * generate custom HTML in column
-            */
-           'common\models\Foo.html' => function ($attribute, $generator) {
-
-               return <<<FORMAT
+   // generate custom HTML in column
+   'common\models\Foo.html' => function ($attribute, $generator) {
+       return <<<FORMAT
 [
     'format' => 'html',
     'label'=>'FOOFOO',
@@ -167,29 +166,60 @@ INPUT;
     }
 ]
 FORMAT;
-           },
+   },
 
+    // hide all text fields in grid
+    '.+' => function ($column, $model) {
+            if ($column->dbType == 'text') {
+                return false;
+            }
+    },
+    
+    // hide system fields in grid
+    'created_at$|updated_at$' => function () {
+           return false;
+    },
+    
+];
+```
 
-           /**
-            * hide all text fields in grid
-            */
-           '.+' => function ($column, $model) {
-                    if ($column->dbType == 'text') {
-                        return false;
-                    }
-           },
+Detail `view` attributes
 
-           /**
-            * hide system fields in grid
-            */
-           'created_at$|updated_at$' => function () {
-                   return false;
-           },
+```
+$attributeFormats = [
 
-        ]
+    // usa a static helper function for all columns ending with `_json`
+    '_json$' => function ($attribute, $generator) {
+        $formattter = StringFormatter::className();
+        return <<<FORMAT
+[
+    'format' => 'html',
+    #'label'=>'FOOFOO',
+    'attribute' => '{$attribute->name}',
+    'value'=> {$formattter}::contentJsonToHtml(\$model->{$attribute->name})
+
+]
+FORMAT;
+
+    },
+];
+```
+
+Finally add the configuration via DI container
+
+```
+\Yii::$container->set(
+    'schmunk42\giiant\crud\providers\CallbackProvider',
+    [
+        'activeFields'  => $activeFields,
+        'columnFormats' => $columnFormats,
+        'attributeFormats => $attributeFormats,
     ]
 );
 ```
+
+[More providers...](docs/callback-provider-examples.md)
+
 
 Extras
 ------
