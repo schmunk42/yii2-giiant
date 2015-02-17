@@ -132,10 +132,19 @@ Set the first entry in your `getColumnName()` method to value `null`.
 
 To ensure that the correct value is written to the database you should add a validation rule in the model.  
 
-	public function rules()
-	{
-		return ArrayHelper::merge(parent::rules(), [[['static_page'], 'default', 'value' => null]]);
-	}
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                [
+                    ['field_name'],
+                    'default',
+                    'value' => null
+                ]
+            ]
+        );
+    }
 
 
 ### Universal `CallbackProvider`
