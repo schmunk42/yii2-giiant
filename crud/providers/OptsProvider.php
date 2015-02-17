@@ -50,8 +50,7 @@ EOS;
                 // Render a dropdown list if the model has a method optsColumn().
                 return <<<EOS
                         \$form->field(\$model, '{$column->name}')->dropDownList(
-                            {$modelClass}::{$func}(),
-                            ['prompt' => {$this->generator->generateString('Select')}]
+                            {$modelClass}::{$func}()
                         );
 EOS;
 
