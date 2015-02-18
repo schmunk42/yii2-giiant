@@ -124,6 +124,29 @@ This will render a Ckeditor widget for every column named `description`.
 
 **NOTE** The OptsProvider matches every model with opts methods for a field, i.e. method `optsMembers` matches for model attribute `members`.
 
+#### Using "prompt" in dropdown lists
+
+Set the first entry in your `getColumnName()` method to value `null`.  
+
+	null => \Yii::t('app', 'Select'),
+
+To ensure that the correct value is written to the database you should add a validation rule in the model.  
+
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                [
+                    ['field_name'],
+                    'default',
+                    'value' => null
+                ]
+            ]
+        );
+    }
+
+
 ### Universal `CallbackProvider`
 
 This provider has three properties `activeFields` (form), `columnFormats` (index) and `attributeFormats` (view) which all take an array of callback as input. The keys are evaluated as a regular expression the match the class and attribute name.
