@@ -54,7 +54,8 @@ Features
 - input, attribute, column and relation customization with provider queue
 - callback provider to inject any kind of code for inputs, attributes and columns via dependency injection
 
-#### Providers
+Providers
+---------
 
 - *CallbackProvider* universal provider to modify any input, attribute or column with highly flexible callback functions
 - *RelationProvider* renders code for relations (eg. links, dropdowns)
@@ -63,8 +64,7 @@ Features
 - *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
 
 
-Customization with providers
-----------------------------
+### Customization with providers
 
 In many cases you want to exchange i.e. some inputs with a customized version for your project.
 Examples for this use-case are editors, file-uploads or choosers, complex input widget with a modal screen, getting
