@@ -35,7 +35,7 @@ You can run batches of base-model and CRUD generation with the build in batch co
 
     ./yii giiant-batch --tables=profile,social_account,user,token
 
-It will process the given tables, for more details see `./yii help giiant-batch`.
+It will process the given tables, for more details see `./yii help giiant-batch`. See the [Sakila example](docs/generate-sakila-backend.md) for a detailed example.
 
 
 Features
