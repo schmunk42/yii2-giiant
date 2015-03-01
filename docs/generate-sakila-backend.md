@@ -59,10 +59,18 @@ Finally run the batch:
 
 ```
 ./yii giiant-batch \
-  --modelDb=dbSakila \
-  --modelBaseClass=common\\models\\SakilaActiveRecord \
-  --modelNamespace=common\\models\\sakila \
-  --tables=actor,address,category,city,country,customer,film,film_actor,film_category,film_text,inventory,language,payment,rental,staff,store
+    --interactive=0 \
+    --overwrite=1 \
+    --enableI18N=1 \
+    --messageCategory=app \
+    --modelBaseClass=app\\modules\\sakila\\base\\SakilaActiveRecord \
+    --modelNamespace=app\\modules\\sakila\\models \
+    --crudControllerNamespace=app\\modules\\sakila\\controllers \
+    --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
+    --crudViewPath=@app/modules/sakila/views \
+    --crudPathPrefix= \
+    --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
+    --tables=actor,address,category,city,country,customer,film,film_actor,film_category,film_text,inventory,language,payment,rental,staff,store
 ```
 
 And open `index.php?r=crud/film` to test your fresh Sakila CRUDs generated with Giiant.
