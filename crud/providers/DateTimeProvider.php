@@ -10,7 +10,7 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
 
         switch (true) {
             case (in_array($column->name, $this->columnNames)):
-                $this->generator->requires[] = 'zhuravljov\yii2-datetime-widgets';
+                $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
                 return <<<EOS
 \$form->field(\$model, '{$column->name}')->widget(\zhuravljov\widgets\DateTimePicker::className(), [
     'options' => ['class' => 'form-control'],
