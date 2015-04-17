@@ -143,6 +143,10 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getModelNameAttribute($modelClass)
     {
         $model = new $modelClass;
+        // TODO: cleanup, get-label-methods, move to config
+        if ($model->hasMethod('get_label')) {
+            return '_label';
+        }
         if ($model->hasMethod('getLabel')) {
             return 'label';
         }
