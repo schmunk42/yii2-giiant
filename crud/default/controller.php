@@ -150,7 +150,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		$model = $this->findModel(<?= $actionParams ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-            $this->redirect(Url::previous());
+            return $this->redirect(Url::previous());
 		} else {
 			return $this->render('update', [
 				'model' => $model,
@@ -177,15 +177,15 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         // TODO: improve detection
         $isPivot = strstr('<?= $actionParams ?>',',');
         if ($isPivot == true) {
-            $this->redirect(Url::previous());
+            return $this->redirect(Url::previous());
         } elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
 			Url::remember(null);
 			$url = \Yii::$app->session['__crudReturnUrl'];
 			\Yii::$app->session['__crudReturnUrl'] = null;
 
-			$this->redirect($url);
+			return $this->redirect($url);
         } else {
-            $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
 	}
 
