@@ -18,10 +18,11 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use Yii;
+use \<?= $generator->ns ?>\base\<?= $className ?> as Base<?= $className ?>;
 
 /**
  * This is the model class for table "<?= $tableName ?>".
  */
-class <?= $className ?> extends \<?= $generator->ns ?>\base\<?= $className . "\n" ?>
+class <?= $className ?> extends Base<?= $className . "\n" ?>
 {
 }
