@@ -97,11 +97,16 @@ class BatchController extends Controller
      * @var string base class for crud controllers
      */
     public $crudBaseControllerClass = 'yii\web\Controller';
-    
+
     /**
      * @var array list of relations to skip, when generating `view`-views
      */
     public $crudSkipRelations = [];
+
+    /**
+     * @var application configuration for creating temporary applications
+     */
+    private $appConfig;
 
     /**
      * @inheritdoc
@@ -133,22 +138,43 @@ class BatchController extends Controller
     }
 
     /**
+     * Loads application configuration and checks tables parameter
+     *
+     * @param \yii\base\Action $action
+     *
+     * @return bool
+     */
+    public function beforeAction($action)
+    {
+        $this->appConfig       = $this->getYiiConfiguration();
+        $this->appConfig['id'] = 'temp';
+
+        if (!$this->tables) {
+            echo "No tables specified.";
+            return false;
+            exit;
+        }
+        return parent::beforeAction($action);
+    }
+
+    /**
      * Run batch process to generate models and CRUDs for all given tables
      *
      * @param string $message the message to be echoed.
      */
     public function actionIndex()
     {
-        echo "Running batch...\n";
+        echo "Running full giiant batch...\n";
+        $this->actionModels();
+        $this->actionCruds();
+    }
 
-        $config       = $this->getYiiConfiguration();
-        $config['id'] = 'temp';
-
-        if (!$this->tables) {
-            echo "No tables specified.";
-            exit;
-        }
-
+    /**
+     * Run batch process to generate models all given tables
+     * @throws \yii\console\Exception
+     */
+    public function actionModels()
+    {
         // create models
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
@@ -171,13 +197,20 @@ class BatchController extends Controller
             $route  = 'gii/giiant-model';
 
             $app  = \Yii::$app;
-            $temp = new \yii\console\Application($config);
+            $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
         }
 
+    }
 
+    /**
+     * Run batch process to generate CRUDs all given tables
+     * @throws \yii\console\Exception
+     */
+    public function actionCruds()
+    {
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
@@ -202,7 +235,7 @@ class BatchController extends Controller
             ];
             $route  = 'gii/giiant-crud';
             $app    = \Yii::$app;
-            $temp   = new \yii\console\Application($config);
+            $temp   = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
