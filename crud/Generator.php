@@ -37,6 +37,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $formLayout = 'horizontal';
     public $requires = [];
     public $messageCatalog = 'app';
+    public $gridMaxColumns = 8;
     private $_p = [];
 
     static public function getCoreProviders()
