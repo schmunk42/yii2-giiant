@@ -7,9 +7,9 @@
 
 namespace schmunk42\giiant\model;
 
+use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
-use Yii;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -120,7 +120,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'tableSchema' => $tableSchema,
                 'labels'      => $this->generateLabels($tableSchema),
                 'rules'       => $this->generateRules($tableSchema),
-                'relations'   => isset($relations[$className]) ? $relations[$className] : [],
+                'relations'   => isset($relations[$tableName]) ? $relations[$tableName] : [],
                 'ns'          => $this->ns,
             ];
 
