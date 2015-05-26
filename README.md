@@ -141,7 +141,7 @@ $activeFields = [
    'common\models\Foo.isAvailable' => function ($attribute, $generator) {
        $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
        return <<<INPUT
-\$form->field(\$model, '{$attribute}')->checkbox({$data});
+\$form->field(\$model, '{$attribute->name}')->checkbox({$data});
 INPUT;
    },
    
@@ -212,7 +212,7 @@ Finally add the configuration via DI container
     [
         'activeFields'  => $activeFields,
         'columnFormats' => $columnFormats,
-        'attributeFormats => $attributeFormats,
+        'attributeFormats' => $attributeFormats,
     ]
 );
 ```
