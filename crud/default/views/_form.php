@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 /**
@@ -45,7 +46,11 @@ use \dmstr\bootstrap\Tabs;
 
         <p>
             <?php foreach ($safeAttributes as $attribute) {
-                $column   = $generator->getTableSchema()->columns[$attribute];
+                $column   = ArrayHelper::getValue($generator->getTableSchema()->columns, $attribute);
+
+                if ($column === null) {
+                    continue;
+                }
 
                 $prepend = $generator->prependActiveField($column, $model);
                 $field = $generator->activeField($column, $model);
