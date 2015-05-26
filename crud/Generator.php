@@ -27,17 +27,40 @@ use yii\helpers\Json;
  */
 class Generator extends \yii\gii\generators\crud\Generator
 {
-    #public $codeModel;
-    public $actionButtonClass = 'yii\grid\ActionColumn';
-    public $skipRelations = [];
+    /**
+     * @var null comma separated list of provider classes
+     */
     public $providerList = null;
+    /**
+     * @todo review
+     * @var string
+     */
+    public $actionButtonClass = 'yii\grid\ActionColumn';
+    /**
+     * @var array relations to be excluded in UI rendering
+     */
+    public $skipRelations = [];
+    /**
+     * @var string default view path
+     */
     public $viewPath = '@backend/views';
+
     public $tablePrefix = null;
     public $pathPrefix = null;
     public $formLayout = 'horizontal';
-    public $requires = [];
+    /**
+     * @var string translation catalogue
+     */
     public $messageCatalog = 'app';
+    /**
+     * @var int maximum number of columns to show in grid
+     */
     public $gridMaxColumns = 8;
+    /**
+     * @var array array of composer packages (only to show information to the developer in the web UI)
+     */
+    public $requires = [];
+
     private $_p = [];
 
     static public function getCoreProviders()
@@ -390,7 +413,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks = $class::primaryKey();
+        $pks   = $class::primaryKey();
         if (($table = $this->getTableSchema()) === false) {
             $params = [];
             foreach ($pks as $pk) {
