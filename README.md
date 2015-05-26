@@ -138,7 +138,7 @@ $activeFields = [
    /**
     * Generate a checkbox for specific column (model attribute)
     */
-   'common\models\Foo.isAvailable' => function ($attribute, $generator) {
+   'Foo.isAvailable' => function ($attribute, $generator) {
        $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
        return <<<INPUT
 \$form->field(\$model, '{$attribute}')->checkbox({$data});
