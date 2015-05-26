@@ -217,7 +217,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * Finds relations of a model class, return values can be filtered by types
+     * Finds relations of a model class
+     *
+     * return values can be filtered by types 'belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'
      *
      * @param ActiveRecord $modelClass
      * @param array $types

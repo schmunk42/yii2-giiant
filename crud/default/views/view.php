@@ -140,7 +140,7 @@ EOS;
             ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
-        // TODO: support multiple PKs, VarDumper?
+        // TODO: support multiple PKs
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New') . " . ' " .
             Inflector::singularize(Inflector::camel2words($name)) . "',
