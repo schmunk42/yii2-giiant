@@ -178,8 +178,8 @@ EOS;
         $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
-    'label'   => '<small><span class="glyphicon glyphicon-paperclip"></span> $label</small>',
     'content' => \$this->blocks['$name'],
+    'label'   => '<small>$label <span class="badge badge-default">'.count(\$model->get{$name}()->asArray()->all()).'</span></small>',
     'active'  => false,
 ],
 EOS;
