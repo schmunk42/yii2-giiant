@@ -212,7 +212,7 @@ Finally add the configuration via DI container
     [
         'activeFields'  => $activeFields,
         'columnFormats' => $columnFormats,
-        'attributeFormats => $attributeFormats,
+        'attributeFormats' => $attributeFormats,
     ]
 );
 ```
