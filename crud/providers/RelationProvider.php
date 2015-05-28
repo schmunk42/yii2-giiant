@@ -209,8 +209,8 @@ EOS;
 'delete' => function (\$url, \$model) {
                 return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
                     'class' => 'text-danger',
-                    'title'         => {$this->generator->generateString('Remove')},
-                    'data-confirm'  => {$this->generator->generateString(
+                    'title' => {$this->generator->generateString('Remove')},
+                    'data-confirm' => {$this->generator->generateString(
                 'Are you sure you want to delete the related item?'
             )},
                     'data-method' => 'post',
@@ -222,10 +222,10 @@ EOS;
                     '<span class="glyphicon glyphicon-cog"></span>',
                     \$url,
                     [
-                        'data-title'  => {$this->generator->generateString('View Pivot Record')},
+                        'data-title' => {$this->generator->generateString('View Pivot Record')},
                         'data-toggle' => 'tooltip',
-                        'data-pjax'   => '0',
-                        'class'       => 'text-muted',
+                        'data-pjax' => '0',
+                        'class' => 'text-muted',
                     ]
                 );
             },
@@ -236,8 +236,8 @@ EOS;
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
 [
-    'class'      => 'yii\grid\ActionColumn',
-    'template'   => '$template',
+    'class' => 'yii\grid\ActionColumn',
+    'template' => '$template',
     'contentOptions' => ['nowrap'=>'nowrap'],
     'urlCreator' => function (\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
@@ -245,7 +245,7 @@ EOS;
         \$params[0] = '$controller' . '/' . \$action;
         return Url::toRoute(\$params);
     },
-    'buttons'    => [
+    'buttons' => [
         $deleteButtonPivot
     ],
     'controller' => '$controller'
@@ -289,10 +289,10 @@ EOS;
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
-    'pager'        => [
-        'class'          => yii\widgets\LinkPager::className(),
+    'pager' => [
+        'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
-        'lastPageLabel'  => {$lastPageLabel}
+        'lastPageLabel' => {$lastPageLabel}
     ],
     'columns' => [$columns]
 ])
