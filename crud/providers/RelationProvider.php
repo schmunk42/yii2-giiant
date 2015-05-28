@@ -166,7 +166,7 @@ EOS;
 [
     'class' => yii\\grid\\DataColumn::className(),
     'attribute' => '{$column->name}',
-    'value' => function(\$model){
+    'value' => function (\$model){
         if (\$rel = \$model->{$relationGetter}->one()) {
             return yii\helpers\Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
@@ -239,7 +239,7 @@ EOS;
     'class'      => 'yii\grid\ActionColumn',
     'template'   => '$template',
     'contentOptions' => ['nowrap'=>'nowrap'],
-    'urlCreator' => function(\$action, \$model, \$key, \$index) {
+    'urlCreator' => function (\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
