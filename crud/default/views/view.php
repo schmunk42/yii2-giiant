@@ -58,12 +58,14 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?php endif; ?>" ?>
 
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <?php $label = StringHelper::basename($generator->modelClass); ?>
+            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+        </div>
 
-    <?php $label = StringHelper::basename($generator->modelClass); ?>
+        <div class="panel-body">
 
-    <h3>
-        <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
-    </h3>
 
 
     <?php
@@ -197,4 +199,7 @@ EOS;
     );
     ?>";
     ?>
+
+        </div>
+    </div>
 </div>

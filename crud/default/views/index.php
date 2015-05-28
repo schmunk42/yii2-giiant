@@ -42,7 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="pull-right">
 
-
             <?php
             $items = [];
             $model = new $generator->modelClass;
@@ -89,52 +88,64 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-        <div class="table-responsive">
-        <?= "<?= " ?>GridView::widget([
-        'layout' => '{summary}{pager}{items}{pager}',
-        'dataProvider' => $dataProvider,
-        'pager'        => [
-            'class'          => yii\widgets\LinkPager::className(),
-            'firstPageLabel' => <?= $generator->generateString('First') ?>,
-            'lastPageLabel'  => <?= $generator->generateString('Last') ?>
-        ],
-        'filterModel' => $searchModel,
-        'columns' => [
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>
+            </div>
 
-        <?php
-        $actionButtonColumn = <<<PHP
-[
-    'class' => '{$generator->actionButtonClass}',
-    'urlCreator' => function(\$action, \$model, \$key, \$index) {
-        // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
-        \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
-        return Url::toRoute(\$params);
-    },
-    'contentOptions' => ['nowrap'=>'nowrap']
-],
+            <div class="panel-body">
+
+                <div class="table-responsive">
+                <?= "<?= " ?>GridView::widget([
+                'layout' => '{summary}{pager}{items}{pager}',
+                'dataProvider' => $dataProvider,
+                'pager'        => [
+                    'class'          => yii\widgets\LinkPager::className(),
+                    'firstPageLabel' => <?= $generator->generateString('First') ?>,
+                    'lastPageLabel'  => <?= $generator->generateString('Last') ?>
+                ],
+                'filterModel' => $searchModel,
+                'columns' => [
+
+                <?php
+                $actionButtonColumn = <<<PHP
+        [
+            'class' => '{$generator->actionButtonClass}',
+            'urlCreator' => function(\$action, \$model, \$key, \$index) {
+                // using the column name as key, not mapping to 'id' like the standard generator
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+                \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
+                return Url::toRoute(\$params);
+            },
+            'contentOptions' => ['nowrap'=>'nowrap']
+        ],
 PHP;
 
-        // action buttons first
-        echo $actionButtonColumn;
+                // action buttons first
+                echo $actionButtonColumn;
 
-        $count = 0;
-        echo "\n"; // code-formatting
+                $count = 0;
+                echo "\n"; // code-formatting
 
-        foreach ($generator->getTableSchema()->columns as $column) {
-            $format = trim($generator->columnFormat($column,$model));
-            if ($format == false) continue;
-            if (++$count < $generator->gridMaxColumns) {
-                echo "\t\t\t{$format},\n";
-            } else {
-                echo "\t\t\t/*{$format}*/\n";
-            }
-        }
+                foreach ($generator->getTableSchema()->columns as $column) {
+                    $format = trim($generator->columnFormat($column,$model));
+                    if ($format == false) continue;
+                    if (++$count < $generator->gridMaxColumns) {
+                        echo "\t\t\t{$format},\n";
+                    } else {
+                        echo "\t\t\t/*{$format}*/\n";
+                    }
+                }
 
-        ?>
-        ],
-    ]); ?>
+                ?>
+                ],
+            ]); ?>
+                </div>
+
+            </div>
+
         </div>
+
 
     <?php else: ?>
 
