@@ -284,7 +284,7 @@ EOS;
         $pageParam      = Inflector::slug("page-{$name}");
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel  = $this->generator->generateString('Last');
-        $code           = '\'<div class="table-responsive">\'.';
+        $code           = '\'<div class="table-responsive">\' . ';
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
