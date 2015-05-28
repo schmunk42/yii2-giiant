@@ -274,7 +274,7 @@ EOS;
             if ($code == false) {
                 continue;
             }
-            $columns .= $code . ",\n";
+            $columns .= '        ' . trim($code) . ",\n";
             $counter++;
         }
 
@@ -298,7 +298,7 @@ EOS;
 $columns    ]
 ])
 EOS;
-        $code .= ' . \'</div>\'';
+        $code .= ' . \'</div>\' ';
         return $code;
     }
 }
