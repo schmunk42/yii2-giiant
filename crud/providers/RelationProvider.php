@@ -235,25 +235,25 @@ EOS;
         $reflection   = new \ReflectionClass($relation->modelClass);
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
-[
-    'class' => 'yii\grid\ActionColumn',
-    'template' => '$template',
-    'contentOptions' => ['nowrap'=>'nowrap'],
-    'urlCreator' => function (\$action, \$model, \$key, \$index) {
-        // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
-        \$params[0] = '$controller' . '/' . \$action;
-        return Url::toRoute(\$params);
-    },
-    'buttons' => [
-        $deleteButtonPivot
-    ],
-    'controller' => '$controller'
-]
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '$template',
+            'contentOptions' => ['nowrap' => 'nowrap'],
+            'urlCreator' => function (\$action, \$model, \$key, \$index) {
+                // using the column name as key, not mapping to 'id' like the standard generator
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string)\$key];
+                \$params[0] = '$controller' . '/' . \$action;
+                return Url::toRoute(\$params);
+            },
+            'buttons' => [
+                $deleteButtonPivot
+            ],
+            'controller' => '$controller'
+        ]
 EOS;
 
         // add action column
-        $columns .= $actionColumn . ",";
+        $columns .= $actionColumn . ",\n";
 
         // prepare grid column formatters
         foreach ($model->attributes AS $attr => $value) {
@@ -294,10 +294,11 @@ EOS;
         'firstPageLabel' => {$firstPageLabel},
         'lastPageLabel' => {$lastPageLabel}
     ],
-    'columns' => [$columns]
+    'columns' => [
+$columns    ]
 ])
 EOS;
-        $code .= '.\'</div>\'';
+        $code .= ' . \'</div>\'';
         return $code;
     }
 }
