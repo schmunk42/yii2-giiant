@@ -288,7 +288,7 @@ EOS;
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam' => '{$pageParam}']]),
     'pager' => [
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
