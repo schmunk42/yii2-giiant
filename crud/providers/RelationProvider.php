@@ -166,7 +166,7 @@ EOS;
 [
     'class' => yii\\grid\\DataColumn::className(),
     'attribute' => '{$column->name}',
-    'value' => function (\$model){
+    'value' => function (\$model) {
         if (\$rel = \$model->{$relationGetter}->one()) {
             return yii\helpers\Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
