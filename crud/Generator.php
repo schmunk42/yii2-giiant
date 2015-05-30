@@ -533,4 +533,12 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'";
     }
+    
+    public function getScenarios($modelClass)
+    {
+        $model = new $modelClass;
+        return $model->scenarios();
+    }
+
+
 }
