@@ -139,14 +139,17 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             if ($queryClassName) {
-                $params = [
-                    'className' => $queryClassName,
-                    'modelClassName' => $className,
-                ];
-                $files[] = new CodeFile(
-                    Yii::getAlias('@' . str_replace('\\', '/', $this->queryNs)) . '/' . $queryClassName . '.php',
-                    $this->render('query.php', $params)
-                );
+                $queryClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->queryNs)) . '/' . $queryClassName . '.php';
+                if ($this->generateModelClass || !is_file($queryClassFile)) {
+                    $params = [
+                        'className' => $queryClassName,
+                        'modelClassName' => $className,
+                    ];
+                    $files[] = new CodeFile(
+                        $queryClassFile,
+                        $this->render('query.php', $params)
+                    );
+                }
             }
 
         }
