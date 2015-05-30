@@ -115,13 +115,14 @@ class Generator extends \yii\gii\generators\model\Generator
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
             $params      = [
-                'tableName'   => $tableName,
-                'className'   => $className,
-                'tableSchema' => $tableSchema,
-                'labels'      => $this->generateLabels($tableSchema),
-                'rules'       => $this->generateRules($tableSchema),
-                'relations'   => isset($relations[$className]) ? $relations[$className] : [],
-                'ns'          => $this->ns,
+                'tableName'      => $tableName,
+                'className'      => $className,
+                'queryClassName' => $queryClassName,
+                'tableSchema'    => $tableSchema,
+                'labels'         => $this->generateLabels($tableSchema),
+                'rules'          => $this->generateRules($tableSchema),
+                'relations'      => isset($relations[$className]) ? $relations[$className] : [],
+                'ns'             => $this->ns,
             ];
 
             $files[] = new CodeFile(
