@@ -121,7 +121,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'tableSchema'    => $tableSchema,
                 'labels'         => $this->generateLabels($tableSchema),
                 'rules'          => $this->generateRules($tableSchema),
-                'relations'      => isset($relations[$className]) ? $relations[$className] : [],
+                'relations'      => isset($relations[$tableName]) ? $relations[$tableName] : [],
                 'ns'             => $this->ns,
             ];
 
