@@ -111,7 +111,7 @@ class BatchController extends Controller
     /**
      * @var string the namespace of the ActiveQuery class to be generated
      */
-    public $queryNs = 'app\models\query';
+    public $modelQueryNamespace = 'app\models\query';
 
     /**
      * @var string the base class of the new ActiveQuery class
@@ -149,7 +149,7 @@ class BatchController extends Controller
                 'crudSkipRelations',
                 'crudBaseControllerClass',
                 'generateQuery',
-                'queryNs',
+                'modelQueryNamespace',
                 'queryBaseClass',
             ]
         );
@@ -212,7 +212,7 @@ class BatchController extends Controller
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap,
                 'generateQuery'      => $this->generateQuery,
-                'queryNs'            => $this->queryNs,
+                'queryNs'            => $this->modelQueryNamespace,
                 'queryBaseClass'     => $this->queryBaseClass,
             ];
             $route  = 'gii/giiant-model';
