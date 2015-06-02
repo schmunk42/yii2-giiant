@@ -106,7 +106,7 @@ class BatchController extends Controller
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
-    public $generateQuery = true;
+    public $modelGenerateQuery = true;
 
     /**
      * @var string the namespace of the ActiveQuery class to be generated
@@ -116,7 +116,7 @@ class BatchController extends Controller
     /**
      * @var string the base class of the new ActiveQuery class
      */
-    public $queryBaseClass = 'yii\db\ActiveQuery';
+    public $modelQueryBaseClass = 'yii\db\ActiveQuery';
 
     /**
      * @var application configuration for creating temporary applications
@@ -148,9 +148,9 @@ class BatchController extends Controller
                 'crudProviders',
                 'crudSkipRelations',
                 'crudBaseControllerClass',
-                'generateQuery',
+                'modelGenerateQuery',
                 'modelQueryNamespace',
-                'queryBaseClass',
+                'modelQueryBaseClass',
             ]
         );
     }
@@ -211,9 +211,9 @@ class BatchController extends Controller
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
                 'tableNameMap'       => $this->tableNameMap,
-                'generateQuery'      => $this->generateQuery,
+                'generateQuery'      => $this->modelGenerateQuery,
                 'queryNs'            => $this->modelQueryNamespace,
-                'queryBaseClass'     => $this->queryBaseClass,
+                'queryBaseClass'     => $this->modelQueryBaseClass,
             ];
             $route  = 'gii/giiant-model';
 
