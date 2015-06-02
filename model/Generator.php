@@ -131,11 +131,11 @@ class Generator extends \yii\gii\generators\model\Generator
             ];
 
             $files[] = new CodeFile(
-                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . '.php',
+                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . $this->baseClassSuffix . '.php',
                 $this->render('model.php', $params)
             );
 
-            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . $this->baseClassSuffix . '.php';
+            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php';
             if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
                     $modelClassFile,
