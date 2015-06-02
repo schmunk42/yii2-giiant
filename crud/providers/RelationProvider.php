@@ -236,16 +236,16 @@ EOS;
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
         [
-            'class'      => 'yii\grid\ActionColumn',
-            'template'   => '$template',
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '$template',
             'contentOptions' => ['nowrap' => 'nowrap'],
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
                 // using the column name as key, not mapping to 'id' like the standard generator
-                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string)\$key];
                 \$params[0] = '$controller' . '/' . \$action;
                 return Url::toRoute(\$params);
             },
-            'buttons'    => [
+            'buttons' => [
                 $deleteButtonPivot
             ],
             'controller' => '$controller'
