@@ -104,9 +104,9 @@ class BatchController extends Controller
     public $crudSkipRelations = [];
 
     /**
-     * @var application configuration for creating temporary applications
+     * @var array application configuration for creating temporary applications
      */
-    private $appConfig;
+    protected $appConfig;
 
     /**
      * @inheritdoc
