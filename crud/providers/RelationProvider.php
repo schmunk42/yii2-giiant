@@ -253,7 +253,7 @@ EOS;
 EOS;
 
         // add action column
-        $columns .= $actionColumn . ",";
+        $columns .= $actionColumn . ",\n";
 
         // prepare grid column formatters
         foreach ($model->attributes AS $attr => $value) {
