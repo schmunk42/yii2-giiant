@@ -531,6 +531,6 @@ class Generator extends \yii\gii\generators\crud\Generator
             $format = 'text';
         }
 
-        return "\t\t\t'" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'";
+        return "        '" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'";
     }
 }
