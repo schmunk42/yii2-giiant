@@ -168,7 +168,7 @@ EOS;
     'attribute' => '{$column->name}',
     'value' => function(\$model){
         if (\$rel = \$model->{$relationGetter}->one()) {
-            return yii\helpers\Html::a(\$rel->{$title},['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
+            return yii\helpers\Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
             return '';
         }
