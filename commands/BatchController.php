@@ -48,6 +48,11 @@ class BatchController extends Controller
     public $modelNamespace = 'common\\models';
 
     /**
+     * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
+     */
+    public $modelBaseClassSuffix = '';
+
+    /**
      * @var string database application component
      */
     public $modelDb = 'db';
@@ -131,6 +136,7 @@ class BatchController extends Controller
                 'modelDb',
                 'modelNamespace',
                 'modelBaseClass',
+                'modelBaseClassSuffix',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
                 'crudSearchModelSuffix',
@@ -195,6 +201,7 @@ class BatchController extends Controller
                 'enableI18N'         => $this->enableI18N,
                 'messageCategory'    => $this->messageCategory,
                 'generateModelClass' => $this->extendedModels,
+                'baseClassSuffix'    => $this->modelBaseClassSuffix,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
