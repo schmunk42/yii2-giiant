@@ -297,7 +297,7 @@ EOS;
     'columns' => [$columns]
 ])
 EOS;
-        $code .= '.\'</div>\'';
+        $code .= ' . \'</div>\' ';
         return $code;
     }
 }
