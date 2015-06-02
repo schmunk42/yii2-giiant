@@ -206,50 +206,50 @@ EOS;
             // manyMany relations
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
-'delete' => function (\$url, \$model) {
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
-                    'class' => 'text-danger',
-                    'title'         => {$this->generator->generateString('Remove')},
-                    'data-confirm'  => {$this->generator->generateString(
-                'Are you sure you want to delete the related item?'
-            )},
-                    'data-method' => 'post',
-                    'data-pjax' => '0',
-                ]);
-            },
-'view' => function (\$url, \$model) {
-                return yii\helpers\Html::a(
-                    '<span class="glyphicon glyphicon-cog"></span>',
-                    \$url,
-                    [
-                        'data-title'  => {$this->generator->generateString('View Pivot Record')},
-                        'data-toggle' => 'tooltip',
-                        'data-pjax'   => '0',
-                        'class'       => 'text-muted',
-                    ]
-                );
-            },
+                'delete' => function (\$url, \$model) {
+                    return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                        'class' => 'text-danger',
+                        'title' => {$this->generator->generateString('Remove')},
+                        'data-confirm' => {$this->generator->generateString(
+                            'Are you sure you want to delete the related item?'
+                        )},
+                        'data-method' => 'post',
+                        'data-pjax' => '0',
+                    ]);
+                },
+                'view' => function (\$url, \$model) {
+                    return yii\helpers\Html::a(
+                        '<span class="glyphicon glyphicon-cog"></span>',
+                        \$url,
+                        [
+                            'data-title' => {$this->generator->generateString('View Pivot Record')},
+                            'data-toggle' => 'tooltip',
+                            'data-pjax' => '0',
+                            'class' => 'text-muted',
+                        ]
+                    );
+                },
 EOS;
         }
 
         $reflection   = new \ReflectionClass($relation->modelClass);
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
-[
-    'class'      => 'yii\grid\ActionColumn',
-    'template'   => '$template',
-    'contentOptions' => ['nowrap'=>'nowrap'],
-    'urlCreator' => function(\$action, \$model, \$key, \$index) {
-        // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
-        \$params[0] = '$controller' . '/' . \$action;
-        return Url::toRoute(\$params);
-    },
-    'buttons'    => [
-        $deleteButtonPivot
-    ],
-    'controller' => '$controller'
-]
+        [
+            'class' => 'yii\grid\ActionColumn',
+            'template' => '$template',
+            'contentOptions' => ['nowrap' => 'nowrap'],
+            'urlCreator' => function(\$action, \$model, \$key, \$index) {
+                // using the column name as key, not mapping to 'id' like the standard generator
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+                \$params[0] = '$controller' . '/' . \$action;
+                return Url::toRoute(\$params);
+            },
+            'buttons' => [
+                $deleteButtonPivot
+            ],
+            'controller' => '$controller'
+        ]
 EOS;
 
         // add action column
@@ -284,7 +284,7 @@ EOS;
         $pageParam      = Inflector::slug("page-{$name}");
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel  = $this->generator->generateString('Last');
-        $code           = '\'<div class="table-responsive">\' . ';
+        $code           = '\'<div class="table-responsive">\'.';
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
@@ -297,7 +297,7 @@ EOS;
     'columns' => [$columns]
 ])
 EOS;
-        $code .= ' . \'</div>\' ';
+        $code .= '.\'</div>\'';
         return $code;
     }
 }
