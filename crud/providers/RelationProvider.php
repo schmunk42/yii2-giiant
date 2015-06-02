@@ -295,7 +295,7 @@ EOS;
         'lastPageLabel' => {$lastPageLabel}
     ],
     'columns' => [
-$columns]
+$columns    ],
 ])
 EOS;
         $code .= ' . \'</div>\' ';
