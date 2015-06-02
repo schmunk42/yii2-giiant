@@ -221,7 +221,7 @@ class BatchController extends Controller
                 'overwrite'           => $this->overwrite,
                 'template'            => $this->template,
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name,
+                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name . 'Search',
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,
