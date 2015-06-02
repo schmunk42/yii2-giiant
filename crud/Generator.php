@@ -368,7 +368,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             return $code;
         } else {
             return $this->shorthandAttributeFormat($column);
-        };
+        }
     }
 
     public function attributeFormat(ColumnSchema $column, $model = null)
