@@ -32,7 +32,7 @@ class Generator extends \yii\gii\generators\model\Generator
     /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
      */
-    public $baseModelSuffix;
+    public $baseClassSuffix = '';
 
     /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
@@ -135,7 +135,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $this->render('model.php', $params)
             );
 
-            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . $this->baseModelSuffix . '.php';
+            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . $this->baseClassSuffix . '.php';
             if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
                     $modelClassFile,
