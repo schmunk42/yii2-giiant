@@ -104,6 +104,21 @@ class BatchController extends Controller
     public $crudSkipRelations = [];
 
     /**
+     * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
+     */
+    public $generateQuery = true;
+
+    /**
+     * @var string the namespace of the ActiveQuery class to be generated
+     */
+    public $queryNs = 'app\models\query';
+
+    /**
+     * @var string the base class of the new ActiveQuery class
+     */
+    public $queryBaseClass = 'yii\db\ActiveQuery';
+
+    /**
      * @var application configuration for creating temporary applications
      */
     private $appConfig;
@@ -132,7 +147,10 @@ class BatchController extends Controller
                 'crudPathPrefix',
                 'crudProviders',
                 'crudSkipRelations',
-                'crudBaseControllerClass'
+                'crudBaseControllerClass',
+                'generateQuery',
+                'queryNs',
+                'queryBaseClass',
             ]
         );
     }
@@ -192,7 +210,10 @@ class BatchController extends Controller
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
-                'tableNameMap'       => $this->tableNameMap
+                'tableNameMap'       => $this->tableNameMap,
+                'generateQuery'      => $this->generateQuery,
+                'queryNs'            => $this->queryNs,
+                'queryBaseClass'     => $this->queryBaseClass,
             ];
             $route  = 'gii/giiant-model';
 
