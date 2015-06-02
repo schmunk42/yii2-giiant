@@ -235,21 +235,21 @@ EOS;
         $reflection   = new \ReflectionClass($relation->modelClass);
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
-[
-    'class'      => 'yii\grid\ActionColumn',
-    'template'   => '$template',
-    'contentOptions' => ['nowrap'=>'nowrap'],
-    'urlCreator' => function(\$action, \$model, \$key, \$index) {
-        // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
-        \$params[0] = '$controller' . '/' . \$action;
-        return Url::toRoute(\$params);
-    },
-    'buttons'    => [
-        $deleteButtonPivot
-    ],
-    'controller' => '$controller'
-]
+        [
+            'class'      => 'yii\grid\ActionColumn',
+            'template'   => '$template',
+            'contentOptions' => ['nowrap' => 'nowrap'],
+            'urlCreator' => function(\$action, \$model, \$key, \$index) {
+                // using the column name as key, not mapping to 'id' like the standard generator
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+                \$params[0] = '$controller' . '/' . \$action;
+                return Url::toRoute(\$params);
+            },
+            'buttons'    => [
+                $deleteButtonPivot
+            ],
+            'controller' => '$controller'
+        ]
 EOS;
 
         // add action column
@@ -288,13 +288,14 @@ EOS;
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
-    'pager'        => [
-        'class'          => yii\widgets\LinkPager::className(),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam' => '{$pageParam}']]),
+    'pager' => [
+        'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
-        'lastPageLabel'  => {$lastPageLabel}
+        'lastPageLabel' => {$lastPageLabel}
     ],
-    'columns' => [$columns]
+    'columns' => [
+$columns]
 ])
 EOS;
         $code .= ' . \'</div>\' ';
