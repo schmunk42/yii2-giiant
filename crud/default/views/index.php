@@ -105,6 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'lastPageLabel'  => <?= $generator->generateString('Last') ?>
                 ],
                 'filterModel' => $searchModel,
+                'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
                 'columns' => [
 
                 <?php
