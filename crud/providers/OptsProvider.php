@@ -10,14 +10,18 @@ use yii\db\ColumnSchema;
  */
 class OptsProvider extends \schmunk42\giiant\base\Provider
 {
-    public function activeField(ColumnSchema $attribute)
+    public function activeField($attribute)
     {
-        $column     = $this->generator->getTableSchema()->columns[$attribute->name];
+        $column     = $this->generator->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        }
+
         $modelClass = $this->generator->modelClass;
         $func       = 'opts' . str_replace("_", "", $column->name);
 
         if (method_exists($modelClass::className(), $func)) {
-            $mode = isset($this->columnNames[$attribute->name]) ? $this->columnNames[$attribute->name] : null;
+            $mode = isset($this->columnNames[$attribute]) ? $this->columnNames[$attribute] : null;
         } else {
             return null;
         }

@@ -10,6 +10,7 @@ use yii\helpers\StringHelper;
 
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass;
+$model->setScenario('crud');
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
     $safeAttributes = $model->getTableSchema()->columnNames;
@@ -32,8 +33,10 @@ use \dmstr\bootstrap\Tabs;
 
 <div class="panel panel-default">
     <div class="panel-heading">
+        <h2>
         <?php $label = StringHelper::basename($generator->modelClass); ?>
         <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+        </h2>
     </div>
 
     <div class="panel-body">
@@ -57,16 +60,12 @@ use \dmstr\bootstrap\Tabs;
                 <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
 
                 <p>
-                    <?php foreach ($safeAttributes as $attribute) {
-                        $column = ArrayHelper::getValue($generator->getTableSchema()->columns, $attribute);
+                    <?php
+                    foreach ($safeAttributes as $attribute) {
 
-                        if ($column === null) {
-                            continue;
-                        }
-
-                        $prepend = $generator->prependActiveField($column, $model);
-                        $field   = $generator->activeField($column, $model);
-                        $append  = $generator->appendActiveField($column, $model);
+                        $prepend = $generator->prependActiveField($attribute, $model);
+                        $field   = $generator->activeField($attribute, $model);
+                        $append  = $generator->appendActiveField($attribute, $model);
 
                         if ($prepend) {
                             echo "\n\t\t\t<?php " . $prepend . " ?>";
@@ -77,7 +76,8 @@ use \dmstr\bootstrap\Tabs;
                         if ($append) {
                             echo "\n\t\t\t<?php " . $append . " ?>";
                         }
-                    } ?>
+                    }
+                    ?>
 
                 </p>
                 <?php echo "<?php \$this->endBlock(); ?>"; ?>

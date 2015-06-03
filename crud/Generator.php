@@ -57,6 +57,10 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $gridMaxColumns = 8;
     /**
+     * @var int maximum number of columns to show in grid
+     */
+    public $gridRelationMaxColumns = 8;
+    /**
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
@@ -325,63 +329,68 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @return mixed|string
      */
-    public function activeField(ColumnSchema $column, $model = null)
+    public function activeField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
             return $code;
         } else {
-            return parent::generateActiveField($column->name);
-        };
+            $column = $this->getColumnByAttribute($attribute);
+            if (!$column) {
+                return null;
+            } else {
+                return parent::generateActiveField($attribute);
+            }
+        }
     }
 
-    public function prependActiveField(ColumnSchema $column, $model = null)
+    public function prependActiveField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        return $this->callProviderQueue(__FUNCTION__, $column, $model);
+        return $this->callProviderQueue(__FUNCTION__, $attribute, $model);
     }
 
-    public function appendActiveField(ColumnSchema $column, $model = null)
+    public function appendActiveField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$column->name}'", __METHOD__);
+        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        return $this->callProviderQueue(__FUNCTION__, $column, $model);
+        return $this->callProviderQueue(__FUNCTION__, $attribute, $model);
     }
 
-    public function columnFormat(ColumnSchema $column, $model = null)
+    public function columnFormat($attribute, $model = null)
     {
-        Yii::trace("Rendering columnFormat for '{$column->name}'", __METHOD__);
+        Yii::trace("Rendering columnFormat for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
             return $code;
         } else {
-            return $this->shorthandAttributeFormat($column);
+            return $this->shorthandAttributeFormat($attribute);
         }
     }
 
-    public function attributeFormat(ColumnSchema $column, $model = null)
+    public function attributeFormat($attribute, $model = null)
     {
-        Yii::trace("Rendering attributeFormat for '{$column->name}'", __METHOD__);
+        Yii::trace("Rendering attributeFormat for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $column, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
             return $code;
         }
-        return $this->shorthandAttributeFormat($column);
+        return $this->shorthandAttributeFormat($attribute);
         // don't call parent anymore
     }
 
@@ -517,20 +526,31 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     private function shorthandAttributeFormat($attribute)
     {
-        if ($attribute->phpType === 'boolean') {
+        $column = $this->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        }
+        if ($column->phpType === 'boolean') {
             $format = 'boolean';
-        } elseif ($attribute->type === 'text') {
+        } elseif ($column->type === 'text') {
             $format = 'ntext';
-        } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
+        } elseif (stripos($column->name, 'time') !== false && $column->phpType === 'integer') {
             $format = 'datetime';
-        } elseif (stripos($attribute->name, 'email') !== false) {
+        } elseif (stripos($column->name, 'email') !== false) {
             $format = 'email';
-        } elseif (stripos($attribute->name, 'url') !== false) {
+        } elseif (stripos($column->name, 'url') !== false) {
             $format = 'url';
         } else {
             $format = 'text';
         }
 
-        return "        '" . $attribute->name . ($format === 'text' ? "" : ":" . $format) . "'";
+        return "        '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "'";
+    }
+
+    public function getColumnByAttribute($attribute, $model = null){
+        if ($model === null) {
+            $model = $this;
+        }
+        return $model->getTableSchema()->getColumn($attribute);
     }
 }

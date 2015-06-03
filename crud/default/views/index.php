@@ -11,6 +11,19 @@ use yii\helpers\StringHelper;
 $urlParams = $generator->generateUrlParams();
 $nameAttribute = $generator->getNameAttribute();
 
+/** @var \yii\db\ActiveRecord $model */
+$model = new $generator->modelClass;
+$model->setScenario('crud');
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    /** @var \yii\db\ActiveRecord $model */
+    $model = new $generator->modelClass;
+    $safeAttributes = $model->safeAttributes();
+    if (empty($safeAttributes)) {
+        $safeAttributes = $model->getTableSchema()->columnNames;
+    }
+}
+
 echo "<?php\n";
 ?>
 
@@ -28,7 +41,7 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
+<div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
     <?=
     "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>
@@ -90,7 +103,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>
+                <h2>
+                    <i><?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?></i>
+                </h2>
             </div>
 
             <div class="panel-body">
@@ -106,6 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'filterModel' => $searchModel,
                 'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
+                'headerRowOptions' => ['class'=>'x'],
                 'columns' => [
 
                 <?php
@@ -128,8 +144,8 @@ PHP;
                 $count = 0;
                 echo "\n"; // code-formatting
 
-                foreach ($generator->getTableSchema()->columns as $column) {
-                    $format = trim($generator->columnFormat($column,$model));
+                foreach ($safeAttributes as $attribute) {
+                    $format = trim($generator->columnFormat($attribute,$model));
                     if ($format == false) continue;
                     if (++$count < $generator->gridMaxColumns) {
                         echo "\t\t\t{$format},\n";

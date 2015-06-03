@@ -8,6 +8,15 @@ use yii\helpers\StringHelper;
  * @var schmunk42\giiant\crud\Generator $generator
  */
 
+/** @var \yii\db\ActiveRecord $model */
+$model = new $generator->modelClass;
+$model->setScenario('crud');
+
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    $safeAttributes = $model->getTableSchema()->columnNames;
+}
+
 $urlParams = $generator->generateUrlParams();
 
 echo "<?php\n";
@@ -36,7 +45,7 @@ Inflector::pluralize(
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
+<div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <!-- menu buttons -->
     <p class='pull-left'>
@@ -59,8 +68,10 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <div class="panel panel-default">
         <div class="panel-heading">
+            <h2>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+            </h2>
         </div>
 
         <div class="panel-body">
@@ -75,8 +86,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'model' => $model,
     'attributes' => [
     <?php
-    foreach ($generator->getTableSchema()->columns as $column) {
-        $format = $generator->attributeFormat($column);
+    foreach ($safeAttributes as $attribute) {
+        $format = $generator->attributeFormat($attribute);
         if ($format === false) {
             continue;
         } else {

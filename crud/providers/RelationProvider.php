@@ -28,8 +28,13 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
      *
      * @return null|string
      */
-    public function activeField($column)
+    public function activeField($attribute)
     {
+        $column = $this->generator->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        }
+
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation) {
             switch (true) {
@@ -80,8 +85,13 @@ EOS;
      *
      * @return null|string
      */
-    public function attributeFormat($column)
+    public function attributeFormat($attribute)
     {
+        $column = $this->generator->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        }
+
         # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
         # TODO double check with primary keys not named `id` of non-pivot tables
         # TODO Note: condition does not apply in every case
@@ -132,8 +142,13 @@ EOS;
      *
      * @return null|string
      */
-    public function columnFormat($column, $model)
+    public function columnFormat($attribute, $model)
     {
+        $column = $this->generator->getColumnByAttribute($attribute, $model);
+        if (!$column) {
+            return null;
+        }
+
         # handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
         # TODO double check with primary keys not named `id` of non-pivot tables
         # TODO Note: condition does not apply in every case
@@ -177,6 +192,8 @@ EOS;
 ]
 EOS;
             return $code;
+        } else {
+            return null;
         }
     }
 
@@ -256,9 +273,12 @@ EOS;
         $columns .= $actionColumn . ",\n";
 
         // prepare grid column formatters
-        foreach ($model->attributes AS $attr => $value) {
+        $model->setScenario('crud');
+        $safeAttributes = $model->safeAttributes();
+        foreach ($safeAttributes AS $attr) {
+
             // max seven columns
-            if ($counter > 8) {
+            if ($counter > $this->generator->gridRelationMaxColumns) {
                 continue;
             }
             // skip virtual attributes
@@ -270,7 +290,7 @@ EOS;
                 continue;
             }
 
-            $code = $this->generator->columnFormat($model->tableSchema->columns[$attr], $model);
+            $code = $this->generator->columnFormat($attr, $model);
             if ($code == false) {
                 continue;
             }

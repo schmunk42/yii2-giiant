@@ -16,44 +16,45 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     public $attributeFormats = [];
     public $columnFormats = [];
 
-    public function activeField($column, $model)
+
+    public function activeField($attribute, $model)
     {
-        $key = $this->findValue($this->getModelKey($column->name, $model), $this->activeFields);
+        $key = $this->findValue($this->getModelKey($attribute, $model), $this->activeFields);
         if ($key) {
-            return $this->activeFields[$key]($column, $model);
+            return $this->activeFields[$key]($attribute, $model);
         }
     }
 
-    public function prependActiveField($column, $model)
+    public function prependActiveField($attribute, $model)
     {
-        $key = $this->findValue($this->getModelKey($column->name, $model), $this->prependActiveFields);
+        $key = $this->findValue($this->getModelKey($attribute, $model), $this->prependActiveFields);
         if ($key) {
-            return $this->prependActiveFields[$key]($column, $model);
+            return $this->prependActiveFields[$key]($attribute, $model);
         }
     }
 
-    public function appendActiveField($column, $model)
+    public function appendActiveField($attribute, $model)
     {
-        $key = $this->findValue($this->getModelKey($column->name, $model), $this->appendActiveFields);
+        $key = $this->findValue($this->getModelKey($attribute, $model), $this->appendActiveFields);
         if ($key) {
-            return $this->appendActiveFields[$key]($column, $model);
+            return $this->appendActiveFields[$key]($attribute, $model);
         }
     }
 
 
-    public function attributeFormat($column, $model)
+    public function attributeFormat($attribute, $model)
     {
-        $key = $this->findValue($this->getModelKey($column->name, $model), $this->attributeFormats);
+        $key = $this->findValue($this->getModelKey($attribute, $model), $this->attributeFormats);
         if ($key) {
-            return $this->attributeFormats[$key]($column, $model);
+            return $this->attributeFormats[$key]($attribute, $model);
         }
     }
 
-    public function columnFormat($column, $model)
+    public function columnFormat($attribute, $model)
     {
-        $key = $this->findValue($this->getModelKey($column->name, $model), $this->columnFormats);
+        $key = $this->findValue($this->getModelKey($attribute, $model), $this->columnFormats);
         if ($key) {
-            return $this->columnFormats[$key]($column, $model);
+            return $this->columnFormats[$key]($attribute, $model);
         }
     }
 
