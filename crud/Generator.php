@@ -322,12 +322,12 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function activeField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
         $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
             return $code;
         } else {
             $column = $this->getColumnByAttribute($attribute);
@@ -341,53 +341,66 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     public function prependActiveField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        return $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        if ($code) {
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
+        }
+        return $code;
     }
 
     public function appendActiveField($attribute, $model = null)
     {
-        Yii::trace("Rendering activeField for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
-        return $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        if ($code) {
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
+        }
+        return $code;
     }
 
     public function columnFormat($attribute, $model = null)
     {
-        Yii::trace("Rendering columnFormat for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
         $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
-            return $code;
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
         } else {
-            return $this->shorthandAttributeFormat($attribute);
+            $code = $this->shorthandAttributeFormat($attribute, $model);
+            Yii::trace("using standard formatting for '{$attribute}'", __METHOD__);
         }
+        return $code;
     }
 
     public function attributeFormat($attribute, $model = null)
     {
-        Yii::trace("Rendering attributeFormat for '{$attribute}'", __METHOD__);
         if ($model === null) {
             $model = $this->modelClass;
         }
         $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
         if ($code !== null) {
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
             return $code;
         }
-        return $this->shorthandAttributeFormat($attribute);
+
+        $column = $this->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        } else {
+            return $this->shorthandAttributeFormat($attribute, $model);
+        }
         // don't call parent anymore
     }
 
     public function relationGrid($name, $relation, $showAllRecords = false)
     {
-        Yii::trace("Rendering relationGrid", __METHOD__);
+        Yii::trace("calling provider queue for '$name'", __METHOD__);
         return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }
 
@@ -515,11 +528,14 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function shorthandAttributeFormat($attribute)
+    private function shorthandAttributeFormat($attribute, $model)
     {
-        $column = $this->getColumnByAttribute($attribute);
+        $column = $this->getColumnByAttribute($attribute, $model);
         if (!$column) {
+            Yii::trace("No column for '{$attribute}' found", __METHOD__);
             return null;
+        } else {
+            Yii::trace("Table column detected for '{$attribute}'", __METHOD__);
         }
         if ($column->phpType === 'boolean') {
             $format = 'boolean';
@@ -539,6 +555,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     public function getColumnByAttribute($attribute, $model = null){
+        if (is_string($model)) {
+            $model = new $model;
+        }
         if ($model === null) {
             $model = $this;
         }
