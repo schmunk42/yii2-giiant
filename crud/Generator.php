@@ -98,17 +98,6 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $return;
     }
 
-    /**
-     * Prepare providers
-     *
-     * @return bool|void
-     */
-    public function init()
-    {
-        \Yii::trace("Initializing giiant CRUD generator for model '{$this->modelClass}'", __METHOD__);
-        parent::init();
-    }
-
     private function initializeProviders()
     {
         // TODO: this is a hotfix for an already initialized provider queue on action re-entry
@@ -127,6 +116,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 #\Yii::trace("Initialized provider '{$class}'", __METHOD__);
             }
         }
+        \Yii::trace("CRUD providers initialized for model '{$this->modelClass}'", __METHOD__);
+
     }
 
     /**

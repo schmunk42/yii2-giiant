@@ -49,9 +49,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <!-- menu buttons -->
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List') ?>, ['index'], ['class'=>'btn btn-default']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))) ?>, ['index'], ['class'=>'btn btn-default']) ?>
     </p>
 
     <div class="clearfix"></div>
@@ -69,8 +69,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <div class="panel panel-default">
         <div class="panel-heading">
             <h2>
-            <?php $label = StringHelper::basename($generator->modelClass); ?>
-            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+                <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
             </h2>
         </div>
 
@@ -109,9 +108,13 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
+
+    // get relation info $ prepare add button
+    $model          = new $generator->modelClass;
+
     $items = <<<EOS
 [
-    'label'   => '<span class="glyphicon glyphicon-asterisk"></span> $label',
+    'label'   => '<b class=""># '.\$model->{$model->primaryKey()[0]}.'</b>',
     'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
@@ -121,8 +124,6 @@ EOS;
 
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
-        // get relation info $ prepare add button
-        $model          = new $generator->modelClass;
         $showAllRecords = false;
 
         if ($relation->via !== null) {
