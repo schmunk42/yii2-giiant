@@ -22,9 +22,9 @@ $attrAsImage = function ($attribute) {
     return <<<FORMAT
 [
     'format' => 'html',
-    'attribute' => '{$attribute->name}',
+    'attribute' => '{$attribute}',
     'value'=> function(\$model){
-        return yii\helpers\Html::img(\Yii::getAlias("@web") . "/" . \$model->{$attribute->name});
+        return yii\helpers\Html::img(\Yii::getAlias("@web") . "/" . \$model->{$attribute});
     }
 ]
 FORMAT;
@@ -35,9 +35,9 @@ $columnAsHtml = function ($attribute) {
     return <<<FORMAT
 [
     'format' => 'html',
-    'attribute' => '{$attribute->name}',
+    'attribute' => '{$attribute}',
     'value'=> function(\$model){
-        return html_entity_decode(\$model->{$attribute->name});
+        return html_entity_decode(\$model->{$attribute});
     }
 ]
 FORMAT;
@@ -49,8 +49,8 @@ $attrAsHtml = function ($attribute) {
     return <<<FORMAT
 [
     'format' => 'html',
-    'attribute' => '{$attribute->name}',
-    'value' => html_entity_decode(\$model->{$attribute->name})
+    'attribute' => '{$attribute}',
+    'value' => html_entity_decode(\$model->{$attribute})
 ]
 FORMAT;
 };
