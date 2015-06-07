@@ -55,5 +55,12 @@ $attrAsHtml = function ($attribute) {
 FORMAT;
 };
 
+// render a masked input
+$maskedInputField = function ($attribute, $generator) {
+    $class = \yii\widgets\MaskedInput::className();
+    return <<<PHP
+\$form->field(\$model, '{$attribute}')->widget('{$class}', ['name' => 'phone','mask' => '999.99.999',]);
+PHP;
+
 
 // See also https://github.com/schmunk42/yii2-giiant/blob/master/crud/providers/CallbackProvider.php
