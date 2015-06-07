@@ -101,6 +101,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
 
+        <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2>
@@ -163,6 +165,7 @@ PHP;
 
         </div>
 
+        <?= "<?php \yii\widgets\Pjax::end() ?>\n"; ?>
 
     <?php else: ?>
 
