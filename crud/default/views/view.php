@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?php
     foreach ($safeAttributes as $attribute) {
         $format = $generator->attributeFormat($attribute);
-        if ($format === false) {
+        if (!$format) {
             continue;
         } else {
             echo $format . ",\n";
