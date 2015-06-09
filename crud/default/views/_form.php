@@ -50,7 +50,7 @@ use \dmstr\bootstrap\Tabs;
             <?= "<?php " ?>$form = ActiveForm::begin([
             'id' => '<?= $model->formName() ?>',
             'layout' => '<?= $generator->formLayout ?>',
-            'enableClientValidation' => false,
+            'enableClientValidation' => true,
             ]
             );
             ?>
