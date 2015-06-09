@@ -105,11 +105,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionView(<?= $actionParams ?>)
 	{
-        $resolved = \Yii::$app->request->resolve();
-        $resolved[1]['_pjax'] = null;
-        $url = Url::to(array_merge(['/'.$resolved[0]],$resolved[1]));
         \Yii::$app->session['__crudReturnUrl'] = Url::previous();
-        Url::remember($url);
+        Url::remember();
         Tabs::rememberActiveState();
 
         return $this->render('view', [
