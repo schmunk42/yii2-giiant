@@ -68,13 +68,13 @@ use \dmstr\bootstrap\Tabs;
                         $append  = $generator->appendActiveField($attribute, $model);
 
                         if ($prepend) {
-                            echo "\n\t\t\t<?php " . $prepend . " ?>";
+                            echo "\n\t\t\t" . $prepend;
                         }
                         if ($field) {
                             echo "\n\t\t\t<?= " . $field . " ?>";
                         }
                         if ($append) {
-                            echo "\n\t\t\t<?php " . $append . " ?>";
+                            echo "\n\t\t\t" . $append;
                         }
                     }
                     ?>
