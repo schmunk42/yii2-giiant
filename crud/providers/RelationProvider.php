@@ -225,29 +225,29 @@ EOS;
             // manyMany relations
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
-'delete' => function (\$url, \$model) {
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
-                    'class' => 'text-danger',
-                    'title'         => {$this->generator->generateString('Remove')},
-                    'data-confirm'  => {$this->generator->generateString(
-                'Are you sure you want to delete the related item?'
-            )},
-                    'data-method' => 'post',
-                    'data-pjax' => '0',
-                ]);
-            },
-'view' => function (\$url, \$model) {
-                return yii\helpers\Html::a(
-                    '<span class="glyphicon glyphicon-cog"></span>',
-                    \$url,
-                    [
-                        'data-title'  => {$this->generator->generateString('View Pivot Record')},
-                        'data-toggle' => 'tooltip',
-                        'data-pjax'   => '0',
-                        'class'       => 'text-muted',
-                    ]
-                );
-            },
+                'delete' => function (\$url, \$model) {
+                    return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                        'class' => 'text-danger',
+                        'title' => {$this->generator->generateString('Remove')},
+                        'data-confirm' => {$this->generator->generateString(
+                            'Are you sure you want to delete the related item?'
+                        )},
+                        'data-method' => 'post',
+                        'data-pjax' => '0',
+                    ]);
+                },
+                'view' => function (\$url, \$model) {
+                    return yii\helpers\Html::a(
+                        '<span class="glyphicon glyphicon-cog"></span>',
+                        \$url,
+                        [
+                            'data-title' => {$this->generator->generateString('View Pivot Record')},
+                            'data-toggle' => 'tooltip',
+                            'data-pjax' => '0',
+                            'class' => 'text-muted',
+                        ]
+                    );
+                },
 EOS;
         }
 
