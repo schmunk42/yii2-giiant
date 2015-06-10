@@ -51,12 +51,12 @@ use \dmstr\bootstrap\Tabs;
             'id' => '<?= $model->formName() ?>',
             'layout' => '<?= $generator->formLayout ?>',
             'enableClientValidation' => true,
+            'errorSummaryCssClass' => 'error-summary alert alert-error'
             ]
             );
             ?>
 
             <div class="">
-                <?= "<?php " ?>echo $form->errorSummary($model); ?>
                 <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
 
                 <p>
@@ -106,13 +106,13 @@ EOS;
                 ?>
 
                 <hr/>
-
+                <?= "<?php " ?>echo $form->errorSummary($model); ?>
                 <?= "<?= " ?>Html::submitButton(
-                '<span class="glyphicon glyphicon-check"></span> ' . ($model->isNewRecord
-                ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
+                '<span class="glyphicon glyphicon-check"></span> ' .
+                ($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
                 [
-                'id' => 'save-' . $model->formName(),
-                'class' => 'btn btn-success'
+                    'id' => 'save-' . $model->formName(),
+                    'class' => 'btn btn-success'
                 ]
                 );
                 ?>
