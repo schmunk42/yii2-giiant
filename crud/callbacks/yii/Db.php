@@ -14,10 +14,17 @@ class Db
     static public function falseIfText()
     {
         // hide text columns (dbType: text)
-        return function ($attribute) {
-            if ($attribute->dbType == 'text') {
+        return function ($attribute, $model, $generator) {
+
+            $column     = $generator->getColumnByAttribute($attribute);
+            if (!$column) {
+                return null;
+            }
+
+            if ($column->dbType == 'text') {
                 return false;
             }
+
         };
     }
 }
