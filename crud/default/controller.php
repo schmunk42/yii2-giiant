@@ -47,35 +47,27 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public $enableCsrfValidation = false;
 
 	/**
+     * Restrict access permissions to admin user and users with auth-item 'module-controller'
 	 * @inheritdoc
 	 */
 	public function behaviors()
 	{
+		$permission = str_replace('/','_',$this->module->id.'/'.$this->id);
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
-				'rules' => [
+					'rules' => [
 					[
 						'allow' 	=> true,
 						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
-						'roles'     => ['@']
+						'matchCallback' => function() use ($permission) {
+							return \Yii::$app->user->can($permission) || (\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
+						},
 					]
 				]
 			]
 		];
 	}
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action)
-    {
-        if (parent::beforeAction($action)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 	/**
 	 * Lists all <?= $modelClass ?> models.
