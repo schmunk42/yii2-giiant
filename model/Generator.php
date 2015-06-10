@@ -123,6 +123,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'rules'          => $this->generateRules($tableSchema),
                 'relations'      => isset($relations[$tableName]) ? $relations[$tableName] : [],
                 'ns'             => $this->ns,
+                'enum'           => $this->getEnum($tableSchema->columns),
             ];
 
             $files[] = new CodeFile(
@@ -229,5 +230,49 @@ class Generator extends \yii\gii\generators\model\Generator
         }
         return $relations;
     }
+    
+    /**
+     * prepare ENUM field values
+     * @param array $columns
+     * @return array
+     */
+    public function getEnum($columns){
+
+        $enum = [];
+        foreach ($columns as $column) {
+            if (substr(strtoupper($column->dbType), 0, 4) != 'ENUM') {
+                continue;
+            }
+
+            $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
+            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
+            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name.'ValueLabel';
+            $enum[$column->name]['values'] = [];
+
+            $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
+
+            foreach ($enum_values as $value) {
+
+                $value = trim($value, "()'");
+
+                $const_name = strtoupper($column->name . '_' . $value);
+                $const_name = preg_replace('/\s+/','_',$const_name);
+                $const_name = str_replace(['-','_',' '],'_',$const_name);
+				$const_name=preg_replace('/[^A-Z0-9_]/', '', $const_name);
+
+                $label = ucwords(trim(strtolower(str_replace(['-', '_'], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value)))));
+                $label = preg_replace('/\s+/', ' ', $label);
+
+                $enum[$column->name]['values'][] = [
+                    'value' => $value,
+                    'const_name' => $const_name,
+                    'label' => $label,
+                    ];
+
+            }
+        }
+        return $enum;        
+
+    }    
 
 }

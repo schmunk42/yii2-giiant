@@ -35,6 +35,24 @@ use Yii;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
+
+<?php
+if(!empty($enum)){
+?>
+    /**
+    * ENUM field values
+    */
+<?php
+    foreach($enum as $column_name => $column_data){
+        foreach ($column_data['values'] as $enum_value){
+            echo '    const ' . $enum_value['const_name'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
+        }
+    }
+?>    
+    var $enum_labels = false;  
+<?php    
+}
+?>
     /**
      * @inheritdoc
      */
@@ -88,4 +106,43 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     }
 <?php endif; ?>
 
+<?php
+    foreach($enum as $column_name => $column_data){
+?>
+    
+    /**
+     * get column <?php echo $column_name?> enum value label 
+     * @param string $value
+     * @return string
+     */
+    public static function <?php echo $column_data['func_get_label_name']?>($value){
+        $labels = self::<?php echo $column_data['func_opts_name']?>();
+        if(isset($labels[$value])){
+            return $labels[$value];
+        }
+        return $value;
+    }
+   
+    /**
+     * column <?php echo $column_name?> ENUM value labels
+     * @return array
+     */    
+    public static function <?php echo $column_data['func_opts_name']?>()
+    {
+        return [
+<?php
+        foreach($column_data['values'] as $k => $value){
+?>
+            self::<?php echo $value['const_name'];?> => <?php echo $generator->generateString($value['label'])?>,
+<?php            
+        }
+?>        
+        ];
+    }
+<?php    
+    }
+
+
+?>
+    
 }
