@@ -228,7 +228,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         $relations = $this->getModelRelations($model);
         foreach ($relations AS $relation) {
             // TODO: check multiple link(s)
-            if (reset($relation->link) == $column->name) {
+            if ($relation->link && reset($relation->link) == $column->name) {
                 return $relation;
             }
         }
