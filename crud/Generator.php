@@ -325,7 +325,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code !== null) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
             return $code;
@@ -344,7 +344,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
         }
@@ -356,7 +356,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
         }
@@ -368,7 +368,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code !== null) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
         } else {
@@ -383,7 +383,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($model === null) {
             $model = $this->modelClass;
         }
-        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model);
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code !== null) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
             return $code;
@@ -501,7 +501,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function callProviderQueue($func, $args)
+    private function callProviderQueue($func, $args, $generator)
     {
         $this->initializeProviders(); // TODO: should be done on init, but providerList is empty
         //var_dump($this->_p);exit;
