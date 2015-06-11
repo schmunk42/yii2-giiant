@@ -47,35 +47,27 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public $enableCsrfValidation = false;
 
 	/**
+     * Restrict access permissions to admin user and users with auth-item 'module-controller'
 	 * @inheritdoc
 	 */
 	public function behaviors()
 	{
+		$permission = str_replace('/','_',$this->module->id.'/'.$this->id);
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
-				'rules' => [
+					'rules' => [
 					[
 						'allow' 	=> true,
 						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
-						'roles'     => ['@']
+						'matchCallback' => function() use ($permission) {
+							return \Yii::$app->user->can($permission) || (\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
+						},
 					]
 				]
 			]
 		];
 	}
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeAction($action)
-    {
-        if (parent::beforeAction($action)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 	/**
 	 * Lists all <?= $modelClass ?> models.
@@ -105,11 +97,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function actionView(<?= $actionParams ?>)
 	{
-        $resolved = \Yii::$app->request->resolve();
-        $resolved[1]['_pjax'] = null;
-        $url = Url::to(array_merge(['/'.$resolved[0]],$resolved[1]));
         \Yii::$app->session['__crudReturnUrl'] = Url::previous();
-        Url::remember($url);
+        Url::remember();
         Tabs::rememberActiveState();
 
         return $this->render('view', [
@@ -150,7 +139,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 		$model = $this->findModel(<?= $actionParams ?>);
 
 		if ($model->load($_POST) && $model->save()) {
-            $this->redirect(Url::previous());
+            return $this->redirect(Url::previous());
 		} else {
 			return $this->render('update', [
 				'model' => $model,
@@ -177,15 +166,15 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         // TODO: improve detection
         $isPivot = strstr('<?= $actionParams ?>',',');
         if ($isPivot == true) {
-            $this->redirect(Url::previous());
+            return $this->redirect(Url::previous());
         } elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
 			Url::remember(null);
 			$url = \Yii::$app->session['__crudReturnUrl'];
 			\Yii::$app->session['__crudReturnUrl'] = null;
 
-			$this->redirect($url);
+			return $this->redirect($url);
         } else {
-            $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
 	}
 

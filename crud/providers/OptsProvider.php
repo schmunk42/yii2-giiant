@@ -10,18 +10,22 @@ use yii\db\ColumnSchema;
  */
 class OptsProvider extends \schmunk42\giiant\base\Provider
 {
-    public function activeField(ColumnSchema $attribute)
+    public function activeField($attribute)
     {
-        $column     = $this->generator->getTableSchema()->columns[$attribute->name];
+        $column     = $this->generator->getColumnByAttribute($attribute);
+        if (!$column) {
+            return null;
+        }
+
         $modelClass = $this->generator->modelClass;
-        $func       = 'opts' . str_replace("_", "", $column->name);
-        $camel_func = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
+        $func       = 'opts' . str_replace("_", "", $attribute);
+        $camel_func = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
         
         if (method_exists($modelClass::className(), $func)) {
-            $mode = isset($this->columnNames[$attribute->name]) ? $this->columnNames[$attribute->name] : null;
+            $mode = isset($this->columnNames[$attribute]) ? $this->columnNames[$attribute] : null;
         }elseif (method_exists($modelClass::className(), $camel_func)) {
             $func = $camel_func;
-            $mode = isset($this->columnNames[$attribute->name]) ? $this->columnNames[$attribute->name] : null;
+            $mode = isset($this->columnNames[$attribute]) ? $this->columnNames[$attribute] : null;
         } else {
             return null;
         }
@@ -29,7 +33,7 @@ class OptsProvider extends \schmunk42\giiant\base\Provider
         switch ($mode) {
             case 'radio':
                 return <<<EOS
-                    \$form->field(\$model, '{$column->name}')->radioList(
+                    \$form->field(\$model, '{$attribute}')->radioList(
                         {$modelClass}::{$func}()
                     );
 EOS;
@@ -37,10 +41,10 @@ EOS;
 
             case 'select2':
                 return <<<EOS
-                    \$form->field(\$model, '{$column->name}')->widget(\kartik\select2\Select2::classname(), [
+                    \$form->field(\$model, '{$attribute}')->widget(\kartik\select2\Select2::classname(), [
                         'name' => 'class_name',
                         'model' => \$model,
-                        'attribute' => '{$column->name}',
+                        'attribute' => '{$attribute}',
                         'data' => {$modelClass}::{$func}(),
                         'options' => [
                             'placeholder' => {$this->generator->generateString('Type to autocomplete')},
@@ -53,7 +57,7 @@ EOS;
             default:
                 // Render a dropdown list if the model has a method optsColumn().
                 return <<<EOS
-                        \$form->field(\$model, '{$column->name}')->dropDownList(
+                        \$form->field(\$model, '{$attribute}')->dropDownList(
                             {$modelClass}::{$func}()
                         );
 EOS;
@@ -69,10 +73,10 @@ EOS;
      * @param $column ColumnSchema
      * @return null|string
      */
-    public function attributeFormat($column)
+    public function attributeFormat($attribute)
     {
         $modelClass = $this->generator->modelClass;
-        $camel_func = 'get' . str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name)))).'ValueLabel';
+        $camel_func = 'get' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute)))).'ValueLabel';
         
         if (!method_exists($modelClass::className(), $camel_func)) {
             return null;
@@ -80,8 +84,8 @@ EOS;
 
         return <<<EOS
             [
-                'attribute'=>'{$column->name}',
-                'value'=>{$modelClass}::{$camel_func}(\$model->{$column->name}),
+                'attribute'=>'{$attribute}',
+                'value'=>{$modelClass}::{$camel_func}(\$model->{$attribute}),
             ]
 EOS;
     }    
@@ -94,10 +98,10 @@ EOS;
      *
      * @return null|string
      */
-    public function columnFormat($column, $model)
+    public function columnFormat($attribute, $model)
     {
         $modelClass = $this->generator->modelClass;
-        $camel_func = 'get' . str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name)))).'ValueLabel';
+        $camel_func = 'get' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute)))).'ValueLabel';
         
         if (!method_exists($modelClass::className(), $camel_func)) {
             return null;
@@ -105,9 +109,9 @@ EOS;
 
         return <<<EOS
 			[
-                'attribute'=>'{$column->name}',
+                'attribute'=>'{$attribute}',
                 'value' => function (\$model) {
-                    return {$modelClass}::{$camel_func}(\$model->{$column->name});
+                    return {$modelClass}::{$camel_func}(\$model->{$attribute});
                 }    
             ]        
 EOS;

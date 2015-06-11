@@ -11,6 +11,19 @@ use yii\helpers\StringHelper;
 $urlParams = $generator->generateUrlParams();
 $nameAttribute = $generator->getNameAttribute();
 
+/** @var \yii\db\ActiveRecord $model */
+$model = new $generator->modelClass;
+$model->setScenario('crud');
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    /** @var \yii\db\ActiveRecord $model */
+    $model = new $generator->modelClass;
+    $safeAttributes = $model->safeAttributes();
+    if (empty($safeAttributes)) {
+        $safeAttributes = $model->getTableSchema()->columnNames;
+    }
+}
+
 echo "<?php\n";
 ?>
 
@@ -28,7 +41,7 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
+<div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
     <?=
     "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>
@@ -37,11 +50,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="clearfix">
         <p class="pull-left">
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?> . ' <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </p>
 
         <div class="pull-right">
-
 
             <?php
             $items = [];
@@ -89,52 +101,71 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-        <div class="table-responsive">
-        <?= "<?= " ?>GridView::widget([
-        'layout' => '{summary}{pager}{items}{pager}',
-        'dataProvider' => $dataProvider,
-        'pager'        => [
-            'class'          => yii\widgets\LinkPager::className(),
-            'firstPageLabel' => <?= $generator->generateString('First') ?>,
-            'lastPageLabel'  => <?= $generator->generateString('Last') ?>
-        ],
-        'filterModel' => $searchModel,
-        'columns' => [
+        <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
-        <?php
-        $actionButtonColumn = <<<PHP
-[
-    'class' => '{$generator->actionButtonClass}',
-    'urlCreator' => function(\$action, \$model, \$key, \$index) {
-        // using the column name as key, not mapping to 'id' like the standard generator
-        \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
-        \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
-        return Url::toRoute(\$params);
-    },
-    'contentOptions' => ['nowrap'=>'nowrap']
-],
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2>
+                    <i><?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?></i>
+                </h2>
+            </div>
+
+            <div class="panel-body">
+
+                <div class="table-responsive">
+                <?= "<?= " ?>GridView::widget([
+                'layout' => '{summary}{pager}{items}{pager}',
+                'dataProvider' => $dataProvider,
+                'pager'        => [
+                    'class'          => yii\widgets\LinkPager::className(),
+                    'firstPageLabel' => <?= $generator->generateString('First') ?>,
+                    'lastPageLabel'  => <?= $generator->generateString('Last') ?>
+                ],
+                'filterModel' => $searchModel,
+                'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
+                'headerRowOptions' => ['class'=>'x'],
+                'columns' => [
+
+                <?php
+                $actionButtonColumn = <<<PHP
+        [
+            'class' => '{$generator->actionButtonClass}',
+            'urlCreator' => function(\$action, \$model, \$key, \$index) {
+                // using the column name as key, not mapping to 'id' like the standard generator
+                \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
+                \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
+                return Url::toRoute(\$params);
+            },
+            'contentOptions' => ['nowrap'=>'nowrap']
+        ],
 PHP;
 
-        // action buttons first
-        echo $actionButtonColumn;
+                // action buttons first
+                echo $actionButtonColumn;
 
-        $count = 0;
-        echo "\n"; // code-formatting
+                $count = 0;
+                echo "\n"; // code-formatting
 
-        foreach ($generator->getTableSchema()->columns as $column) {
-            $format = trim($generator->columnFormat($column,$model));
-            if ($format == false) continue;
-            if (++$count < 8) {
-                echo "\t\t\t{$format},\n";
-            } else {
-                echo "\t\t\t/*{$format}*/\n";
-            }
-        }
+                foreach ($safeAttributes as $attribute) {
+                    $format = trim($generator->columnFormat($attribute,$model));
+                    if ($format == false) continue;
+                    if (++$count < $generator->gridMaxColumns) {
+                        echo "\t\t\t{$format},\n";
+                    } else {
+                        echo "\t\t\t/*{$format}*/\n";
+                    }
+                }
 
-        ?>
-        ],
-    ]); ?>
+                ?>
+                ],
+            ]); ?>
+                </div>
+
+            </div>
+
         </div>
+
+        <?= "<?php \yii\widgets\Pjax::end() ?>\n"; ?>
 
     <?php else: ?>
 

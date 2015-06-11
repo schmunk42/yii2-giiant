@@ -90,6 +90,22 @@ if(!empty($enum)){
         <?= $relation[0] . "\n" ?>
     }
 <?php endforeach; ?>
+
+<?php if ($queryClassName): ?>
+    <?php
+    $queryClassFullName = ($generator->ns === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
+    echo "\n";
+    ?>
+    /**
+     * @inheritdoc
+     * @return <?= $queryClassFullName ?> the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new <?= $queryClassFullName ?>(get_called_class());
+    }
+<?php endif; ?>
+
 <?php
     foreach($enum as $column_name => $column_data){
 ?>

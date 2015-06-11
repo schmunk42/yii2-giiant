@@ -12,17 +12,17 @@ use yii\db\ColumnSchema;
 
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {
-    public function activeField(ColumnSchema $attribute)
+    public function activeField($attribute)
     {
-        if (!isset($this->generator->getTableSchema()->columns[$attribute->name])) {
+        if (!isset($this->generator->getTableSchema()->columns[$attribute])) {
             return null;
         }
-        $column = $this->generator->getTableSchema()->columns[$attribute->name];
+        $column = $this->generator->getTableSchema()->columns[$attribute];
         switch (true) {
             case (in_array($column->name, $this->columnNames)):
                 $this->generator->requires[] = '2amigos/yii2-ckeditor-widget';
                 return <<<EOS
-\$form->field(\$model, '{$attribute->name}')->widget(
+\$form->field(\$model, '{$attribute}')->widget(
     \dosamigos\ckeditor\CKEditor::className(),
     [
         'options' => ['rows' => 6],

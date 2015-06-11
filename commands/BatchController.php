@@ -97,11 +97,31 @@ class BatchController extends Controller
      * @var string base class for crud controllers
      */
     public $crudBaseControllerClass = 'yii\web\Controller';
-    
+
     /**
      * @var array list of relations to skip, when generating `view`-views
      */
     public $crudSkipRelations = [];
+
+    /**
+     * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
+     */
+    public $modelGenerateQuery = true;
+
+    /**
+     * @var string the namespace of the ActiveQuery class to be generated
+     */
+    public $modelQueryNamespace = 'app\models\query';
+
+    /**
+     * @var string the base class of the new ActiveQuery class
+     */
+    public $modelQueryBaseClass = 'yii\db\ActiveQuery';
+
+    /**
+     * @var application configuration for creating temporary applications
+     */
+    protected $appConfig;
 
     /**
      * @inheritdoc
@@ -127,9 +147,32 @@ class BatchController extends Controller
                 'crudPathPrefix',
                 'crudProviders',
                 'crudSkipRelations',
-                'crudBaseControllerClass'
+                'crudBaseControllerClass',
+                'modelGenerateQuery',
+                'modelQueryNamespace',
+                'modelQueryBaseClass',
             ]
         );
+    }
+
+    /**
+     * Loads application configuration and checks tables parameter
+     *
+     * @param \yii\base\Action $action
+     *
+     * @return bool
+     */
+    public function beforeAction($action)
+    {
+        $this->appConfig       = $this->getYiiConfiguration();
+        $this->appConfig['id'] = 'temp';
+
+        if (!$this->tables) {
+            echo "No tables specified.";
+            return false;
+            exit;
+        }
+        return parent::beforeAction($action);
     }
 
     /**
@@ -139,16 +182,17 @@ class BatchController extends Controller
      */
     public function actionIndex()
     {
-        echo "Running batch...\n";
+        echo "Running full giiant batch...\n";
+        $this->actionModels();
+        $this->actionCruds();
+    }
 
-        $config       = $this->getYiiConfiguration();
-        $config['id'] = 'temp';
-
-        if (!$this->tables) {
-            echo "No tables specified.";
-            exit;
-        }
-
+    /**
+     * Run batch process to generate models all given tables
+     * @throws \yii\console\Exception
+     */
+    public function actionModels()
+    {
         // create models
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
@@ -166,18 +210,28 @@ class BatchController extends Controller
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
-                'tableNameMap'       => $this->tableNameMap
+                'tableNameMap'       => $this->tableNameMap,
+                'generateQuery'      => $this->modelGenerateQuery,
+                'queryNs'            => $this->modelQueryNamespace,
+                'queryBaseClass'     => $this->modelQueryBaseClass,
             ];
             $route  = 'gii/giiant-model';
 
             $app  = \Yii::$app;
-            $temp = new \yii\console\Application($config);
+            $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
         }
 
+    }
 
+    /**
+     * Run batch process to generate CRUDs all given tables
+     * @throws \yii\console\Exception
+     */
+    public function actionCruds()
+    {
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
         foreach ($this->tables AS $table) {
@@ -202,7 +256,7 @@ class BatchController extends Controller
             ];
             $route  = 'gii/giiant-crud';
             $app    = \Yii::$app;
-            $temp   = new \yii\console\Application($config);
+            $temp   = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;

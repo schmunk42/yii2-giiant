@@ -2,20 +2,22 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-class DateTimeProvider extends \schmunk42\giiant\base\Provider
+class DateProvider extends \schmunk42\giiant\base\Provider
 {
     public function activeField($attribute)
     {
+        $column = $this->generator->getTableSchema()->columns[$attribute->name];
+
         switch (true) {
-            case (in_array($attribute, $this->columnNames)):
+            case (in_array($column->name, $this->columnNames)):
                 $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
                 return <<<EOS
-\$form->field(\$model, '{$attribute}')->widget(\zhuravljov\widgets\DateTimePicker::className(), [
+\$form->field(\$model, '{$column->name}')->widget(\zhuravljov\widgets\DatePicker::className(), [
     'options' => ['class' => 'form-control'],
     'clientOptions' => [
         'autoclose' => true,
         'todayHighlight' => true,
-        'format' => 'yyyy-mm-dd hh:ii',
+        'format' => 'yyyy-mm-dd',
     ],
 ])
 EOS;

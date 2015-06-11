@@ -8,6 +8,15 @@ use yii\helpers\StringHelper;
  * @var schmunk42\giiant\crud\Generator $generator
  */
 
+/** @var \yii\db\ActiveRecord $model */
+$model = new $generator->modelClass;
+$model->setScenario('crud');
+
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    $safeAttributes = $model->getTableSchema()->columnNames;
+}
+
 $urlParams = $generator->generateUrlParams();
 
 echo "<?php\n";
@@ -36,14 +45,13 @@ Inflector::pluralize(
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
+<div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <!-- menu buttons -->
     <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List') ?>, ['index'], ['class'=>'btn btn-default']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?> . '
-        <?= Inflector::camel2words(StringHelper::basename($generator->modelClass)) ?>', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))) ?>, ['index'], ['class'=>'btn btn-default']) ?>
     </p>
 
     <div class="clearfix"></div>
@@ -58,12 +66,15 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?php endif; ?>" ?>
 
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>
+                <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+            </h2>
+        </div>
 
-    <?php $label = StringHelper::basename($generator->modelClass); ?>
+        <div class="panel-body">
 
-    <h3>
-        <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
-    </h3>
 
 
     <?php
@@ -74,9 +85,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'model' => $model,
     'attributes' => [
     <?php
-    foreach ($generator->getTableSchema()->columns as $column) {
-        $format = $generator->attributeFormat($column);
-        if ($format === false) {
+    foreach ($safeAttributes as $attribute) {
+        $format = $generator->attributeFormat($attribute);
+        if (!$format) {
             continue;
         } else {
             echo $format . ",\n";
@@ -97,9 +108,13 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
+
+    // get relation info $ prepare add button
+    $model          = new $generator->modelClass;
+
     $items = <<<EOS
 [
-    'label'   => '<span class="glyphicon glyphicon-asterisk"></span> $label',
+    'label'   => '<b class=""># '.\$model->{$model->primaryKey()[0]}.'</b>',
     'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
@@ -109,8 +124,6 @@ EOS;
 
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
-        // get relation info $ prepare add button
-        $model          = new $generator->modelClass;
         $showAllRecords = false;
 
         if ($relation->via !== null) {
@@ -140,7 +153,7 @@ EOS;
             ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
-        // TODO: support multiple PKs, VarDumper?
+        // TODO: support multiple PKs
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New') . " . ' " .
             Inflector::singularize(Inflector::camel2words($name)) . "',
@@ -178,8 +191,8 @@ EOS;
         $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
-    'label'   => '<small><span class="glyphicon glyphicon-paperclip"></span> $label</small>',
     'content' => \$this->blocks['$name'],
+    'label'   => '<small>$label <span class="badge badge-default">'.count(\$model->get{$name}()->asArray()->all()).'</span></small>',
     'active'  => false,
 ],
 EOS;
@@ -197,4 +210,7 @@ EOS;
     );
     ?>";
     ?>
+
+        </div>
+    </div>
 </div>

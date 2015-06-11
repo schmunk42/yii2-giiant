@@ -7,9 +7,9 @@
 
 namespace schmunk42\giiant\model;
 
+use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
-use Yii;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -112,17 +112,18 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($this->getTableNames() as $tableName) {
 
             $className = $this->generateClassName($tableName);
-
+            $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
             $params      = [
-                'tableName'   => $tableName,
-                'className'   => $className,
-                'tableSchema' => $tableSchema,
-                'labels'      => $this->generateLabels($tableSchema),
-                'rules'       => $this->generateRules($tableSchema),
-                'relations'   => isset($relations[$className]) ? $relations[$className] : [],
-                'ns'          => $this->ns,
-                'enum'        => $this->getEnum($tableSchema->columns), 
+                'tableName'      => $tableName,
+                'className'      => $className,
+                'queryClassName' => $queryClassName,
+                'tableSchema'    => $tableSchema,
+                'labels'         => $this->generateLabels($tableSchema),
+                'rules'          => $this->generateRules($tableSchema),
+                'relations'      => isset($relations[$tableName]) ? $relations[$tableName] : [],
+                'ns'             => $this->ns,
+                'enum'           => $this->getEnum($tableSchema->columns),
             ];
 
             $files[] = new CodeFile(
@@ -137,6 +138,21 @@ class Generator extends \yii\gii\generators\model\Generator
                     $this->render('model-extended.php', $params)
                 );
             }
+
+            if ($queryClassName) {
+                $queryClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->queryNs)) . '/' . $queryClassName . '.php';
+                if ($this->generateModelClass || !is_file($queryClassFile)) {
+                    $params = [
+                        'className' => $queryClassName,
+                        'modelClassName' => $className,
+                    ];
+                    $files[] = new CodeFile(
+                        $queryClassFile,
+                        $this->render('query.php', $params)
+                    );
+                }
+            }
+
         }
         return $files;
     }
@@ -148,7 +164,7 @@ class Generator extends \yii\gii\generators\model\Generator
      *
      * @return string the generated class name
      */
-    protected function generateClassName($tableName)
+    protected function generateClassName($tableName, $useSchemaName = null)
     {
 
         #Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
