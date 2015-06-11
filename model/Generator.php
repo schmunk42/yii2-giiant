@@ -289,7 +289,6 @@ class Generator extends \yii\gii\generators\model\Generator
     /**
      * Generates validation rules for the specified table and add enum value validation.
      * @param \yii\db\TableSchema $table the table schema
-     * @param $enum ENUM field values extracted by $this->getEnum($columns)
      * @return array the generated validation rules
      */
     public function generateRules($table)
@@ -305,7 +304,6 @@ class Generator extends \yii\gii\generators\model\Generator
             }
             $rules[] = "['" .$field_name . "', 'in', 'range' => [\n                    " . implode(",\n                    ",$ea) . ",\n                ]\n            ]";
         }        
-        
         
         return array_merge(parent::generateRules($table),$rules);
     }    
