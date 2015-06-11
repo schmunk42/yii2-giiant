@@ -114,6 +114,7 @@ class Generator extends \yii\gii\generators\model\Generator
             $className = $this->generateClassName($tableName);
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
+            
             $params      = [
                 'tableName'      => $tableName,
                 'className'      => $className,
@@ -240,7 +241,7 @@ class Generator extends \yii\gii\generators\model\Generator
 
         $enum = [];
         foreach ($columns as $column) {
-            if (substr(strtoupper($column->dbType), 0, 4) != 'ENUM') {
+            if (!$this->isEnum($column)) {
                 continue;
             }
 
@@ -273,6 +274,38 @@ class Generator extends \yii\gii\generators\model\Generator
         }
         return $enum;        
 
+    }    
+    
+    /**
+     * validate is ENUM
+     * @param  $column table column
+     * @return type
+     */
+    public function isEnum($column){
+        return substr(strtoupper($column->dbType), 0, 4) == 'ENUM';
+    }
+
+
+    /**
+     * Generates validation rules for the specified table and add enum value validation.
+     * @param \yii\db\TableSchema $table the table schema
+     * @return array the generated validation rules
+     */
+    public function generateRules($table)
+    {
+        $rules = [];
+        
+        //for enum fields create rules "in range" for all enum values
+        $enum = $this->getEnum($table->columns);        
+        foreach($enum as $field_name => $field_details){
+            $ea = array();
+            foreach($field_details['values'] as $field_enum_values){
+                $ea[] = 'self::'.$field_enum_values['const_name'];
+            }
+            $rules[] = "['" .$field_name . "', 'in', 'range' => [\n                    " . implode(",\n                    ",$ea) . ",\n                ]\n            ]";
+        }        
+        
+        return array_merge(parent::generateRules($table),$rules);
     }    
 
 }
