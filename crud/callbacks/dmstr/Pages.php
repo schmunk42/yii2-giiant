@@ -20,7 +20,7 @@ class Pages
         'query'          => {$tree}::find()->addOrderBy('root, lft'),
         'headingOptions' => ['label' => 'Pages'],
         'model'          => \$model,         // input model
-        'attribute'      => 'request_param',        // input attribute
+        'attribute'      => 'request_param', // input attribute
         'value'          => \$model->route,
         'asDropdown'     => true,           // will render the tree input widget as a dropdown.
         'multiple'       => false,          // set to false if you do not need multiple selection
@@ -30,7 +30,7 @@ class Pages
             'class' => 'text-success',
         ],
         'options'        => [
-            'data-route' => (\$treeNode !== null) ? \$treeNode->route : null,
+            #'data-route' => (\$treeNode !== null) ? \$treeNode->route : null,
         ],
     ]
 );
