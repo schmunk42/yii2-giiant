@@ -288,7 +288,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     }
                 }
             } catch (Exception $e) {
-                //echo "Error finding relation using " . get_class($model) . "::" . $method->name . ": " . $e->getMessage();
+                //echo "Error finding relation using " . get_class($model) . "::" . $method->name . "(): " . $e->getMessage();
             }
         }
         return $stack;
