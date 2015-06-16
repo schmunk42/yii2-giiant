@@ -288,7 +288,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     }
                 }
             } catch (Exception $e) {
-                echo "Error: " . $e->getMessage();
+                //echo "Error: " . $e->getMessage();
             }
         }
         return $stack;
