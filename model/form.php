@@ -15,4 +15,5 @@ echo $form->field($generator, 'generateRelations')->checkbox();
 echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'generateModelClass')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
+echo $form->field($generator, 'singularEntities')->checkbox();
 echo $form->field($generator, 'messageCategory');

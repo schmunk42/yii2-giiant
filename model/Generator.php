@@ -34,6 +34,7 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public $tableNameMap = [];
     protected $classNames2;
+    public $singularEntities = false;
 
     /**
      * @inheritdoc
@@ -208,6 +209,8 @@ class Generator extends \yii\gii\generators\model\Generator
         }
 
         $returnName = Inflector::id2camel($className, '_');
+        if ($this->singularEntities) $returnName = Inflector::singularize($returnName);
+
         Yii::trace("Converted '{$tableName}' to '{$returnName}'.", __METHOD__);
         return $this->classNames2[$tableName] = $returnName;
     }

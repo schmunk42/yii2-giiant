@@ -64,6 +64,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    public $singularEntities = false;
 
     private $_p = [];
 
@@ -190,7 +191,10 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     public function getModelByTableName($name)
     {
-        return Inflector::id2camel(str_replace($this->tablePrefix, '', $name), '_');
+        $returnName = str_replace($this->tablePrefix, '', $name);
+        $returnName = Inflector::id2camel($returnName, '_');
+        if ($this->singularEntities) $returnName = Inflector::singularize($returnName);
+        return $returnName;
     }
 
     /**
@@ -213,7 +217,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         $pos   = strrpos($this->controllerClass, '\\');
         $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
-
+        if ($this->singularEntities) $class = Inflector::singularize($class);
         return Inflector::camel2id($class, '-', true);
     }
 
@@ -562,5 +566,23 @@ class Generator extends \yii\gii\generators\crud\Generator
             $model = $this;
         }
         return $model->getTableSchema()->getColumn($attribute);
+    }
+
+    public function generate()
+    {
+        if ($this->singularEntities) {
+            $this->modelClass = Inflector::singularize($this->modelClass);
+            $this->controllerClass = Inflector::singularize(substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)) . "Controller";
+            $this->searchModelClass = Inflector::singularize($this->searchModelClass);
+        }
+        return parent::generate();
+    }
+
+    public function validateClass($attribute, $params)
+    {
+        if ($this->singularEntities) {
+            $this->$attribute = Inflector::singularize($this->$attribute);
+        }
+        parent::validateClass($attribute, $params);
     }
 }
