@@ -104,14 +104,10 @@ EOS;
             if ($relation->multiple) {
                 return null;
             }
-            $title          = $this->generator->getModelNameAttribute($relation->modelClass);
-            $route          = $this->generator->createRelationRoute($relation, 'view');
-            $relationGetter = 'get' . Inflector::id2camel(
-                    str_replace('_id', '', $column->name),
-                    '_'
-                ) . '()'; // TODO: improve detection
-            $params         = "'id' => \$model->{$column->name}";
-
+            $title           = $this->generator->getModelNameAttribute($relation->modelClass);
+            $route           = $this->generator->createRelationRoute($relation, 'view');
+            $relationGetter  = 'get' . $this->id2entity($column->name) . '()';
+            $params          = "'id' => \$model->{$column->name}";
             $relationModel   = new $relation->modelClass;
             $pks             = $relationModel->primaryKey();
             $paramArrayItems = "";
@@ -161,15 +157,10 @@ EOS;
             if ($relation->multiple) {
                 return null;
             }
-            $title          = $this->generator->getModelNameAttribute($relation->modelClass);
-            $route          = $this->generator->createRelationRoute($relation, 'view');
-            $method         = __METHOD__;
-
-            # TODO: improve detection
-            $relationGetter = 'get' . Inflector::id2camel(
-                    str_replace('_id', '', $column->name),
-                    '_'
-                ) . '()';
+            $title           = $this->generator->getModelNameAttribute($relation->modelClass);
+            $route           = $this->generator->createRelationRoute($relation, 'view');
+            $method          = __METHOD__;
+            $relationGetter  = 'get' . $this->id2entity($column->name) . '()';
             $relationModel   = new $relation->modelClass;
             $pks             = $relationModel->primaryKey();
             $paramArrayItems = "";
@@ -198,7 +189,6 @@ EOS;
             return null;
         }
     }
-
 
     /**
      * Renders a grid view for a given relation
@@ -324,5 +314,25 @@ EOS;
 EOS;
         $code .= ' . \'</div>\' ';
         return $code;
+    }
+
+    /**
+     * Detects the entity name from the foreign key column name
+     * e.g. user_id | UserId | userId   -> User
+     *
+     * @param $column
+     *
+     * @return null|string
+     */
+    private function id2entity($column)
+    {
+        $entity = null;
+        if (substr($column, -3, 3) == '_id') {
+            $entity = Inflector::id2camel(str_replace('_id', '', $column), '_');
+        } elseif (substr($column, -2, 2) == 'Id') {
+            $entity = Inflector::id2camel(substr($column, 0, strlen($column) - 2), '_');
+        }
+        // TODO: improve detection for case when column name does not derive from table name
+        return $entity;
     }
 }
