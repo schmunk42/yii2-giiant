@@ -48,38 +48,15 @@ $this->params['breadcrumbs'][] = $this->title;
     echo $this->render('_search', ['model' =>$searchModel]);
     ?>
 
-    <div class="clearfix">
-        <p class="pull-left">
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
-        </p>
+	<div class="panel panel-default">
+		<div class="panel-body">
+        <?= "<?= " ?>\dmstr\helpers\Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success pull-left']) ?>
 
         <div class="pull-right">
-
             <?php
             $items = [];
             $model = new $generator->modelClass;
             ?>
-            <?php foreach ($generator->getModelRelations($model) AS $relation): ?>
-                <?php
-                // relation dropdown links
-                $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
-                if ($generator->isPivotRelation($relation)) {
-                    $iconType = 'random';
-                }
-                $controller = $generator->pathPrefix . Inflector::camel2id(
-                        StringHelper::basename($relation->modelClass),
-                        '-',
-                        true
-                    );
-                $route = $generator->createRelationRoute($relation,'index');
-                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
-                $items[] = [
-                    'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> ' . $label . '</i>',
-                    'url'   => [$route]
-                ]
-                ?>
-            <?php endforeach; ?>
-
             <?= "<?= \n" ?>
             \yii\bootstrap\ButtonDropdown::widget(
                 [
@@ -91,12 +68,39 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'dropdown-menu-right'
                         ],
                         'encodeLabels' => false,
-                        'items'        => <?= \yii\helpers\VarDumper::export($items) ?>
+                        'items'        => [<?php
+
+					        foreach ($generator->getModelRelations($model) AS $relation) {
+						        // relation dropdown links
+						        $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
+						        if ($generator->isPivotRelation($relation)) {
+							        $iconType = 'random';
+						        }
+						        $controller = $generator->pathPrefix . Inflector::camel2id(
+								        StringHelper::basename($relation->modelClass),
+								        '-',
+								        true
+							        );
+
+						        $route = $generator->createRelationRoute($relation, 'index');
+
+						        $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
+						        echo "[
+							        'label' => '<i class=\"glyphicon glyphicon-" . $iconType . "\"> " . $label . "</i>',
+							        'url' => ['" . $route . "'],
+							        'visible' => \\dmstr\\helpers\\Html::access(['" . $route . "'], function() { return true; }, function() { return false; }),
+						        ],";
+					        }
+
+						?>]
                     ],
                 ]
             );
             <?= "?>" ?>
-        </div>
+	            </div>
+	        </div>
+		    <div class="clearfix"></div>
+	    </div>
     </div>
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>

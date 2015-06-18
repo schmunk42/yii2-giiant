@@ -96,7 +96,7 @@ class BatchController extends Controller
     /**
      * @var string base class for crud controllers
      */
-    public $crudBaseControllerClass = 'yii\web\Controller';
+    public $crudBaseControllerClass = 'schmunk42\giiant\controllers\CrudController';
 
     /**
      * @var array list of relations to skip, when generating `view`-views
