@@ -27,7 +27,7 @@ if (empty($safeAttributes)) {
 echo "<?php\n";
 ?>
 
-use yii\helpers\Html;
+use dmstr\helpers\Html;
 use yii\helpers\Url;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="panel panel-default">
 		<div class="panel-body">
-        <?= "<?= " ?>\dmstr\helpers\Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success pull-left']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success pull-left']) ?>
 
         <div class="pull-right">
             <?php
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						        echo "[
 							        'label' => '<i class=\"glyphicon glyphicon-" . $iconType . "\"> " . $label . "</i>',
 							        'url' => ['" . $route . "'],
-							        'visible' => \\dmstr\\helpers\\Html::access(['" . $route . "'], function() { return true; }, function() { return false; }),
+							        'visible' => \\dmstr\\helpers\\RouteAccess::can(['" . $route . "']),
 						        ],";
 					        }
 
@@ -138,7 +138,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 // using the column name as key, not mapping to 'id' like the standard generator
                 \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
                 \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
-                return Url::toRoute(\$params);
+
+                return \$params;
             },
             'contentOptions' => ['nowrap'=>'nowrap']
         ],

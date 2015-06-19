@@ -35,7 +35,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @todo review
      * @var string
      */
-    public $actionButtonClass = 'yii\grid\ActionColumn';
+    public $actionButtonClass = 'schmunk42\giiant\components\grid\ActionColumn';
     /**
      * @var array relations to be excluded in UI rendering
      */

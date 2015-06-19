@@ -185,7 +185,7 @@ EOS;
     'attribute' => '{$column->name}',
     'value' => function (\$model) {
         if (\$rel = \$model->{$relationGetter}->one()) {
-            return yii\helpers\Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
+            return Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
             return '';
         }
@@ -226,7 +226,7 @@ EOS;
             $template          = '{view} {delete}';
             $deleteButtonPivot = <<<EOS
 'delete' => function (\$url, \$model) {
-                return yii\helpers\Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
+                return Html::a('<span class="glyphicon glyphicon-remove"></span>', \$url, [
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
                     'data-confirm'  => {$this->generator->generateString(
@@ -237,7 +237,7 @@ EOS;
                 ]);
             },
 'view' => function (\$url, \$model) {
-                return yii\helpers\Html::a(
+                return Html::a(
                     '<span class="glyphicon glyphicon-cog"></span>',
                     \$url,
                     [
@@ -255,14 +255,14 @@ EOS;
         $controller   = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $actionColumn = <<<EOS
 [
-    'class'      => 'yii\grid\ActionColumn',
+    'class'      => '{$this->generator->actionButtonClass}',
     'template'   => '$template',
     'contentOptions' => ['nowrap'=>'nowrap'],
     'urlCreator' => function (\$action, \$model, \$key, \$index) {
         // using the column name as key, not mapping to 'id' like the standard generator
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
-        return Url::toRoute(\$params);
+        return \$params;
     },
     'buttons'    => [
         $deleteButtonPivot
