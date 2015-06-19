@@ -183,8 +183,9 @@ class BatchController extends Controller
 	public function actionIndex()
 	{
 		echo "Running full giiant batch...\n";
-		$this->actionModels();
-		$this->actionCruds();
+//		$this->actionModels();
+//		$this->actionCruds();
+		$this->actionMigrations();
 	}
 
 	/**
@@ -223,7 +224,6 @@ class BatchController extends Controller
 			unset($temp);
 			\Yii::$app = $app;
 		}
-
 	}
 
 	/**
@@ -254,6 +254,46 @@ class BatchController extends Controller
 				'skipRelations' => $this->crudSkipRelations,
 			];
 			$route = 'gii/giiant-crud';
+			$app = \Yii::$app;
+			$temp = new \yii\console\Application($this->appConfig);
+			$temp->runAction(ltrim($route, '/'), $params);
+			unset($temp);
+			\Yii::$app = $app;
+		}
+	}
+
+	/**
+	 * Run batch process to generate auth item migrations
+	 * @throws \yii\console\Exception
+	 */
+	public function actionMigrations()
+	{
+		// create models
+		foreach ($this->tables AS $table) {
+			$table = str_replace($this->tablePrefix, '', $table);
+			$name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
+			var_dump($table, $name);exit;
+			$params = [
+				'interactive' => $this->interactive,
+				'overwrite' => $this->overwrite,
+				'template' => $this->template,
+				'ns' => $this->modelNamespace,
+				'db' => $this->modelDb,
+				'tableName' => $table,
+				'tablePrefix' => $this->tablePrefix,
+				'enableI18N' => $this->enableI18N,
+				'messageCategory' => $this->messageCategory,
+				'generateModelClass' => $this->extendedModels,
+				'modelClass' => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
+					Inflector::camelize($table), // TODO: setting is not recognized in giiant
+				'baseClass' => $this->modelBaseClass,
+				'tableNameMap' => $this->tableNameMap,
+				'generateQuery' => $this->modelGenerateQuery,
+				'queryNs' => $this->modelQueryNamespace,
+				'queryBaseClass' => $this->modelQueryBaseClass,
+			];
+			$route = 'gii/giiant-migration';
+
 			$app = \Yii::$app;
 			$temp = new \yii\console\Application($this->appConfig);
 			$temp->runAction(ltrim($route, '/'), $params);
