@@ -52,7 +52,6 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 	 */
 	public function behaviors()
 	{
-		$permission = str_replace('/','_',$this->module->id.'/'.$this->id);
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
@@ -60,8 +59,11 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 					[
 						'allow' 	=> true,
 						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
-						'matchCallback' => function() use ($permission) {
-							return \Yii::$app->user->can($permission) || (\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
+						'matchCallback' => function($rule, $action) {
+							return
+								\Yii::$app->user->can(str_replace('/', '_', $this->module->id . '/' . $this->id)) ||
+								\Yii::$app->user->can(str_replace('/', '_', $this->module->id . '/' . $this->id . '/' . $action->id)) ||
+								(\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
 						},
 					]
 				]
