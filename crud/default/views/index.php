@@ -93,6 +93,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         'encodeLabels' => false,
                         'items'        => <?= \yii\helpers\VarDumper::export($items) ?>
                     ],
+                    'options' => [
+                        'class' => 'btn-default'
+                    ]
                 ]
             );
             <?= "?>" ?>
