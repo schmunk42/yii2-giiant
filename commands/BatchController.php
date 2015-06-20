@@ -119,7 +119,7 @@ class BatchController extends Controller
     public $modelQueryBaseClass = 'yii\db\ActiveQuery';
 
     /**
-     * @var application configuration for creating temporary applications
+     * @var array application configuration for creating temporary applications
      */
     protected $appConfig;
 
