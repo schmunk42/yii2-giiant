@@ -327,12 +327,21 @@ EOS;
     private function id2entity($column)
     {
         $entity = null;
-        if (substr($column, -3, 3) == '_id') {
-            $entity = Inflector::id2camel(str_replace('_id', '', $column), '_');
-        } elseif (substr($column, -2, 2) == 'Id') {
-            $entity = Inflector::id2camel(substr($column, 0, strlen($column) - 2), '_');
+        switch (true) {
+            case (substr($column, -3, 3) == '_id'):
+                $entity = Inflector::id2camel(str_replace('_id', '', $column), '_');
+                break;
+            case (substr($column, -2, 2) == 'Id'):
+                $entity = Inflector::id2camel(substr($column, 0, strlen($column) - 2), '_');
+                break;
+            default:
+                // TODO: still improve detection for case when column name does not derive from table name, e.g. for CamelCase
+                //
+                // the behavior below is testes with a model with a FK -> PK column `foo_bar`,
+                // which is transformed to a getter `getFooBar()` by gii
+                $entity = Inflector::id2camel($column,'_');
+                break;
         }
-        // TODO: improve detection for case when column name does not derive from table name
         return $entity;
     }
 }
