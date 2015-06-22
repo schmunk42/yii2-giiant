@@ -4,9 +4,9 @@
 set +e
     # don't throw an error here
     # TODO: remove tlsverify=0 (Docker 1.7 issue)
-    docker --tlsverify=0 run -d --name runner-xdb -e MARIADB_PASS=secretadmin schmunk42/mariadb-example-databases
+    docker $DEBUG_OPTS run -d --name runner-xdb -e MARIADB_PASS=secretadmin schmunk42/mariadb-example-databases
 set -e
-docker --tlsverify=0 start runner-xdb
+docker $DEBUG_OPTS start runner-xdb
 
 # cleanup
 docker-compose kill
