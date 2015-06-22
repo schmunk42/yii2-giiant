@@ -2,6 +2,7 @@
 
 **Note! This is a concept/prototype.**
 
+[![build status](https://ci.hrzg.de/projects/24/status.png?ref=master)](https://ci.hrzg.de/projects/24?ref=master)
 
 ### Phundament "Potemkin"-testing
 
