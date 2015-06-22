@@ -29,7 +29,7 @@ Finally it creates a screenshot of that in `tests/_output`.
 - [docker-compose](https://docs.docker.com/compose/) (>=1.2)
 
 
-### CLI
+### Setup
 
 Go to the `tests` directory
 
@@ -38,6 +38,8 @@ Go to the `tests` directory
 Initialize *Potemkin*
     
     sh init.sh
+
+### Usage
 
 Run the test suites    
     
