@@ -23,8 +23,8 @@ appcli:
     - 'appnginx:WEB'
     - 'seleniumhub:HUB'
   volumes:
-    - ../:/app/vendor/schmunk42/yii2-giiant
-    - ../tests/_config/local.php:/app/src/config/local.php
+    - /Volumes/storage/runner-test-b/builds/project-24:/app/vendor/schmunk42/yii2-giiant
+    - /Volumes/storage/runner-test-b/builds/project-24/tests/_config/local.php:/app/src/config/local.php
   volumes_from:
     - appsrc
   environment:
@@ -34,8 +34,8 @@ appcli:
 appsrc:
   image: phundament/app:4.0.0-rc1-dev
   volumes:
-    - ../:/app/vendor/schmunk42/yii2-giiant
-    - ../tests/_config/local.php:/app/src/config/local.php
+    - /Volumes/storage/runner-test-b/builds/project-24/:/app/vendor/schmunk42/yii2-giiant
+    - /Volumes/storage/runner-test-b/builds/project-24/tests/_config/local.php:/app/src/config/local.php
     - '/app'
   command: 'tail -f /dev/null'
 
@@ -46,8 +46,8 @@ appfpm:
   image: phundament/php:5.6-fpm-4.0.0-rc1-dev
   # host-volume for local development
   volumes:
-    - ../:/app/vendor/schmunk42/yii2-giiant
-    - ../tests/_config/local.php:/app/src/config/local.php
+    - /Volumes/storage/runner-test-b/builds/project-24/:/app/vendor/schmunk42/yii2-giiant
+    - /Volumes/storage/runner-test-b/builds/project-24/tests/_config/local.php:/app/src/config/local.php
   volumes_from:
     - appsrc
   external_links:
@@ -60,7 +60,7 @@ appnginx:
     - 'appfpm:PHPFPM'
   # host-volume for local development
   volumes:
-    - ../:/app/vendor/schmunk42/yii2-giiant
+    - /Volumes/storage/runner-test-b/builds/project-24/:/app/vendor/schmunk42/yii2-giiant
   volumes_from:
     - appsrc
   ports:
