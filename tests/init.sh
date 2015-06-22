@@ -10,7 +10,7 @@ docker $DEBUG_OPTS start runner-xdb
 
 # cleanup
 docker-compose kill
-#docker-compose rm -f
+docker-compose rm -f
 
 # start test stack
 docker-compose run --rm appcli \
