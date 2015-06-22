@@ -19,7 +19,7 @@ appcli:
   image: phundament/app:4.0.0-rc1-dev
   links:
     - 'appnginx:WEB'
-    - 'mariadb:DB'
+    - 'runner-example-databases:DB'
     - 'seleniumhub:HUB'
   volumes:
     - ../:/app/vendor/schmunk42/yii2-giiant
@@ -50,7 +50,7 @@ appfpm:
   volumes_from:
     - appsrc
   links:
-    - 'mariadb:DB'
+    - 'runner-example-databases:DB'
 
 # The nginx server for serving static files directly
 appnginx:
@@ -70,12 +70,12 @@ appnginx:
 # Data Services
 # -------------
 
-mariadb:
-  image: schmunk42/mariadb-example-databases
-  ports:
-    - '3306'
-  environment:
-    MARIADB_PASS: veryveryverysecretadmin
+#mariadb:
+#  image: schmunk42/mariadb-example-databases
+#  ports:
+#    - '3306'
+#  environment:
+#    MARIADB_PASS: veryveryverysecretadmin
 
 #redis:
 #    image: redis:3.0

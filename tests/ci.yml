@@ -19,7 +19,7 @@ appcli:
   image: phundament/app:4.0.0-rc1-dev
   links:
     - 'appnginx:WEB'
-    - 'mariadb:DB'
+    - 'runner-example-databases:DB'
     - 'seleniumhub:HUB'
   volumes:
     - /Volumes/storage/runner-test-b/builds/project-24:/app/vendor/schmunk42/yii2-giiant
@@ -50,7 +50,7 @@ appfpm:
   volumes_from:
     - appsrc
   links:
-    - 'mariadb:DB'
+    - 'runner-example-databases:DB'
 
 # The nginx server for serving static files directly
 appnginx:
