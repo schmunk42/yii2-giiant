@@ -2,8 +2,6 @@
 
 **Note! This is a concept/prototype.**
 
-[![build status](https://ci.hrzg.de/projects/24/status.png?ref=master)](https://ci.hrzg.de/projects/24?ref=master)
-
 ### Phundament "Potemkin"-testing
 
 *Giiant* uses a *[Phundament 4](https://github.com/phundament/app)* docker-stack which is "wrapped around" the extension directory.
