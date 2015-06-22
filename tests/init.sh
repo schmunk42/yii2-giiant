@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DOCKER_CLIENT_TIMEOUT=120
+
 # default inititalization of large databases hit timeout when running `./yii app/create-mysql-db`, so bring up the database first
 set +e
     # don't throw an error here
