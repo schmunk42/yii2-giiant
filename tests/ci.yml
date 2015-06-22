@@ -18,7 +18,7 @@ appcli:
   # should be replaced with: image: <project_name>_appsrc
   image: phundament/app:4.0.0-rc1-dev
   external_links:
-    - 'runner-example-databases:DB'
+    - 'runner-xdb:DB'
   links:
     - 'appnginx:WEB'
     - 'seleniumhub:HUB'
@@ -51,7 +51,7 @@ appfpm:
   volumes_from:
     - appsrc
   external_links:
-    - 'runner-example-databases:DB'
+    - 'runner-xdb:DB'
 
 # The nginx server for serving static files directly
 appnginx:
