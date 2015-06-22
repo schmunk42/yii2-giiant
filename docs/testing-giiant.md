@@ -5,7 +5,7 @@
 ### Phundament "Potemkin"-testing
 
 *Giiant* uses a *[Phundament 4](https://github.com/phundament/app)* docker-stack which is "wrapped around" the extension directory.
-The basic concept is to start an application stack with `docker-compose` and "over-mount" the extension directly into `/vendor/schmunk42/yii2-giiant`.
+The basic concept is to start an [application stack](https://github.com/schmunk42/yii2-giiant/blob/feature/tests/tests/docker-compose.yml) with `docker-compose` and "over-mount" the extension directly into `/vendor/schmunk42/yii2-giiant`.
 
 > You should be able to use this approach for any *Yii 2.0 Framework* extension. Note: You need to install the extension in the application. This is a current limitation. 
 
