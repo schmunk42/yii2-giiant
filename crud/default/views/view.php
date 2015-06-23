@@ -51,6 +51,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <p class='pull-left'>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+    <p class="pull-right">
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))) ?>, ['index'], ['class'=>'btn btn-default']) ?>
     </p>
 

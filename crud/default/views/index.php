@@ -94,6 +94,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 						?>]
                     ],
+                    'options' => [
+                        'class' => 'btn-default'
+                    ]
                 ]
             );
             <?= "?>" ?>

@@ -6,7 +6,7 @@ class DateProvider extends \schmunk42\giiant\base\Provider
 {
     public function activeField($attribute)
     {
-        $column = $this->generator->getTableSchema()->columns[$attribute->name];
+	    $column = $this->generator->getTableSchema()->columns[$attribute];
 
         switch (true) {
             case (in_array($column->name, $this->columnNames)):
