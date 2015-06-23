@@ -183,9 +183,9 @@ class BatchController extends Controller
 	public function actionIndex()
 	{
 		echo "Running full giiant batch...\n";
-//		$this->actionModels();
-//		$this->actionCruds();
-		$this->actionMigrations();
+		$this->actionModels();
+		$this->actionCruds();
+//		$this->actionMigrations();
 	}
 
 	/**

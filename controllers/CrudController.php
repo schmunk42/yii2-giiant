@@ -30,12 +30,10 @@ class CrudController extends Controller {
 						'allow' 	=> true,
 						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
 						'matchCallback' => function($rule, $action) {
-							/**
-							 * @var $action \yii\base\InlineAction
-							 */
 							return
-								\Yii::$app->user->can(str_replace('/', '_', $this->module->id . '/' . $this->id)) ||
-								\Yii::$app->user->can(str_replace('/', '_', $this->module->id . '/' . $this->id . '/' . $action->id)) ||
+								\Yii::$app->user->can(strtr($this->module->id, ['/' => '_', '-' => '_'])) ||
+								\Yii::$app->user->can(strtr($this->module->id . '/' . $this->id, ['/' => '_', '-' => '_'])) ||
+								\Yii::$app->user->can(strtr($this->module->id . '/' . $this->id . '/' . $action->id, ['/' => '_', '-' => '_'])) ||
 								(\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
 						},
 					]

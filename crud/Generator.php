@@ -273,7 +273,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             // check for relation
             try {
                 $relation = @call_user_func(array($model, $method->name));
-                if ($relation instanceof yii\db\ActiveQuery) {
+                if ($relation instanceof \yii\db\ActiveQuery) {
                     #var_dump($relation->primaryModel->primaryKey);
                     if ($relation->multiple === false) {
                         $relationType = 'belongs_to';
