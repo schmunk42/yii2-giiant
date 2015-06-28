@@ -86,8 +86,9 @@ Update `.env`
 
     database
 
-make app-setup
+        make app-setup
 
+```
 <?php
 
 return [
@@ -98,14 +99,14 @@ return [
         'sakila' => 'giiant\sakila\Module',
     ],
 ];
+```
+        make app-bash
 
-make app-bash
+        mkdir -p /app/src/extensions/sakila/models/search
 
-mkdir -p /app/src/extensions/sakila/models/search
+        sh src/extensions/sakila/build/giiant.sh 
 
-sh src/extensions/sakila/build/giiant.sh 
-
-
+```
 ./yii giiant-batch \
     --interactive=0 \
     --overwrite=1 \
@@ -118,9 +119,9 @@ sh src/extensions/sakila/build/giiant.sh
     --crudPathPrefix= \
     --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
     --tables=departments,employees,salaries,titles,dept_emp,dept_manager
+```
 
-
-
+```
 ./yii giiant-batch \
     --interactive=0 \
     --overwrite=1 \
@@ -133,3 +134,4 @@ sh src/extensions/sakila/build/giiant.sh
     --crudPathPrefix= \
     --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
     --tables=City,Country,CountryLanguage
+```
