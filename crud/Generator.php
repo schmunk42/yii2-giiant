@@ -81,7 +81,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         parent::init();
     }
 
-    private function initializeProviders()
+    protected function initializeProviders()
     {
         // TODO: this is a hotfix for an already initialized provider queue on action re-entry
         if ($this->_p !== []) {
@@ -462,7 +462,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function callProviderQueue($func, $args)
+    protected function callProviderQueue($func, $args)
     {
         $this->initializeProviders(); // TODO: should be done on init, but providerList is empty
         //var_dump($this->_p);exit;
@@ -489,13 +489,13 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function shorthandAttributeFormat($attribute)
+    protected function shorthandAttributeFormat($attribute)
     {
         if ($attribute->phpType === 'boolean') {
             $format = 'boolean';
         } elseif ($attribute->type === 'text') {
             $format = 'ntext';
-        } elseif (stripos($attribute->name, 'time') !== false && $attribute->phpType === 'integer') {
+        } elseif ((stripos($attribute->name, 'time') !== false OR stripos($attribute->name, '_at') !== false) && $attribute->phpType === 'integer') {
             $format = 'datetime';
         } elseif (stripos($attribute->name, 'email') !== false) {
             $format = 'email';
