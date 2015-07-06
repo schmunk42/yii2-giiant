@@ -37,7 +37,7 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 * @var <?= ltrim($generator->searchModelClass, '\\') ?> $searchModel
 */
 
-    $this->title = '<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>';
+$this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="pull-right">
 
             <?php
-            $items = [];
+            $items = '';
             $model = new $generator->modelClass;
             ?>
             <?php foreach ($generator->getModelRelations($model) AS $relation): ?>
@@ -73,10 +73,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                 $route = $generator->createRelationRoute($relation,'index');
                 $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
-                $items[] = [
-                    'label' => '<i class="glyphicon glyphicon-' . $iconType . '"> ' . $label . '</i>',
-                    'url'   => [$route]
-                ]
+                $items .= <<<PHP
+            [
+                'url' => ['{$route}'],
+                'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . {$generator->generateString($label)} . '</i>',
+            ],
+PHP;
                 ?>
             <?php endforeach; ?>
 
@@ -91,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'dropdown-menu-right'
                         ],
                         'encodeLabels' => false,
-                        'items'        => <?= \yii\helpers\VarDumper::export($items) ?>
+                        'items'        => [<?= $items ?>]
                     ],
                     'options' => [
                         'class' => 'btn-default'
