@@ -111,7 +111,7 @@ PHP;
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h2>
-                    <i><?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?></i>
+                    <i><?= "<?= " . $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) . " ?>" ?></i>
                 </h2>
             </div>
 
