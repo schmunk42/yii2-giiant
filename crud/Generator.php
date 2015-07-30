@@ -19,6 +19,7 @@ use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
+use \schmunk42\giiant\model\Generator as ModelGenerator;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -284,7 +285,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                     }
 
                     if (in_array($relationType, $types)) {
-                        $stack[substr($method->name, 3)] = $relation;
+                        $name = ModelGenerator::generateRelationName([$relation], $model->getTableSchema(), substr($method->name, 3), $relation->multiple);
+                        $stack[$name] = $relation;
                     }
                 }
             } catch (Exception $e) {
