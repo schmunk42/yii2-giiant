@@ -33,3 +33,26 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
     ]
 );
 echo $form->field($generator, 'providerList')->textarea();
+
+?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">DateTimeProvider Options</div>
+    <div class="panel-body">
+    <?php
+    echo $form->field($generator, 'dateFormat');
+    echo $form->field($generator, 'timeFormat');
+    echo $form->field($generator, 'weekStart')->dropDownList(
+        [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+        ]
+    );
+    ?>
+    </div>
+</div>

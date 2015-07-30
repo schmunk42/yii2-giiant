@@ -64,6 +64,36 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    /**
+     * @var int Day of the week start. 0 (Sunday) to 6 (Saturday)
+     */
+    public $weekStart = 0;
+    /**
+     * @var string The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to 'mm/dd/yyyy'.
+     * - d : day of the month without leading zeros
+     * - dd : day of the month, 2 digits with leading zeros
+     * - m : numeric representation of month without leading zeros
+     * - mm : numeric representation of the month, 2 digits with leading zeros
+     * - M : short textual representation of a month, three letters
+     * - MM : full textual representation of a month, such as January or March
+     * - yy : two digit representation of a year
+     * - yyyy : full numeric representation of a year, 4 digits
+     */
+    public $dateFormat = 'mm/dd/yyyy';
+    /**
+     * @var string The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to 'hh:ii'.
+     * - p : meridian in lower case ('am' or 'pm') - according to locale file
+     * - P : meridian in upper case ('AM' or 'PM') - according to locale file
+     * - s : seconds without leading zeros
+     * - ss : seconds, 2 digits with leading zeros
+     * - i : minutes without leading zeros
+     * - ii : minutes, 2 digits with leading zeros
+     * - h : hour without leading zeros - 24-hour format
+     * - hh : hour, 2 digits with leading zeros - 24-hour format
+     * - H : hour without leading zeros - 12-hour format
+     * - HH : hour, 2 digits with leading zeros - 12-hour format
+     */
+    public $timeFormat = 'hh:ii';
 
     private $_p = [];
 
@@ -131,6 +161,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
                 'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'dateFormat' => 'The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to \'mm/dd/yyyy\'. <ul><li>d, dd: Numeric date, no leading zero and leading zero, respectively. Eg, 5, 05.</li><li>D, DD: Abbreviated and full weekday names, respectively. Eg, Mon, Monday.</li><li>m, mm: Numeric month, no leading zero and leading zero, respectively. Eg, 7, 07.</li><li>M, MM: Abbreviated and full month names, respectively. Eg, Jan, January</li><li>yy, yyyy: 2- and 4-digit years, respectively. Eg, 12, 2012.</li></ul>',
+                'timeFormat' => 'The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to \'hh:ii\'.<ul><li>p : meridian in lower case (\'am\' or \'pm\') - according to locale file</li><li>P : meridian in upper case (\'AM\' or \'PM\') - according to locale file</li><li>s : seconds without leading zeros</li><li>ss : seconds, 2 digits with leading zeros</li><li>i : minutes without leading zeros</li><li>ii : minutes, 2 digits with leading zeros</li><li>h : hour without leading zeros - 24-hour format</li><li>hh : hour, 2 digits with leading zeros - 24-hour format</li><li>H : hour without leading zeros - 12-hour format</li><li>HH : hour, 2 digits with leading zeros - 12-hour format</li></ul>',
             ]
         );
     }
@@ -146,6 +178,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 [['providerList'], 'filter', 'filter' => 'trim'],
                 [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
+                [['weekStart'], 'number', 'min' => 0, 'max' => 6],
+                [['dateFormat', 'timeFormat'], 'string'],
             ]
         );
     }
