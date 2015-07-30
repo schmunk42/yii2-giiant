@@ -32,7 +32,7 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
         'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );
-echo $form->field($generator, 'providerList')->textarea();
+echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());
 
 ?>
 
@@ -56,8 +56,13 @@ echo $form->field($generator, 'providerList')->textarea();
     ?>
     </div>
 </div>
-<?php
+<div class="panel panel-default">
+    <div class="panel-heading">UploadProvider Options</div>
+    <div class="panel-body">
+        <?php
 
-echo $form->field($generator, 'fileFieldMatches');
+        echo $form->field($generator, 'fileFieldMatches');
 
-?>
+        ?>
+    </div>
+</div>

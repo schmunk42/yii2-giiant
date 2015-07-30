@@ -7,11 +7,6 @@
 
 namespace schmunk42\giiant\crud;
 
-use schmunk42\giiant\crud\providers\CallbackProvider;
-use schmunk42\giiant\crud\providers\DateTimeProvider;
-use schmunk42\giiant\crud\providers\EditorProvider;
-use schmunk42\giiant\crud\providers\OptsProvider;
-use schmunk42\giiant\crud\providers\RelationProvider;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
@@ -20,6 +15,7 @@ use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
 use \schmunk42\giiant\model\Generator as ModelGenerator;
+use yii\helpers\FileHelper;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -104,15 +100,43 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     private $_p = [];
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->providerList = self::getCoreProviders();
+
+        return parent::init();
+    }
+
+    /**
+     * @return array Class names of the providers declared directly under crud/providers folder.
+     */
     static public function getCoreProviders()
     {
-        return [
-            CallbackProvider::className(),
-            EditorProvider::className(),
-            DateTimeProvider::className(),
-            OptsProvider::className(),
-            RelationProvider::className()
-        ];
+        $files = FileHelper::findFiles(__DIR__ . DIRECTORY_SEPARATOR . 'providers', [
+            'only' => ['*.php'],
+            'recursive' => false
+        ]);
+
+        foreach ($files as $file) {
+            require_once($file);
+        }
+
+        return array_filter(get_declared_classes(), function($a){
+            return (stripos($a, __NAMESPACE__ . '\providers') !== false);
+        });
+    }
+
+    /**
+     * @return array List of providers. Keys and values contain the same strings.
+     */
+    public function generateProviderCheckboxListData()
+    {
+        $coreProviders = self::getCoreProviders();
+
+        return array_combine($coreProviders, $coreProviders);
     }
 
     public function getName()
@@ -142,7 +166,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             return;
         }
         if ($this->providerList) {
-            foreach (explode(',', $this->providerList) AS $class) {
+            foreach($this->providerList as $class) {
                 $class = trim($class);
                 if (!$class) {
                     continue;
@@ -165,7 +189,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::hints(),
             [
-                'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
+                'providerList' => 'Choose the providers to be used.',
                 'dateFormat' => 'The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to \'mm/dd/yyyy\'. <ul><li>d, dd: Numeric date, no leading zero and leading zero, respectively. Eg, 5, 05.</li><li>D, DD: Abbreviated and full weekday names, respectively. Eg, Mon, Monday.</li><li>m, mm: Numeric month, no leading zero and leading zero, respectively. Eg, 7, 07.</li><li>M, MM: Abbreviated and full month names, respectively. Eg, Jan, January</li><li>yy, yyyy: 2- and 4-digit years, respectively. Eg, 12, 2012.</li></ul>',
                 'timeFormat' => 'The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to \'hh:ii\'.<ul><li>p : meridian in lower case (\'am\' or \'pm\') - according to locale file</li><li>P : meridian in upper case (\'AM\' or \'PM\') - according to locale file</li><li>s : seconds without leading zeros</li><li>ss : seconds, 2 digits with leading zeros</li><li>i : minutes without leading zeros</li><li>ii : minutes, 2 digits with leading zeros</li><li>h : hour without leading zeros - 24-hour format</li><li>hh : hour, 2 digits with leading zeros - 24-hour format</li><li>H : hour without leading zeros - 12-hour format</li><li>HH : hour, 2 digits with leading zeros - 12-hour format</li></ul>',
                 'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
@@ -185,7 +209,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
                 [['fileFieldMatches'], 'filter', 'filter' => 'trim'],
-                [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
                 [['weekStart'], 'number', 'min' => 0, 'max' => 6],
                 [['dateFormat', 'timeFormat'], 'string'],
