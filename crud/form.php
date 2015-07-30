@@ -33,3 +33,4 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
     ]
 );
 echo $form->field($generator, 'providerList')->textarea();
+echo $form->field($generator, 'fileFieldMatches');
