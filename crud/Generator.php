@@ -64,6 +64,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    /**
+     * @var array array of strings that database field name contains to indicate is a file path. Regex will be:
+     *          "/(" . implode('|', {fileFieldMatches}) . ")/mi"
+     */
+    public $fileFieldMatches = "filename,file,path";
 
     private $_p = [];
 
@@ -129,8 +134,9 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::hints(),
             [
                 'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
-                'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
-                'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
+                'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'fileFieldMatches' => 'Comma separated list of strings that will be matched against column names in order to apply <code>app\providers\UploadProvider</code>. eg. <code>foo,bar</code> will generate an upload field for columns with names matching the regex <code>/(foo|bar)/mi</code>',
             ]
         );
     }
@@ -144,6 +150,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::rules(),
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
+                [['fileFieldMatches'], 'filter', 'filter' => 'trim'],
                 [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
             ]
