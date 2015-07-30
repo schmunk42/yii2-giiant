@@ -32,4 +32,4 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
         'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );
-echo $form->field($generator, 'providerList')->textarea();
+echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());
