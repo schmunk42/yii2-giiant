@@ -56,3 +56,8 @@ echo $form->field($generator, 'providerList')->textarea();
     ?>
     </div>
 </div>
+<?php
+
+echo $form->field($generator, 'fileFieldMatches');
+
+?>

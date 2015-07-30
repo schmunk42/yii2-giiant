@@ -66,6 +66,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $requires = [];
     /**
+
      * @var int Day of the week start. 0 (Sunday) to 6 (Saturday)
      */
     public $weekStart = 0;
@@ -95,6 +96,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * - HH : hour, 2 digits with leading zeros - 12-hour format
      */
     public $timeFormat = 'hh:ii';
+    /**
+     * @var array array of strings that database field name contains to indicate is a file path. Regex will be:
+     *          "/(" . implode('|', {fileFieldMatches}) . ")/mi"
+    */
+    public $fileFieldMatches = "filename,file,path";
 
     private $_p = [];
 
@@ -160,10 +166,11 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::hints(),
             [
                 'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
-                'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
-                'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
                 'dateFormat' => 'The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to \'mm/dd/yyyy\'. <ul><li>d, dd: Numeric date, no leading zero and leading zero, respectively. Eg, 5, 05.</li><li>D, DD: Abbreviated and full weekday names, respectively. Eg, Mon, Monday.</li><li>m, mm: Numeric month, no leading zero and leading zero, respectively. Eg, 7, 07.</li><li>M, MM: Abbreviated and full month names, respectively. Eg, Jan, January</li><li>yy, yyyy: 2- and 4-digit years, respectively. Eg, 12, 2012.</li></ul>',
                 'timeFormat' => 'The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to \'hh:ii\'.<ul><li>p : meridian in lower case (\'am\' or \'pm\') - according to locale file</li><li>P : meridian in upper case (\'AM\' or \'PM\') - according to locale file</li><li>s : seconds without leading zeros</li><li>ss : seconds, 2 digits with leading zeros</li><li>i : minutes without leading zeros</li><li>ii : minutes, 2 digits with leading zeros</li><li>h : hour without leading zeros - 24-hour format</li><li>hh : hour, 2 digits with leading zeros - 24-hour format</li><li>H : hour without leading zeros - 12-hour format</li><li>HH : hour, 2 digits with leading zeros - 12-hour format</li></ul>',
+                'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
+                'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'fileFieldMatches' => 'Comma separated list of strings that will be matched against column names in order to apply <code>app\providers\UploadProvider</code>. eg. <code>foo,bar</code> will generate an upload field for columns with names matching the regex <code>/(foo|bar)/mi</code>',
             ]
         );
     }
@@ -177,6 +184,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::rules(),
             [
                 [['providerList'], 'filter', 'filter' => 'trim'],
+                [['fileFieldMatches'], 'filter', 'filter' => 'trim'],
                 [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
                 [['weekStart'], 'number', 'min' => 0, 'max' => 6],
