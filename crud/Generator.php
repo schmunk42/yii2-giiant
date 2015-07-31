@@ -207,7 +207,6 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList'], 'filter', 'filter' => 'trim'],
                 [['fileFieldMatches'], 'filter', 'filter' => 'trim'],
                 [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
