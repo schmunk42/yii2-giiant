@@ -2,7 +2,6 @@
 
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-use loop8\l8actioncolumn\L8ActionColumn;
 
 /**
  * @var yii\web\View $this
@@ -31,6 +30,7 @@ echo "<?php\n";
 use yii\helpers\Html;
 use yii\helpers\Url;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
+use loop8\l8actioncolumn\L8ActionColumn;
 
 /**
 * @var yii\web\View $this
