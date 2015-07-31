@@ -12,17 +12,11 @@
             "homepage": "http://www.usrbin.de"
         }
     ],
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/Loop8/yii2-l8-actioncolumn.git"
-        }
-    ],
     "require": {
         "dmstr/yii2-bootstrap": "*",
         "yiisoft/yii2": "~2.0.4",
         "yiisoft/yii2-gii": "~2.0.4",
-        "Loop8/yii2-l8-actioncolumn": "dev-master@dev"
+        "Loop8/yii2-l8-actioncolumn": "^1.0.0"
     },
     "autoload": {
         "psr-4": {
