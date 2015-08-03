@@ -19,6 +19,9 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>\base;
 
 use Yii;
+<?php if (isset($translation)): ?>
+use dosamigos\translateable\TranslateableBehavior;
+<?php endif; ?>
 
 /**
  * This is the base-model class for table "<?= $tableName ?>".
@@ -60,6 +63,23 @@ if(!empty($enum)){
     {
         return '<?= $tableName ?>';
     }
+<?php if (isset($translation)): ?>
+    public function behaviors()
+    {
+        return [
+            'translatable' => [
+                'class' => TranslateableBehavior::className(),
+                // in case you named your relation differently, you can setup its relation name attribute
+                // 'relation' => 'translations',
+                // in case you named the language column differently on your translation schema
+                // 'languageField' => 'language',
+                'translationAttributes' => [
+                    <?= implode(",\n                    ", $translation['fields']) . "\n" ?>
+                ]
+            ],
+        ];
+    }
+<?php endif; ?>
 
     /**
      * @inheritdoc
@@ -90,6 +110,16 @@ if(!empty($enum)){
         <?= $relation[0] . "\n" ?>
     }
 <?php endforeach; ?>
+
+<?php if (isset($translation)): ?>
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTranslations()
+    {
+        <?= $translation['code'] . "\n"?>
+    }
+<?php endif; ?>
 
 <?php if ($queryClassName): ?>
     <?php

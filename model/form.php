@@ -16,3 +16,4 @@ echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'generateModelClass')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
+echo $form->field($generator, 'useTranslatableBehavior')->checkbox();

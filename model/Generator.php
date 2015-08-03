@@ -8,6 +8,7 @@
 namespace schmunk42\giiant\model;
 
 use Yii;
+use yii\base\Exception;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 
@@ -28,6 +29,12 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var null string for the table prefix, which is ignored in generated class name
      */
     public $tablePrefix = null;
+
+    /**
+     * @var bool whether to use 2amigos/yii2-translateable-behavior or not for relations that
+     * point to a table named as *_lang
+     */
+    public $useTranslatableBehavior = true;
 
     /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
@@ -59,7 +66,7 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateModelClass'], 'boolean'],
+                [['generateModelClass', 'useTranslatableBehavior'], 'boolean'],
                 [['tablePrefix'], 'safe'],
             ]
         );
@@ -88,6 +95,7 @@ class Generator extends \yii\gii\generators\model\Generator
             [
                 'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be done only once. The model-base class is always generated.',
                 'tablePrefix'        => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
+                'useTranslatableBehavior' => 'Check this if you want <code>2amigos/yii2-translateable-behavior</code> to be used for relations that point to a table named as *_lang'
 
             ]
         );
@@ -109,6 +117,13 @@ class Generator extends \yii\gii\generators\model\Generator
         $files     = [];
         $relations = $this->generateRelations();
         $db        = $this->getDbConnection();
+
+        list($relations, $translations) = array_values($this->extractTranslations($relations));
+
+        if (count($translations) > 1) {
+            throw new Exception("More than one table named {$this->tableName}_lang was found. This should not be possible.");
+        }
+
         foreach ($this->getTableNames() as $tableName) {
 
             $className = $this->generateClassName($tableName);
@@ -126,6 +141,10 @@ class Generator extends \yii\gii\generators\model\Generator
                 'ns'             => $this->ns,
                 'enum'           => $this->getEnum($tableSchema->columns),
             ];
+
+            if (!empty($translations)) {
+                $params['translation'] = $translations[0];
+            }
 
             $files[] = new CodeFile(
                 Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . '.php',
@@ -239,7 +258,73 @@ class Generator extends \yii\gii\generators\model\Generator
         }
         return $relations;
     }
-    
+
+    /**
+     * @param $relations all database's relations.
+     * @return array associative array containing the extracted relations and the modified translations.
+     */
+    protected function extractTranslations($relations)
+    {
+        $translations = [];
+
+        if (!$this->useTranslatableBehavior) {
+            return [
+                'relations' => $relations,
+                'translations' => $translations
+            ];
+        }
+
+        $db = $this->getDbConnection();
+        $langTableName = $this->tableName . "_lang";
+        $langClassName = $this->generateClassName($langTableName);
+
+        if (isset($relations[$langTableName])) {
+            $langTableRelations = $relations[$langTableName];
+
+            foreach ($langTableRelations as $relationName => $relation) {
+                list( , $referencedClassName) = $relation;
+
+                if ($referencedClassName === $this->modelClass) {
+                    // found relation to currently being generated model
+                    if (isset($relations[$this->tableName])) {
+
+                        foreach ($relations[$this->tableName] as $relationName2 => $relation2) {
+
+                            list($code, $referencedClassName2) = $relation2;
+
+                            if ($referencedClassName2 === $langClassName) {
+                                // found relation from model to modelLang ().
+                                // collect fields
+
+                                $tableSchema = $db->getTableSchema($langTableName);
+                                $columnNames = $tableSchema->getColumnNames();
+
+                                $fields = [];
+                                foreach ($columnNames as $columnName) {
+                                    if (!$tableSchema->getColumn($columnName)->isPrimaryKey) {
+                                        $fields[] = $columnName;
+                                    }
+                                }
+
+                                $translations[] = [
+                                    'fields' => $fields,
+                                    'code' => $code
+                                ];
+
+                                unset($relations[$this->tableName][$relationName2]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return [
+            'relations' => $relations,
+            'translations' => $translations
+        ];
+    }
+
     /**
      * prepare ENUM field values
      * @param array $columns
