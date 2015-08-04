@@ -129,13 +129,9 @@ class Generator extends \yii\gii\generators\model\Generator
         $relations = $this->generateRelations();
         $db        = $this->getDbConnection();
 
-        list($relations, $translations) = array_values($this->extractTranslations($relations));
-
-        if (count($translations) > 1) {
-            throw new Exception("More than one table named {$this->languageTableName} was found. This should not be possible.");
-        }
-
         foreach ($this->getTableNames() as $tableName) {
+
+            list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
 
             $className = $this->generateClassName($tableName);
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
@@ -153,7 +149,7 @@ class Generator extends \yii\gii\generators\model\Generator
             ];
 
             if (!empty($translations)) {
-                $params['translation'] = $translations[0];
+                $params['translation'] = $translations;
             }
 
             $files[] = new CodeFile(
@@ -270,23 +266,15 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
+     * @param $tableName the name of the base table..
      * @param $relations all database's relations.
      * @return array associative array containing the extracted relations and the modified translations.
      */
-    protected function extractTranslations($relations)
+    protected function extractTranslations($tableName, $relations)
     {
-        $translations = [];
+        $langTableName = str_replace("{{table}}", $tableName, $this->languageTableName);
 
-        if (!$this->useTranslatableBehavior) {
-            return [
-                'relations' => $relations,
-                'translations' => $translations
-            ];
-        }
-
-        $langTableName = str_replace("{{table}}", $this->tableName, $this->languageTableName);
-
-        if (isset($relations[$langTableName], $relations[$this->tableName])) {
+        if ($this->useTranslatableBehavior and isset($relations[$langTableName], $relations[$tableName])) {
             $db = $this->getDbConnection();
             $langTableSchema = $db->getTableSchema($langTableName);
             $langTableColumns = $langTableSchema->getColumnNames();
@@ -298,7 +286,7 @@ class Generator extends \yii\gii\generators\model\Generator
             );
             $langClassName = $this->generateClassName($langTableName);
 
-            foreach ($relations[$this->tableName] as $relationName => $relation) {
+            foreach ($relations[$tableName] as $relationName => $relation) {
 
                 list($code, $referencedClassName) = $relation;
 
@@ -313,19 +301,22 @@ class Generator extends \yii\gii\generators\model\Generator
                         }
                     }
 
-                    $translations[] = [
-                        'fields' => $fields,
-                        'code' => $code
-                    ];
+                    unset($relations[$tableName][$relationName]);
 
-                    unset($relations[$this->tableName][$relationName]);
+                    return [
+                        'relations' => $relations,
+                        'translations' => [
+                            'fields' => $fields,
+                            'code' => $code
+                        ]
+                    ];
                 }
             }
         }
 
         return [
             'relations' => $relations,
-            'translations' => $translations
+            'translations' => []
         ];
     }
 
