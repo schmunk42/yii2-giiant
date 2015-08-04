@@ -64,17 +64,22 @@ if(!empty($enum)){
         return '<?= $tableName ?>';
     }
 <?php if (isset($translation)): ?>
+
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
             'translatable' => [
                 'class' => TranslateableBehavior::className(),
-                // in case you named your relation differently, you can setup its relation name attribute
+                // in case you renamed your relation, you can setup its name
                 // 'relation' => 'translations',
-                // in case you named the language column differently on your translation schema
-                // 'languageField' => 'language',
+<?php if ($generator->languageCodeColumn !== 'language'): ?>
+                'languageField' => '<?= $generator->languageCodeColumn ?>',
+<?php endif; ?>
                 'translationAttributes' => [
-                    <?= implode(",\n                    ", $translation['fields']) . "\n" ?>
+                    <?= "'" . implode("',\n                    '", $translation['fields']) . "'\n" ?>
                 ]
             ],
         ];

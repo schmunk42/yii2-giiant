@@ -31,10 +31,20 @@ class Generator extends \yii\gii\generators\model\Generator
     public $tablePrefix = null;
 
     /**
-     * @var bool whether to use 2amigos/yii2-translateable-behavior or not for relations that
-     * point to a table named as *_lang
+     * @var bool whether to use or not 2amigos/yii2-translateable-behavior
      */
     public $useTranslatableBehavior = true;
+
+    /**
+     * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
+     * "Table Name" field.
+     */
+    public $languageTableName = "{{table}}_lang";
+
+    /**
+     * @var string the column name where the language code is stored.
+     */
+    public $languageCodeColumn = "language";
 
     /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
@@ -67,7 +77,7 @@ class Generator extends \yii\gii\generators\model\Generator
             parent::rules(),
             [
                 [['generateModelClass', 'useTranslatableBehavior'], 'boolean'],
-                [['tablePrefix'], 'safe'],
+                [['tablePrefix', 'languageTableName', 'languageCodeColumn'], 'safe'],
             ]
         );
     }
@@ -95,8 +105,9 @@ class Generator extends \yii\gii\generators\model\Generator
             [
                 'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be done only once. The model-base class is always generated.',
                 'tablePrefix'        => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
-                'useTranslatableBehavior' => 'Check this if you want <code>2amigos/yii2-translateable-behavior</code> to be used for relations that point to a table named as *_lang'
-
+                'useTranslatableBehavior' => 'Use <code>2amigos/yii2-translateable-behavior</code> for tables with a relation to a translation table.',
+                'languageTableName' => 'The name of the table containing the translations. <code>{{table}}</code> will be replaced with the value in "Table Name" field.',
+                'languageCodeColumn' => 'The column name where the language code is stored.',
             ]
         );
     }
@@ -121,7 +132,7 @@ class Generator extends \yii\gii\generators\model\Generator
         list($relations, $translations) = array_values($this->extractTranslations($relations));
 
         if (count($translations) > 1) {
-            throw new Exception("More than one table named {$this->tableName}_lang was found. This should not be possible.");
+            throw new Exception("More than one table named {$this->languageTableName} was found. This should not be possible.");
         }
 
         foreach ($this->getTableNames() as $tableName) {
@@ -129,7 +140,6 @@ class Generator extends \yii\gii\generators\model\Generator
             $className = $this->generateClassName($tableName);
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
-            
             $params      = [
                 'tableName'      => $tableName,
                 'className'      => $className,
@@ -274,47 +284,41 @@ class Generator extends \yii\gii\generators\model\Generator
             ];
         }
 
-        $db = $this->getDbConnection();
-        $langTableName = $this->tableName . "_lang";
-        $langClassName = $this->generateClassName($langTableName);
+        $langTableName = str_replace("{{table}}", $this->tableName, $this->languageTableName);
 
-        if (isset($relations[$langTableName])) {
-            $langTableRelations = $relations[$langTableName];
+        if (isset($relations[$langTableName], $relations[$this->tableName])) {
+            $db = $this->getDbConnection();
+            $langTableSchema = $db->getTableSchema($langTableName);
+            $langTableColumns = $langTableSchema->getColumnNames();
+            $langTableKeys = array_merge(
+                $langTableSchema->primaryKey,
+                array_map(function($fk){
+                    return array_keys($fk)[1];
+                }, $langTableSchema->foreignKeys)
+            );
+            $langClassName = $this->generateClassName($langTableName);
 
-            foreach ($langTableRelations as $relationName => $relation) {
-                list( , $referencedClassName) = $relation;
+            foreach ($relations[$this->tableName] as $relationName => $relation) {
 
-                if ($referencedClassName === $this->modelClass) {
-                    // found relation to currently being generated model
-                    if (isset($relations[$this->tableName])) {
+                list($code, $referencedClassName) = $relation;
 
-                        foreach ($relations[$this->tableName] as $relationName2 => $relation2) {
+                if ($referencedClassName === $langClassName) {
+                    // found relation from model to modelLang.
 
-                            list($code, $referencedClassName2) = $relation2;
-
-                            if ($referencedClassName2 === $langClassName) {
-                                // found relation from model to modelLang ().
-                                // collect fields
-
-                                $tableSchema = $db->getTableSchema($langTableName);
-                                $columnNames = $tableSchema->getColumnNames();
-
-                                $fields = [];
-                                foreach ($columnNames as $columnName) {
-                                    if (!$tableSchema->getColumn($columnName)->isPrimaryKey) {
-                                        $fields[] = $columnName;
-                                    }
-                                }
-
-                                $translations[] = [
-                                    'fields' => $fields,
-                                    'code' => $code
-                                ];
-
-                                unset($relations[$this->tableName][$relationName2]);
-                            }
+                    // collect fields which are not PK, FK nor language code
+                    $fields = [];
+                    foreach ($langTableColumns as $columnName) {
+                        if (!in_array($columnName, $langTableKeys) and strcasecmp($columnName, $this->languageCodeColumn) !== 0) {
+                            $fields[] = $columnName;
                         }
                     }
+
+                    $translations[] = [
+                        'fields' => $fields,
+                        'code' => $code
+                    ];
+
+                    unset($relations[$this->tableName][$relationName]);
                 }
             }
         }
