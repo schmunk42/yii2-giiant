@@ -3,6 +3,7 @@
 namespace schmunk42\giiant\commands;
 
 use schmunk42\giiant\crud\Generator;
+use schmunk42\giiant\model\Generator as ModelGenerator;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -124,6 +125,11 @@ class BatchController extends Controller
     protected $appConfig;
 
     /**
+     * @var instance of class schmunk42\giiant\model\Generator
+     */
+    protected $modelGenerator;
+
+    /**
      * @inheritdoc
      */
     public function options($id)
@@ -166,12 +172,17 @@ class BatchController extends Controller
     {
         $this->appConfig       = $this->getYiiConfiguration();
         $this->appConfig['id'] = 'temp';
+        $this->modelGenerator = new ModelGenerator();
 
         if (!$this->tables) {
-            echo "No tables specified.";
-            return false;
-            exit;
+            $this->modelGenerator->tableName = '*';
+            $this->tables = $this->modelGenerator->getTableNames();
+            $msg = "Are you sure that you want to run action \"{$action->id}\" for the following tables?\n\t" . implode("\n\t- ", $this->tables) . "\n\n";
+            if (!$this->confirm($msg)) {
+                return false;
+            }
         }
+
         return parent::beforeAction($action);
     }
 
@@ -234,9 +245,10 @@ class BatchController extends Controller
     {
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
+
         foreach ($this->tables AS $table) {
             $table  = str_replace($this->tablePrefix, '', $table);
-            $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : Inflector::camelize($table);
+            $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] : $this->modelGenerator->generateClassName($table);
             $params = [
                 'interactive'         => $this->interactive,
                 'overwrite'           => $this->overwrite,
@@ -251,7 +263,7 @@ class BatchController extends Controller
                 'messageCategory'     => $this->messageCategory,
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
-                'providerList'        => implode(',', $providers),
+                'providerList'        => $providers,
                 'skipRelations'       => $this->crudSkipRelations,
             ];
             $route  = 'gii/giiant-crud';

@@ -32,4 +32,37 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
         'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );
-echo $form->field($generator, 'providerList')->textarea();
+echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());
+
+?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">DateTimeProvider Options</div>
+    <div class="panel-body">
+    <?php
+    echo $form->field($generator, 'dateFormat');
+    echo $form->field($generator, 'timeFormat');
+    echo $form->field($generator, 'weekStart')->dropDownList(
+        [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+        ]
+    );
+    ?>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">UploadProvider Options</div>
+    <div class="panel-body">
+        <?php
+
+        echo $form->field($generator, 'fileFieldMatches');
+
+        ?>
+    </div>
+</div>

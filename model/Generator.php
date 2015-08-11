@@ -8,6 +8,7 @@
 namespace schmunk42\giiant\model;
 
 use Yii;
+use yii\base\Exception;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 
@@ -28,6 +29,22 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var null string for the table prefix, which is ignored in generated class name
      */
     public $tablePrefix = null;
+
+    /**
+     * @var bool whether to use or not 2amigos/yii2-translateable-behavior
+     */
+    public $useTranslatableBehavior = true;
+
+    /**
+     * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
+     * "Table Name" field.
+     */
+    public $languageTableName = "{{table}}_lang";
+
+    /**
+     * @var string the column name where the language code is stored.
+     */
+    public $languageCodeColumn = "language";
 
     /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
@@ -59,8 +76,8 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateModelClass'], 'boolean'],
-                [['tablePrefix'], 'safe'],
+                [['generateModelClass', 'useTranslatableBehavior'], 'boolean'],
+                [['tablePrefix', 'languageTableName', 'languageCodeColumn'], 'safe'],
             ]
         );
     }
@@ -88,7 +105,9 @@ class Generator extends \yii\gii\generators\model\Generator
             [
                 'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be done only once. The model-base class is always generated.',
                 'tablePrefix'        => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
-
+                'useTranslatableBehavior' => 'Use <code>2amigos/yii2-translateable-behavior</code> for tables with a relation to a translation table.',
+                'languageTableName' => 'The name of the table containing the translations. <code>{{table}}</code> will be replaced with the value in "Table Name" field.',
+                'languageCodeColumn' => 'The column name where the language code is stored.',
             ]
         );
     }
@@ -109,12 +128,14 @@ class Generator extends \yii\gii\generators\model\Generator
         $files     = [];
         $relations = $this->generateRelations();
         $db        = $this->getDbConnection();
+
         foreach ($this->getTableNames() as $tableName) {
+
+            list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
 
             $className = $this->generateClassName($tableName);
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
-            
             $params      = [
                 'tableName'      => $tableName,
                 'className'      => $className,
@@ -126,6 +147,10 @@ class Generator extends \yii\gii\generators\model\Generator
                 'ns'             => $this->ns,
                 'enum'           => $this->getEnum($tableSchema->columns),
             ];
+
+            if (!empty($translations)) {
+                $params['translation'] = $translations;
+            }
 
             $files[] = new CodeFile(
                 Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . '.php',
@@ -165,7 +190,7 @@ class Generator extends \yii\gii\generators\model\Generator
      *
      * @return string the generated class name
      */
-    protected function generateClassName($tableName, $useSchemaName = null)
+    public function generateClassName($tableName, $useSchemaName = null)
     {
 
         #Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
@@ -212,6 +237,14 @@ class Generator extends \yii\gii\generators\model\Generator
         return $this->classNames2[$tableName] = $returnName;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function generateRelationName($relations, $table, $key, $multiple)
+    {
+        return parent::generateRelationName($relations, $table, $key, $multiple);
+    }
+
     protected function generateRelations()
     {
         $relations = parent::generateRelations();
@@ -231,7 +264,62 @@ class Generator extends \yii\gii\generators\model\Generator
         }
         return $relations;
     }
-    
+
+    /**
+     * @param $tableName the name of the base table..
+     * @param $relations all database's relations.
+     * @return array associative array containing the extracted relations and the modified translations.
+     */
+    protected function extractTranslations($tableName, $relations)
+    {
+        $langTableName = str_replace("{{table}}", $tableName, $this->languageTableName);
+
+        if ($this->useTranslatableBehavior and isset($relations[$langTableName], $relations[$tableName])) {
+            $db = $this->getDbConnection();
+            $langTableSchema = $db->getTableSchema($langTableName);
+            $langTableColumns = $langTableSchema->getColumnNames();
+            $langTableKeys = array_merge(
+                $langTableSchema->primaryKey,
+                array_map(function($fk){
+                    return array_keys($fk)[1];
+                }, $langTableSchema->foreignKeys)
+            );
+            $langClassName = $this->generateClassName($langTableName);
+
+            foreach ($relations[$tableName] as $relationName => $relation) {
+
+                list($code, $referencedClassName) = $relation;
+
+                if ($referencedClassName === $langClassName) {
+                    // found relation from model to modelLang.
+
+                    // collect fields which are not PK, FK nor language code
+                    $fields = [];
+                    foreach ($langTableColumns as $columnName) {
+                        if (!in_array($columnName, $langTableKeys) and strcasecmp($columnName, $this->languageCodeColumn) !== 0) {
+                            $fields[] = $columnName;
+                        }
+                    }
+
+                    unset($relations[$tableName][$relationName]);
+
+                    return [
+                        'relations' => $relations,
+                        'translations' => [
+                            'fields' => $fields,
+                            'code' => $code
+                        ]
+                    ];
+                }
+            }
+        }
+
+        return [
+            'relations' => $relations,
+            'translations' => []
+        ];
+    }
+
     /**
      * prepare ENUM field values
      * @param array $columns

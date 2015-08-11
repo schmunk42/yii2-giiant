@@ -7,11 +7,6 @@
 
 namespace schmunk42\giiant\crud;
 
-use schmunk42\giiant\crud\providers\CallbackProvider;
-use schmunk42\giiant\crud\providers\DateTimeProvider;
-use schmunk42\giiant\crud\providers\EditorProvider;
-use schmunk42\giiant\crud\providers\OptsProvider;
-use schmunk42\giiant\crud\providers\RelationProvider;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
@@ -19,6 +14,8 @@ use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
+use \schmunk42\giiant\model\Generator as ModelGenerator;
+use yii\helpers\FileHelper;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -64,18 +61,82 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    /**
+
+     * @var int Day of the week start. 0 (Sunday) to 6 (Saturday)
+     */
+    public $weekStart = 0;
+    /**
+     * @var string The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to 'mm/dd/yyyy'.
+     * - d : day of the month without leading zeros
+     * - dd : day of the month, 2 digits with leading zeros
+     * - m : numeric representation of month without leading zeros
+     * - mm : numeric representation of the month, 2 digits with leading zeros
+     * - M : short textual representation of a month, three letters
+     * - MM : full textual representation of a month, such as January or March
+     * - yy : two digit representation of a year
+     * - yyyy : full numeric representation of a year, 4 digits
+     */
+    public $dateFormat = 'mm/dd/yyyy';
+    /**
+     * @var string The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to 'hh:ii'.
+     * - p : meridian in lower case ('am' or 'pm') - according to locale file
+     * - P : meridian in upper case ('AM' or 'PM') - according to locale file
+     * - s : seconds without leading zeros
+     * - ss : seconds, 2 digits with leading zeros
+     * - i : minutes without leading zeros
+     * - ii : minutes, 2 digits with leading zeros
+     * - h : hour without leading zeros - 24-hour format
+     * - hh : hour, 2 digits with leading zeros - 24-hour format
+     * - H : hour without leading zeros - 12-hour format
+     * - HH : hour, 2 digits with leading zeros - 12-hour format
+     */
+    public $timeFormat = 'hh:ii';
+    /**
+     * @var array array of strings that database field name contains to indicate is a file path. Regex will be:
+     *          "/(" . implode('|', {fileFieldMatches}) . ")/mi"
+    */
+    public $fileFieldMatches = "filename,file,path";
 
     private $_p = [];
 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $this->providerList = self::getCoreProviders();
+
+        return parent::init();
+    }
+
+    /**
+     * @return array Class names of the providers declared directly under crud/providers folder.
+     */
     static public function getCoreProviders()
     {
-        return [
-            CallbackProvider::className(),
-            EditorProvider::className(),
-            DateTimeProvider::className(),
-            OptsProvider::className(),
-            RelationProvider::className()
-        ];
+        $files = FileHelper::findFiles(__DIR__ . DIRECTORY_SEPARATOR . 'providers', [
+            'only' => ['*.php'],
+            'recursive' => false
+        ]);
+
+        foreach ($files as $file) {
+            require_once($file);
+        }
+
+        return array_filter(get_declared_classes(), function($a){
+            return (stripos($a, __NAMESPACE__ . '\providers') !== false);
+        });
+    }
+
+    /**
+     * @return array List of providers. Keys and values contain the same strings.
+     */
+    public function generateProviderCheckboxListData()
+    {
+        $coreProviders = self::getCoreProviders();
+
+        return array_combine($coreProviders, $coreProviders);
     }
 
     public function getName()
@@ -105,7 +166,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             return;
         }
         if ($this->providerList) {
-            foreach (explode(',', $this->providerList) AS $class) {
+            foreach($this->providerList as $class) {
                 $class = trim($class);
                 if (!$class) {
                     continue;
@@ -128,9 +189,12 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::hints(),
             [
-                'providerList' => 'Comma separated list of provider class names, make sure you are using the full namespaced path <code>app\providers\CustomProvider1,<br/>app\providers\CustomProvider2</code>.',
-                'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
-                'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'providerList' => 'Choose the providers to be used.',
+                'dateFormat' => 'The date format, combination of d, dd, m, mm, M, MM, yy, yyyy. Defaults to \'mm/dd/yyyy\'. <ul><li>d, dd: Numeric date, no leading zero and leading zero, respectively. Eg, 5, 05.</li><li>D, DD: Abbreviated and full weekday names, respectively. Eg, Mon, Monday.</li><li>m, mm: Numeric month, no leading zero and leading zero, respectively. Eg, 7, 07.</li><li>M, MM: Abbreviated and full month names, respectively. Eg, Jan, January</li><li>yy, yyyy: 2- and 4-digit years, respectively. Eg, 12, 2012.</li></ul>',
+                'timeFormat' => 'The time format, combination of p, P, h, hh, i, ii, s, ss. Defaults to \'hh:ii\'.<ul><li>p : meridian in lower case (\'am\' or \'pm\') - according to locale file</li><li>P : meridian in upper case (\'AM\' or \'PM\') - according to locale file</li><li>s : seconds without leading zeros</li><li>ss : seconds, 2 digits with leading zeros</li><li>i : minutes without leading zeros</li><li>ii : minutes, 2 digits with leading zeros</li><li>h : hour without leading zeros - 24-hour format</li><li>hh : hour, 2 digits with leading zeros - 24-hour format</li><li>H : hour without leading zeros - 12-hour format</li><li>HH : hour, 2 digits with leading zeros - 12-hour format</li></ul>',
+                'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
+                'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'fileFieldMatches' => 'Comma separated list of strings that will be matched against column names in order to apply <code>app\providers\UploadProvider</code>. eg. <code>foo,bar</code> will generate an upload field for columns with names matching the regex <code>/(foo|bar)/mi</code>',
             ]
         );
     }
@@ -143,9 +207,11 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList'], 'filter', 'filter' => 'trim'],
-                [['actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
+                [['fileFieldMatches'], 'filter', 'filter' => 'trim'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
+                [['weekStart'], 'number', 'min' => 0, 'max' => 6],
+                [['dateFormat', 'timeFormat'], 'string'],
             ]
         );
     }
@@ -284,7 +350,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                     }
 
                     if (in_array($relationType, $types)) {
-                        $stack[substr($method->name, 3)] = $relation;
+                        $name = ModelGenerator::generateRelationName([$relation], $model->getTableSchema(), substr($method->name, 3), $relation->multiple);
+                        $stack[$name] = $relation;
                     }
                 }
             } catch (Exception $e) {
