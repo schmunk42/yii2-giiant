@@ -61,7 +61,16 @@ use \dmstr\bootstrap\Tabs;
 
                 <p>
                     <?php
+                    $pks = $model->getPrimaryKey(true);
                     foreach ($safeAttributes as $attribute) {
+
+                        // skip auto-incremental primary keys
+                        if (array_key_exists($attribute, $pks)) {
+                            $column = $model->getTableSchema()->getColumn($attribute);
+                            if ($column !== null and $column->autoIncrement) {
+                                continue;
+                            }
+                        }
 
                         $prepend = $generator->prependActiveField($attribute, $model);
                         $field   = $generator->activeField($attribute, $model);
