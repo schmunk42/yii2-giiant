@@ -165,7 +165,7 @@ class Generator extends \yii\gii\generators\model\Generator
      *
      * @return string the generated class name
      */
-    protected function generateClassName($tableName, $useSchemaName = null)
+    public function generateClassName($tableName, $useSchemaName = null)
     {
 
         #Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
