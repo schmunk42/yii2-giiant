@@ -11,6 +11,7 @@ namespace schmunk42\giiant\crud\providers;
 use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
+use \schmunk42\giiant\model\Generator as ModelGenerator;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {
@@ -106,8 +107,8 @@ EOS;
             }
             $title           = $this->generator->getModelNameAttribute($relation->modelClass);
             $route           = $this->generator->createRelationRoute($relation, 'view');
-            $relationGetter  = 'get' . $this->id2entity($column->name) . '()';
-            $params          = "'id' => \$model->{$column->name}";
+            $modelClass      = $this->generator->modelClass;
+            $relationGetter  = 'get' . ModelGenerator::generateRelationName([$relation], $modelClass::getTableSchema(), $column->name, $relation->multiple) . '()';
             $relationModel   = new $relation->modelClass;
             $pks             = $relationModel->primaryKey();
             $paramArrayItems = "";
@@ -160,7 +161,8 @@ EOS;
             $title           = $this->generator->getModelNameAttribute($relation->modelClass);
             $route           = $this->generator->createRelationRoute($relation, 'view');
             $method          = __METHOD__;
-            $relationGetter  = 'get' . $this->id2entity($column->name) . '()';
+            $modelClass      = $this->generator->modelClass;
+            $relationGetter  = 'get' . ModelGenerator::generateRelationName([$relation], $modelClass::getTableSchema(), $column->name, $relation->multiple) . '()';
             $relationModel   = new $relation->modelClass;
             $pks             = $relationModel->primaryKey();
             $paramArrayItems = "";
@@ -314,34 +316,5 @@ EOS;
 EOS;
         $code .= ' . \'</div>\' ';
         return $code;
-    }
-
-    /**
-     * Detects the entity name from the foreign key column name
-     * e.g. user_id | UserId | userId   -> User
-     *
-     * @param $column
-     *
-     * @return null|string
-     */
-    private function id2entity($column)
-    {
-        $entity = null;
-        switch (true) {
-            case (substr($column, -3, 3) == '_id'):
-                $entity = Inflector::id2camel(str_replace('_id', '', $column), '_');
-                break;
-            case (substr($column, -2, 2) == 'Id'):
-                $entity = Inflector::id2camel(substr($column, 0, strlen($column) - 2), '_');
-                break;
-            default:
-                // TODO: still improve detection for case when column name does not derive from table name, e.g. for CamelCase
-                //
-                // the behavior below is testes with a model with a FK -> PK column `foo_bar`,
-                // which is transformed to a getter `getFooBar()` by gii
-                $entity = Inflector::id2camel($column,'_');
-                break;
-        }
-        return $entity;
     }
 }
