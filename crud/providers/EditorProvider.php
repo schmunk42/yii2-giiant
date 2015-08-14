@@ -8,7 +8,7 @@
 
 namespace schmunk42\giiant\crud\providers;
 
-use yii\db\ColumnSchema;
+use yii\db\Schema;
 
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {
@@ -17,19 +17,18 @@ class EditorProvider extends \schmunk42\giiant\base\Provider
         if (!isset($this->generator->getTableSchema()->columns[$attribute])) {
             return null;
         }
+
         $column = $this->generator->getTableSchema()->columns[$attribute];
-        switch (true) {
-            case (in_array($column->name, $this->columnNames)):
-                $this->generator->requires[] = '2amigos/yii2-ckeditor-widget';
-                return <<<EOS
-\$form->field(\$model, '{$attribute}')->widget(
-    \dosamigos\ckeditor\CKEditor::className(),
-    [
-        'options' => ['rows' => 6],
-        'preset' => 'basic'
-    ]
-)
-EOS;
+
+        switch ($column->type) {
+            case Schema::TYPE_TEXT:
+                $msg = 'yiidoc/yii2-redactor (<b>Attention!</b> Configuration changes required. <small><a href="https://github.com/yiidoc/yii2-redactor">More info</a></small>)';
+
+                if (!in_array($msg, $this->generator->requires)) {
+                    $this->generator->requires[] = $msg;
+                }
+
+                return "\$form->field(\$model, '{$attribute}')->widget(\\yii\\redactor\\widgets\\Redactor::className())";
             default:
                 return null;
         }
