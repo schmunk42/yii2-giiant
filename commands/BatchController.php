@@ -177,7 +177,7 @@ class BatchController extends Controller
         if (!$this->tables) {
             $this->modelGenerator->tableName = '*';
             $this->tables = $this->modelGenerator->getTableNames();
-            $msg = "Are you sure that you want to run action \"{$action->id}\" for the following tables?\n\t" . implode("\n\t- ", $this->tables) . "\n\n";
+            $msg = "Are you sure that you want to run action \"{$action->id}\" for the following tables?\n\t- " . implode("\n\t- ", $this->tables) . "\n\n";
             if (!$this->confirm($msg)) {
                 return false;
             }
