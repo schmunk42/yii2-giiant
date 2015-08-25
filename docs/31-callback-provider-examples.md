@@ -31,3 +31,4 @@ use schmunk42\giiant\crud\callbacks\yii\Html;
     ]
 );
 ```
+

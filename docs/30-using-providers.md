@@ -1,3 +1,170 @@
+Providers
+---------
+
+- *CallbackProvider* universal provider to modify any input, attribute or column with highly flexible callback functions
+- *RelationProvider* renders code for relations (eg. links, dropdowns)
+- *EditorProvider* renders RTE, like `Ckeditor` as input widget
+- *DateTimeProvider* renders date inputs
+- *OptsProvider* render a populated dropdown, if the model contains and `optsColumnName()` method.
+
+
+### Customization with providers
+
+In many cases you want to exchange i.e. some inputs with a customized version for your project.
+Examples for this use-case are editors, file-uploads or choosers, complex input widget with a modal screen, getting
+data via AJAX and so on.
+
+With Giiant Providers you can create a queue of instances which may provide custom code depending on more complex
+rules. Take a look at some existing [giiant providers](https://github.com/schmunk42/yii2-giiant/tree/master/crud/providers).
+
+Configure providers, add this to your provider list in the form:
+
+    \schmunk42\giiant\crud\providers\EditorProvider,
+    \schmunk42\giiant\crud\providers\SelectProvider,
+    \schmunk42\giiant\crud\providers\OptsProvider,
+
+
+And configure the settings of the provider, add setting via dependecy injection this to your application config, eg. in `console/config/bootstrap.php`:
+
+    \Yii::$container->set(
+        'schmunk42\giiant\crud\providers\EditorProvider',
+        [
+            'columnNames' => ['description']
+        ]
+    );
+
+This will render a Ckeditor widget for every column named `description`.
+
+    <?= $form->field($model, 'description')->widget(
+    \dosamigos\ckeditor\CKEditor::className(),
+    [
+        'options' => ['rows' => 6],
+        'preset' => 'basic'
+    ]) ?>
+
+**NOTE** The OptsProvider matches every model with opts methods for a field, i.e. method `optsMembers` matches for model attribute `members`.
+
+#### Using "prompt" in dropdown lists
+
+Set the first entry in your `getColumnName()` method to value `null`.  
+
+	null => \Yii::t('app', 'Select'),
+
+To ensure that the correct value is written to the database you should add a validation rule in the model.  
+
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                [
+                    ['field_name'],
+                    'default',
+                    'value' => null
+                ]
+            ]
+        );
+    }
+
+
+### Universal `CallbackProvider`
+
+This provider has three properties `activeFields` (form), `columnFormats` (index) and `attributeFormats` (view) which all take an array of callback as input. The keys are evaluated as a regular expression the match the class and attribute name.
+While the callback function takes the current attribute and generator as input parameters.
+
+The configuration can be done via the dependency injection container of Yii2.
+
+Define callbacks for input fields in `_form` view
+
+```
+$activeFields = [
+
+   /**
+    * Generate a checkbox for specific column (model attribute)
+    */
+   'models\\\\Foo.isAvailable' => function ($attribute, $generator) {
+       $data = \yii\helpers\VarDumper::export([0 => 'Nein', 1 => 'Ja']);
+       return <<<INPUT
+\$form->field(\$model, '{$attribute->name}')->checkbox({$data});
+INPUT;
+   },
+
+];
+```
+
+Define callbacks for grid columns in `index` view
+
+```
+columnFormats = [
+
+   // generate custom HTML in column
+   'common\models\Foo.html' => function ($attribute, $generator) {
+       return <<<FORMAT
+[
+    'format' => 'html',
+    'label'=>'FOOFOO',
+    'attribute' => 'item_id',
+    'value'=> function(\$model){
+        return \yii\helpers\Html::a(\$model->bar,['/crud/item/view', 'id' => \$model->link_id]);
+    }
+]
+FORMAT;
+   },
+
+    // hide all text fields in grid
+    '.+' => function ($column, $model) {
+            if ($column->dbType == 'text') {
+                return false;
+            }
+    },
+
+    // hide system fields in grid
+    'created_at$|updated_at$' => function () {
+           return false;
+    },
+
+];
+```
+
+Detail `view` attributes
+
+```
+$attributeFormats = [
+
+    // usa a static helper function for all columns ending with `_json`
+    '_json$' => function ($attribute, $generator) {
+        $formattter = StringFormatter::className();
+        return <<<FORMAT
+[
+    'format' => 'html',
+    #'label'=>'FOOFOO',
+    'attribute' => '{$attribute->name}',
+    'value'=> {$formattter}::contentJsonToHtml(\$model->{$attribute->name})
+
+]
+FORMAT;
+
+    },
+];
+```
+
+Finally add the configuration via DI container
+
+```
+\Yii::$container->set(
+    'schmunk42\giiant\crud\providers\CallbackProvider',
+    [
+        'activeFields'  => $activeFields,
+        'columnFormats' => $columnFormats,
+        'attributeFormats' => $attributeFormats,
+    ]
+);
+```
+
+[More providers...](docs/callback-provider-examples.md)
+
+----------------------------
+
 # Using Giiant with Providers
 
 The following code should be added to the bootstrap of your yii application.  If you would like to keep it in it's own file (recommended) create a `config/giiant.php`, then include it from your `config/bootstrap.php`.
