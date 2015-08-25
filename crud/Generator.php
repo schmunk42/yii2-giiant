@@ -311,7 +311,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     }
                 }
             } catch (Exception $e) {
-                echo "Error: " . $e->getMessage();
+                Yii::error("Error: " . $e->getMessage(), __METHOD__);
             }
         }
         return $stack;
