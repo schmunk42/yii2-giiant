@@ -123,7 +123,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $return;
     }
 
-    private function initializeProviders()
+    protected function initializeProviders()
     {
         // TODO: this is a hotfix for an already initialized provider queue on action re-entry
         if ($this->_p !== []) {
@@ -528,7 +528,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function callProviderQueue($func, $args, $generator)
+    protected function callProviderQueue($func, $args, $generator)
     {
         $this->initializeProviders(); // TODO: should be done on init, but providerList is empty
         //var_dump($this->_p);exit;
@@ -555,7 +555,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
     }
 
-    private function shorthandAttributeFormat($attribute, $model)
+    protected function shorthandAttributeFormat($attribute, $model)
     {
         $column = $this->getColumnByAttribute($attribute, $model);
         if (!$column) {
