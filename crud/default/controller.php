@@ -30,8 +30,6 @@ use <?= ltrim($generator->modelClass, '\\') ?>;
 use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use yii\helpers\Url;
 use dmstr\bootstrap\Tabs;
 
@@ -45,32 +43,6 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
      */
     public $enableCsrfValidation = false;
-
-	/**
-     * Restrict access permissions to admin user and users with auth-item 'module-controller'
-	 * @inheritdoc
-	 */
-	public function behaviors()
-	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-					'rules' => [
-					[
-						'allow' 	=> true,
-						'actions'   => ['index', 'view', 'create', 'update', 'delete'],
-						'matchCallback' => function($rule, $action) {
-							return
-								\Yii::$app->user->can(strtr($this->module->id, ['/' => '_', '-' => '_'])) ||
-								\Yii::$app->user->can(strtr($this->module->id . '/' . $this->id, ['/' => '_', '-' => '_'])) ||
-								\Yii::$app->user->can(strtr($this->module->id . '/' . $this->id . '/' . $action->id, ['/' => '_', '-' => '_'])) ||
-								(\Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin);
-						},
-					]
-				]
-			]
-		];
-	}
 
 	/**
 	 * Lists all <?= $modelClass ?> models.
