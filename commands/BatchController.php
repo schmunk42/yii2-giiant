@@ -64,6 +64,11 @@ class BatchController extends Controller
     public $enableI18N = true;
 
     /**
+     * @var boolean whether the entity names will be singular or the same as the table name.
+     */
+    public $singularEntities = true;
+
+    /**
      * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
      * Defaults to `app`.
      */
@@ -141,6 +146,7 @@ class BatchController extends Controller
                 'overwrite',
                 'extendedModels',
                 'enableI18N',
+                'singularEntities',
                 'messageCategory',
                 'tables',
                 'tablePrefix',
@@ -219,6 +225,7 @@ class BatchController extends Controller
                 'tableName'          => $table,
                 'tablePrefix'        => $this->tablePrefix,
                 'enableI18N'         => $this->enableI18N,
+                'singularEntities'   => $this->singularEntities,
                 'messageCategory'    => $this->messageCategory,
                 'generateModelClass' => $this->extendedModels,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
@@ -264,6 +271,7 @@ class BatchController extends Controller
                 'pathPrefix'          => $this->crudPathPrefix,
                 'tablePrefix'         => $this->tablePrefix,
                 'enableI18N'          => $this->enableI18N,
+                'singularEntities'    => $this->singularEntities,
                 'messageCategory'     => $this->messageCategory,
                 'actionButtonClass'   => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
