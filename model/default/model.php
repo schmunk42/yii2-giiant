@@ -19,6 +19,9 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>\base;
 
 use Yii;
+<?php if (isset($translation)): ?>
+use dosamigos\translateable\TranslateableBehavior;
+<?php endif; ?>
 
 /**
  * This is the base-model class for table "<?= $tableName ?>".
@@ -48,9 +51,9 @@ if(!empty($enum)){
             echo '    const ' . $enum_value['const_name'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
         }
     }
-?>    
-    var $enum_labels = false;  
-<?php    
+?>
+    var $enum_labels = false;
+<?php
 }
 ?>
     /**
@@ -60,6 +63,27 @@ if(!empty($enum)){
     {
         return '<?= $tableName ?>';
     }
+<?php if (isset($translation)): ?>
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'translatable' => [
+                'class' => TranslateableBehavior::className(),
+                // in case you renamed your relation, you can setup its name
+                // 'relation' => 'translations',
+<?php if ($generator->languageCodeColumn !== 'language'): ?>
+                'languageField' => '<?= $generator->languageCodeColumn ?>',
+<?php endif; ?>
+                'translationAttributes' => [
+                    <?= "'" . implode("',\n                    '", $translation['fields']) . "'\n" ?>
+                ]
+            ],
+        ];
+    }
+<?php endif; ?>
 
     /**
      * @inheritdoc
@@ -91,6 +115,16 @@ if(!empty($enum)){
     }
 <?php endforeach; ?>
 
+<?php if (isset($translation)): ?>
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTranslations()
+    {
+        <?= $translation['code'] . "\n"?>
+    }
+<?php endif; ?>
+
 <?php if ($queryClassName): ?>
     <?php
     $queryClassFullName = ($generator->ns === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
@@ -109,9 +143,9 @@ if(!empty($enum)){
 <?php
     foreach($enum as $column_name => $column_data){
 ?>
-    
+
     /**
-     * get column <?php echo $column_name?> enum value label 
+     * get column <?php echo $column_name?> enum value label
      * @param string $value
      * @return string
      */
@@ -122,11 +156,11 @@ if(!empty($enum)){
         }
         return $value;
     }
-   
+
     /**
      * column <?php echo $column_name?> ENUM value labels
      * @return array
-     */    
+     */
     public static function <?php echo $column_data['func_opts_name']?>()
     {
         return [
@@ -134,15 +168,15 @@ if(!empty($enum)){
         foreach($column_data['values'] as $k => $value){
 ?>
             self::<?php echo $value['const_name'];?> => <?php echo $generator->generateString($value['label'])?>,
-<?php            
+<?php
         }
-?>        
+?>
         ];
     }
-<?php    
+<?php
     }
 
 
 ?>
-    
+
 }

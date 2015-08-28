@@ -17,3 +17,24 @@ echo $form->field($generator, 'generateModelClass')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'singularEntities')->checkbox();
 echo $form->field($generator, 'messageCategory');
+
+?>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Translatable Behavior</div>
+    <div class="panel-body">
+        <?php
+        echo $form->field($generator, 'useTranslatableBehavior')->checkbox();
+        echo $form->field($generator, 'languageTableName');
+        echo $form->field($generator, 'languageCodeColumn');
+        ?>
+        <div class="alert alert-warning" role="alert">
+            <h4>Attention!</h4>
+
+            <p>
+                You must run <code>php composer.phar require 2amigos/yii2-translateable-behavior "*"</code> to
+                install this package.
+            </p>
+        </div>
+    </div>
+</div>
