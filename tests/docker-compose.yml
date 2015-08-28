@@ -34,7 +34,6 @@ appcli:
 appsrc:
   image: phundament/app:4.0.0-rc1-dev
   volumes:
-    - ../:/app/vendor/schmunk42/yii2-giiant
     - ../tests/_config/local.php:/app/src/config/local.php
     - '/app'
   command: 'tail -f /dev/null'
