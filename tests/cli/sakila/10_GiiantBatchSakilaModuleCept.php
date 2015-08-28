@@ -3,8 +3,8 @@
 $I = new CliTester($scenario);
 
 // prepare output folders
-$I->runShellCommand('mkdir -p /app/src/modules/crud/controllers');
-$I->runShellCommand('mkdir -p /app/src/modules/crud/models/search');
+$I->runShellCommand('mkdir -p /app/src/modules/sakila/controllers');
+$I->runShellCommand('mkdir -p /app/src/modules/sakila/models/search');
 
 // model & crud command
 $batch = <<<'CMD'
@@ -14,9 +14,9 @@ $batch = <<<'CMD'
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
     --modelNamespace=app\\\models \
-    --crudControllerNamespace=app\\modules\\crud\\controllers \
-    --crudSearchModelNamespace=app\\modules\\crud\\models\\search \
-    --crudViewPath=@app/modules/crud/views \
+    --crudControllerNamespace=app\\modules\\sakila\\controllers \
+    --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
+    --crudViewPath=@app/modules/sakila/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
     --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider \
@@ -29,4 +29,4 @@ $I->runShellCommand($batch);
 $I->dontSeeInShellOutput('Please fix the following errors');
 $I->dontSeeInShellOutput('ErrorException');
 $I->seeInShellOutput('The following files will be generated');
-$I->seeFileFound('/app/src/modules/crud/controllers/ActorController.php');
+$I->seeFileFound('/app/src/modules/sakila/controllers/ActorController.php');
