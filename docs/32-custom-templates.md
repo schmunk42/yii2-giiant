@@ -10,7 +10,7 @@ $config['modules']['gii'] = [
         // generator name
         'giiant-model' => [
             //generator class
-            'class'     => 'schmunk42\giiant\model\Generator',
+            'class'     => 'schmunk42\giiant\generators\model\Generator',
             //setting for out templates
             'templates' => [
                 // template name => path to template

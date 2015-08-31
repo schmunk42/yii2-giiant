@@ -19,15 +19,15 @@ rules. Take a look at some existing [giiant providers](https://github.com/schmun
 
 Configure providers, add this to your provider list in the form:
 
-    \schmunk42\giiant\crud\providers\EditorProvider,
-    \schmunk42\giiant\crud\providers\SelectProvider,
-    \schmunk42\giiant\crud\providers\OptsProvider,
+    \schmunk42\giiant\generators\crud\providers\EditorProvider,
+    \schmunk42\giiant\generators\crud\providers\SelectProvider,
+    \schmunk42\giiant\generators\crud\providers\OptsProvider,
 
 
 And configure the settings of the provider, add setting via dependecy injection this to your application config, eg. in `console/config/bootstrap.php`:
 
     \Yii::$container->set(
-        'schmunk42\giiant\crud\providers\EditorProvider',
+        'schmunk42\giiant\generators\crud\providers\EditorProvider',
         [
             'columnNames' => ['description']
         ]
@@ -152,7 +152,7 @@ Finally add the configuration via DI container
 
 ```
 \Yii::$container->set(
-    'schmunk42\giiant\crud\providers\CallbackProvider',
+    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
     [
         'activeFields'  => $activeFields,
         'columnFormats' => $columnFormats,
@@ -175,7 +175,7 @@ The following code should be added to the bootstrap of your yii application.  If
 Use a DateTimePicker for the `scheduled_at` field:
 
 ```php
-\Yii::$container->set('schmunk42\giiant\crud\providers\DateTimeProvider', [
+\Yii::$container->set('schmunk42\giiant\generators\crud\providers\DateTimeProvider', [
     'columnNames' => ['scheduled_at'],
 ]);
 ```
@@ -381,7 +381,7 @@ $appendActiveFields = [
 To invoke the callback provider we pass in our callbacks as follows:
 
 ```php
-\Yii::$container->set('schmunk42\giiant\crud\providers\CallbackProvider', [
+\Yii::$container->set('schmunk42\giiant\generators\crud\providers\CallbackProvider', [
     'columnFormats' => $columnFormats,
     'attributeFormats' => $attributeFormats,
     'activeFields' => $activeFields,

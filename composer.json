@@ -15,6 +15,7 @@
     "require": {
         "dmstr/yii2-bootstrap": "*",
         "dmstr/yii2-helpers": "*",
+        "dmstr/yii2-db": "*",
         "yiisoft/yii2": "~2.0.4",
         "yiisoft/yii2-gii": "~2.0.4"
     },

@@ -6,12 +6,12 @@ Example configuration
 <?php
 namespace temp;
 
-use schmunk42\giiant\crud\callbacks\base\Callback;
-use schmunk42\giiant\crud\callbacks\yii\Db;
-use schmunk42\giiant\crud\callbacks\yii\Html;
+use schmunk42\giiant\generators\crud\callbacks\base\Callback;
+use schmunk42\giiant\generators\crud\callbacks\yii\Db;
+use schmunk42\giiant\generators\crud\callbacks\yii\Html;
 
 \Yii::$container->set(
-    'schmunk42\giiant\crud\providers\CallbackProvider',
+    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
     [
         'columnFormats'    => [
             // hide system fields, but not ID in table

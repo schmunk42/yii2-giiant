@@ -2,8 +2,8 @@
 
 namespace schmunk42\giiant\commands;
 
-use schmunk42\giiant\crud\Generator;
-use schmunk42\giiant\model\Generator as ModelGenerator;
+use schmunk42\giiant\generators\crud\Generator;
+use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -57,6 +57,11 @@ class BatchController extends Controller
      * @var string base class for the generated models
      */
     public $modelBaseClass = 'yii\db\ActiveRecord';
+
+    /**
+     * @var string traits for base-models
+     */
+    public $modelBaseTraits = null;
 
     /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
@@ -130,7 +135,7 @@ class BatchController extends Controller
     protected $appConfig;
 
     /**
-     * @var instance of class schmunk42\giiant\model\Generator
+     * @var instance of class schmunk42\giiant\generators\model\Generator
      */
     protected $modelGenerator;
 
@@ -153,6 +158,7 @@ class BatchController extends Controller
                 'modelDb',
                 'modelNamespace',
                 'modelBaseClass',
+                'modelBaseTraits',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
                 'crudViewPath',
@@ -178,7 +184,7 @@ class BatchController extends Controller
     {
         $this->appConfig       = $this->getYiiConfiguration();
         $this->appConfig['id'] = 'temp';
-        $this->modelGenerator  = new ModelGenerator();
+        $this->modelGenerator  = new ModelGenerator(['db' => $this->modelDb]);
 
         if (!$this->tables) {
             $this->modelGenerator->tableName = '*';
@@ -231,6 +237,7 @@ class BatchController extends Controller
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
+                'baseTraits'         => $this->modelBaseTraits,
                 'tableNameMap'       => $this->tableNameMap,
                 'generateQuery'      => $this->modelGenerateQuery,
                 'queryNs'            => $this->modelQueryNamespace,

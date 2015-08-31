@@ -14,7 +14,7 @@ use yii\base\Object;
 class Provider extends Object
 {
     /**
-     * @var \schmunk42\giiant\crud\Generator
+     * @var \schmunk42\giiant\generators\crud\Generator
      */
     public $generator;
 

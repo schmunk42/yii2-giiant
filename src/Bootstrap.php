@@ -31,16 +31,16 @@ class Bootstrap implements BootstrapInterface
         if ($app->hasModule('gii')) {
 
             if (!isset($app->getModule('gii')->generators['giiant-model'])) {
-                $app->getModule('gii')->generators['giiant-model'] = 'schmunk42\giiant\model\Generator';
+                $app->getModule('gii')->generators['giiant-model'] = 'schmunk42\giiant\generators\model\Generator';
             }
 
             if (!isset($app->getModule('gii')->generators['giiant-crud'])) {
-                $app->getModule('gii')->generators['giiant-crud'] = 'schmunk42\giiant\crud\Generator';
+                $app->getModule('gii')->generators['giiant-crud'] = 'schmunk42\giiant\generators\crud\Generator';
             }
 
-	        if (!isset($app->getModule('gii')->generators['giiant-migration'])) {
-		        $app->getModule('gii')->generators['giiant-migration'] = 'schmunk42\giiant\migration\Generator';
-	        }
+            if (!isset($app->getModule('gii')->generators['giiant-module'])) {
+                $app->getModule('gii')->generators['giiant-module'] = 'schmunk42\giiant\generators\module\Generator';
+            }
 
             if ($app instanceof \yii\console\Application) {
                 $app->controllerMap['giiant-batch'] = 'schmunk42\giiant\commands\BatchController';
