@@ -15,7 +15,7 @@ $controllers = \dmstr\helpers\Metadata::getModuleControllers($this->context->mod
 $favourites  = [];
 
 $patterns = [
-    '^default$'          => ['color' => 'red', 'icon' => FA::_CUBE],
+    '^.*$'          => ['color' => 'blue', 'icon' => FA::_CUBE],
 ];
 
 foreach ($patterns AS $pattern => $options) {
