@@ -49,6 +49,11 @@ class BatchController extends Controller
     public $modelNamespace = 'common\\models';
 
     /**
+     * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
+     */
+    public $modelBaseClassSuffix = '';
+
+    /**
      * @var string database application component
      */
     public $modelDb = 'db';
@@ -88,6 +93,11 @@ class BatchController extends Controller
      * @var string namespace path for crud search models
      */
     public $crudSearchModelNamespace = 'backend\\models\\search';
+    
+    /**
+     * @var string suffix to append to the search model, setting "Search" will result in a model named "PostSearch"
+     */
+    public $crudSearchModelSuffix = '';
 
     /**
      * @var string namespace path for crud views
@@ -159,8 +169,10 @@ class BatchController extends Controller
                 'modelNamespace',
                 'modelBaseClass',
                 'modelBaseTraits',
+                'modelBaseClassSuffix',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
+                'crudSearchModelSuffix',
                 'crudViewPath',
                 'crudPathPrefix',
                 'crudProviders',
@@ -234,6 +246,7 @@ class BatchController extends Controller
                 'singularEntities'   => $this->singularEntities,
                 'messageCategory'    => $this->messageCategory,
                 'generateModelClass' => $this->extendedModels,
+                'baseClassSuffix'    => $this->modelBaseClassSuffix,
                 'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                     Inflector::camelize($table), // TODO: setting is not recognized in giiant
                 'baseClass'          => $this->modelBaseClass,
@@ -272,7 +285,7 @@ class BatchController extends Controller
                 'overwrite'           => $this->overwrite,
                 'template'            => $this->template,
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name,
+                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,

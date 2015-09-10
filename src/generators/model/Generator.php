@@ -52,6 +52,11 @@ class Generator extends \yii\gii\generators\model\Generator
     public $languageCodeColumn = "language";
 
     /**
+     * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
+     */
+    public $baseClassSuffix = '';
+
+    /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
      */
     public $tableNameMap = [];
@@ -161,7 +166,7 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $files[] = new CodeFile(
-                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . '.php',
+                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . $this->baseClassSuffix . '.php',
                 $this->render('model.php', $params)
             );
 
