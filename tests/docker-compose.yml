@@ -5,7 +5,6 @@
 
 # Spawn a new project locally
 #
-#   docker-compose run appsrc cp -r /phundament-src/src /mnt
 #   docker-compose up -d
 #   docker-compose run appcli ../yii
 
