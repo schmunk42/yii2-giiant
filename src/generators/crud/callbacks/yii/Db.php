@@ -27,4 +27,21 @@ class Db
 
         };
     }
+
+    static public function falseIfAutoIncrement()
+    {
+        // hide AI columns
+        return function ($attribute, $model, $generator) {
+
+            $column     = $generator->getColumnByAttribute($attribute);
+            if (!$column) {
+                return null;
+            }
+
+            if ($column->autoIncrement) {
+                return false;
+            }
+
+        };
+    }
 }
