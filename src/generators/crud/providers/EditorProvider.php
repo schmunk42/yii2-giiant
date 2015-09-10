@@ -8,20 +8,26 @@
 
 namespace schmunk42\giiant\generators\crud\providers;
 
-use yii\db\ColumnSchema;
-
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {
+    public $widget = 'ckeditor';
+
     public function activeField($attribute)
     {
         if (!isset($this->generator->getTableSchema()->columns[$attribute])) {
             return null;
         }
+
         $column = $this->generator->getTableSchema()->columns[$attribute];
-        switch (true) {
-            case (in_array($column->name, $this->columnNames)):
-                $this->generator->requires[] = '2amigos/yii2-ckeditor-widget';
-                return <<<EOS
+        if (in_array($column->name, $this->columnNames)) {
+            switch ($this->widget) {
+                case 'redactor':
+                    $this->generator->requires[] = 'yiidoc/yii2-redactor';
+                    return "\$form->field(\$model, '{$attribute}')->widget(\\yii\\redactor\\widgets\\Redactor::className())";
+                    break;
+                default:
+                    $this->generator->requires[] = '2amigos/yii2-ckeditor-widget';
+                    return <<<EOS
 \$form->field(\$model, '{$attribute}')->widget(
     \dosamigos\ckeditor\CKEditor::className(),
     [
@@ -30,8 +36,7 @@ class EditorProvider extends \schmunk42\giiant\base\Provider
     ]
 )
 EOS;
-            default:
-                return null;
+            }
         }
     }
 } 
