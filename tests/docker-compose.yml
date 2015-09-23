@@ -15,7 +15,7 @@
 appcli:
   command: 'sh /app/src/run.sh'
   # should be replaced with: image: <project_name>_appsrc
-  image: phundament/app:4.0.0-rc1-dev
+  image: phundament/app:4.0.0-rc5
   external_links:
     - 'example-databases:DB'
   links:
@@ -31,7 +31,7 @@ appcli:
     APP_MIGRATION_LOOKUP: '@app/migrations'
 
 appsrc:
-  image: phundament/app:4.0.0-rc1-dev
+  image: phundament/app:4.0.0-rc5
   volumes:
     - ../tests/_config/local.php:/app/src/config/local.php
     - '/app'
@@ -41,7 +41,7 @@ appsrc:
 appfpm:
   environment:
     DB_ENV_MYSQL_DATABASE: sakila
-  image: phundament/php:5.6-fpm-4.0.0-rc1-dev
+  image: phundament/php:5.6-fpm-4.2.1-dev
   # host-volume for local development
   volumes:
     - ../:/app/vendor/schmunk42/yii2-giiant
@@ -53,7 +53,7 @@ appfpm:
 
 # The nginx server for serving static files directly
 appnginx:
-  image: schmunk42/nginx:1.7
+  image: schmunk42/nginx:1.9
   links:
     - 'appfpm:PHPFPM'
   # host-volume for local development
