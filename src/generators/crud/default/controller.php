@@ -20,7 +20,6 @@ $pks = $generator->getTableSchema()->primaryKey;
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();
-
 echo "<?php\n";
 ?>
 
@@ -31,6 +30,7 @@ use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModel
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
 use yii\helpers\Url;
+use yii\filters\AccessControl;
 use dmstr\bootstrap\Tabs;
 
 /**
@@ -43,6 +43,24 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
      */
     public $enableCsrfValidation = false;
+
+	/**
+	* @inheritdoc
+	*/
+	public function behaviors()
+	{
+		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'matchCallback' => function ($rule, $action) {return \Yii::$app->user->can($this->module->id . '_' . $this->id . '_' . $action->id, ['route' => true]);},
+					]
+				]
+			]
+		];
+	}
 
 	/**
 	 * Lists all <?= $modelClass ?> models.
