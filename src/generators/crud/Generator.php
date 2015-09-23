@@ -62,6 +62,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $requires = [];
     public $singularEntities = false;
+    public $accessFilter = false;
 
     private $_p = [];
 

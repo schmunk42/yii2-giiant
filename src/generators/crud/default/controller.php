@@ -44,6 +44,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public $enableCsrfValidation = false;
 
+	<?php if ($generator->accessFilter): ?>
 	/**
 	* @inheritdoc
 	*/
@@ -61,6 +62,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 			]
 		];
 	}
+	<?php endif; ?>
 
 	/**
 	 * Lists all <?= $modelClass ?> models.
