@@ -18,8 +18,6 @@ $batch = <<<'CMD'
     --crudSearchModelNamespace=app\\models\\crud\\search \
     --crudViewPath=@app/views/crud \
     --crudPathPrefix=crud/ \
-    --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 CMD;
 
@@ -29,4 +27,4 @@ $I->runShellCommand($batch);
 $I->dontSeeInShellOutput('Please fix the following errors');
 $I->dontSeeInShellOutput('ErrorException');
 $I->seeInShellOutput('The following files will be generated');
-$I->seeFileFound('/app/src/modules/crud/controllers/ActorController.php');
+$I->seeFileFound('/app/src/controllers/crud/ActorController.php');

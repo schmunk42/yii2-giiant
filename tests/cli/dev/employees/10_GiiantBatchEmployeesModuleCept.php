@@ -17,9 +17,7 @@ $batch = <<<'CMD'
     --crudControllerNamespace=app\\modules\\employees\\controllers \
     --crudSearchModelNamespace=app\\modules\\employees\\models\\search \
     --crudViewPath=@app/modules/employees/views \
-    --crudPathPrefix= \
-    --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider
+    --crudPathPrefix=
 CMD;
 
 $I->runShellCommand($batch);

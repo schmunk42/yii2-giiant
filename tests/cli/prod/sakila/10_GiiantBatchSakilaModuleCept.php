@@ -18,8 +18,6 @@ $batch = <<<'CMD'
     --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
     --crudViewPath=@app/modules/sakila/views \
     --crudPathPrefix= \
-    --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 CMD;
 
