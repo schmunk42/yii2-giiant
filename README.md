@@ -3,7 +3,7 @@ yii2-giiant
 
 > "Giiant is huge!"
 
-**PROJECT IS IN BETA STAGE!**
+**PROJECT IS IN BETA STAGE! Note: Major changes from 0.4 to 0.5 ...**
 
 
 What is this?
@@ -52,7 +52,6 @@ To create a full-featured database backend, run the CLI batch command
     --crudViewPath=@app/modules/crud/views \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 ```
-
 
 
 
