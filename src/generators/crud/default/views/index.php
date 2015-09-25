@@ -48,10 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
     echo $this->render('_search', ['model' =>$searchModel]);
     ?>
 
-    <div class="clearfix">
-        <p class="pull-left">
+    <div class="clearfix crud-navigation">
+        <div class="pull-left">
             <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
-        </p>
+        </div>
 
         <div class="pull-right">
 
