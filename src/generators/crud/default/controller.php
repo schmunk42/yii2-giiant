@@ -23,7 +23,7 @@ $actionParamComments = $generator->generateActionParamComments();
 echo "<?php\n";
 ?>
 
-namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
+namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>\base;
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
 use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;

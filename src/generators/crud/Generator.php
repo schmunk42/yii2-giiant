@@ -7,15 +7,17 @@
 
 namespace schmunk42\giiant\generators\crud;
 
+use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
+use yii\gii\CodeFile;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
-use yii\helpers\FileHelper;
-use \schmunk42\giiant\generators\model\Generator as ModelGenerator;
+use yii\helpers\StringHelper;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -63,6 +65,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $requires = [];
     public $singularEntities = false;
     public $accessFilter = false;
+
+    public $controllerNs;
+    public $generateControllerClass = false;
 
     private $_p = [];
 
@@ -213,6 +218,7 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         return $modelClass::primaryKey()[0];
     }
+
 
     public function getModelByTableName($name)
     {
@@ -611,10 +617,50 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
-            $this->controllerClass = Inflector::singularize(substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)) . "Controller";
+            $this->controllerClass = Inflector::singularize(
+                    substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)
+                ) . "Controller";
             $this->searchModelClass = Inflector::singularize($this->searchModelClass);
         }
-        return parent::generate();
+
+        $files = [];
+
+        $baseControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+        $baseControllerFile = StringHelper::dirname($baseControllerFile) . '/base/' . StringHelper::basename(
+                $baseControllerFile
+            );
+        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php'));
+
+        $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
+        $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+
+        if ($this->generateControllerClass || !is_file($controllerFile)) {
+            $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
+        }
+
+        $restControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+        $restControllerFile = StringHelper::dirname($restControllerFile) . '/api/' . StringHelper::basename(
+                $baseControllerFile
+            );
+        $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
+
+        if (!empty($this->searchModelClass)) {
+            $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
+            $files[] = new CodeFile($searchModel, $this->render('search.php'));
+        }
+
+        $viewPath = $this->getViewPath();
+        $templatePath = $this->getTemplatePath() . '/views';
+        foreach (scandir($templatePath) as $file) {
+            if (empty($this->searchModelClass) && $file === '_search.php') {
+                continue;
+            }
+            if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
+            }
+        }
+
+        return $files;
     }
 
     public function validateClass($attribute, $params)
