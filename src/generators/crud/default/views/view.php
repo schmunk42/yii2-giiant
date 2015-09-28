@@ -84,6 +84,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
     ?>
 
+    <?= $generator->partialView('detail_prepend', $model); ?>
+
     <?= "<?= " ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
@@ -99,6 +101,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     ?>
     ],
     ]); ?>
+
+    <?= $generator->partialView('detail_append', $model); ?>
 
     <hr/>
 

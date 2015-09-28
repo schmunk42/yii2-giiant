@@ -429,6 +429,18 @@ class Generator extends \yii\gii\generators\crud\Generator
         // don't call parent anymore
     }
 
+    public function partialView($name, $model = null)
+    {
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $name, $model, $this);
+        if ($code) {
+            Yii::trace("found provider for partial view '{name}'", __METHOD__);
+        }
+        return $code;
+    }
+
     public function relationGrid($name, $relation, $showAllRecords = false)
     {
         Yii::trace("calling provider queue for '$name'", __METHOD__);

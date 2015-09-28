@@ -15,6 +15,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     public $appendActiveFields = [];
     public $attributeFormats = [];
     public $columnFormats = [];
+    public $partialViews = [];
 
 
     public function activeField($attribute, $model, $generator)
@@ -55,6 +56,14 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
         $key = $this->findValue($this->getModelKey($attribute, $model), $this->columnFormats);
         if ($key) {
             return $this->columnFormats[$key]($attribute, $model, $generator);
+        }
+    }
+
+    public function partialView($name, $model, $generator)
+    {
+        $key = $this->findValue($this->getModelKey($name, $model), $this->partialViews);
+        if ($key) {
+            return $this->partialViews[$key]($name, $model, $generator);
         }
     }
 
