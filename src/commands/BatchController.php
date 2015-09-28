@@ -286,6 +286,7 @@ class BatchController extends Controller
                 'template'            => $this->template,
                 'modelClass'          => $this->modelNamespace . '\\' . $name,
                 'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
+                'controllerNs'        => $this->crudControllerNamespace ,
                 'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
                 'viewPath'            => $this->crudViewPath,
                 'pathPrefix'          => $this->crudPathPrefix,
