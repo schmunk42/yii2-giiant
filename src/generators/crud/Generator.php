@@ -44,8 +44,19 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $viewPath = '@backend/views';
 
+    /**
+     * @var string table prefix to be removed from class names when auto-detecting model names, eg. `app_` converts table `app_foo` into `Foo`
+     */
     public $tablePrefix = null;
+
+    /**
+     * @var string prefix for controller route, eg. when generating controllers into subfolders
+     */
     public $pathPrefix = null;
+
+    /**
+     * @var string Bootstrap CSS-class for form-layout
+     */
     public $formLayout = 'horizontal';
     /**
      * @var string translation catalogue
@@ -63,10 +74,21 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    /**
+     * @var bool whether to convert controller name to singular
+     */
     public $singularEntities = false;
+    /**
+     * @var bool whether to add an access filter to controllers
+     */
     public $accessFilter = false;
-
+    /**
+     * @var sting controller base namespace
+     */
     public $controllerNs;
+    /**
+     * @var bool whether to overwrite extended controller classes
+     */
     public $generateControllerClass = false;
 
     private $_p = [];
@@ -110,11 +132,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_combine($coreProviders, $coreProviders);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Giiant CRUD';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDescription()
     {
         return 'This generator generates an extended version of CRUDs.';
