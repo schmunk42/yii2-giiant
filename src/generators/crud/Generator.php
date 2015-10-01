@@ -660,17 +660,19 @@ class Generator extends \yii\gii\generators\crud\Generator
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php'));
 
         $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
-        $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
 
+        $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
         if ($this->generateControllerClass || !is_file($controllerFile)) {
             $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
         }
 
         $restControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
-        $restControllerFile = StringHelper::dirname($restControllerFile) . '/api/' . StringHelper::basename(
-                $baseControllerFile
-            );
-        $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
+        if ($this->generateControllerClass || !is_file($restControllerFile)) {
+            $restControllerFile = StringHelper::dirname($restControllerFile) . '/api/' . StringHelper::basename(
+                    $baseControllerFile
+                );
+            $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
+        }
 
         if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
