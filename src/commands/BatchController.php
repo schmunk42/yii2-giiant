@@ -125,6 +125,11 @@ class BatchController extends Controller
     public $crudSkipRelations = [];
 
     /**
+     * @var boolean whether to add accessFilter in behavior
+     */
+    public $crudAccessFilter;
+
+    /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
     public $modelGenerateQuery = true;
@@ -178,6 +183,7 @@ class BatchController extends Controller
                 'crudProviders',
                 'crudSkipRelations',
                 'crudBaseControllerClass',
+                'crudAccessFilter',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
@@ -298,6 +304,7 @@ class BatchController extends Controller
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList'        => $providers,
                 'skipRelations'       => $this->crudSkipRelations,
+                'accessFilter'        => $this->crudAccessFilter,
             ];
             $route  = 'gii/giiant-crud';
             $app    = \Yii::$app;
