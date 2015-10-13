@@ -116,7 +116,7 @@ class Generator extends \yii\gii\generators\model\Generator
             parent::hints(),
             [
                 'generateModelClass' => 'This indicates whether the generator should generate the model class, this should usually be done only once. The model-base class is always generated.',
-                'tablePrefix'        => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
+                'tablePrefix' => 'Custom table prefix, eg <code>app_</code>.<br/><b>Note!</b> overrides <code>yii\db\Connection</code> prefix!',
                 'useTranslatableBehavior' => 'Use <code>2amigos/yii2-translateable-behavior</code> for tables with a relation to a translation table.',
                 'languageTableName' => 'The name of the table containing the translations. <code>{{table}}</code> will be replaced with the value in "Table Name" field.',
                 'languageCodeColumn' => 'The column name where the language code is stored.',
@@ -137,9 +137,9 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generate()
     {
-        $files     = [];
+        $files = [];
         $relations = $this->generateRelations();
-        $db        = $this->getDbConnection();
+        $db = $this->getDbConnection();
 
         foreach ($this->getTableNames() as $tableName) {
 
@@ -149,16 +149,16 @@ class Generator extends \yii\gii\generators\model\Generator
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
 
-            $params      = [
-                'tableName'      => $tableName,
-                'className'      => $className,
+            $params = [
+                'tableName' => $tableName,
+                'className' => $className,
                 'queryClassName' => $queryClassName,
-                'tableSchema'    => $tableSchema,
-                'labels'         => $this->generateLabels($tableSchema),
-                'rules'          => $this->generateRules($tableSchema),
-                'relations'      => isset($relations[$tableName]) ? $relations[$tableName] : [],
-                'ns'             => $this->ns,
-                'enum'           => $this->getEnum($tableSchema->columns),
+                'tableSchema' => $tableSchema,
+                'labels' => $this->generateLabels($tableSchema),
+                'rules' => $this->generateRules($tableSchema),
+                'relations' => isset($relations[$tableName]) ? $relations[$tableName] : [],
+                'ns' => $this->ns,
+                'enum' => $this->getEnum($tableSchema->columns),
             ];
 
             if (!empty($translations)) {
@@ -166,7 +166,9 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $files[] = new CodeFile(
-                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/base/' . $className . $this->baseClassSuffix . '.php',
+                Yii::getAlias(
+                    '@' . str_replace('\\', '/', $this->ns)
+                ) . '/base/' . $className . $this->baseClassSuffix . '.php',
                 $this->render('model.php', $params)
             );
 
@@ -179,7 +181,9 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             if ($queryClassName) {
-                $queryClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->queryNs)) . '/' . $queryClassName . '.php';
+                $queryClassFile = Yii::getAlias(
+                        '@' . str_replace('\\', '/', $this->queryNs)
+                    ) . '/' . $queryClassName . '.php';
                 if ($this->generateModelClass || !is_file($queryClassFile)) {
                     $params = [
                         'className' => $queryClassName,
@@ -221,8 +225,8 @@ class Generator extends \yii\gii\generators\model\Generator
             $tableName = substr($tableName, $pos + 1);
         }
 
-        $db         = $this->getDbConnection();
-        $patterns   = [];
+        $db = $this->getDbConnection();
+        $patterns = [];
         $patterns[] = "/^{$this->tablePrefix}(.*?)$/";
         $patterns[] = "/^(.*?){$this->tablePrefix}$/";
         $patterns[] = "/^{$db->tablePrefix}(.*?)$/";
@@ -246,7 +250,9 @@ class Generator extends \yii\gii\generators\model\Generator
         }
 
         $returnName = Inflector::id2camel($className, '_');
-        if ($this->singularEntities) $returnName = Inflector::singularize($returnName);
+        if ($this->singularEntities) {
+            $returnName = Inflector::singularize($returnName);
+        }
 
         Yii::trace("Converted '{$tableName}' to '{$returnName}'.", __METHOD__);
         return $this->classNames2[$tableName] = $returnName;
@@ -282,10 +288,13 @@ class Generator extends \yii\gii\generators\model\Generator
 
     /**
      * prepare ENUM field values
+     *
      * @param array $columns
+     *
      * @return array
      */
-    public function getEnum($columns){
+    public function getEnum($columns)
+    {
 
         $enum = [];
         foreach ($columns as $column) {
@@ -295,7 +304,7 @@ class Generator extends \yii\gii\generators\model\Generator
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
             $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
-            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name.'ValueLabel';
+            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
             $enum[$column->name]['values'] = [];
 
             $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
@@ -305,18 +314,20 @@ class Generator extends \yii\gii\generators\model\Generator
                 $value = trim($value, "()'");
 
                 $const_name = strtoupper($column->name . '_' . $value);
-                $const_name = preg_replace('/\s+/','_',$const_name);
-                $const_name = str_replace(['-','_',' '],'_',$const_name);
-				$const_name=preg_replace('/[^A-Z0-9_]/', '', $const_name);
+                $const_name = preg_replace('/\s+/', '_', $const_name);
+                $const_name = str_replace(['-', '_', ' '], '_', $const_name);
+                $const_name = preg_replace('/[^A-Z0-9_]/', '', $const_name);
 
-                $label = ucwords(trim(strtolower(str_replace(['-', '_'], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value)))));
+                $label = ucwords(
+                    trim(strtolower(str_replace(['-', '_'], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value))))
+                );
                 $label = preg_replace('/\s+/', ' ', $label);
 
                 $enum[$column->name]['values'][] = [
                     'value' => $value,
                     'const_name' => $const_name,
                     'label' => $label,
-                    ];
+                ];
 
             }
         }
@@ -326,17 +337,22 @@ class Generator extends \yii\gii\generators\model\Generator
 
     /**
      * validate is ENUM
+     *
      * @param  $column table column
+     *
      * @return type
      */
-    public function isEnum($column){
+    public function isEnum($column)
+    {
         return substr(strtoupper($column->dbType), 0, 4) == 'ENUM';
     }
 
 
     /**
      * Generates validation rules for the specified table and add enum value validation.
+     *
      * @param \yii\db\TableSchema $table the table schema
+     *
      * @return array the generated validation rules
      */
     public function generateRules($table)
@@ -345,15 +361,45 @@ class Generator extends \yii\gii\generators\model\Generator
 
         //for enum fields create rules "in range" for all enum values
         $enum = $this->getEnum($table->columns);
-        foreach($enum as $field_name => $field_details){
+        foreach ($enum as $field_name => $field_details) {
             $ea = array();
-            foreach($field_details['values'] as $field_enum_values){
-                $ea[] = 'self::'.$field_enum_values['const_name'];
+            foreach ($field_details['values'] as $field_enum_values) {
+                $ea[] = 'self::' . $field_enum_values['const_name'];
             }
-            $rules[] = "['" .$field_name . "', 'in', 'range' => [\n                    " . implode(",\n                    ",$ea) . ",\n                ]\n            ]";
+            $rules[] = "['" . $field_name . "', 'in', 'range' => [\n                    " . implode(
+                    ",\n                    ",
+                    $ea
+                ) . ",\n                ]\n            ]";
         }
 
-        return array_merge(parent::generateRules($table),$rules);
+        return array_merge(parent::generateRules($table), $rules);
+    }
+
+    /**
+     * @return Connection the DB connection from the DI container or as application component specified by [[db]].
+     */
+    protected function getDbConnection()
+    {
+        #var_dump($this->db);exit;
+        if (Yii::$container->get($this->db)) {
+            return Yii::$container->get($this->db);
+        } else {
+            return Yii::$app->get($this->db);
+        }
+    }
+
+    /**
+     * Validates the [[db]] attribute.
+     */
+    public function validateDb()
+    {
+        if (Yii::$container->get($this->db)) {
+            return true;
+        } elseif (!Yii::$app->has($this->db)) {
+            $this->addError('db', 'There is no application component named "db".');
+        } elseif (!Yii::$app->get($this->db) instanceof Connection) {
+            $this->addError('db', 'The "db" application component must be a DB connection instance.');
+        }
     }
 
     /**
@@ -366,6 +412,7 @@ class Generator extends \yii\gii\generators\model\Generator
 
     /**
      * @param $relations all database's relations.
+     *
      * @return array associative array containing the extracted relations and the modified translations.
      */
     protected function extractTranslations($tableName, $relations)
@@ -378,9 +425,12 @@ class Generator extends \yii\gii\generators\model\Generator
             $langTableColumns = $langTableSchema->getColumnNames();
             $langTableKeys = array_merge(
                 $langTableSchema->primaryKey,
-                array_map(function($fk){
-                    return array_keys($fk)[1];
-                }, $langTableSchema->foreignKeys)
+                array_map(
+                    function ($fk) {
+                        return array_keys($fk)[1];
+                    },
+                    $langTableSchema->foreignKeys
+                )
             );
             $langClassName = $this->generateClassName($langTableName);
 
@@ -394,7 +444,11 @@ class Generator extends \yii\gii\generators\model\Generator
                     // collect fields which are not PK, FK nor language code
                     $fields = [];
                     foreach ($langTableColumns as $columnName) {
-                        if (!in_array($columnName, $langTableKeys) and strcasecmp($columnName, $this->languageCodeColumn) !== 0) {
+                        if (!in_array($columnName, $langTableKeys) and strcasecmp(
+                                $columnName,
+                                $this->languageCodeColumn
+                            ) !== 0
+                        ) {
                             $fields[] = $columnName;
                         }
                     }
