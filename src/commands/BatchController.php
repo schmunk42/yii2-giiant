@@ -269,6 +269,7 @@ class BatchController extends Controller
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
+            \Yii::$app->log->logger->flush(true);
         }
 
     }
@@ -312,6 +313,7 @@ class BatchController extends Controller
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
+            \Yii::$app->log->logger->flush(true);
         }
     }
 
