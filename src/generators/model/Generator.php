@@ -380,8 +380,7 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     protected function getDbConnection()
     {
-        #var_dump($this->db);exit;
-        if (Yii::$container->get($this->db)) {
+        if (Yii::$container->has($this->db)) {
             return Yii::$container->get($this->db);
         } else {
             return Yii::$app->get($this->db);
@@ -393,12 +392,10 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function validateDb()
     {
-        if (Yii::$container->get($this->db)) {
+        if (Yii::$container->has($this->db)) {
             return true;
-        } elseif (!Yii::$app->has($this->db)) {
-            $this->addError('db', 'There is no application component named "db".');
-        } elseif (!Yii::$app->get($this->db) instanceof Connection) {
-            $this->addError('db', 'The "db" application component must be a DB connection instance.');
+        } else {
+            return parent::validateDb();
         }
     }
 
