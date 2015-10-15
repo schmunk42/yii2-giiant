@@ -90,6 +90,10 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to overwrite extended controller classes
      */
     public $generateControllerClass = false;
+    /**
+     * @var array whether to use phptidy on renderer files before saving
+     */
+    public $tidyOutput;
 
     private $_p = [];
 
@@ -691,6 +695,21 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         return $files;
+    }
+
+    public function render($template, $params = [])
+    {
+        $code = parent::render($template, $params);
+        if ($this->tidyOutput) {
+            $tmpDir = Yii::getAlias('@runtime/giiant');
+            FileHelper::createDirectory($tmpDir);
+            $tmpFile = $tmpDir . '/' . md5($template);
+            file_put_contents($tmpFile, $code);
+            shell_exec('vendor/bin/phptidy replace ' . $tmpFile);
+            return file_get_contents($tmpFile);
+        } else {
+            return $code;
+        }
     }
 
     public function validateClass($attribute, $params)
