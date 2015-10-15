@@ -33,6 +33,7 @@ use dmstr\bootstrap\Tabs;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
+$copyParams = $model->attributes;
 
 $this->title = '<?=
 Inflector::camel2words(
@@ -51,6 +52,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <!-- menu buttons -->
     <div class='pull-left'>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
+        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>, ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],['class' => 'btn btn-success']) ?>
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
     </div>
     <div class="pull-right">
