@@ -154,7 +154,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-            \Yii::$app->getSession()->setFlash('error', $msg);
+            \Yii::$app->getSession()->addFlash('error', $msg);
             return $this->redirect(Url::previous());
         }
 
