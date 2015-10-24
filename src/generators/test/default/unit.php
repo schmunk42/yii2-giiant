@@ -35,6 +35,9 @@ class <?= $className ?>Test extends DbTestCase
     private $isModelValidationEnabled = true;
     const ERROR_SAVE_VALIDATION = "Model was not saved. Please check its validation rules.";
 
+    /**
+    * Clears DB data after each test case
+    */
     protected function tearDown()
     {
         if($this->modelPK != null){
@@ -57,7 +60,7 @@ class <?= $className ?>Test extends DbTestCase
         $this->specify($this->modelName.' model should be created', function () use ($model) {
 <?php foreach($attributes as $attr):
         if(isPK($attr)){ continue;}?>
-            expect('model\'s attribute "<?= $attr['label'] ?>" doesn\'t exit ', isset($model-><?= $attr['name'] ?>))->true();
+            expect('model\'s attribute "<?= $attr['label'] ?>" exists ', isset($model-><?= $attr['name'] ?>))->true();
 <?php endforeach; ?>
         });
     }
@@ -78,7 +81,7 @@ class <?= $className ?>Test extends DbTestCase
         $this->specify($this->modelName.' model should be saved', function () use ($reloadedModel, $model) {
 <?php foreach($attributes as $attr):
         if(isPK($attr)){ continue;}?>
-            expect('model\'s attribute "<?= $attr['label'] ?>" wasn\'t saved correctly', $reloadedModel-><?= $attr['name'] ?>)->equals($model-><?= $attr['name'] ?>);
+            expect('model\'s attribute "<?= $attr['label'] ?>" saved correctly', $reloadedModel-><?= $attr['name'] ?>)->equals($model-><?= $attr['name'] ?>);
 <?php endforeach; ?>
         });
         $this->assertNotEmpty($model-><?php echo PKAttributeName($attributes); ?>);
@@ -99,7 +102,7 @@ class <?= $className ?>Test extends DbTestCase
 
 <?php foreach($attributes as $attr):
     if(isPK($attr)){ continue;}?>
-        $updatedModel-><?php echo $attr['name'] ?> = $this->updateAttributeValue($originalModel-><?php echo $attr['name'] ?>, '<?php echo $attr['type'] ?>');
+        $updatedModel-><?php echo $attr['name'] ?> = $this->updateAttributeValue($originalModel-><?php echo $attr['name'] ?>, '<?php echo $attr['name'] ?>', '<?php echo $attr['type'] ?>');
 <?php endforeach; ?>
         if(!$updatedModel->save($this->isModelValidationEnabled)){
             $this->fail(self::ERROR_SAVE_VALIDATION);
@@ -108,7 +111,7 @@ class <?= $className ?>Test extends DbTestCase
 
         $this->specify($this->modelName.' model should be updated', function () use ($reloadedModel, $updatedModel) {
 <?php foreach($attributes as $attr): ?>
-            expect('model\'s attribute "<?= $attr['label'] ?>" wasn\'t updated ', $reloadedModel-><?= $attr['name'] ?>)->equals($updatedModel-><?= $attr['name'] ?>);
+            expect('model\'s attribute "<?= $attr['label'] ?>" was updated ', $reloadedModel-><?= $attr['name'] ?>)->equals($updatedModel-><?= $attr['name'] ?>);
 <?php endforeach; ?>
         });
     }
@@ -128,7 +131,7 @@ class <?= $className ?>Test extends DbTestCase
         $model->delete();
         $deletedModel = $this->loadModelById($this->modelPK);
         $this->specify($this->modelName.' model should be deleted', function () use ($deletedModel) {
-            expect($this->modelName.' model was not deleted', $deletedModel)->equals(null);
+            expect($this->modelName.' model was deleted', $deletedModel)->equals(null);
         });
     }
 
@@ -139,6 +142,8 @@ class <?= $className ?>Test extends DbTestCase
 
 
     /**
+     * Creates new model instance
+     *
      * @return new instance of model
      */
     private function newModelInstance()
@@ -147,7 +152,7 @@ class <?= $className ?>Test extends DbTestCase
         $model = $r->newInstance();
 <?php foreach($attributes as $attr):
     if(isPK($attr)){ continue;}?>
-        $model-><?php echo $attr['name'] ?> = GiiantFaker::<?php echo $attr['type'] ?>();
+        $model-><?php echo $attr['name'] ?> = GiiantFaker::<?php echo $attr['type'] ?>('<?php echo $attr['name'] ?>');
 <?php endforeach; ?>
 
         return $model;
@@ -165,10 +170,18 @@ class <?= $className ?>Test extends DbTestCase
         return $r->getMethod("findOne")->invokeArgs(null, [$id]);
     }
 
-    private function updateAttributeValue($oldValue, $attributeType){
+    /**
+    * Returns new value of provided type and makes sure that it's different from old value
+    *
+    * @param $oldValue previously used value
+    * @param $attributeName model's attribute name
+    * @param $attributeType model's attribute type
+    * @return mixed
+    */
+    private function updateAttributeValue($oldValue, $attributeName, $attributeType){
         $newValue = $oldValue;
         while($newValue === $oldValue){
-            $newValue = GiiantFaker::value($attributeType);
+            $newValue = GiiantFaker::value($attributeType, $attributeName);
         }
         return $newValue;
     }
