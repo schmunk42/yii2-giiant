@@ -34,7 +34,9 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 /**
 * @var yii\web\View $this
 * @var yii\data\ActiveDataProvider $dataProvider
+<?php if($generator->searchModelClass !== ""): ?>
 * @var <?= ltrim($generator->searchModelClass, '\\') ?> $searchModel
+<?php endif; ?>
 */
 
 $this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>;
@@ -45,7 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?=
     "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>
+    <?php if($generator->searchModelClass !== ""): ?>
     echo $this->render('_search', ['model' =>$searchModel]);
+    <?php endif; ?>
     ?>
 
     <div class="clearfix crud-navigation">
@@ -126,7 +130,9 @@ PHP;
                     'firstPageLabel' => <?= $generator->generateString('First') ?>,
                     'lastPageLabel'  => <?= $generator->generateString('Last') ?>
                 ],
+<?php if($generator->searchModelClass !== ""): ?>
                 'filterModel' => $searchModel,
+<?php endif; ?>
                 'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
                 'headerRowOptions' => ['class'=>'x'],
                 'columns' => [
