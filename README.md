@@ -32,7 +32,13 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-    composer require schmunk42/yii2-giiant:"*"
+Using a stable version
+
+    composer require schmunk42/yii2-giiant:"@stable"
+
+Using latest master
+
+    composer require schmunk42/yii2-giiant:"@dev"
 
 The generators are registered automatically in the application bootstrap process, if *Gii* module is enabled.
 
