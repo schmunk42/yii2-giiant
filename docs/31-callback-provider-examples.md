@@ -20,15 +20,14 @@ use schmunk42\giiant\generators\crud\callbacks\yii\Html;
             '.*'                      => Db::falseIfText(),
         ],
         'activeFields'     => [
-            // hide system fields in form 
-            'id$' => Db::falseIfAutoIncrement()
+            // hide system fields in form
+            'id$'                         => Db::falseIfAutoIncrement(),
             'id$|created_at$|updated_at$' => Callback::false(),
         ],
         'attributeFormats' => [
             // render HTML output
             '_html$' => Html::attribute(),
-        ],
-
+        ]
     ]
 );
 ```
