@@ -36,7 +36,7 @@ For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yii
     --crudViewPath=@app/modules/crud/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
     --tables=account,article,variation_status,variation_x_storage,business_unit,category,\
 condition,manufacturer,section,shop,storage,trading_group,user,variation,core_log,basket,basket-item,delivery
 ```
