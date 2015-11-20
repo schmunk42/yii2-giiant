@@ -69,7 +69,7 @@ Finally run the batch:
     --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
     --crudViewPath=@app/modules/sakila/views \
     --crudPathPrefix= \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\DateTimeProvider \
     --tables=actor,address,category,city,country,customer,film,film_actor,film_category,film_text,inventory,language,payment,rental,staff,store
 ```
 
@@ -117,7 +117,7 @@ return [
     --crudSearchModelNamespace=giiant\\employees\\models\\search \
     --crudViewPath=@app/extensions/employees/views \
     --crudPathPrefix= \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\DateTimeProvider \
     --tables=departments,employees,salaries,titles,dept_emp,dept_manager
 ```
 
@@ -132,6 +132,6 @@ return [
     --crudSearchModelNamespace=giiant\\world\\models\\search \
     --crudViewPath=@app/extensions/world/views \
     --crudPathPrefix= \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\DateTimeProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\DateTimeProvider \
     --tables=City,Country,CountryLanguage
 ```
