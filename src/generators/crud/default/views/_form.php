@@ -2,7 +2,7 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
-
+use \yii\helpers\Inflector;
 /**
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
@@ -30,16 +30,6 @@ use \dmstr\bootstrap\Tabs;
 */
 
 ?>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h2>
-        <?php $label = StringHelper::basename($generator->modelClass); ?>
-        <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
-        </h2>
-    </div>
-
-    <div class="panel-body">
 
         <div class="<?= \yii\helpers\Inflector::camel2id(
             StringHelper::basename($generator->modelClass),
@@ -123,6 +113,3 @@ EOS;
 
         </div>
 
-    </div>
-
-</div>

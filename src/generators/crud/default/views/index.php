@@ -52,74 +52,72 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
     ?>
 
-    <div class="clearfix crud-navigation">
-        <div class="pull-left">
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
-        </div>
+    <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-        <div class="pull-right">
+        <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
-            <?php
-            $items = '';
-            $model = new $generator->modelClass;
-            ?>
-            <?php foreach ($generator->getModelRelations($model) AS $relation): ?>
-                <?php
-                // relation dropdown links
-                $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
-                if ($generator->isPivotRelation($relation)) {
-                    $iconType = 'random';
-                }
-                $controller = $generator->pathPrefix . Inflector::camel2id(
-                        StringHelper::basename($relation->modelClass),
-                        '-',
-                        true
-                    );
-                $route = $generator->createRelationRoute($relation,'index');
-                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
-                $items .= <<<PHP
+                <h1>
+                    <?= "<?= " . $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) . " ?>" ?>
+                    <small>
+                        List
+                    </small>
+                </h1>
+            <div class="clearfix crud-navigation">
+                <div class="pull-left">
+                    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+                </div>
+
+                <div class="pull-right">
+
+                    <?php
+                    $items = '';
+                    $model = new $generator->modelClass;
+                    ?>
+                    <?php foreach ($generator->getModelRelations($model) AS $relation): ?>
+                        <?php
+                        // relation dropdown links
+                        $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
+                        if ($generator->isPivotRelation($relation)) {
+                            $iconType = 'random';
+                        }
+                        $controller = $generator->pathPrefix . Inflector::camel2id(
+                                StringHelper::basename($relation->modelClass),
+                                '-',
+                                true
+                            );
+                        $route = $generator->createRelationRoute($relation,'index');
+                        $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
+                        $items .= <<<PHP
             [
                 'url' => ['{$route}'],
                 'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . {$generator->generateString($label)} . '</i>',
             ],
 PHP;
-                ?>
-            <?php endforeach; ?>
+                        ?>
+                    <?php endforeach; ?>
 
-            <?= "<?= \n" ?>
-            \yii\bootstrap\ButtonDropdown::widget(
-                [
+                    <?= "<?= \n" ?>
+                    \yii\bootstrap\ButtonDropdown::widget(
+                    [
                     'id'       => 'giiant-relations',
                     'encodeLabel' => false,
                     'label'    => '<span class="glyphicon glyphicon-paperclip"></span> ' . <?= $generator->generateString('Relations') ?>,
                     'dropdown' => [
-                        'options'      => [
-                            'class' => 'dropdown-menu-right'
-                        ],
-                        'encodeLabels' => false,
-                        'items'        => [<?= $items ?>]
+                    'options'      => [
+                    'class' => 'dropdown-menu-right'
+                    ],
+                    'encodeLabels' => false,
+                    'items'        => [<?= $items ?>]
                     ],
                     'options' => [
-                        'class' => 'btn-default'
+                    'class' => 'btn-default'
                     ]
-                ]
-            );
-            <?= "?>" ?>
-        </div>
-    </div>
-
-    <?php if ($generator->indexWidgetType === 'grid'): ?>
-
-        <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2>
-                    <i><?= "<?= " . $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) . " ?>" ?></i>
-                </h2>
+                    ]
+                    );
+                    <?= "?>" ?>
+                </div>
             </div>
 
-            <div class="panel-body">
 
                 <div class="table-responsive">
                 <?= "<?= " ?>GridView::widget([
@@ -174,7 +172,6 @@ PHP;
 
             </div>
 
-        </div>
 
         <?= "<?php \yii\widgets\Pjax::end() ?>\n"; ?>
 
@@ -190,4 +187,4 @@ PHP;
 
     <?php endif; ?>
 
-</div>
+
