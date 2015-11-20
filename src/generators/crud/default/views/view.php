@@ -154,7 +154,7 @@ EOS;
         }
 
         // relation list, add, create buttons
-        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top 0px;'>\n";
+        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top: 0px;'>\n";
 
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
