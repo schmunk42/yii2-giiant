@@ -33,6 +33,8 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
      */
     public $modelClass = "";
 
+    public $modelNs = "";
+
     /**
      * @var string Search model's class name
      */
@@ -52,6 +54,14 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
     public function getDescription()
     {
         return 'This generator generates unit tests for specified model';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function requiredTemplates()
+    {
+        return ['unit.php'];
     }
 
     /**
@@ -119,7 +129,7 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
        // $relations = $this->generateRelations();
         $db        = $this->getDbConnection();
 
-        $class = $this->modelClass;
+        $class = $this->modelNs.$this->modelClass;
         $classTableNameMethod = "tableName";
         $this->tableName = $class::$classTableNameMethod();
 
