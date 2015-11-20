@@ -677,7 +677,6 @@ class Generator extends \yii\gii\generators\crud\Generator
             $this->searchModelClass = Inflector::singularize($this->searchModelClass);
         }
 
-        $files = parent::generate();
         $testFiles = [];
 
         $baseControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
