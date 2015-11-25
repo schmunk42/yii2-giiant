@@ -288,7 +288,8 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
 
-        // create search model folder
+        // create folders
+        $this->createDirectoryFromNamespace($this->crudControllerNamespace);
         $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
 
         foreach ($this->tables AS $table) {
