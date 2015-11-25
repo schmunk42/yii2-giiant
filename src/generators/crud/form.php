@@ -32,7 +32,6 @@ echo $form->field($generator, 'formLayout')->dropDownList(
 echo $form->field($generator, 'actionButtonClass')->dropDownList(
     [
         'yii\\grid\\ActionColumn'       => 'Default',
-        'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );
 echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());
