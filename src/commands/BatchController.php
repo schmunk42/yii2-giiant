@@ -288,6 +288,9 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
 
+        // create search model folder
+        $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
+
         foreach ($this->tables AS $table) {
             $table = str_replace($this->tablePrefix, '', $table);
             $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
@@ -347,4 +350,18 @@ class BatchController extends Controller
         }
         return $config;
     }
+
+
+    /**
+     * Helper function to create
+     *
+     * @param $ns Namespace
+     */
+    private function createDirectoryFromNamespace($ns)
+    {
+        echo \Yii::getRootAlias($ns);
+        $dir = \Yii::getAlias('@' . str_replace('\\', '/', ltrim($ns, '\\')));
+        @mkdir($dir);
+    }
+
 }
