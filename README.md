@@ -3,7 +3,7 @@ yii2-giiant
 
 > "Giiant is huge!"
 
-**PROJECT IS IN BETA STAGE!**
+**PROJECT IS IN BETA STAGE! Note: Major changes from 0.4 to 0.5 ...**
 
 
 What is this?
@@ -32,7 +32,13 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-    composer require schmunk42/yii2-giiant:"*"
+Using a stable version
+
+    composer require schmunk42/yii2-giiant:"@stable"
+
+Using latest master
+
+    composer require schmunk42/yii2-giiant:"@dev"
 
 The generators are registered automatically in the application bootstrap process, if *Gii* module is enabled.
 
@@ -52,7 +58,6 @@ To create a full-featured database backend, run the CLI batch command
     --crudViewPath=@app/modules/crud/views \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 ```
-
 
 
 

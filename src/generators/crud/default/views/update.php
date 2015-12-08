@@ -27,9 +27,17 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass),'-', true) ?>-update">
 
-    <p>
+    <h1>
+        <?= "<?= " . $generator->generateString(Inflector::camel2words(StringHelper::basename($generator->modelClass))) . " ?>" ?>
+        <small>
+            <?php $label = StringHelper::basename($generator->modelClass); ?>
+            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+        </small>
+    </h1>
+
+    <div class="crud-navigation">
         <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . <?= $generator->generateString('View') ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>
-    </p>
+    </div>
 
 	<?= "<?php " ?>echo $this->render('_form', [
 		'model' => $model,

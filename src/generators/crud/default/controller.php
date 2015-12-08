@@ -12,25 +12,29 @@ use yii\helpers\StringHelper;
 $controllerClass = StringHelper::basename($generator->controllerClass);
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
+$searchModelClassName = $searchModelClass;
 if ($modelClass === $searchModelClass) {
 	$searchModelAlias = $searchModelClass.'Search';
+	$searchModelClassName = $searchModelAlias;
 }
 
 $pks = $generator->getTableSchema()->primaryKey;
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();
-
 echo "<?php\n";
 ?>
 
-namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
+namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>\base;
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
+<?php if($searchModelClass !== ""): ?>
 use <?= ltrim($generator->searchModelClass, '\\') ?><?php if (isset($searchModelAlias)):?> as <?= $searchModelAlias ?><?php endif ?>;
+<?php endif; ?>
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
 use yii\helpers\Url;
+use yii\filters\AccessControl;
 use dmstr\bootstrap\Tabs;
 
 /**
@@ -44,14 +48,40 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public $enableCsrfValidation = false;
 
+	<?php if ($generator->accessFilter): ?>
+	/**
+	* @inheritdoc
+	*/
+	public function behaviors()
+	{
+		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'matchCallback' => function ($rule, $action) {return \Yii::$app->user->can($this->module->id . '_' . $this->id . '_' . $action->id, ['route' => true]);},
+					]
+				]
+			]
+		];
+	}
+	<?php endif; ?>
+
 	/**
 	 * Lists all <?= $modelClass ?> models.
 	 * @return mixed
 	 */
 	public function actionIndex()
 	{
-		$searchModel  = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>;
+<?php if($searchModelClass !== ""){ ?>
+		$searchModel  = new <?= $searchModelClassName ?>;
 		$dataProvider = $searchModel->search($_GET);
+<?php }else{ ?>
+		$dataProvider = new ActiveDataProvider([
+			'query' => <?= $modelClass ?>::find(),
+		]);
+<?php } ?>
 
 		Tabs::clearLocalStorage();
 
@@ -60,7 +90,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,
+<?php if($searchModelClass !== ""): ?>
 			'searchModel' => $searchModel,
+<?php endif; ?>
 		]);
 	}
 
@@ -134,7 +166,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-            \Yii::$app->getSession()->setFlash('error', $msg);
+            \Yii::$app->getSession()->addFlash('error', $msg);
             return $this->redirect(Url::previous());
         }
 

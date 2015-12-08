@@ -26,10 +26,26 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">
 
-    <p class="pull-left">
-        <?= "<?= " ?>Html::a(<?= $generator->generateString('Cancel') ?>, \yii\helpers\Url::previous(), ['class' => 'btn btn-default']) ?>
-    </p>
-    <div class="clearfix"></div>
+    <h1>
+        <?=
+        "<?= " . $generator->generateString(
+            Inflector::camel2words(StringHelper::basename($generator->modelClass))
+        ) . " ?>" ?>
+        <small>
+            <?php $label = StringHelper::basename($generator->modelClass); ?>
+            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+        </small>
+    </h1>
+
+    <div class="clearfix crud-navigation">
+        <div class="pull-left">
+            <?= "<?= " ?>
+            Html::a(
+            <?= $generator->generateString('Cancel') ?>,
+            \yii\helpers\Url::previous(),
+            ['class' => 'btn btn-default']) ?>
+        </div>
+    </div>
 
     <?= "<?= " ?>$this->render('_form', [
     'model' => $model,

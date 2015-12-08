@@ -49,6 +49,11 @@ class BatchController extends Controller
     public $modelNamespace = 'common\\models';
 
     /**
+     * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
+     */
+    public $modelBaseClassSuffix = '';
+
+    /**
      * @var string database application component
      */
     public $modelDb = 'db';
@@ -90,6 +95,11 @@ class BatchController extends Controller
     public $crudSearchModelNamespace = 'backend\\models\\search';
 
     /**
+     * @var string suffix to append to the search model, setting "Search" will result in a model named "PostSearch"
+     */
+    public $crudSearchModelSuffix = '';
+
+    /**
      * @var string namespace path for crud views
      */
     public $crudViewPath = '@backend/views/crud';
@@ -115,9 +125,19 @@ class BatchController extends Controller
     public $crudSkipRelations = [];
 
     /**
+     * @var boolean whether to add accessFilter in behavior
+     */
+    public $crudAccessFilter;
+
+    /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
     public $modelGenerateQuery = true;
+
+    /**
+     * @var bool whether to tidy generated code
+     */
+    public $crudTidyOutput;
 
     /**
      * @var string the namespace of the ActiveQuery class to be generated
@@ -159,13 +179,17 @@ class BatchController extends Controller
                 'modelNamespace',
                 'modelBaseClass',
                 'modelBaseTraits',
+                'modelBaseClassSuffix',
+                'crudTidyOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
+                'crudSearchModelSuffix',
                 'crudViewPath',
                 'crudPathPrefix',
                 'crudProviders',
                 'crudSkipRelations',
                 'crudBaseControllerClass',
+                'crudAccessFilter',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
@@ -182,17 +206,15 @@ class BatchController extends Controller
      */
     public function beforeAction($action)
     {
-        $this->appConfig       = $this->getYiiConfiguration();
+        $this->appConfig = $this->getYiiConfiguration();
         $this->appConfig['id'] = 'temp';
-        $this->modelGenerator  = new ModelGenerator(['db' => $this->modelDb]);
+        $this->modelGenerator = new ModelGenerator(['db' => $this->modelDb]);
 
         if (!$this->tables) {
             $this->modelGenerator->tableName = '*';
-            $this->tables                    = $this->modelGenerator->getTableNames();
-            $msg                             = "Are you sure that you want to run action \"{$action->id}\" for the following tables?\n\t- " . implode(
-                    "\n\t- ",
-                    $this->tables
-                ) . "\n\n";
+            $this->tables = $this->modelGenerator->getTableNames();
+            $tableList = implode("\n\t- ", $this->tables);
+            $msg = "Are you sure that you want to run action \"{$action->id}\" for the following tables?\n\t- {$tableList}\n\n";
             if (!$this->confirm($msg)) {
                 return false;
             }
@@ -223,33 +245,36 @@ class BatchController extends Controller
         foreach ($this->tables AS $table) {
             #var_dump($this->tableNameMap, $table);exit;
             $params = [
-                'interactive'        => $this->interactive,
-                'overwrite'          => $this->overwrite,
-                'template'           => $this->template,
-                'ns'                 => $this->modelNamespace,
-                'db'                 => $this->modelDb,
-                'tableName'          => $table,
-                'tablePrefix'        => $this->tablePrefix,
-                'enableI18N'         => $this->enableI18N,
-                'singularEntities'   => $this->singularEntities,
-                'messageCategory'    => $this->messageCategory,
+                'interactive' => $this->interactive,
+                'overwrite' => $this->overwrite,
+                'template' => $this->template,
+                'ns' => $this->modelNamespace,
+                'db' => $this->modelDb,
+                'tableName' => $table,
+                'tablePrefix' => $this->tablePrefix,
+                'enableI18N' => $this->enableI18N,
+                'singularEntities' => $this->singularEntities,
+                'messageCategory' => $this->messageCategory,
                 'generateModelClass' => $this->extendedModels,
-                'modelClass'         => isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
-                    Inflector::camelize($table), // TODO: setting is not recognized in giiant
-                'baseClass'          => $this->modelBaseClass,
-                'baseTraits'         => $this->modelBaseTraits,
-                'tableNameMap'       => $this->tableNameMap,
-                'generateQuery'      => $this->modelGenerateQuery,
-                'queryNs'            => $this->modelQueryNamespace,
-                'queryBaseClass'     => $this->modelQueryBaseClass,
+                'baseClassSuffix' => $this->modelBaseClassSuffix,
+                'modelClass' => isset($this->tableNameMap[$table]) ?
+                    $this->tableNameMap[$table] :
+                    Inflector::camelize($table),
+                'baseClass' => $this->modelBaseClass,
+                'baseTraits' => $this->modelBaseTraits,
+                'tableNameMap' => $this->tableNameMap,
+                'generateQuery' => $this->modelGenerateQuery,
+                'queryNs' => $this->modelQueryNamespace,
+                'queryBaseClass' => $this->modelQueryBaseClass,
             ];
-            $route  = 'gii/giiant-model';
+            $route = 'gii/giiant-model';
 
-            $app  = \Yii::$app;
+            $app = \Yii::$app;
             $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
+            \Yii::$app->log->logger->flush(true);
         }
 
     }
@@ -263,34 +288,42 @@ class BatchController extends Controller
         // create CRUDs
         $providers = ArrayHelper::merge($this->crudProviders, Generator::getCoreProviders());
 
+        // create folders
+        $this->createDirectoryFromNamespace($this->crudControllerNamespace);
+        $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
+
         foreach ($this->tables AS $table) {
-            $table  = str_replace($this->tablePrefix, '', $table);
-            $name   = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
+            $table = str_replace($this->tablePrefix, '', $table);
+            $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                 $this->modelGenerator->generateClassName($table);
             $params = [
-                'interactive'         => $this->interactive,
-                'overwrite'           => $this->overwrite,
-                'template'            => $this->template,
-                'modelClass'          => $this->modelNamespace . '\\' . $name,
-                'searchModelClass'    => $this->crudSearchModelNamespace . '\\' . $name,
-                'controllerClass'     => $this->crudControllerNamespace . '\\' . $name . 'Controller',
-                'viewPath'            => $this->crudViewPath,
-                'pathPrefix'          => $this->crudPathPrefix,
-                'tablePrefix'         => $this->tablePrefix,
-                'enableI18N'          => $this->enableI18N,
-                'singularEntities'    => $this->singularEntities,
-                'messageCategory'     => $this->messageCategory,
-                'actionButtonClass'   => 'yii\\grid\\ActionColumn',
+                'interactive' => $this->interactive,
+                'overwrite' => $this->overwrite,
+                'template' => $this->template,
+                'modelClass' => $this->modelNamespace . '\\' . $name,
+                'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
+                'controllerNs' => $this->crudControllerNamespace,
+                'controllerClass' => $this->crudControllerNamespace . '\\' . $name . 'Controller',
+                'viewPath' => $this->crudViewPath,
+                'pathPrefix' => $this->crudPathPrefix,
+                'tablePrefix' => $this->tablePrefix,
+                'enableI18N' => $this->enableI18N,
+                'singularEntities' => $this->singularEntities,
+                'messageCategory' => $this->messageCategory,
+                'actionButtonClass' => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
-                'providerList'        => $providers,
-                'skipRelations'       => $this->crudSkipRelations,
+                'providerList' => $providers,
+                'skipRelations' => $this->crudSkipRelations,
+                'accessFilter' => $this->crudAccessFilter,
+                'tidyOutput' => $this->crudTidyOutput,
             ];
-            $route  = 'gii/giiant-crud';
-            $app    = \Yii::$app;
-            $temp   = new \yii\console\Application($this->appConfig);
+            $route = 'gii/giiant-crud';
+            $app = \Yii::$app;
+            $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             unset($temp);
             \Yii::$app = $app;
+            \Yii::$app->log->logger->flush(true);
         }
     }
 
@@ -318,4 +351,18 @@ class BatchController extends Controller
         }
         return $config;
     }
+
+
+    /**
+     * Helper function to create
+     *
+     * @param $ns Namespace
+     */
+    private function createDirectoryFromNamespace($ns)
+    {
+        echo \Yii::getRootAlias($ns);
+        $dir = \Yii::getAlias('@' . str_replace('\\', '/', ltrim($ns, '\\')));
+        @mkdir($dir);
+    }
+
 }

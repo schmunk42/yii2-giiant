@@ -33,6 +33,7 @@ use dmstr\bootstrap\Tabs;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
+$copyParams = $model->attributes;
 
 $this->title = '<?=
 Inflector::camel2words(
@@ -47,17 +48,6 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
-    <!-- menu buttons -->
-    <p class='pull-left'>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-    <p class="pull-right">
-        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))) ?>, ['index'], ['class'=>'btn btn-default']) ?>
-    </p>
-
-    <div class="clearfix"></div>
-
     <!-- flash message -->
     <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
         <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
@@ -68,20 +58,34 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?php endif; ?>" ?>
 
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2>
-                <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
-            </h2>
+    <h1>
+        <?= "<?= " . $generator->generateString(Inflector::camel2words(StringHelper::basename($generator->modelClass))) . " ?>" ?>
+        <small>
+            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+        </small>
+    </h1>
+
+
+
+    <div class="clearfix crud-navigation">
+        <!-- menu buttons -->
+        <div class='pull-left'>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>, ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],['class' => 'btn btn-success']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        </div>
+        <div class="pull-right">
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))) ?>, ['index'], ['class'=>'btn btn-default']) ?>
         </div>
 
-        <div class="panel-body">
-
+    </div>
 
 
     <?php
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
     ?>
+
+    <?= $generator->partialView('detail_prepend', $model); ?>
 
     <?= "<?= " ?>DetailView::widget([
     'model' => $model,
@@ -98,6 +102,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     ?>
     ],
     ]); ?>
+
+    <?= $generator->partialView('detail_append', $model); ?>
 
     <hr/>
 
@@ -147,7 +153,7 @@ EOS;
         }
 
         // relation list, add, create buttons
-        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top 0px;'>\n";
+        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top: 0px;'>\n";
 
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
@@ -213,6 +219,4 @@ EOS;
     ?>";
     ?>
 
-        </div>
-    </div>
 </div>

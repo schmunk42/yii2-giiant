@@ -7,15 +7,18 @@
 
 namespace schmunk42\giiant\generators\crud;
 
+use schmunk42\giiant\generators\model\Generator as ModelGenerator;
+use schmunk42\giiant\generators\test\Generator as TestGenerator;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
+use yii\gii\CodeFile;
+use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
-use yii\helpers\FileHelper;
-use \schmunk42\giiant\generators\model\Generator as ModelGenerator;
+use yii\helpers\StringHelper;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -32,7 +35,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @todo review
      * @var string
      */
-    public $actionButtonClass = 'schmunk42\giiant\components\grid\ActionColumn';
+    public $actionButtonClass = 'yii\web\grid\ActionColumn';
     /**
      * @var array relations to be excluded in UI rendering
      */
@@ -42,8 +45,27 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $viewPath = '@backend/views';
 
+    /**
+     * @var string table prefix to be removed from class names when auto-detecting model names, eg. `app_` converts table `app_foo` into `Foo`
+     */
     public $tablePrefix = null;
+
+    /**
+     * @var string prefix for controller route, eg. when generating controllers into subfolders
+     */
     public $pathPrefix = null;
+
+    /**
+     * @var string generated tests path
+     */
+    public $testsPath = 'backend/unit/models';
+    /**
+     * @var bool flag that enables/disables generating tests feature
+     */
+    public $generateTests = false;
+    /**
+     * @var string Bootstrap CSS-class for form-layout
+     */
     public $formLayout = 'horizontal';
     /**
      * @var string translation catalogue
@@ -61,7 +83,26 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+    /**
+     * @var bool whether to convert controller name to singular
+     */
     public $singularEntities = false;
+    /**
+     * @var bool whether to add an access filter to controllers
+     */
+    public $accessFilter = false;
+    /**
+     * @var sting controller base namespace
+     */
+    public $controllerNs;
+    /**
+     * @var bool whether to overwrite extended controller classes
+     */
+    public $generateControllerClass = false;
+    /**
+     * @var array whether to use phptidy on renderer files before saving
+     */
+    public $tidyOutput;
 
     private $_p = [];
 
@@ -104,11 +145,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_combine($coreProviders, $coreProviders);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Giiant CRUD';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDescription()
     {
         return 'This generator generates an extended version of CRUDs.';
@@ -157,6 +204,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 'providerList' => 'Choose the providers to be used.',
                 'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'generateTests'=> 'Generates unit tests for CRUD operations',
+                'testsPath'    => 'Output path for unit tests, eg. <code>backend/unit/models</code>.',
             ]
         );
     }
@@ -169,7 +218,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix', 'generateTests', 'testsPath'], 'safe'],
                 [['viewPath'], 'required'],
             ]
         );
@@ -213,6 +262,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return $modelClass::primaryKey()[0];
     }
 
+
     public function getModelByTableName($name)
     {
         $returnName = str_replace($this->tablePrefix, '', $name);
@@ -231,7 +281,18 @@ class Generator extends \yii\gii\generators\crud\Generator
         } else {
             return parent::getViewPath();
         }
+    }
 
+    /**
+     * @return string the action tests file path
+     */
+    public function getTestsPath()
+    {
+        if ($this->testsPath !== null) {
+            return \Yii::getAlias($this->testsPath) . '/' . $this->getControllerID();
+        } else {
+            return $this->testsDefaultPath.$this->getControllerID();
+        }
     }
 
     /**
@@ -428,6 +489,18 @@ class Generator extends \yii\gii\generators\crud\Generator
         // don't call parent anymore
     }
 
+    public function partialView($name, $model = null)
+    {
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $name, $model, $this);
+        if ($code) {
+            Yii::trace("found provider for partial view '{name}'", __METHOD__);
+        }
+        return $code;
+    }
+
     public function relationGrid($name, $relation, $showAllRecords = false)
     {
         Yii::trace("calling provider queue for '$name'", __METHOD__);
@@ -598,10 +671,77 @@ class Generator extends \yii\gii\generators\crud\Generator
     {
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
-            $this->controllerClass = Inflector::singularize(substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)) . "Controller";
+            $this->controllerClass = Inflector::singularize(
+                    substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)
+                ) . "Controller";
             $this->searchModelClass = Inflector::singularize($this->searchModelClass);
         }
-        return parent::generate();
+
+        $testFiles = [];
+
+        $baseControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+        $baseControllerFile = StringHelper::dirname($baseControllerFile) . '/base/' . StringHelper::basename(
+                $baseControllerFile
+            );
+        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php'));
+
+        $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
+
+        $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+        if ($this->generateControllerClass || !is_file($controllerFile)) {
+            $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
+        }
+
+        $restControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
+        if ($this->generateControllerClass || !is_file($restControllerFile)) {
+            $restControllerFile = StringHelper::dirname($restControllerFile) . '/api/' . StringHelper::basename(
+                    $baseControllerFile
+                );
+            $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
+        }
+
+        if (!empty($this->searchModelClass)) {
+            $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
+            $files[] = new CodeFile($searchModel, $this->render('search.php'));
+        }
+
+        $viewPath = $this->getViewPath();
+        $templatePath = $this->getTemplatePath() . '/views';
+        foreach (scandir($templatePath) as $file) {
+            if (empty($this->searchModelClass) && $file === '_search.php') {
+                continue;
+            }
+            if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
+            }
+        }
+
+        if($this->generateTests){
+            $tg = new TestGenerator();
+            $tg->template  = 'default';
+            $tg->modelClass = $this->modelClass;
+            $tg->controllerClass = $this->controllerClass;
+            $tg->searchModelClass = $this->searchModelClass;
+            $tg->ns = $this->testsPath;
+            $testFiles = $tg->generate();
+        }
+
+        return array_merge($files, $testFiles);;
+    }
+
+    public function render($template, $params = [])
+    {
+        $code = parent::render($template, $params);
+        if ($this->tidyOutput) {
+            $tmpDir = Yii::getAlias('@runtime/giiant');
+            FileHelper::createDirectory($tmpDir);
+            $tmpFile = $tmpDir . '/' . md5($template);
+            file_put_contents($tmpFile, $code);
+            shell_exec('vendor/bin/phptidy replace ' . $tmpFile);
+            return file_get_contents($tmpFile);
+        } else {
+            return $code;
+        }
     }
 
     public function validateClass($attribute, $params)

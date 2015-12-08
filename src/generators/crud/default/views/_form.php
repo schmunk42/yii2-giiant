@@ -1,6 +1,5 @@
 <?php
 
-use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 /**
@@ -31,71 +30,61 @@ use \dmstr\bootstrap\Tabs;
 
 ?>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h2>
-        <?php $label = StringHelper::basename($generator->modelClass); ?>
-        <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
-        </h2>
-    </div>
+<div class="<?= \yii\helpers\Inflector::camel2id(
+    StringHelper::basename($generator->modelClass),
+    '-',
+    true
+) ?>-form">
 
-    <div class="panel-body">
+    <?= "<?php " ?>$form = ActiveForm::begin([
+    'id' => '<?= $model->formName() ?>',
+    'layout' => '<?= $generator->formLayout ?>',
+    'enableClientValidation' => true,
+    'errorSummaryCssClass' => 'error-summary alert alert-error'
+    ]
+    );
+    ?>
 
-        <div class="<?= \yii\helpers\Inflector::camel2id(
-            StringHelper::basename($generator->modelClass),
-            '-',
-            true
-        ) ?>-form">
+    <div class="">
+        <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
 
-            <?= "<?php " ?>$form = ActiveForm::begin([
-            'id' => '<?= $model->formName() ?>',
-            'layout' => '<?= $generator->formLayout ?>',
-            'enableClientValidation' => true,
-            'errorSummaryCssClass' => 'error-summary alert alert-error'
-            ]
-            );
+        <p>
+            <?php
+            foreach ($safeAttributes as $attribute) {
+
+                $prepend = $generator->prependActiveField($attribute, $model);
+                $field = $generator->activeField($attribute, $model);
+                $append = $generator->appendActiveField($attribute, $model);
+
+                if ($prepend) {
+                    echo "\n\t\t\t" . $prepend;
+                }
+                if ($field) {
+                    echo "\n\t\t\t<?= " . $field . " ?>";
+                }
+                if ($append) {
+                    echo "\n\t\t\t" . $append;
+                }
+            }
             ?>
 
-            <div class="">
-                <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
+        </p>
+        <?php echo "<?php \$this->endBlock(); ?>"; ?>
 
-                <p>
-                    <?php
-                    foreach ($safeAttributes as $attribute) {
+        <?php
+        $label = substr(strrchr($model::className(), "\\"), 1);;
 
-                        $prepend = $generator->prependActiveField($attribute, $model);
-                        $field   = $generator->activeField($attribute, $model);
-                        $append  = $generator->appendActiveField($attribute, $model);
-
-                        if ($prepend) {
-                            echo "\n\t\t\t" . $prepend;
-                        }
-                        if ($field) {
-                            echo "\n\t\t\t<?= " . $field . " ?>";
-                        }
-                        if ($append) {
-                            echo "\n\t\t\t" . $append;
-                        }
-                    }
-                    ?>
-
-                </p>
-                <?php echo "<?php \$this->endBlock(); ?>"; ?>
-
-                <?php
-                $label = substr(strrchr($model::className(), "\\"), 1);;
-
-                $items = <<<EOS
+        $items = <<<EOS
 [
     'label'   => '$label',
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],
 EOS;
-                ?>
+        ?>
 
-                <?=
-                "<?=
+        <?=
+        "<?=
     Tabs::widget(
                  [
                    'encodeLabels' => false,
@@ -103,26 +92,25 @@ EOS;
                  ]
     );
     ?>";
-                ?>
+        ?>
 
-                <hr/>
-                <?= "<?php " ?>echo $form->errorSummary($model); ?>
-                <?= "<?= " ?>Html::submitButton(
-                '<span class="glyphicon glyphicon-check"></span> ' .
-                ($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
-                [
-                    'id' => 'save-' . $model->formName(),
-                    'class' => 'btn btn-success'
-                ]
-                );
-                ?>
+        <hr/>
 
-                <?= "<?php " ?>ActiveForm::end(); ?>
+        <?= "<?php " ?>echo $form->errorSummary($model); ?>
 
-            </div>
+        <?= "<?= " ?>Html::submitButton(
+        '<span class="glyphicon glyphicon-check"></span> ' .
+        ($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
+        [
+        'id' => 'save-' . $model->formName(),
+        'class' => 'btn btn-success'
+        ]
+        );
+        ?>
 
-        </div>
+        <?= "<?php " ?>ActiveForm::end(); ?>
 
     </div>
 
 </div>
+

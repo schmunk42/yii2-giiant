@@ -13,6 +13,8 @@ echo $form->field($generator, 'viewPath');
 echo $form->field($generator, 'pathPrefix');
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'singularEntities')->checkbox();
+echo $form->field($generator, 'generateTests')->checkbox();
+echo $form->field($generator, 'testsPath');
 echo $form->field($generator, 'indexWidgetType')->dropDownList(
     [
         'grid' => 'GridView',
@@ -30,7 +32,6 @@ echo $form->field($generator, 'formLayout')->dropDownList(
 echo $form->field($generator, 'actionButtonClass')->dropDownList(
     [
         'yii\\grid\\ActionColumn'       => 'Default',
-        'common\\helpers\\ActionColumn' => 'App Class',
     ]
 );
 echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());

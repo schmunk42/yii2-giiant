@@ -21,6 +21,12 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
     public $inputWidget = null;
 
     /**
+     * @var bool wheter to skip non-existing columns in relation grid
+     * @since 0.6
+     */
+    public $skipVirtualAttributes = false;
+
+    /**
      * Formatter for relation form inputs
      *
      * Renders a drop-down list for a `hasOne`/`belongsTo` relation
@@ -279,7 +285,7 @@ EOS;
                 continue;
             }
             // skip virtual attributes
-            if (!isset($model->tableSchema->columns[$attr])) {
+            if ($this->skipVirtualAttributes && !isset($model->tableSchema->columns[$attr])) {
                 continue;
             }
             // don't show current model

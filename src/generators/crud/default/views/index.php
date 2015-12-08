@@ -34,10 +34,14 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 /**
 * @var yii\web\View $this
 * @var yii\data\ActiveDataProvider $dataProvider
-* @var <?= ltrim($generator->searchModelClass, '\\') ?> $searchModel
+<?php if ($generator->searchModelClass !== ""): ?>
+    * @var <?= ltrim($generator->searchModelClass, '\\') ?> $searchModel
+<?php endif; ?>
 */
 
-$this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>;
+$this->title = <?= $generator->generateString(
+    Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))
+) ?>;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -45,13 +49,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?=
     "<?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>
-    echo $this->render('_search', ['model' =>$searchModel]);
+    <?php if ($generator->searchModelClass !== ""): ?>
+        echo $this->render('_search', ['model' =>$searchModel]);
+    <?php endif; ?>
     ?>
 
-    <div class="clearfix">
-        <p class="pull-left">
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
-        </p>
+    <?php if ($generator->indexWidgetType === 'grid'): ?>
+
+    <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
+
+    <h1>
+        <?= "<?= " . $generator->generateString(
+            Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))
+        ) . " ?>" ?>
+        <small>
+            List
+        </small>
+    </h1>
+    <div class="clearfix crud-navigation">
+        <div class="pull-left">
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
+                'New'
+            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        </div>
 
         <div class="pull-right">
 
@@ -71,8 +91,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         '-',
                         true
                     );
-                $route = $generator->createRelationRoute($relation,'index');
-                $label      = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
+                $route = $generator->createRelationRoute($relation, 'index');
+                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
@@ -84,55 +104,47 @@ PHP;
 
             <?= "<?= \n" ?>
             \yii\bootstrap\ButtonDropdown::widget(
-                [
-                    'id'       => 'giiant-relations',
-                    'encodeLabel' => false,
-                    'label'    => '<span class="glyphicon glyphicon-paperclip"></span> ' . <?= $generator->generateString('Relations') ?>,
-                    'dropdown' => [
-                        'options'      => [
-                            'class' => 'dropdown-menu-right'
-                        ],
-                        'encodeLabels' => false,
-                        'items'        => [<?= $items ?>]
-                    ],
-                    'options' => [
-                        'class' => 'btn-default'
-                    ]
-                ]
+            [
+            'id' => 'giiant-relations',
+            'encodeLabel' => false,
+            'label' => '<span class="glyphicon glyphicon-paperclip"></span> ' . <?= $generator->generateString(
+                'Relations'
+            ) ?>,
+            'dropdown' => [
+            'options' => [
+            'class' => 'dropdown-menu-right'
+            ],
+            'encodeLabels' => false,
+            'items' => [<?= $items ?>]
+            ],
+            'options' => [
+            'class' => 'btn-default'
+            ]
+            ]
             );
             <?= "?>" ?>
         </div>
     </div>
 
-    <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-        <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
+    <div class="table-responsive">
+        <?= "<?= " ?>GridView::widget([
+        'layout' => '{summary}{pager}{items}{pager}',
+        'dataProvider' => $dataProvider,
+        'pager' => [
+        'class' => yii\widgets\LinkPager::className(),
+        'firstPageLabel' => <?= $generator->generateString('First') ?>,
+        'lastPageLabel' => <?= $generator->generateString('Last') ?>
+        ],
+        <?php if ($generator->searchModelClass !== ""): ?>
+            'filterModel' => $searchModel,
+        <?php endif; ?>
+        'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
+        'headerRowOptions' => ['class'=>'x'],
+        'columns' => [
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2>
-                    <i><?= "<?= " . $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) . " ?>" ?></i>
-                </h2>
-            </div>
-
-            <div class="panel-body">
-
-                <div class="table-responsive">
-                <?= "<?= " ?>GridView::widget([
-                'layout' => '{summary}{pager}{items}{pager}',
-                'dataProvider' => $dataProvider,
-                'pager'        => [
-                    'class'          => yii\widgets\LinkPager::className(),
-                    'firstPageLabel' => <?= $generator->generateString('First') ?>,
-                    'lastPageLabel'  => <?= $generator->generateString('Last') ?>
-                ],
-                'filterModel' => $searchModel,
-                'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
-                'headerRowOptions' => ['class'=>'x'],
-                'columns' => [
-
-                <?php
-                $actionButtonColumn = <<<PHP
+        <?php
+        $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
@@ -145,43 +157,44 @@ PHP;
         ],
 PHP;
 
-                // action buttons first
-                echo $actionButtonColumn;
+        // action buttons first
+        echo $actionButtonColumn;
 
-                $count = 0;
-                echo "\n"; // code-formatting
+        $count = 0;
+        echo "\n"; // code-formatting
 
-                foreach ($safeAttributes as $attribute) {
-                    $format = trim($generator->columnFormat($attribute,$model));
-                    if ($format == false) continue;
-                    if (++$count < $generator->gridMaxColumns) {
-                        echo "\t\t\t{$format},\n";
-                    } else {
-                        echo "\t\t\t/*{$format}*/\n";
-                    }
-                }
+        foreach ($safeAttributes as $attribute) {
+            $format = trim($generator->columnFormat($attribute, $model));
+            if ($format == false) {
+                continue;
+            }
+            if (++$count < $generator->gridMaxColumns) {
+                echo "\t\t\t{$format},\n";
+            } else {
+                echo "\t\t\t/*{$format}*/\n";
+            }
+        }
 
-                ?>
-                ],
-            ]); ?>
-                </div>
-
-            </div>
-
-        </div>
-
-        <?= "<?php \yii\widgets\Pjax::end() ?>\n"; ?>
-
-    <?php else: ?>
-
-        <?= "<?= " ?> ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-        return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
-        },
+        ?>
+        ],
         ]); ?>
-
-    <?php endif; ?>
+    </div>
 
 </div>
+
+
+<?= "<?php \yii\widgets\Pjax::end() ?>\n"; ?>
+
+<?php else: ?>
+
+    <?= "<?= " ?> ListView::widget([
+    'dataProvider' => $dataProvider,
+    'itemOptions' => ['class' => 'item'],
+    'itemView' => function ($model, $key, $index, $widget) {
+    return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
+    },
+    ]); ?>
+
+<?php endif; ?>
+
+

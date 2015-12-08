@@ -15,13 +15,32 @@ class Db
     {
         // hide text columns (dbType: text)
         return function ($attribute, $model, $generator) {
+            $column = $generator->getColumnByAttribute($attribute);
 
-            $column     = $generator->getColumnByAttribute($attribute);
             if (!$column) {
                 return null;
             }
 
-            if ($column->dbType == 'text') {
+            switch ($column->dbType) {
+                case 'text':
+                case 'longtext':
+                    return false;
+            }
+
+        };
+    }
+
+    static public function falseIfAutoIncrement()
+    {
+        // hide AI columns
+        return function ($attribute, $model, $generator) {
+
+            $column = $generator->getColumnByAttribute($attribute);
+            if (!$column) {
+                return null;
+            }
+
+            if ($column->autoIncrement) {
                 return false;
             }
 
