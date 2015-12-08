@@ -23,6 +23,7 @@ $batch = <<<'CMD'
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
     --modelNamespace=app\\\models \
+    --crudAccessFilter=1 \
     --crudControllerNamespace=app\\modules\\sakila\\controllers \
     --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
     --crudViewPath=@app/modules/sakila/views \
