@@ -1,0 +1,21 @@
+before_script:
+  - export CI_APP_VOLUME=$CI_PROJECT_DIR
+  - export COMPOSE_PROJECT_NAME=build${CI_BUILD_ID}
+  - mv tests/docker-compose.ci.override.yml tests/docker-compose.override.yml
+
+build:
+  stage: build
+  script:
+    - sh tests/init.sh
+
+test:
+  stage: test
+  script:
+    - sh tests/run.sh
+
+cleanup:
+  stage: deploy
+  when: always
+  script:
+    - docker-compose --x-networking kill && docker-compose --x-networking rm -fv
+    - docker network rm $COMPOSE_PROJECT_NAME
