@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-#docker-compose --x-networking pull
+set -e
 
-docker-compose --x-networking kill
-docker-compose --x-networking rm -fv
-docker-compose --x-networking up -d & wait
-docker-compose --x-networking run php yii app/create-mysql-db ${GIIANT_TEST_DB}
-docker-compose --x-networking run php sh /app/src/init.sh
-docker-compose --x-networking ps
+export CI_APP_VOLUME=..
+DOCKER_COMPOSE="docker-compose --x-networking"
+
+#${DOCKER_COMPOSE} pull
+${DOCKER_COMPOSE} kill
+${DOCKER_COMPOSE} rm -fv
+${DOCKER_COMPOSE} up -d & wait
+${DOCKER_COMPOSE} ps

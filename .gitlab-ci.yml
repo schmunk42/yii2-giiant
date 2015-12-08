@@ -1,17 +1,23 @@
 before_script:
   - export CI_APP_VOLUME=$CI_PROJECT_DIR
-  - export COMPOSE_PROJECT_NAME=build${CI_BUILD_ID}
+  - export COMPOSE_PROJECT_NAME=tests
   - mv tests/docker-compose.ci.override.yml tests/docker-compose.override.yml
+  - cd tests
 
 build:
   stage: build
   script:
-    - sh tests/init.sh
+    - export GIIANT_TEST_DB=sakila
+    - sh init.sh
 
 test:
   stage: test
   script:
-    - sh tests/run.sh
+    - export GIIANT_TEST_DB=sakila
+    - sh run.sh
+  artifacts:
+    paths:
+      - tests/_output
 
 cleanup:
   stage: deploy

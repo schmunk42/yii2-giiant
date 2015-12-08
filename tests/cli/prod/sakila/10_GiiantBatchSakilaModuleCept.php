@@ -4,6 +4,8 @@ $I = new CliTester($scenario);
 
 $moduleCmd = <<<'CMD'
 yii gii/giiant-module \
+    --interactive=0 \
+    --overwrite=1 \
     --moduleID=sakila \
     --moduleClass=app\\modules\\sakila\\Module
 CMD;
