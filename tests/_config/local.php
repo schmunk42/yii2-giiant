@@ -17,6 +17,15 @@ switch (getenv('GIIANT_TEST_DB')) {
             ]
         ];
         break;
+
+    default:
+        $giiantTestModule = [
+            getenv('GIIANT_TEST_DB') => [
+                'class' => 'app\modules\\'.getenv('GIIANT_TEST_DB').'\Module',
+                'layout' => '@admin-views/layouts/main',
+            ]
+        ];
+
 }
 
 

@@ -13,4 +13,6 @@ ${DOCKER_COMPOSE} ps
 
 ${DOCKER_COMPOSE} run --rm php yii app/create-mysql-db ${GIIANT_TEST_DB}
 ${DOCKER_COMPOSE} run --rm php sh /app/src/init.sh
-${DOCKER_COMPOSE} run --rm php yii migrate --interactive=0 --migrationLookup=${APP_MIGRATION_LOOKUP}
+
+# TODO hotfix, lookup
+${DOCKER_COMPOSE} run --rm php yii migrate --interactive=0 --migrationLookup=/app/vendor/schmunk42/yii2-giiant/tests/_migrations

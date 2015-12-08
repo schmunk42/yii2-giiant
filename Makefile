@@ -21,7 +21,7 @@ open:	 ##@docker open application web service in browser
 	open http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
 
 bash:	##@docker open application shell in container
-	$(DOCKER_COMPOSE) run -rm $(PHP) bash
+	$(DOCKER_COMPOSE) run $(PHP) bash
 
 init:
 	sh tests/init.sh
