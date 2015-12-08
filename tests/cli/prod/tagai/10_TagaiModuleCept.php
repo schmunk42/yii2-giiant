@@ -24,14 +24,16 @@ $batch = <<<'CMD'
     --overwrite=1 \
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
-    --modelNamespace=app\\\models \
+    --modelNamespace=app\\modules\\tagai\\models \
+    --crudTidyOutput=1 \
     --crudAccessFilter=1 \
     --crudControllerNamespace=app\\modules\\tagai\\controllers \
     --crudSearchModelNamespace=app\\modules\\tagai\\models\\search \
     --crudViewPath=@app/modules/tagai/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
+    --tables=klientai,tagai
 CMD;
 
 $I->runShellCommand($batch);

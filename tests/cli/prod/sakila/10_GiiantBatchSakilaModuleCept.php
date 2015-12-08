@@ -24,7 +24,7 @@ $batch = <<<'CMD'
     --overwrite=1 \
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
-    --modelNamespace=app\\\models \
+    --modelNamespace=app\\modules\\sakila\\models \
     --crudAccessFilter=1 \
     --crudControllerNamespace=app\\modules\\sakila\\controllers \
     --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
@@ -42,3 +42,4 @@ $I->dontSeeInShellOutput('Please fix the following errors');
 $I->dontSeeInShellOutput('ErrorException');
 $I->seeInShellOutput('The following files will be generated');
 $I->seeFileFound('/app/src/modules/sakila/controllers/ActorController.php');
+$I->seeFileFound('/app/src/modules/sakila/models/Actor.php');
