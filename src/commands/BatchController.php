@@ -69,6 +69,11 @@ class BatchController extends Controller
     public $modelBaseTraits = null;
 
     /**
+     * @var
+     */
+    public $modelRemoveDuplicateRelations = false;
+
+    /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
      */
     public $enableI18N = true;
@@ -180,6 +185,7 @@ class BatchController extends Controller
                 'modelBaseClass',
                 'modelBaseTraits',
                 'modelBaseClassSuffix',
+                'modelRemoveDuplicateRelations',
                 'crudTidyOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
@@ -262,6 +268,7 @@ class BatchController extends Controller
                     Inflector::camelize($table),
                 'baseClass' => $this->modelBaseClass,
                 'baseTraits' => $this->modelBaseTraits,
+                'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
                 'queryNs' => $this->modelQueryNamespace,

@@ -25,6 +25,7 @@ $batch = <<<'CMD'
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
     --modelNamespace=app\\modules\\tagai\\models \
+    --modelRemoveDuplicateRelations=1 \
     --crudTidyOutput=1 \
     --crudAccessFilter=1 \
     --crudControllerNamespace=app\\modules\\tagai\\controllers \

@@ -60,8 +60,11 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
      */
     public $tableNameMap = [];
-    protected $classNames2;
     public $singularEntities = false;
+
+    public $removeDuplicateRelations = false;
+
+    protected $classNames2;
 
     /**
      * @inheritdoc
@@ -275,6 +278,12 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($relations AS $model => $relInfo) {
             foreach ($relInfo AS $relName => $relData) {
 
+                // removed duplicated relations, eg. klientai, klientai0
+                if ($this->removeDuplicateRelations && is_numeric(substr($relName, -1))) {
+                    unset($relations[$model][$relName]);
+                    continue;
+                }
+
                 $relations[$model][$relName][0] = preg_replace(
                     '/(has[A-Za-z0-9]+\()([a-zA-Z0-9]+::)/',
                     '$1__NS__$2',
@@ -283,6 +292,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $relations[$model][$relName][0] = str_replace('__NS__', $ns, $relations[$model][$relName][0]);
             }
         }
+
         return $relations;
     }
 
