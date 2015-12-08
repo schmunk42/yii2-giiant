@@ -7,7 +7,7 @@ use schmunk42\giiant\tests\_pages\LoginPage;
 $I = new AcceptanceTester($scenario);
 
 $I->wantTo('ensure that crud works with access rules');
-$I->amOnPage('/crud/actor');
+$I->amOnPage('/sakila/actor');
 $I->dontSee('Actor', 'h2');
 $I->makeScreenshot('crud-actor-login');
 

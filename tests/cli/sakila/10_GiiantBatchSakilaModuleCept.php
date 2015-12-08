@@ -2,6 +2,15 @@
 
 $I = new CliTester($scenario);
 
+$moduleCmd = <<<'CMD'
+yii gii/giiant-module \
+    --moduleID=sakila \
+    --moduleClass=app\\modules\\sakila\\Module
+CMD;
+$I->runShellCommand($moduleCmd);
+
+$I->seeFileFound('/app/src/modules/sakila/Module.php');
+
 // prepare output folders
 $I->runShellCommand('mkdir -p /app/src/modules/sakila/controllers');
 $I->runShellCommand('mkdir -p /app/src/modules/sakila/models/search');
@@ -19,7 +28,7 @@ $batch = <<<'CMD'
     --crudViewPath=@app/modules/sakila/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\crud\\providers\\optsProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 CMD;
 

@@ -35,6 +35,10 @@ Go to the `tests` directory
 
     cd tests
 
+Select the database you want to test
+
+    export GIIANT_TEST_DB=sakila
+
 Initialize *Potemkin*
     
     sh init.sh

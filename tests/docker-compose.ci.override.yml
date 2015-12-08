@@ -1,0 +1,9 @@
+php:
+ command: 'php-fpm'
+ environment:
+    DB_PORT_3306_TCP_ADDR: ${COMPOSE_PROJECT_NAME}_mariadb_1
+ volumes:
+    - ${CI_APP_VOLUME}/:/app/vendor/schmunk42/yii2-giiant
+    - ${CI_APP_VOLUME}/tests/_config/local.php:/app/src/config/local.php
+nginx:
+  command: 'sh -c "sed -i \"s/phpfpm/${COMPOSE_PROJECT_NAME}_php_1/\" /etc/nginx/nginx.conf; /root/run.sh"'

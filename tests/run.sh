@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 
-docker-compose run --rm appcli \
-    codecept run -c vendor/schmunk42/yii2-giiant cli,unit,functional,acceptance
+docker-compose --x-networking run php sh -c "\
+    codecept run -c /app/vendor/schmunk42/yii2-giiant/codeception.yml cli base; \
+    codecept run -c /app/vendor/schmunk42/yii2-giiant/codeception.yml cli ${GIIANT_TEST_DB}; \
+    codecept run -c /app/vendor/schmunk42/yii2-giiant/codeception.yml acceptance; \
+    codecept run -c /app/vendor/schmunk42/yii2-giiant/codeception.yml functional
+    "
