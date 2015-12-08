@@ -7,6 +7,7 @@ php:
     - DB_PORT_3306_TCP_PORT=3306
     - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
     - GIIANT_TEST_DB=${GIIANT_TEST_DB}
+    - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
   volumes:
     - /app
     - ${CI_APP_VOLUME}/:/app/vendor/schmunk42/yii2-giiant

@@ -23,7 +23,8 @@ foreach ($patterns AS $pattern => $options) {
         $controllers[$c]['label'] = $item['name'];
         if (preg_match("/$pattern/", $item['name'])) {
             $favourites[$c]          = $item;
-            $favourites[$c]['label'] = $item['name'];
+            $favourites[$c]['head']  = $item['name'];
+            $favourites[$c]['label'] = 'Controller';
             $favourites[$c]['color'] = $options['color'];
             $favourites[$c]['icon']  = isset($options['icon']) ? $options['icon'] : null;
             unset($controllers[$c]);
@@ -41,3 +42,5 @@ foreach ($patterns AS $pattern => $options) {
     ]
 ) ?>
 "?>
+
+
