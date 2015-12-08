@@ -11,6 +11,8 @@ export CI_APP_VOLUME   ?= ..
 
 default: help
 
+all: clean init test open bash
+
 up:      ##@docker start application
 	$(DOCKER_COMPOSE) up -d
 	$(DOCKER_COMPOSE) ps
@@ -21,8 +23,11 @@ open:	 ##@docker open application web service in browser
 bash:	##@docker open application shell in container
 	$(DOCKER_COMPOSE) run $(PHP) bash
 
+init:
+	sh tests/init.sh
+
 test:
-	sh tests/init.sh && sh tests/run.sh
+	sh tests/run.sh
 
 clean:
 	$(DOCKER_COMPOSE) kill
