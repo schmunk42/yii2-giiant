@@ -26,7 +26,7 @@ Finally it creates a screenshot of that in `tests/_output`.
 ### Requirements
 
 - [docker](https://docs.docker.com)
-- [docker-compose](https://docs.docker.com/compose/) (>=1.2)
+- [docker-compose](https://docs.docker.com/compose/) **>=1.5**
 
 
 ### Setup
