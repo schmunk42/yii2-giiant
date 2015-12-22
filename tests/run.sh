@@ -2,7 +2,8 @@
 
 set -e
 
-export CI_APP_VOLUME=..
+export GIIANT_TEST_DB=${GIIANT_TEST_DB-sakila}
+export CI_APP_VOLUME=${CI_APP_VOLUME-..}
 DOCKER_COMPOSE="docker-compose --x-networking"
 
 docker exec tests_php_1 sh -c "\
