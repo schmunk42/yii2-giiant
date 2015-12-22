@@ -10,7 +10,7 @@ php:
     - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
   volumes:
     - /app
-    - ${CI_APP_VOLUME}/tmp:/app/src/modules/${GIIANT_TEST_DB}
+    - ${CI_APP_VOLUME}/tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
     - ${CI_APP_VOLUME}/:/app/vendor/schmunk42/yii2-giiant
     - ${CI_APP_VOLUME}/tests/_output:/app/tests/codeception/_output
     - ${CI_APP_VOLUME}/tests/_config/local.php:/app/src/config/local.php
