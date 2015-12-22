@@ -53,9 +53,12 @@ Your output should look similar to [this](https://ci.hrzg.de/projects/24/builds/
 
 ### Debug and development
 
+    export CI_APP_VOLUME=..
+    export GIIANT_TEST_DB=sakila
+
 Enter the CLI container
 
-    docker-compose run appcli bash
+    docker-compose --x-networking run php bash
 
 Go to the mounted project directory in the container 
 
@@ -63,7 +66,9 @@ Go to the mounted project directory in the container
 
 Run *Codeception* from there   
     
-    codecept run cli -v
+    codecept run -v cli prod
+    codecept run -v functional sakila
+    codecept run -v acceptance sakila
     
     
     
