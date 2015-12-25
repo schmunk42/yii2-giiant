@@ -3,7 +3,9 @@ yii2-giiant
 
 > "Giiant is huge!"
 
-**PROJECT IS IN BETA STAGE! Note: Major changes from 0.4 to 0.5 ...**
+**PROJECT IS IN BETA STAGE!**
+
+Note: Major changes from 0.4 to 0.5, see [upgrading](UPGRADING.md) for details.
 
 
 What is this?
