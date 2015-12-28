@@ -2,6 +2,6 @@
 
 set -e
 
-. "env.sh"
+. ./env.sh
 
 ${DOCKER_COMPOSE} run --rm php bash

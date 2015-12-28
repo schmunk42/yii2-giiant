@@ -2,7 +2,7 @@
 
 set -e
 
-. "env.sh"
+. ./env.sh
 
 # replace the stack name in the yml configuration for isolated CI stacks
 sed -i.bak s/giiant_/${COMPOSE_PROJECT_NAME}_/ acceptance.suite.yml

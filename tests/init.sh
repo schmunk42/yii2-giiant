@@ -2,7 +2,7 @@
 
 set -e
 
-. "env.sh"
+. ./env.sh
 
 ${DOCKER_COMPOSE} kill
 ${DOCKER_COMPOSE} rm -fv
