@@ -40,5 +40,10 @@ return [
             'tablePrefix' => getenv('DATABASE_TABLE_PREFIX'),
         ],
     ],
-    'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule
+    'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,
+    'params' => [
+        'yii.migrations' => [
+            '@vendor/schmunk42/yii2-giiant/tests/_migrations'
+        ]
+    ]
 ];

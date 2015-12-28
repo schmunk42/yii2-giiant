@@ -1,6 +1,5 @@
 php:
-  command: 'sh -c "sh /app/src/init.sh; php-fpm"'
-  image: phundament/app:4.0.0-rc9
+  image: phundament/app:4.0.0-rc13
   environment:
     - YII_ENV=test
     - DB_PORT_3306_TCP_ADDR=tests_mariadb_1
