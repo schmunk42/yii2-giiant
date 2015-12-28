@@ -12,10 +12,6 @@ The basic concept is to start an [application stack](https://github.com/schmunk4
 In `tests/` resides a `docker-compose.yml` file, which contains an full-featured `phundament/app` stack, with pre-installed a *Codeception* test-framework on the `appcli`-container.
 There are suites for CLI, unit, function and acceptance testing right - ready to use, right out of the box.
  
-In addition the the above, the `init` script starts a MariaDB (MySQL) Docker image with a huge dataset (all MySQL sample databases) for testing.
-
-> Note: You may need to run `init.sh` twice due to setup timeout on the very first run of the `xdb` container.
- 
 The stack also contains *Selenium* containers for acceptance testing with screenshots - *Firefox* or *Chrome*.
 
 The tests run Sakila CRUD generation as CLI-tests and then use a browser-based acceptance test to access the freshly created crud.

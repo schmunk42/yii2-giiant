@@ -2,6 +2,10 @@
 
 $I = new CliTester($scenario);
 
+// TODO: it should not be required to prepare output folders
+$I->runShellCommand('mkdir -p /app/src/modules/sakila/controllers');
+$I->runShellCommand('mkdir -p /app/src/modules/sakila/models/search');
+
 $moduleCmd = <<<'CMD'
 yii gii/giiant-module \
     --interactive=0 \
@@ -10,12 +14,7 @@ yii gii/giiant-module \
     --moduleClass=app\\modules\\sakila\\Module
 CMD;
 $I->runShellCommand($moduleCmd);
-
 $I->seeFileFound('/app/src/modules/sakila/Module.php');
-
-// prepare output folders
-$I->runShellCommand('mkdir -p /app/src/modules/sakila/controllers');
-$I->runShellCommand('mkdir -p /app/src/modules/sakila/models/search');
 
 // model & crud command
 $batch = <<<'CMD'

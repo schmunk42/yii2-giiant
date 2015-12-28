@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### dev
+
+  * added access control to REST controller
+  * fixed and improved tests in CI
+
 ### 0.6.0 (2015-12-26)
 
   * added separate style for default controller (giiant module index view)
