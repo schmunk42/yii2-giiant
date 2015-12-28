@@ -1,10 +1,11 @@
 Changelog
 =========
 
-### dev
+### 0.6.1 (2015-12-28)
 
-  * added access control to REST controller
+  * improved test stack isolation
   * fixed and improved tests in CI
+  * added access control to REST controller
 
 ### 0.6.0 (2015-12-26)
 
