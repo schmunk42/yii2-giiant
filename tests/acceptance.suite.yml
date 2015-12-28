@@ -14,8 +14,8 @@ modules:
         - WebDriver
     config:
         WebDriver:
-            host: tests_seleniumfirefox_1
-            url: http://tests_nginx_1:80/
+            host: giiant_seleniumfirefox_1
+            url: http://giiant_nginx_1:80/
             browser: firefox
             port: 4444
             window_size: 1024x768
@@ -26,7 +26,7 @@ env:
             config:
                 WebDriver:
                     browser: 'chrome'
-                    host: tests_seleniumchrome_1
+                    host: giiant_seleniumchrome_1
                     window_size: 1280x720
 
     firefox:
