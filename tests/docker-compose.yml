@@ -5,6 +5,7 @@ php:
     - DB_PORT_3306_TCP_ADDR=${COMPOSE_PROJECT_NAME}_mariadb_1
     - DB_PORT_3306_TCP_PORT=3306
     - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
+    - DATABASE_DSN_DB=${GIIANT_TEST_DB}
     - GIIANT_TEST_DB=${GIIANT_TEST_DB}
     - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
   volumes:
