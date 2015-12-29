@@ -7,11 +7,12 @@ use kartik\tree\TreeViewInput;
 
 class Pages
 {
-    static public function dropdown()
+    public static function dropdown()
     {
         return function () {
             $input = TreeViewInput::className();
             $tree = Tree::className();
+
             return <<<CODE
 \$form->field(\$model, 'request_param')->widget(
     {$input}::className(),

@@ -4,8 +4,7 @@ namespace schmunk42\giiant\generators\crud\callbacks\yii;
 
 class Html
 {
-
-    static public function column()
+    public static function column()
     {
         // render HTML in grid columns
         return function ($attribute) {
@@ -21,7 +20,7 @@ FORMAT;
         };
     }
 
-    static public function attribute()
+    public static function attribute()
     {
         // render HTML in detail view
         return function ($attribute) {
@@ -34,5 +33,4 @@ FORMAT;
 FORMAT;
         };
     }
-
 }

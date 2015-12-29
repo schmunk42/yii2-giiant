@@ -3,9 +3,8 @@
  * Created by PhpStorm.
  * User: tobias
  * Date: 19.03.14
- * Time: 01:01
+ * Time: 01:01.
  */
-
 namespace schmunk42\giiant\generators\crud\providers;
 
 class CallbackProvider extends \schmunk42\giiant\base\Provider
@@ -16,7 +15,6 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
     public $attributeFormats = [];
     public $columnFormats = [];
     public $partialViews = [];
-
 
     public function activeField($attribute, $model, $generator)
     {
@@ -41,7 +39,6 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
             return $this->appendActiveFields[$key]($attribute, $model, $generator);
         }
     }
-
 
     public function attributeFormat($attribute, $model, $generator)
     {
@@ -69,16 +66,15 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
 
     private function getModelKey($attribute, $model)
     {
-        return $model::className() . '.' . $attribute;
+        return $model::className().'.'.$attribute;
     }
 
     private function findValue($subject, $array)
     {
-        foreach ($array AS $key => $value) {
-            if (preg_match('/' . $key . '/', $subject)) {
+        foreach ($array as $key => $value) {
+            if (preg_match('/'.$key.'/', $subject)) {
                 return $key;
             }
         }
     }
-
 }

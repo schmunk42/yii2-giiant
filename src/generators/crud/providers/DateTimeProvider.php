@@ -7,8 +7,9 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
     public function activeField($attribute)
     {
         switch (true) {
-            case (in_array($attribute, $this->columnNames)):
+            case in_array($attribute, $this->columnNames):
                 $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
+
                 return <<<EOS
 \$form->field(\$model, '{$attribute}')->widget(\zhuravljov\widgets\DateTimePicker::className(), [
     'options' => ['class' => 'form-control'],
@@ -21,7 +22,7 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
 EOS;
                 break;
             default:
-                return null;
+                return;
         }
     }
-} 
+}

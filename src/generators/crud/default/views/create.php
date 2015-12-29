@@ -3,7 +3,7 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/**
+/*
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
@@ -28,18 +28,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1>
         <?=
-        "<?= " . $generator->generateString(
+        '<?= '.$generator->generateString(
             Inflector::camel2words(StringHelper::basename($generator->modelClass))
-        ) . " ?>" ?>
+        ).' ?>' ?>
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
-            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
         </small>
     </h1>
 
     <div class="clearfix crud-navigation">
         <div class="pull-left">
-            <?= "<?= " ?>
+            <?= '<?= ' ?>
             Html::a(
             <?= $generator->generateString('Cancel') ?>,
             \yii\helpers\Url::previous(),
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?= "<?= " ?>$this->render('_form', [
+    <?= '<?= ' ?>$this->render('_form', [
     'model' => $model,
     ]); ?>
 
