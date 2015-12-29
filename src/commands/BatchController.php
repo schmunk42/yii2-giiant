@@ -176,8 +176,8 @@ class BatchController extends Controller
                 'overwrite',
                 'extendedModels',
                 'enableI18N',
-                'singularEntities',
                 'messageCategory',
+                'singularEntities',
                 'tables',
                 'tablePrefix',
                 'modelDb',
@@ -186,6 +186,9 @@ class BatchController extends Controller
                 'modelBaseTraits',
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
+                'modelGenerateQuery',
+                'modelQueryNamespace',
+                'modelQueryBaseClass',
                 'crudTidyOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
@@ -196,9 +199,6 @@ class BatchController extends Controller
                 'crudSkipRelations',
                 'crudBaseControllerClass',
                 'crudAccessFilter',
-                'modelGenerateQuery',
-                'modelQueryNamespace',
-                'modelQueryBaseClass',
             ]
         );
     }
