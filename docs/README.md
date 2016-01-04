@@ -1,7 +1,6 @@
 Table of contents
 -----------------
 
-- [Basic concepts](12-basic-concepts.md)
 - [Command-line batches](20-batches.md)
 - [Customization with providers](30-using-providers.md)
 - [Callback provider examples](31-callback-provider-examples.md)
