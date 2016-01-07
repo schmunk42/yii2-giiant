@@ -2,20 +2,19 @@ php:
   image: phundament/app:4.0.0-rc13
   environment:
     - YII_ENV=test
-    - DB_PORT_3306_TCP_ADDR=tests_mariadb_1
+    - DB_PORT_3306_TCP_ADDR=${COMPOSE_PROJECT_NAME}_mariadb_1
     - DB_PORT_3306_TCP_PORT=3306
     - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
     - GIIANT_TEST_DB=${GIIANT_TEST_DB}
     - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
   volumes:
     - /app
-    #- ${CI_APP_VOLUME}/tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
     - ${CI_APP_VOLUME}/:/app/vendor/schmunk42/yii2-giiant
     - ${CI_APP_VOLUME}/tests/_output:/app/tests/codeception/_output
     - ${CI_APP_VOLUME}/tests/_config/local.php:/app/src/config/local.php
 
 nginx:
-  command: 'sh -c "sed -i \"s/phpfpm/tests_php_1/\" /etc/nginx/nginx.conf; /root/run.sh"'
+  command: 'sh -c "sed -i \"s/phpfpm/${COMPOSE_PROJECT_NAME}_php_1/\" /etc/nginx/nginx.conf; /root/run.sh"'
   image: schmunk42/nginx:1.9
   volumes_from:
     - php
