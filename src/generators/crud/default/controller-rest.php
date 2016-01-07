@@ -14,6 +14,7 @@ namespace <?= $generator->controllerNs ?>\api;
  */
 
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 class <?= $controllerClassName ?> extends \yii\rest\ActiveController
 {
@@ -24,17 +25,20 @@ class <?= $controllerClassName ?> extends \yii\rest\ActiveController
     */
     public function behaviors()
     {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'matchCallback' => function ($rule, $action) {return \Yii::$app->user->can($this->module->id . '_' . $this->id . '_' . $action->id, ['route' => true]);},
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::className(),
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'matchCallback' => function ($rule, $action) {return \Yii::$app->user->can($this->module->id . '_' . $this->id . '_' . $action->id, ['route' => true]);},
+                        ]
                     ]
                 ]
             ]
-        ];
+        );
     }
 <?php endif; ?>
 }
