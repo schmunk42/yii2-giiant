@@ -8,7 +8,6 @@
 namespace schmunk42\giiant\generators\crud;
 
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
-use schmunk42\giiant\generators\test\Generator as TestGenerator;
 use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
@@ -56,14 +55,6 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $pathPrefix = null;
 
     /**
-     * @var string generated tests path
-     */
-    public $testsPath = 'backend/unit/models';
-    /**
-     * @var bool flag that enables/disables generating tests feature
-     */
-    public $generateTests = false;
-    /**
      * @var string Bootstrap CSS-class for form-layout
      */
     public $formLayout = 'horizontal';
@@ -98,7 +89,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var bool whether to overwrite extended controller classes
      */
-    public $generateControllerClass = false;
+    public $overwriteControllerClass = false;
+    /**
+     * @var bool whether to overwrite rest/api controller classes
+     */
+    public $generateRestControllerClass = false;
     /**
      * @var array whether to use phptidy on renderer files before saving
      */
@@ -204,8 +199,6 @@ class Generator extends \yii\gii\generators\crud\Generator
                 'providerList' => 'Choose the providers to be used.',
                 'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
-                'generateTests'=> 'Generates unit tests for CRUD operations',
-                'testsPath'    => 'Output path for unit tests, eg. <code>backend/unit/models</code>.',
             ]
         );
     }
@@ -218,7 +211,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix', 'generateTests', 'testsPath'], 'safe'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
                 [['viewPath'], 'required'],
             ]
         );
@@ -282,18 +275,6 @@ class Generator extends \yii\gii\generators\crud\Generator
             return \Yii::getAlias($this->viewPath) . '/' . $this->getControllerID();
         } else {
             return parent::getViewPath();
-        }
-    }
-
-    /**
-     * @return string the action tests file path
-     */
-    public function getTestsPath()
-    {
-        if ($this->testsPath !== null) {
-            return \Yii::getAlias($this->testsPath) . '/' . $this->getControllerID();
-        } else {
-            return $this->testsDefaultPath.$this->getControllerID();
         }
     }
 
@@ -679,26 +660,18 @@ class Generator extends \yii\gii\generators\crud\Generator
             $this->searchModelClass = Inflector::singularize($this->searchModelClass);
         }
 
-        $testFiles = [];
+        $controllerFile = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->controllerClass, '\\')).'.php');
+        $baseControllerFile = StringHelper::dirname($controllerFile).'/base/'.StringHelper::basename($controllerFile);
+        $restControllerFile = StringHelper::dirname($controllerFile).'/api/'.StringHelper::basename($controllerFile);
 
-        $baseControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
-        $baseControllerFile = StringHelper::dirname($baseControllerFile) . '/base/' . StringHelper::basename(
-                $baseControllerFile
-            );
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php'));
-
         $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
 
-        $controllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
-        if ($this->generateControllerClass || !is_file($controllerFile)) {
+        if ($this->overwriteControllerClass || !is_file($controllerFile)) {
             $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
         }
 
-        $restControllerFile = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->controllerClass, '\\')) . '.php');
-        if ($this->generateControllerClass || !is_file($restControllerFile)) {
-            $restControllerFile = StringHelper::dirname($restControllerFile) . '/api/' . StringHelper::basename(
-                    $baseControllerFile
-                );
+        if ($this->generateRestControllerClass || !is_file($restControllerFile)) {
             $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
         }
 
@@ -718,17 +691,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
         }
 
-        if($this->generateTests){
-            $tg = new TestGenerator();
-            $tg->template  = 'default';
-            $tg->modelClass = $this->modelClass;
-            $tg->controllerClass = $this->controllerClass;
-            $tg->searchModelClass = $this->searchModelClass;
-            $tg->ns = $this->testsPath;
-            $testFiles = $tg->generate();
-        }
-
-        return array_merge($files, $testFiles);;
+        return $files;
     }
 
     public function render($template, $params = [])
