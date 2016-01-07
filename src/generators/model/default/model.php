@@ -176,9 +176,11 @@ if(!empty($enum)){
         return [
 <?php
         foreach($column_data['values'] as $k => $value){
-?>
-            self::<?php echo $value['const_name'];?> => <?php echo $generator->generateString($value['label'])?>,
-<?php
+            if ($generator->enableI18N) {
+                echo 'self::' . $value['const_name'] . ' => Yii::t(\'' . $generator->messageCategory . '\', self::' . $value['const_name'] . "),\n";
+            } else {
+                echo 'self::' . $value['const_name'] . ' => self::' . $value['const_name'] . ",\n";
+            }
         }
 ?>
         ];

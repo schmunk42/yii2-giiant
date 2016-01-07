@@ -250,6 +250,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 case 'name_id':
                 case 'default_title':
                 case 'default_name':
+                case 'ns'://name short
+				case 'nl'://name long
                     return $name;
                     break;
                 default:
@@ -737,7 +739,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             FileHelper::createDirectory($tmpDir);
             $tmpFile = $tmpDir . '/' . md5($template);
             file_put_contents($tmpFile, $code);
-            shell_exec('vendor/bin/phptidy replace ' . $tmpFile);
+            shell_exec('vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace ' . $tmpFile);
             return file_get_contents($tmpFile);
         } else {
             return $code;
