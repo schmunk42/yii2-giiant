@@ -251,7 +251,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 case 'default_title':
                 case 'default_name':
                 case 'ns'://name short
-				case 'nl'://name long
+                case 'nl'://name long
                     return $name;
                     break;
                 default:
