@@ -6,15 +6,16 @@ class DateProvider extends \schmunk42\giiant\base\Provider
 {
     public function activeField($attribute)
     {
-	    if (isset($this->generator->getTableSchema()->columns[$attribute])) {
+        if (isset($this->generator->getTableSchema()->columns[$attribute])) {
             $column = $this->generator->getTableSchema()->columns[$attribute];
         } else {
-            return null;
+            return;
         }
 
         switch (true) {
-            case (in_array($column->name, $this->columnNames)):
+            case in_array($column->name, $this->columnNames):
                 $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
+
                 return <<<EOS
 \$form->field(\$model, '{$column->name}')->widget(\zhuravljov\widgets\DatePicker::className(), [
     'options' => ['class' => 'form-control'],
@@ -27,7 +28,7 @@ class DateProvider extends \schmunk42\giiant\base\Provider
 EOS;
                 break;
             default:
-                return null;
+                return;
         }
     }
-} 
+}

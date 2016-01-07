@@ -1,27 +1,23 @@
 <?php
 /**
  * @link      http://www.yiiframework.com/
+ *
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license   http://www.yiiframework.com/license/
  */
-
 namespace schmunk42\giiant\generators\crud;
 
-
 use Yii;
-use yii\base\Exception;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-use yii\db\ColumnSchema;
 use yii\gii\CodeFile;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
-use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
 /**
  * This generator generates an extended version of CRUDs.
+ *
  * @author Tobais Munk <schmunk@usrbin.de>
+ *
  * @since 1.0
  */
 class Generator extends \yii\gii\generators\crud\Generator
@@ -34,6 +30,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $providerList = null;
     /**
      * @todo review
+     *
      * @var string
      */
     public $actionButtonClass = 'yii\web\grid\ActionColumn';
@@ -59,43 +56,54 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var string Bootstrap CSS-class for form-layout
      */
+
     public $formLayout = 'horizontal';
+
     /**
      * @var string translation catalogue
      */
     public $messageCatalog = 'app';
+
     /**
      * @var int maximum number of columns to show in grid
      */
     public $gridMaxColumns = 8;
+
     /**
      * @var int maximum number of columns to show in grid
      */
     public $gridRelationMaxColumns = 8;
+
     /**
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
     public $requires = [];
+
     /**
      * @var bool whether to convert controller name to singular
      */
     public $singularEntities = false;
+
     /**
      * @var bool whether to add an access filter to controllers
      */
     public $accessFilter = false;
+
     /**
      * @var sting controller base namespace
      */
     public $controllerNs;
+
     /**
      * @var bool whether to overwrite extended controller classes
      */
     public $overwriteControllerClass = false;
+
     /**
      * @var bool whether to overwrite rest/api controller classes
      */
     public $generateRestControllerClass = false;
+
     /**
      * @var array whether to use phptidy on renderer files before saving
      */
@@ -104,7 +112,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     private $_p = [];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -114,7 +122,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -122,7 +130,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDescription()
     {
@@ -130,17 +138,18 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function successMessage()
     {
         $return = 'The code has been generated successfully. Please require the following packages with composer:';
-        $return .= '<br/><code>' . implode('<br/>', $this->requires) . '</code>';
+        $return .= '<br/><code>'.implode('<br/>', $this->requires).'</code>';
+
         return $return;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hints()
     {
@@ -148,14 +157,14 @@ class Generator extends \yii\gii\generators\crud\Generator
             parent::hints(),
             [
                 'providerList' => 'Choose the providers to be used.',
-                'viewPath'     => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
-                'pathPrefix'   => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
+                'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
             ]
         );
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -169,7 +178,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function stickyAttributes()
     {
@@ -182,7 +191,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getViewPath()
     {
         if ($this->viewPath !== null) {
-            return \Yii::getAlias($this->viewPath) . '/' . $this->getControllerID();
+            return \Yii::getAlias($this->viewPath).'/'.$this->getControllerID();
         } else {
             return parent::getViewPath();
         }
@@ -193,12 +202,14 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function getControllerID()
     {
-        $pos   = strrpos($this->controllerClass, '\\');
+        $pos = strrpos($this->controllerClass, '\\');
         $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
-        if ($this->singularEntities) $class = Inflector::singularize($class);
+        if ($this->singularEntities) {
+            $class = Inflector::singularize($class);
+        }
+
         return Inflector::camel2id($class, '-', true);
     }
-
 
     public function generate()
     {
@@ -206,7 +217,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             $this->modelClass = Inflector::singularize($this->modelClass);
             $this->controllerClass = Inflector::singularize(
                     substr($this->controllerClass, 0, strlen($this->controllerClass) - 10)
-                ) . "Controller";
+                ).'Controller';
             $this->searchModelClass = Inflector::singularize($this->searchModelClass);
         }
 
@@ -226,17 +237,17 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         if (!empty($this->searchModelClass)) {
-            $searchModel = Yii::getAlias('@' . str_replace('\\', '/', ltrim($this->searchModelClass, '\\') . '.php'));
+            $searchModel = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->searchModelClass, '\\').'.php'));
             $files[] = new CodeFile($searchModel, $this->render('search.php'));
         }
 
         $viewPath = $this->getViewPath();
-        $templatePath = $this->getTemplatePath() . '/views';
+        $templatePath = $this->getTemplatePath().'/views';
         foreach (scandir($templatePath) as $file) {
             if (empty($this->searchModelClass) && $file === '_search.php') {
                 continue;
             }
-            if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+            if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
             }
         }
@@ -250,9 +261,11 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($this->tidyOutput) {
             $tmpDir = Yii::getAlias('@runtime/giiant');
             FileHelper::createDirectory($tmpDir);
-            $tmpFile = $tmpDir . '/' . md5($template);
+            $tmpFile = $tmpDir.'/'.md5($template);
             file_put_contents($tmpFile, $code);
-            shell_exec('vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace ' . $tmpFile);
+
+            shell_exec('vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace '.$tmpFile);
+
             return file_get_contents($tmpFile);
         } else {
             return $code;

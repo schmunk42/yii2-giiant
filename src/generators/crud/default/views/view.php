@@ -3,13 +3,13 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/**
+/*
  * @var yii\web\View $this
  * @var schmunk42\giiant\generators\crud\Generator $generator
  */
 
 /** @var \yii\db\ActiveRecord $model */
-$model = new $generator->modelClass;
+$model = new $generator->modelClass();
 $model->setScenario('crud');
 
 $safeAttributes = $model->safeAttributes();
@@ -55,18 +55,24 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <h1>
         <?= '<?= $model->getAliasModel() ?>' ?>
         <small>
-            <?= "<?= \$model->" . $generator->getModelNameAttribute($generator->modelClass) . " ?>" ?>
+            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
         </small>
     </h1>
-
 
 
     <div class="clearfix crud-navigation">
         <!-- menu buttons -->
         <div class='pull-left'>
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>, ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],['class' => 'btn btn-success']) ?>
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']) ?>
+            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString(
+                'Edit'
+            ) ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
+            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString(
+                'Copy'
+            ) ?>, ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>
+            '=>$copyParams],['class' => 'btn btn-success']) ?>
+            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
+                'New'
+            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
         <div class="pull-right">
             <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('Full list') ?>, ['index'], ['class'=>'btn btn-default']) ?>
@@ -81,7 +87,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= $generator->partialView('detail_prepend', $model); ?>
 
-    <?= "<?= " ?>DetailView::widget([
+    <?= '<?= ' ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
@@ -90,7 +96,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         if (!$format) {
             continue;
         } else {
-            echo $format . ",\n";
+            echo $format.",\n";
         }
     }
     ?>
@@ -101,7 +107,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <hr/>
 
-    <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>],
+    <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
+        'Delete'
+    ) ?>, ['delete', <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
@@ -112,7 +120,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?php
 
     // get relation info $ prepare add button
-    $model          = new $generator->modelClass;
+    $model = new $generator->modelClass();
 
     $items = <<<EOS
 [
@@ -123,23 +131,22 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 EOS;
 
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
-
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;
 
         if ($relation->via !== null) {
-            $pivotName     = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
-            $pivotRelation = $model->{'get' . $pivotName}();
-            $pivotPk       = key($pivotRelation->link);
+            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotRelation = $model->{'get'.$pivotName}();
+            $pivotPk = key($pivotRelation->link);
 
             $addButton = "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-link\"></span> ' . " . $generator->generateString('Attach') . " . ' " .
-                Inflector::singularize(Inflector::camel2words($name)) .
-                "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
-                Inflector::singularize($pivotName) . "'=>['" . key(
+            '<span class=\"glyphicon glyphicon-link\"></span> ' . ".$generator->generateString('Attach')." . ' ".
+                Inflector::singularize(Inflector::camel2words($name)).
+                "', ['".$generator->createRelationRoute($pivotRelation, 'create')."', '".
+                Inflector::singularize($pivotName)."'=>['".key(
                     $pivotRelation->link
-                ) . "'=>\$model->{$model->primaryKey()[0]}]],
+                )."'=>\$model->{$model->primaryKey()[0]}]],
             ['class'=>'btn btn-info btn-xs']
         ) ?>\n";
         } else {
@@ -150,32 +157,32 @@ EOS;
         echo "<div style='position: relative'><div style='position:absolute; right: 0px; top: 0px;'>\n";
 
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
-            Inflector::camel2words($name) . "',
-            ['" . $generator->createRelationRoute($relation, 'index') . "'],
+            '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
+            Inflector::camel2words($name)."',
+            ['".$generator->createRelationRoute($relation, 'index')."'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New') . " . ' " .
-            Inflector::singularize(Inflector::camel2words($name)) . "',
-            ['" . $generator->createRelationRoute($relation, 'create') . "', '" .
-            Inflector::singularize($name) . "' => ['" . key($relation->link) . "' => \$model->" . $model->primaryKey()[0] . "]],
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
+            Inflector::singularize(Inflector::camel2words($name))."',
+            ['".$generator->createRelationRoute($relation, 'create')."', '".
+            Inflector::singularize($name)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;
 
-        echo "</div></div>";#<div class='clearfix'></div>\n";
+        echo '</div></div>';#<div class='clearfix'></div>\n";
 
         // render pivot grid
         if ($relation->via !== null) {
-            $pjaxId       = "pjax-{$pivotName}";
+            $pjaxId = "pjax-{$pivotName}";
             $gridRelation = $pivotRelation;
-            $gridName     = $pivotName;
+            $gridName = $pivotName;
         } else {
-            $pjaxId       = "pjax-{$name}";
+            $pjaxId = "pjax-{$name}";
             $gridRelation = $relation;
-            $gridName     = $name;
+            $gridName = $name;
         }
 
         $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
@@ -183,8 +190,8 @@ EOS;
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
-            echo "<?= " . $output . "?>\n";
-            echo "<?php Pjax::end() ?>\n";
+        echo '<?= '.$output."?>\n";
+        echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";

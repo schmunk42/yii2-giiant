@@ -2,13 +2,13 @@
 
 use yii\helpers\StringHelper;
 
-/**
+/*
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
 
 /** @var \yii\db\ActiveRecord $model */
-$model = new $generator->modelClass;
+$model = new $generator->modelClass();
 $model->setScenario('crud');
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -36,7 +36,7 @@ use \dmstr\bootstrap\Tabs;
     true
 ) ?>-form">
 
-    <?= "<?php " ?>$form = ActiveForm::begin([
+    <?= '<?php ' ?>$form = ActiveForm::begin([
     'id' => '<?= $model->formName() ?>',
     'layout' => '<?= $generator->formLayout ?>',
     'enableClientValidation' => true,
@@ -51,28 +51,27 @@ use \dmstr\bootstrap\Tabs;
         <p>
             <?php
             foreach ($safeAttributes as $attribute) {
-
                 $prepend = $generator->prependActiveField($attribute, $model);
                 $field = $generator->activeField($attribute, $model);
                 $append = $generator->appendActiveField($attribute, $model);
 
                 if ($prepend) {
-                    echo "\n\t\t\t" . $prepend;
+                    echo "\n\t\t\t".$prepend;
                 }
                 if ($field) {
-                    echo "\n\t\t\t<?= " . $field . " ?>";
+                    echo "\n\t\t\t<?= ".$field.' ?>';
                 }
                 if ($append) {
-                    echo "\n\t\t\t" . $append;
+                    echo "\n\t\t\t".$append;
                 }
             }
             ?>
 
         </p>
-        <?php echo "<?php \$this->endBlock(); ?>"; ?>
+        <?php echo '<?php $this->endBlock(); ?>'; ?>
 
         <?php
-        $label = substr(strrchr($model::className(), "\\"), 1);;
+        $label = substr(strrchr($model::className(), '\\'), 1);
 
         $items = <<<EOS
 [
@@ -96,9 +95,9 @@ EOS;
 
         <hr/>
 
-        <?= "<?php " ?>echo $form->errorSummary($model); ?>
+        <?= '<?php ' ?>echo $form->errorSummary($model); ?>
 
-        <?= "<?= " ?>Html::submitButton(
+        <?= '<?= ' ?>Html::submitButton(
         '<span class="glyphicon glyphicon-check"></span> ' .
         ($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Save') ?>),
         [
@@ -108,7 +107,7 @@ EOS;
         );
         ?>
 
-        <?= "<?php " ?>ActiveForm::end(); ?>
+        <?= '<?php ' ?>ActiveForm::end(); ?>
 
     </div>
 

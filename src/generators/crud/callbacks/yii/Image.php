@@ -3,15 +3,13 @@
  * Created by PhpStorm.
  * User: tobias
  * Date: 09.06.15
- * Time: 23:23
+ * Time: 23:23.
  */
-
 namespace schmunk42\giiant\generators\crud\callbacks\yii;
-
 
 class Image
 {
-    static public function attribute()
+    public static function attribute()
     {
         // render image tag
         return function ($attribute) {

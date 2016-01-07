@@ -4,6 +4,7 @@ namespace schmunk42\giiant\generators\crud;
 
 /**
  * @link http://www.diemeisterei.de/
+ *
  * @copyright Copyright (c) 2015 diemeisterei GmbH, Stuttgart
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,42 +13,42 @@ namespace schmunk42\giiant\generators\crud;
 trait ParamTrait
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function generateActionParams()
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks   = $class::primaryKey();
+        $pks = $class::primaryKey();
         if (count($pks) === 1) {
-            return '$' . $pks[0]; // fix for non-id columns
+            return '$'.$pks[0]; // fix for non-id columns
         } else {
-            return '$' . implode(', $', $pks);
+            return '$'.implode(', $', $pks);
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function generateActionParamComments()
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks   = $class::primaryKey();
+        $pks = $class::primaryKey();
         if (($table = $this->getTableSchema()) === false) {
             $params = [];
             foreach ($pks as $pk) {
-                $params[] = '@param ' . (substr(strtolower($pk), -2) == 'id' ? 'integer' : 'string') . ' $' . $pk;
+                $params[] = '@param '.(substr(strtolower($pk), -2) == 'id' ? 'integer' : 'string').' $'.$pk;
             }
 
             return $params;
         }
         if (count($pks) === 1) {
-            return ['@param ' . $table->columns[$pks[0]]->phpType . ' $' . $pks[0]];
+            return ['@param '.$table->columns[$pks[0]]->phpType.' $'.$pks[0]];
         } else {
             $params = [];
             foreach ($pks as $pk) {
-                $params[] = '@param ' . $table->columns[$pk]->phpType . ' $' . $pk;
+                $params[] = '@param '.$table->columns[$pk]->phpType.' $'.$pk;
             }
 
             return $params;
@@ -55,14 +56,15 @@ trait ParamTrait
     }
 
     /**
-     * Generates URL parameters
+     * Generates URL parameters.
+     *
      * @return string
      */
     public function generateUrlParams()
     {
         /* @var $class ActiveRecord */
         $class = $this->modelClass;
-        $pks   = $class::primaryKey();
+        $pks = $class::primaryKey();
         if (count($pks) === 1) {
             if (is_subclass_of($class, 'yii\mongodb\ActiveRecord')) {
                 return "'id' => (string)\$model->{$pks[0]}";

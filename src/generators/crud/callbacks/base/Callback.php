@@ -7,7 +7,7 @@ class Callback
     /**
      * @return \Closure no output, returns false to end to provider queue
      */
-    static public function false()
+    public static function false()
     {
         return function () {
             return false;
@@ -17,7 +17,7 @@ class Callback
     /**
      * @return \Closure standard attribute, without any formatting
      */
-    static public function attribute()
+    public static function attribute()
     {
         return function ($attribute) {
             return "'$attribute'";

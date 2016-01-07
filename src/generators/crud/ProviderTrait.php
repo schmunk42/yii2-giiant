@@ -2,7 +2,7 @@
 
 namespace schmunk42\giiant\generators\crud;
 
-/**
+/*
  * @link http://www.diemeisterei.de/
  * @copyright Copyright (c) 2015 diemeisterei GmbH, Stuttgart
  *
@@ -16,24 +16,29 @@ use yii\helpers\Json;
 
 trait ProviderTrait
 {
-
     /**
      * @return array Class names of the providers declared directly under crud/providers folder.
      */
-    static public function getCoreProviders()
+    public static function getCoreProviders()
     {
-        $files = FileHelper::findFiles(__DIR__ . DIRECTORY_SEPARATOR . 'providers', [
-            'only' => ['*.php'],
-            'recursive' => false
-        ]);
+        $files = FileHelper::findFiles(
+            __DIR__.DIRECTORY_SEPARATOR.'providers',
+            [
+                'only' => ['*.php'],
+                'recursive' => false,
+            ]
+        );
 
         foreach ($files as $file) {
-            require_once($file);
+            require_once $file;
         }
 
-        return array_filter(get_declared_classes(), function($a){
-            return (stripos($a, __NAMESPACE__ . '\providers') !== false);
-        });
+        return array_filter(
+            get_declared_classes(),
+            function ($a) {
+                return stripos($a, __NAMESPACE__.'\providers') !== false;
+            }
+        );
     }
 
     /**
@@ -52,28 +57,28 @@ trait ProviderTrait
         if ($this->_p !== []) {
             return;
         }
+
         if ($this->providerList) {
-            foreach($this->providerList as $class) {
+            foreach ($this->providerList as $class) {
                 $class = trim($class);
                 if (!$class) {
                     continue;
                 }
-                $obj            = \Yii::createObject(['class' => $class]);
+                $obj = \Yii::createObject(['class' => $class]);
                 $obj->generator = $this;
-                $this->_p[]     = $obj;
+                $this->_p[] = $obj;
                 #\Yii::trace("Initialized provider '{$class}'", __METHOD__);
             }
         }
-        \Yii::trace("CRUD providers initialized for model '{$this->modelClass}'", __METHOD__);
 
+        \Yii::trace("CRUD providers initialized for model '{$this->modelClass}'", __METHOD__);
     }
 
-
     /**
-     * Generates code for active field by using the provider queue
+     * Generates code for active field by using the provider queue.
      *
      * @param ColumnSchema $column
-     * @param null $model
+     * @param null         $model
      *
      * @return mixed|string
      */
@@ -85,11 +90,12 @@ trait ProviderTrait
         $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code !== null) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
+
             return $code;
         } else {
             $column = $this->getColumnByAttribute($attribute);
             if (!$column) {
-                return null;
+                return;
             } else {
                 return parent::generateActiveField($attribute);
             }
@@ -105,6 +111,7 @@ trait ProviderTrait
         if ($code) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
         }
+
         return $code;
     }
 
@@ -117,6 +124,7 @@ trait ProviderTrait
         if ($code) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
         }
+
         return $code;
     }
 
@@ -132,6 +140,7 @@ trait ProviderTrait
             $code = $this->shorthandAttributeFormat($attribute, $model);
             Yii::trace("using standard formatting for '{$attribute}'", __METHOD__);
         }
+
         return $code;
     }
 
@@ -143,12 +152,13 @@ trait ProviderTrait
         $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
         if ($code !== null) {
             Yii::trace("found provider for '{$attribute}'", __METHOD__);
+
             return $code;
         }
 
         $column = $this->getColumnByAttribute($attribute);
         if (!$column) {
-            return null;
+            return;
         } else {
             return $this->shorthandAttributeFormat($attribute, $model);
         }
@@ -164,12 +174,14 @@ trait ProviderTrait
         if ($code) {
             Yii::trace("found provider for partial view '{name}'", __METHOD__);
         }
+
         return $code;
     }
 
     public function relationGrid($name, $relation, $showAllRecords = false)
     {
         Yii::trace("calling provider queue for '$name'", __METHOD__);
+
         return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }
 
@@ -178,7 +190,8 @@ trait ProviderTrait
         $column = $this->getColumnByAttribute($attribute, $model);
         if (!$column) {
             Yii::trace("No column for '{$attribute}' found", __METHOD__);
-            return null;
+
+            return;
         } else {
             Yii::trace("Table column detected for '{$attribute}'", __METHOD__);
         }
@@ -196,18 +209,18 @@ trait ProviderTrait
             $format = 'text';
         }
 
-        return "        '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "'";
+        return "        '".$column->name.($format === 'text' ? '' : ':'.$format)."'";
     }
-
 
     protected function callProviderQueue($func, $args, $generator)
     {
-        $this->initializeProviders(); // TODO: should be done on init, but providerList is empty
-        //var_dump($this->_p);exit;
+        // TODO: should be done on init, but providerList is empty
+        $this->initializeProviders();
+
         $args = func_get_args();
         unset($args[0]);
         // walk through providers
-        foreach ($this->_p AS $obj) {
+        foreach ($this->_p as $obj) {
             if (method_exists($obj, $func)) {
                 $c = call_user_func_array(array(&$obj, $func), $args);
                 // until a provider returns not null
@@ -219,8 +232,9 @@ trait ProviderTrait
                     } else {
                         $argsString = $args;
                     }
-                    $msg = 'Using provider ' . get_class($obj) . '::' . $func . ' ' . $argsString;
+                    $msg = 'Using provider '.get_class($obj).'::'.$func.' '.$argsString;
                     Yii::trace($msg, __METHOD__);
+
                     return $c;
                 }
             }

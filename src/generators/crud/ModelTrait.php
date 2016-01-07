@@ -2,7 +2,7 @@
 
 namespace schmunk42\giiant\generators\crud;
 
-/**
+/*
  * @link http://www.diemeisterei.de/
  * @copyright Copyright (c) 2015 diemeisterei GmbH, Stuttgart
  *
@@ -18,7 +18,7 @@ trait ModelTrait
 {
     public function getModelNameAttribute($modelClass)
     {
-        $model = new $modelClass;
+        $model = new $modelClass();
         // TODO: cleanup, get-label-methods, move to config
         if ($model->hasMethod('get_label')) {
             return '_label';
@@ -41,7 +41,6 @@ trait ModelTrait
                     continue;
                     break;
             }
-
         }
 
         return $modelClass::primaryKey()[0];
@@ -54,26 +53,27 @@ trait ModelTrait
         if ($this->singularEntities) {
             $returnName = Inflector::singularize($returnName);
         }
+
         return $returnName;
     }
 
     /**
-     * Finds relations of a model class
+     * Finds relations of a model class.
      *
      * return values can be filtered by types 'belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'
      *
      * @param ActiveRecord $modelClass
-     * @param array $types
+     * @param array        $types
      *
      * @return array
      */
     public function getModelRelations($modelClass, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
     {
         $reflector = new \ReflectionClass($modelClass);
-        $model = new $modelClass;
+        $model = new $modelClass();
         $stack = [];
-        $modelGenerator = new ModelGenerator;
-        foreach ($reflector->getMethods() AS $method) {
+        $modelGenerator = new ModelGenerator();
+        foreach ($reflector->getMethods() as $method) {
             if (in_array(substr($method->name, 3), $this->skipRelations)) {
                 continue;
             }
@@ -88,7 +88,7 @@ trait ModelTrait
                 'getFirstError',
                 'getAttribute',
                 'getAttributeLabel',
-                'getOldAttribute'
+                'getOldAttribute',
             ];
             if (in_array($method->name, $skipMethods)) {
                 continue;
@@ -117,19 +117,22 @@ trait ModelTrait
                     }
                 }
             } catch (Exception $e) {
-                Yii::error("Error: ".$e->getMessage(), __METHOD__);
+                Yii::error('Error: '.$e->getMessage(), __METHOD__);
             }
         }
+
         return $stack;
     }
 
-    public function getColumnByAttribute($attribute, $model = null){
+    public function getColumnByAttribute($attribute, $model = null)
+    {
         if (is_string($model)) {
-            $model = new $model;
+            $model = new $model();
         }
         if ($model === null) {
             $model = $this;
         }
+
         return $model->getTableSchema()->getColumn($attribute);
     }
 
@@ -141,13 +144,14 @@ trait ModelTrait
     public function getRelationByColumn($model, $column)
     {
         $relations = $this->getModelRelations($model);
-        foreach ($relations AS $relation) {
+        foreach ($relations as $relation) {
             // TODO: check multiple link(s)
             if ($relation->link && reset($relation->link) == $column->name) {
                 return $relation;
             }
         }
-        return null;
+
+        return;
     }
 
     public function createRelationRoute($relation, $action)
@@ -156,7 +160,8 @@ trait ModelTrait
                 $this->generateRelationTo($relation),
                 '-',
                 true
-            )."/".$action;
+            ).'/'.$action;
+
         return $route;
     }
 
@@ -164,12 +169,13 @@ trait ModelTrait
     {
         $class = new \ReflectionClass($relation->modelClass);
         $route = Inflector::variablize($class->getShortName());
+
         return $route;
     }
 
     public function isPivotRelation(ActiveQuery $relation)
     {
-        $model = new $relation->modelClass;
+        $model = new $relation->modelClass();
         $table = $model->tableSchema;
         $pk = $table->primaryKey;
         if (count($pk) !== 2) {
