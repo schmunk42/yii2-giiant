@@ -102,7 +102,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var bool whether to overwrite rest/api controller classes
      */
-    public $generateRestControllerClass = false;
+    public $overwriteRestControllerClass = false;
 
     /**
      * @var array whether to use phptidy on renderer files before saving
@@ -232,7 +232,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
         }
 
-        if ($this->generateRestControllerClass || !is_file($restControllerFile)) {
+        if ($this->overwriteRestControllerClass || !is_file($restControllerFile)) {
             $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
         }
 
