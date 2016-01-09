@@ -134,6 +134,20 @@ if(!empty($enum)){
 <?php endforeach; ?>
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        return array_merge(
+            parent::attributeHints(),
+            [
+<?php foreach ($hints as $name => $hint): ?>
+            <?= "'$name' => " . $generator->generateString($hint) . ",\n" ?>
+<?php endforeach; ?>
+            ]);
+    }
 <?php foreach ($relations as $name => $relation): ?>
 
     /**

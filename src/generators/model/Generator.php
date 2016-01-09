@@ -64,6 +64,11 @@ class Generator extends \yii\gii\generators\model\Generator
 
     public $removeDuplicateRelations = false;
 
+    /**
+     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns.
+     */
+    public $generateHintsFromComments = true;
+
     protected $classNames2;
 
     /**
@@ -90,7 +95,7 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateModelClass', 'useTranslatableBehavior'], 'boolean'],
+                [['generateModelClass', 'useTranslatableBehavior','generateHintsFromComments'], 'boolean'],
                 [['languageTableName', 'languageCodeColumn'], 'string'],
                 [['tablePrefix'], 'safe'],
             ]
@@ -123,6 +128,8 @@ class Generator extends \yii\gii\generators\model\Generator
                 'useTranslatableBehavior' => 'Use <code>2amigos/yii2-translateable-behavior</code> for tables with a relation to a translation table.',
                 'languageTableName' => 'The name of the table containing the translations. <code>{{table}}</code> will be replaced with the value in "Table Name" field.',
                 'languageCodeColumn' => 'The column name where the language code is stored.',
+                'generateHintsFromComments' => 'This indicates whether the generator should generate attribute hints
+                    by using the comments of the corresponding DB columns.',
             ]
         );
     }
@@ -158,6 +165,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'queryClassName' => $queryClassName,
                 'tableSchema' => $tableSchema,
                 'labels' => $this->generateLabels($tableSchema),
+                'hints' => $this->generateHints($tableSchema),
                 'rules' => $this->generateRules($tableSchema),
                 'relations' => isset($relations[$tableName]) ? $relations[$tableName] : [],
                 'ns' => $this->ns,
@@ -259,6 +267,31 @@ class Generator extends \yii\gii\generators\model\Generator
 
         Yii::trace("Converted '{$tableName}' to '{$returnName}'.", __METHOD__);
         return $this->classNames2[$tableName] = $returnName;
+    }
+
+    /**
+     * Generates the attribute hints for the specified table.
+     * @param \yii\db\TableSchema $table the table schema
+     * @return array the generated attribute hints (name => hint)
+     */
+    public function generateHints($table)
+    {
+        $hints = [];
+        foreach ($table->columns as $column) {
+            if ($this->generateHintsFromComments && !empty($column->comment)) {
+                $hints[$column->name] = $column->comment;
+            } elseif (!strcasecmp($column->name, 'id')) {
+                $hints[$column->name] = 'ID';
+            } else {
+                $hint = Inflector::camel2words($column->name);
+                if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
+                    $label = substr($label, 0, -3) . ' ID';
+                }
+                $hints[$column->name] = $hint;
+            }
+        }
+
+        return $hints;
     }
 
     /**

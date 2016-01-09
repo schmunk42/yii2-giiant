@@ -155,6 +155,15 @@ class BatchController extends Controller
     public $modelQueryBaseClass = 'yii\db\ActiveQuery';
 
     /**
+     * @var bool This indicates whether the generator should generate attribute labels by using the comments of the corresponding DB columns.
+     */
+    public $modelGenerateLabelsFromComments = false;
+
+    /**
+     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns.
+     */
+    public $modelGenerateHintsFromComments = true;
+    /**
      * @var array application configuration for creating temporary applications
      */
     protected $appConfig;
@@ -189,6 +198,8 @@ class BatchController extends Controller
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
+                'modelGenerateLabelsFromComments',
+                'modelGenerateHintsFromComments',
                 'crudTidyOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
@@ -273,6 +284,8 @@ class BatchController extends Controller
                 'generateQuery' => $this->modelGenerateQuery,
                 'queryNs' => $this->modelQueryNamespace,
                 'queryBaseClass' => $this->modelQueryBaseClass,
+                'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
+                'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
             ];
             $route = 'gii/giiant-model';
 

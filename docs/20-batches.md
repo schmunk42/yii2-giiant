@@ -8,9 +8,15 @@ Usage
 
 You can run batches of base-model and CRUD generation with the build in batch command:
 
+for Linux
+
     ./yii giiant-batch --tables=profile,social_account,user,token
 
-It will process the given tables, for more details see `./yii help giiant-batch`. See the [Sakila example](docs/generate-sakila-backend.md) for a detailed example.
+for Windows
+
+    yii giiant-batch --tables=profile,social_account,user,token
+
+It will process the given tables, for more details see `./yii help giiant-batch`. See the [Sakila example](50-generate-sakila-backend.md) for a detailed example.
 
 
 ### Alternative 
@@ -23,6 +29,8 @@ For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yii
 
 
 ### Extended batch-command example
+
+for Linux
 
 ```
 ./yii giiant-batch \
@@ -38,5 +46,24 @@ For basic usage instructions see the [Yii2 Guide section for Gii](http://www.yii
     --crudSkipRelations=Variant,Variants \
     --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
     --tables=account,article,variation_status,variation_x_storage,business_unit,category,\
+condition,manufacturer,section,shop,storage,trading_group,user,variation,core_log,basket,basket-item,delivery
+```
+
+for Windows
+
+```
+yii giiant-batch ^
+    --interactive=0 ^
+    --overwrite=1 ^
+    --modelDb=db ^
+    --modelBaseClass=yii\db\ActiveRecord ^
+    --modelNamespace=app\models ^
+    --crudControllerNamespace=app\modules\crud\controllers ^
+    --crudSearchModelNamespace=app\modules\crud\models\search ^
+    --crudViewPath=@app/modules/crud/views ^
+    --crudPathPrefix= ^
+    --crudSkipRelations=Variant,Variants ^
+    --crudProviders=schmunk42\giiant\generators\crud\\providers\optsProvider ^
+    --tables=account,article,variation_status,variation_x_storage,business_unit,category,^
 condition,manufacturer,section,shop,storage,trading_group,user,variation,core_log,basket,basket-item,delivery
 ```
