@@ -116,9 +116,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function init()
     {
+        parent::init();
         $this->providerList = self::getCoreProviders();
-
-        return parent::init();
     }
 
     /**
