@@ -39,9 +39,7 @@ use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\w
 <?php endif; ?>
 */
 
-$this->title = <?= $generator->generateString(
-    Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))
-) ?>;
+$this->title = $searchModel->getAliasModel(true);
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -59,9 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= '<?= '.$generator->generateString(
-            Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))
-        ).' ?>' ?>
+        <?= '<?= $searchModel->getAliasModel(true) ?>' ?>
         <small>
             List
         </small>

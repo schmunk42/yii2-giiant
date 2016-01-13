@@ -116,9 +116,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function init()
     {
+        parent::init();
         $this->providerList = self::getCoreProviders();
-
-        return parent::init();
     }
 
     /**
@@ -264,7 +263,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             $tmpFile = $tmpDir.'/'.md5($template);
             file_put_contents($tmpFile, $code);
 
-            shell_exec('vendor/bin/phptidy replace '.$tmpFile);
+            shell_exec('vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace '.$tmpFile);
 
             return file_get_contents($tmpFile);
         } else {

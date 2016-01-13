@@ -10,6 +10,6 @@ Table of contents
 ### Advanced topics
 
 - [Sakila backend](50-generate-sakila-backend.md)
-- [MySQL workbench](51-using-mysql-workbench.md) ... A detailed description how to use MySQL workbench for model updates and migration see [here](docs/using-mysql-workbench.md).
+- [MySQL workbench](51-using-mysql-workbench.md) ... A detailed description how to use MySQL workbench for model updates and migration see [here](51-using-mysql-workbench.md).
 - [Troubleshooting](60-troubleshooting.md)
 

@@ -33,6 +33,8 @@ trait ModelTrait
                 case 'name_id':
                 case 'default_title':
                 case 'default_name':
+                case 'ns'://name short
+                case 'nl'://name long
                     return $name;
                     break;
                 default:

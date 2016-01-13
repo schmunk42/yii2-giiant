@@ -19,18 +19,13 @@ use yii\helpers\Html;
 */
 
 $this->title = <?= $generator->generateString('Create') ?>;
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(
-    Inflector::camel2words(StringHelper::basename($generator->modelClass))
-) ?>', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">
 
     <h1>
-        <?=
-        '<?= '.$generator->generateString(
-            Inflector::camel2words(StringHelper::basename($generator->modelClass))
-        ).' ?>' ?>
+        <?= '<?= $model->getAliasModel() ?>' ?>
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
