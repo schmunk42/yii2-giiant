@@ -20,12 +20,9 @@ use yii\helpers\Html;
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
 
-$this->title = '<?= Inflector::camel2words(
-    StringHelper::basename($generator->modelClass)
-) ?> ' . $model-><?= $generator->getNameAttribute() ?> . ', ' . <?= $generator->generateString('Edit') ?>;
-$this->params['breadcrumbs'][] = ['label' => '<?= Inflector::pluralize(
-    Inflector::camel2words(StringHelper::basename($generator->modelClass))
-) ?>', 'url' => ['index']];
+$this->title = $model->getAliasModel() . $model-><?= $generator->getNameAttribute(
+) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
+$this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
 ) ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
@@ -33,9 +30,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= '<?= '.$generator->generateString(
-            Inflector::camel2words(StringHelper::basename($generator->modelClass))
-        ).' ?>' ?>
+        <?= '<?= $model->getAliasModel() ?>' ?>
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>

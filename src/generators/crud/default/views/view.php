@@ -35,16 +35,9 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = '<?=
-Inflector::camel2words(
-    StringHelper::basename($generator->modelClass)
-) ?> ' . $model-><?= $generator->getNameAttribute() ?>;
-$this->params['breadcrumbs'][] = ['label' => '<?=
-Inflector::pluralize(
-    Inflector::camel2words(StringHelper::basename($generator->modelClass))
-) ?>', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
-) ?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->title = $model->getAliasModel() . $model-><?= $generator->getNameAttribute() ?>;
+$this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
@@ -60,9 +53,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <h1>
-        <?= '<?= '.$generator->generateString(
-            Inflector::camel2words(StringHelper::basename($generator->modelClass))
-        ).' ?>' ?>
+        <?= '<?= $model->getAliasModel() ?>' ?>
         <small>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
         </small>
@@ -84,9 +75,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
         <div class="pull-right">
-            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString(
-                'List '.Inflector::pluralize(StringHelper::basename($generator->modelClass))
-            ) ?>, ['index'], ['class'=>'btn btn-default']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('Full list') ?>, ['index'], ['class'=>'btn btn-default']) ?>
         </div>
 
     </div>

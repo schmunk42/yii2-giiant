@@ -75,7 +75,7 @@ use \dmstr\bootstrap\Tabs;
 
         $items = <<<EOS
 [
-    'label'   => '$label',
+    'label'   => \$model->getAliasModel(),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],

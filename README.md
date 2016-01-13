@@ -54,6 +54,8 @@ Usage
 
 To create a full-featured database backend, run the CLI batch command
 
+for Linux:
+
 ```
 ./yii giiant-batch \
     --modelNamespace=app\\models \
@@ -63,6 +65,16 @@ To create a full-featured database backend, run the CLI batch command
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 ```
 
+for Windows:
+
+```
+yii giiant-batch ^
+    --modelNamespace=app\models ^
+    --crudControllerNamespace=app\modules\crud\controllers ^
+    --crudSearchModelNamespace=app\modules\crud\models\search ^
+    --crudViewPath=@app/modules/crud/views ^
+    --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
+```
 
 
 Features
