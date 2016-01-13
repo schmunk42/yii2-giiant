@@ -1,3 +1,4 @@
 tests/_output
 tmp
 *.bak
+vendor
