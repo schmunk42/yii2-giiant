@@ -29,4 +29,4 @@ cleanup:
   script:
     - docker-compose kill
     - docker-compose rm -fv
-    - docker network rm $COMPOSE_PROJECT_NAME
+
