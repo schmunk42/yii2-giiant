@@ -8,13 +8,18 @@ before_script:
   - docker-compose --version
   - sh ./env.sh
 
-build:
+stages:
+  - build
+  - test
+  - cleanup
+
+1-build:
   stage: build
   script:
     - export GIIANT_TEST_DB=sakila
     - sh init.sh
 
-test:
+2-test:
   stage: test
   script:
     - export GIIANT_TEST_DB=sakila
@@ -23,8 +28,8 @@ test:
     paths:
       - tests/_output
 
-cleanup:
-  stage: deploy
+3-cleanup:
+  stage: cleanup
   when: always
   script:
     - docker-compose kill
