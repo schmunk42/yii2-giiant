@@ -4,6 +4,7 @@ before_script:
   - export COMPOSE_PROJECT_NAME=buildref${CI_BUILD_REF}${CI_BUILD_REF_NAME_NORMALIZED}
   - mv tests/docker-compose.ci.override.yml tests/docker-compose.override.yml
   - cd tests
+  - docker --version
   - docker-compose --version
   - sh ./env.sh
 
