@@ -36,7 +36,7 @@ Your output should look similar to [this](https://ci.hrzg.de/projects/24/builds/
 
 Enter the CLI container
 
-    docker-compose --x-networking run php bash
+    docker-compose run php bash
 
 Go to the mounted project directory in the container 
 

@@ -27,6 +27,6 @@ cleanup:
   stage: deploy
   when: always
   script:
-    - docker-compose --x-networking kill
-    - docker-compose --x-networking rm -fv
+    - docker-compose kill
+    - docker-compose rm -fv
     - docker network rm $COMPOSE_PROJECT_NAME
