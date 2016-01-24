@@ -1,4 +1,6 @@
-php:
-  volumes:
-    # host volume for local debugging of generated files
-    - ${CI_APP_VOLUME}/tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+version: 2
+services:
+  php:
+    volumes:
+      # host volume for local debugging of generated files
+      - ${CI_APP_VOLUME}/tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
