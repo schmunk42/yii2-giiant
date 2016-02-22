@@ -22,7 +22,7 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
 EOS;
                 break;
             default:
-                return;
+                return null;
         }
     }
 }
