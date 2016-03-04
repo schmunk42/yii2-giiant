@@ -7,7 +7,7 @@ yii2-giiant
 
 Note: Major changes from 0.4 to 0.5, see [upgrading](UPGRADING.md) for details.
 
-[![build status](https://git.hrzg.de/ci/projects/24/status.png?ref=master)](https://git.hrzg.de/schmunk42/yii2-giiant/builds?scope=all)
+[![build status](https://git.hrzg.de/schmunk42/yii2-giiant/badges/master/build.svg)](https://git.hrzg.de/schmunk42/yii2-giiant/builds?scope=all)
 
 
 What is this?
