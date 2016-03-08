@@ -2,6 +2,10 @@
 Troubleshooting
 ---------------
 
+## General
+
+Adjust the commands in the docs, if your platform requires it, eg. using `./yii` or `php yii`.
+
 ### `Calling unknown method: yii\console\Application::getSession()`
 
 You need to disable eg. auth components and modules for the CLI. They don't have an effect there anyway.
@@ -29,3 +33,15 @@ to your *** composer.json ***  file and run
     composer update
 
 if you are having trouble with "Not found" errors using the preferred method.
+
+
+## Usage on Windows
+
+Command line example for Windows
+
+```
+yii giiant-batch ^
+    --modelNamespace=app\models ^
+    --crudProviders=schmunk42\giiant\generators\crud\\providers\optsProvider ^
+    --tables=account,article
+```

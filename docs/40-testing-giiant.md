@@ -3,7 +3,7 @@
 
 ### Requirements
 
-- [docker](https://docs.docker.com)
+- [docker](https://docs.docker.com) **>=1.10-rc1**
 - [docker-compose](https://docs.docker.com/compose/) **>=1.6**
 
 

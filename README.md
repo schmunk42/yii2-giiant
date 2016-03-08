@@ -31,6 +31,29 @@ Resources
 - [Yii Extensions](http://www.yiiframework.com/extension/yii2-giiant/)
 
 
+Features
+--------
+
+### Batch command
+
+- `yii batch` creates all models and/or CRUDs for a set of tables sequentially with a single command
+
+### Model generator
+
+- generates separate model classes to customize and base models classes which can be regenerated on schema changes
+- table prefixes can be stipped off model class names (not bound to `db` connection settings from Yii 2.0)
+
+### CRUD generator
+
+- input, attribute, column and relation customization with provider queues
+- callback provider to inject any kind of code for inputs, attributes and columns via dependency injection
+- virtual-relation support (non-foreign key relations)
+- model, view and controller locations can be customized to use subfolders
+- horizontal and vertical form layout
+- options for tidying generated code
+- action button class customization (Select "App Class" option on the  Action Button Class option on CRUD generator to customize)
+
+
 Installation
 ------------
 
@@ -46,7 +69,24 @@ Using latest master
 
 The generators are registered automatically in the application bootstrap process, if *Gii* module is enabled.
 
-- [Phundament](http://phundament.com) core-module
+> You can try giiant via [phd](http://phundament.com) (dockerized PHP application template).
+
+
+Configuration
+-------------
+
+It's recommended to configure a customized `batch` command in your application CLI configuration.
+
+    'controllerMap' => [
+        'batch' => [
+            'class' => 'schmunk42\giiant\commands\BatchController',
+            'overwrite' => true,
+            'modelNamespace' => 'app\\modules\\crud\\models',
+            'crudTidyOutput' => true,
+        ]
+    ],
+
+> Note: `yii giiant-batch` is an alias for the default configuration of `BatchController` registered by this extension.
 
 
 Usage
@@ -54,49 +94,45 @@ Usage
 
 To create a full-featured database backend, run the CLI batch command
 
-for Linux:
+    yii batch
 
-```
-./yii giiant-batch \
-    --modelNamespace=app\\models \
-    --crudControllerNamespace=app\\modules\\crud\\controllers \
-    --crudSearchModelNamespace=app\\modules\\crud\\models\\search \
-    --crudViewPath=@app/modules/crud/views \
-    --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
-```
+You can still override the settings from the configuration, like selecting specific tables
 
-for Windows:
+    yii batch --tables=a,list,of,tables
 
-```
-yii giiant-batch ^
-    --modelNamespace=app\models ^
-    --crudControllerNamespace=app\modules\crud\controllers ^
-    --crudSearchModelNamespace=app\modules\crud\models\search ^
-    --crudViewPath=@app/modules/crud/views ^
-    --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
-```
+See the [batches](docs/20-batches.md) section for details.
 
 
-Features
+### Core commands
+
+Show help for gii
+
+    yii help gii
+
+Create application-module for giiant CRUDs
+    
+    yii gii/giiant-module
+
+The commands for generating models and CRUD, there are usually run via the batch command above.
+
+    yii gii/giiant-model
+    yii gii/giiant-crud
+
+
+Advanced
 --------
 
-### Model generator
+### Provider usage and configuration via dependency injection 
 
-- generates separate model classes to customize and base models classes which can be regenerated on schema changes
-- table prefixes can be stipped off model class names (not bound to `db` connection settings from Yii 2.0)
+See [docs](docs/30-using-providers.md) for details.
 
-### CRUD generator
+### Using callbacks to provide code-snippets
 
-- input, attribute, column and relation customization with provider queues
-- callback provider to inject any kind of code for inputs, attributes and columns via dependency injection
-- virtual-relation support (non-foreign key relations)
-- model, view and controller locations can be customized to use subfolders
-- horizontal and vertical form layout
-- action button class customization (Select "App Class" option on the  Action Button Class option on CRUD generator to customize)
+See [docs](docs/31-callback-provider-examples.md) for details.
 
-### Batch command
+### Troubleshooting
 
-- creates all models and/or CRUDs for a set of tables sequentially
+See [docs](docs/60-troubleshooting.md) for known-issues, platform specific usage, quirks, faq, ...
 
 
 Extras

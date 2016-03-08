@@ -75,63 +75,18 @@ Finally run the batch:
 
 And open `index.php?r=crud/film` to test your fresh Sakila CRUDs generated with Giiant.
 
--------
 
 ### Alternative
-
-
-    make giiant-module MODULE_ID=employees
-    
-Update `.env`
-
-    database
-
-        make app-setup
 
 ```
 <?php
 
 return [
     'aliases' => [
-        '@giiant' => '@app/extensions'
+        '@mynamespace' => '@app/extensions'
     ],
     'modules' => [
-        'sakila' => 'giiant\sakila\Module',
+        'sakila' => 'mynamespace\sakila\Module',
     ],
 ];
-```
-        make app-bash
-
-        mkdir -p /app/src/extensions/sakila/models/search
-
-        sh src/extensions/sakila/build/giiant.sh 
-
-```
-./yii giiant-batch \
-    --interactive=0 \
-    --overwrite=1 \
-    --enableI18N=1 \
-    --messageCategory=app \
-    --modelNamespace=giiant\\employees\\models \
-    --crudControllerNamespace=giiant\\employees\\controllers \
-    --crudSearchModelNamespace=giiant\\employees\\models\\search \
-    --crudViewPath=@app/extensions/employees/views \
-    --crudPathPrefix= \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\DateTimeProvider \
-    --tables=departments,employees,salaries,titles,dept_emp,dept_manager
-```
-
-```
-./yii giiant-batch \
-    --interactive=0 \
-    --overwrite=1 \
-    --enableI18N=1 \
-    --messageCategory=app \
-    --modelNamespace=giiant\\world\\models \
-    --crudControllerNamespace=giiant\\world\\controllers \
-    --crudSearchModelNamespace=giiant\\world\\models\\search \
-    --crudViewPath=@app/extensions/world/views \
-    --crudPathPrefix= \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\DateTimeProvider \
-    --tables=City,Country,CountryLanguage
 ```
