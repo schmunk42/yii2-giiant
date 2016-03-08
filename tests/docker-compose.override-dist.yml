@@ -3,7 +3,4 @@ services:
   phpfpm:
     volumes:
       # host volume for local debugging of generated files
-      - ../:/app/vendor/schmunk42/yii2-giiant
-      - ../tests/_config/local.php:/app/src/config/local.php
-      - ../tests/_output:/app/tests/codeception/_output
       - ../tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
