@@ -1,6 +1,8 @@
 <?php
 
-use schmunk42\giiant\tests\_pages\LoginPage;
+// @group sakila
+
+use tests\_pages\LoginPage;
 
 #new schmunk42\giiant\tests\_pages\LoginPage;
 

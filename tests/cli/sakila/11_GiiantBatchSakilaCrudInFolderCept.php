@@ -1,5 +1,7 @@
 <?php
 
+// @group sakila
+
 $I = new CliTester($scenario);
 
 // prepare output folders

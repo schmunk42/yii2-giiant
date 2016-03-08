@@ -4,7 +4,6 @@ services:
     image: phundament/app:4.2.0-rc2
     working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
-      - YII_ENV=test
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
@@ -35,8 +34,7 @@ services:
       - INSTALL_SAKILA=1
 
   seleniumfirefox:
-    container_name: seleniumfirefox
-    image: 'selenium/standalone-firefox:2.48.2'
+    image: 'selenium/standalone-firefox-debug:2.48.2'
     expose:
         - '4444'
     ports:

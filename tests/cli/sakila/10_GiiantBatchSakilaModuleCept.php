@@ -1,5 +1,7 @@
 <?php
 
+// @group sakila
+
 $I = new CliTester($scenario);
 
 // TODO: it should not be required to prepare output folders
@@ -24,6 +26,7 @@ $batch = <<<'CMD'
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
     --modelNamespace=app\\modules\\sakila\\models \
+    --modelQueryNamespace=app\\modules\\sakila\\models\\query \
     --crudAccessFilter=1 \
     --crudControllerNamespace=app\\modules\\sakila\\controllers \
     --crudSearchModelNamespace=app\\modules\\sakila\\models\\search \
