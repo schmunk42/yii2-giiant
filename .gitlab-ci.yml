@@ -14,6 +14,8 @@ test:
     - export GIIANT_TEST_DB=sakila
     - set +e
     - docker-compose up -d
+    # test data import takes some time
+    - sleep 10
     - docker-compose run --rm phpfpm setup.sh
     - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance; TESTS_EXIT_CODE=$?
     - set -e
