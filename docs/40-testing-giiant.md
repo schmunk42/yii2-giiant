@@ -19,51 +19,31 @@ Select the database you want to test
 
 Initialize *Potemkin*
     
-    sh init.sh
+    docker-compose up -d
+    docker-compose run --rm -e YII_ENV=test phpfpm setup.sh
+
 
 ### Usage
+   
+#### Debug and development
 
-Run the test suites    
+Start a bash
+
+    docker-compose run --rm -e YII_ENV=test phpfpm bash
+
+Initialize database and application    
     
-    sh run.sh
+    $ setup.sh
+
+Run cli test suite, group *mandatory*
+    
+    $ codecept run -g mandatory cli
 
 Your output should look similar to [this](https://ci.hrzg.de/projects/24/builds/2685).
 
-### Debug and development
 
-    export CI_APP_VOLUME=..
-    export GIIANT_TEST_DB=sakila
+#### CI one-liner
 
-Enter the CLI container
-
-    docker-compose run php bash
-
-Go to the mounted project directory in the container 
-
-    cd vendor/schmunk42/yii2-giiant
-
-Run *Codeception* from there   
+Via compose run
     
-    codecept run -v cli prod
-    codecept run -v functional sakila
-    codecept run -v acceptance sakila
-    
-    
-    
-### Example CI script
-    
-
-```
-set -e
-export COMPOSE_FILE=ci.yml
-
-cd tests
-sh init.sh
-sh run.sh
-
-docker-compose kill
-
-exit 0
-```
-
-
+    docker-compose run --rm -e YII_ENV=test phpfpm codecept run -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance
