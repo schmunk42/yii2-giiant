@@ -1,5 +1,5 @@
-Usage
------
+Batches
+=======
 
 > ### Important Notice!
 

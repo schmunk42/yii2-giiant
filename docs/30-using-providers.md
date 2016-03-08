@@ -96,7 +96,7 @@ Finally add the configuration via DI container
 );
 ```
 
-[More providers...](31-callback-provider-examples.md)
+**[More examples for this provider...](31-callback-provider-examples.md)**
 
 
 

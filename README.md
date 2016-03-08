@@ -90,6 +90,9 @@ It's recommended to configure a customized `batch` command in your application C
 
 You can add the giiant specific configuration `config/giiant.php`, and include this from your `config/main.php`.
 
+See the [batches](docs/20-batches.md) section for configuration details.
+
+
 Usage
 -----
 
@@ -100,8 +103,6 @@ To create a full-featured database backend, run the CLI batch command
 You can still override the settings from the configuration, like selecting specific tables
 
     yii batch --tables=a,list,of,tables
-
-See the [batches](docs/20-batches.md) section for details.
 
 
 ### Core commands

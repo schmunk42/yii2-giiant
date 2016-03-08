@@ -4,7 +4,7 @@ Table of contents
 - [Command-line batches](20-batches.md)
 - [Customization with providers](30-using-providers.md)
 - [Callback provider examples](31-callback-provider-examples.md)
-- [Custom code-generator templates](32-custom-templates.md)
+- [Custom code-generator templates](32-customizations.md)
 - [Testing giiant](40-testing-giiant.md)
 
 ### Advanced topics

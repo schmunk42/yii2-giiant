@@ -1,7 +1,4 @@
-# Providers
-
-
-
+### Universal `CallbackProvider` examples
 
 ### attributeFormats
 
@@ -220,7 +217,8 @@ $appendActiveFields = [
 
 
 
-### Join it all together
+Join it all together
+--------------------
 
 To invoke the callback provider we pass in our callbacks as follows:
 
