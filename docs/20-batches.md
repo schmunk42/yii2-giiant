@@ -2,6 +2,7 @@ Usage
 -----
 
 > ### Important Notice!
+
 > It is strongly recommended, to get familiar with the CLI usage of *Gii* and *Giiant*, since the code-generation process may be repeated several times in the inital development phase and using the CLI in conjunction with a script will save you a lot of time and also reduce your error rate!
 
 Configuration
@@ -50,7 +51,7 @@ It will process the given tables, for more details see `./yii help giiant-batch`
 
 ### Extended batch-command example
 
-You can also configure the batch via command line options, this example is using the default configuration from `giiant-batch`
+You can also override the batch defaults via command line options, this example is using the default configuration from `giiant-batch`
 
 ```
 ./yii giiant-batch \
@@ -58,13 +59,6 @@ You can also configure the batch via command line options, this example is using
     --overwrite=1 \
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
-    --modelNamespace=app\\models \
-    --crudControllerNamespace=app\\modules\\crud\\controllers \
-    --crudSearchModelNamespace=app\\modules\\crud\\models\\search \
-    --crudViewPath=@app/modules/crud/views \
-    --crudPathPrefix= \
-    --crudSkipRelations=Variant,Variants \
     --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
-    --tables=account,article,variation_status,variation_x_storage,business_unit,category,\
-condition,manufacturer,section,shop,storage,trading_group,user,variation,core_log,basket,basket-item,delivery
+    --tables=account,article,variation_status
 ```

@@ -45,3 +45,28 @@ yii giiant-batch ^
     --crudProviders=schmunk42\giiant\generators\crud\\providers\optsProvider ^
     --tables=account,article
 ```
+
+
+## Code-generator hacks
+
+### Using "prompt" in dropdown lists
+
+Set the first entry in your `getColumnName()` method to value `null`.  
+
+	null => \Yii::t('app', 'Select'),
+
+To ensure that the correct value is written to the database you should add a validation rule in the model.  
+
+    public function rules()
+    {
+        return ArrayHelper::merge(
+            parent::rules(),
+            [
+                [
+                    ['field_name'],
+                    'default',
+                    'value' => null
+                ]
+            ]
+        );
+    }

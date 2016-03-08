@@ -88,6 +88,7 @@ It's recommended to configure a customized `batch` command in your application C
 
 > Note: `yii giiant-batch` is an alias for the default configuration of `BatchController` registered by this extension.
 
+You can add the giiant specific configuration `config/giiant.php`, and include this from your `config/main.php`.
 
 Usage
 -----
