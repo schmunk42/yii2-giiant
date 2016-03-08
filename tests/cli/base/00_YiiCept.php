@@ -1,5 +1,7 @@
 <?php
 
+// @group mandatory
+
 $I = new CliTester($scenario);
 
 $I->runShellCommand('/app/yii');

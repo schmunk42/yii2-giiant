@@ -1,8 +1,0 @@
-version: 2
-services:
-  php:
-   command: 'php-fpm'
-   environment:
-      DB_PORT_3306_TCP_ADDR: ${COMPOSE_PROJECT_NAME}_mariadb_1
-  nginx:
-    command: 'sh -c "sed -i \"s/phpfpm/${COMPOSE_PROJECT_NAME}_php_1/\" /etc/nginx/nginx.conf; /root/run.sh"'

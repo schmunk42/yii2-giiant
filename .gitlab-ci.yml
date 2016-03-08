@@ -1,37 +1,36 @@
 before_script:
-  - export CI_BUILD_REF_NAME_NORMALIZED=$(echo ${CI_BUILD_REF_NAME} | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')
-  - export CI_APP_VOLUME=${CI_PROJECT_DIR}
-  - export COMPOSE_PROJECT_NAME=buildref${CI_BUILD_REF}${CI_BUILD_REF_NAME_NORMALIZED}
-  - mv tests/docker-compose.ci.override.yml tests/docker-compose.override.yml
+  - export BUILD_PREFIX=buildref${CI_BUILD_REF}$(echo ${CI_BUILD_REF_NAME} | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')giiant
+  - export COMPOSE_PROJECT_NAME=${BUILD_PREFIX}
   - cd tests
-  - docker --version
-  - docker-compose --version
-  - sh ./env.sh
 
 stages:
-  - build
   - test
+  - report
   - cleanup
 
-1-build:
-  stage: build
-  script:
-    - export GIIANT_TEST_DB=sakila
-    - sh init.sh
-
-2-test:
+test:
   stage: test
   script:
-    - export GIIANT_TEST_DB=sakila
-    - sh run.sh
+    - set +e
+    - docker-compose up -d
+    - docker-compose run --rm phpfpm setup.sh
+    - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --html=_report.html -g mandatory; TESTS_EXIT_CODE=$?
+    - set -e
+    - mv _output /tmp/${BUILD_PREFIX}
+    - exit $TESTS_EXIT_CODE
+
+report:
+  stage: report
+  script:
+    - mv /tmp/${BUILD_PREFIX} _output
   artifacts:
     paths:
-      - tests/_output
-
-3-cleanup:
-  stage: cleanup
+      - tests/_output/
   when: always
-  script:
-    - docker-compose kill
-    - docker-compose rm -fv
 
+cleanup:
+  stage: cleanup
+  script:
+    - docker-compose kill && docker-compose rm -fv
+    - docker-compose down --rmi local --volumes
+  when: always

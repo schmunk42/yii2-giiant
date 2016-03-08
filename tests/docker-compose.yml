@@ -1,26 +1,28 @@
-version: 2
+version: '2'
 services:
-  php:
-    image: phundament/app:4.0.0-rc13
+  phpfpm:
+    image: phundament/app:4.2.0-rc2
+    working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
       - YII_ENV=test
-      - DB_PORT_3306_TCP_ADDR=${COMPOSE_PROJECT_NAME}_mariadb_1
+      - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
       - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
+    depends_on:
+      - mariadb
+      - seleniumfirefox
     volumes:
       - /app
-      - ${CI_APP_VOLUME}/:/app/vendor/schmunk42/yii2-giiant
-      - ${CI_APP_VOLUME}/tests/_output:/app/tests/codeception/_output
-      - ${CI_APP_VOLUME}/tests/_config/local.php:/app/src/config/local.php
 
   nginx:
-    command: 'sh -c "sed -i \"s/phpfpm/${COMPOSE_PROJECT_NAME}_php_1/\" /etc/nginx/nginx.conf; /root/run.sh"'
     image: schmunk42/nginx:1.9
+    depends_on:
+      - phpfpm
     volumes_from:
-      - php
+      - phpfpm
     ports:
       - '80'
 
@@ -33,8 +35,12 @@ services:
       - INSTALL_SAKILA=1
 
   seleniumfirefox:
+    container_name: seleniumfirefox
     image: 'selenium/standalone-firefox:2.48.2'
     expose:
         - '4444'
     ports:
         - '5900'
+
+networks:
+  legacy:
