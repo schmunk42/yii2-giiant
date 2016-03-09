@@ -38,6 +38,7 @@ return [
             'password' => getenv('DATABASE_PASSWORD'),
             'charset' => 'utf8',
             'tablePrefix' => getenv('DATABASE_TABLE_PREFIX'),
+            'enableSchemaCache'=> true,
         ],
     ],
     'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,

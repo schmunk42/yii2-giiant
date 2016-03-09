@@ -13,23 +13,24 @@ test:
   stage: test
   script:
     - export GIIANT_TEST_DB=sakila
-    - set +e
     - docker-compose up -d
     # test data import takes some time
     - sleep 10
     - docker-compose run --rm phpfpm setup.sh
-    - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance; TESTS_EXIT_CODE=$?
+    - set +e
+    - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance; TESTS_EXIT_CODE=$?
+    - cp -r _output /tmp/${BUILD_PREFIX}
     - set -e
-    - mv _output /tmp/${BUILD_PREFIX}
     - exit $TESTS_EXIT_CODE
 
 report:
   stage: report
   script:
-    - mv /tmp/${BUILD_PREFIX} _output
+    - mkdir -p ../reports
+    - mv /tmp/${BUILD_PREFIX} ../reports/${BUILD_PREFIX}
   artifacts:
     paths:
-      - tests/_output/
+      - reports
   when: always
 
 cleanup:

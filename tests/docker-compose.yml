@@ -18,7 +18,6 @@ services:
       # host volume for local debugging of generated files
       - ../:/app/vendor/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
-      - ../tests/_output:/app/tests/codeception/_output
 
   nginx:
     image: schmunk42/nginx:1.9
@@ -36,6 +35,8 @@ services:
     environment:
       - MARIADB_PASS=secretadmin
       - INSTALL_SAKILA=1
+    volumes:
+      - ./_build/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
     image: 'selenium/standalone-firefox-debug:2.48.2'
@@ -43,6 +44,3 @@ services:
         - '4444'
     ports:
         - '5900'
-
-networks:
-  legacy:

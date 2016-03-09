@@ -4,7 +4,7 @@
  */
 return [
     'bootstrap' => [
-        'gii'
+        #'gii'
     ],
     'modules'   => [
         'gii' => [

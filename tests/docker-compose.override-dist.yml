@@ -3,4 +3,7 @@ services:
   phpfpm:
     volumes:
       # host volume for local debugging of generated files
-      - ../tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+      - tmpvolume:/app/src/modules/${GIIANT_TEST_DB}
+
+volumes:
+  tmpvolume:
