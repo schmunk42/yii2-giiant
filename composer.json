@@ -13,16 +13,23 @@
         }
     ],
     "require": {
+        "cmrcx/phptidy": "2.*",
         "dmstr/yii2-bootstrap": "*",
+        "dmstr/yii2-helpers": "*",
+        "dmstr/yii2-db": "*",
         "yiisoft/yii2": "~2.0.4",
         "yiisoft/yii2-gii": "~2.0.4"
     },
     "autoload": {
         "psr-4": {
-            "schmunk42\\giiant\\": ""
+            "schmunk42\\giiant\\": "src"
         }
     },
     "extra": {
-        "bootstrap": "schmunk42\\giiant\\Bootstrap"
+        "bootstrap": "schmunk42\\giiant\\Bootstrap",
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }

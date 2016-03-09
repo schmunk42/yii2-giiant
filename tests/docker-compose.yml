@@ -1,0 +1,46 @@
+version: '2'
+services:
+  phpfpm:
+    image: phundament/app:4.2.0-rc2
+    working_dir: /app/vendor/schmunk42/yii2-giiant
+    environment:
+      - DB_PORT_3306_TCP_ADDR=mariadb
+      - DB_PORT_3306_TCP_PORT=3306
+      - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
+      - DATABASE_DSN_DB=${GIIANT_TEST_DB}
+      - GIIANT_TEST_DB=${GIIANT_TEST_DB}
+      - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
+    depends_on:
+      - mariadb
+      - seleniumfirefox
+    volumes:
+      - /app
+      # host volume for local debugging of generated files
+      - ../:/app/vendor/schmunk42/yii2-giiant
+      - ../tests/_config/local.php:/app/src/config/local.php
+
+  nginx:
+    image: schmunk42/nginx:1.9
+    depends_on:
+      - phpfpm
+    volumes_from:
+      - phpfpm
+    ports:
+      - '80'
+
+  mariadb:
+    image: 'schmunk42/mariadb-example-databases:2.0.0'
+    ports:
+      - '3306'
+    environment:
+      - MARIADB_PASS=secretadmin
+      - INSTALL_SAKILA=1
+    volumes:
+      - ./_build/test.cnf:/etc/mysql/conf.d/test.cnf
+
+  seleniumfirefox:
+    image: 'selenium/standalone-firefox-debug:2.48.2'
+    expose:
+        - '4444'
+    ports:
+        - '5900'

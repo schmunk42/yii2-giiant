@@ -1,0 +1,41 @@
+before_script:
+  - export BUILD_PREFIX=buildref${CI_BUILD_REF}$(echo ${CI_BUILD_REF_NAME} | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')giiant
+  - export COMPOSE_PROJECT_NAME=${BUILD_PREFIX}
+  - cd tests
+  - cp docker-compose.override-dist.yml docker-compose.override.yml
+
+stages:
+  - test
+  - report
+  - cleanup
+
+test:
+  stage: test
+  script:
+    - export GIIANT_TEST_DB=sakila
+    - docker-compose up -d
+    # test data import takes some time
+    - sleep 10
+    - docker-compose run --rm phpfpm setup.sh
+    - set +e
+    - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance; TESTS_EXIT_CODE=$?
+    - cp -r _output /tmp/${BUILD_PREFIX}
+    - set -e
+    - exit $TESTS_EXIT_CODE
+
+report:
+  stage: report
+  script:
+    - mkdir -p ../reports
+    - mv /tmp/${BUILD_PREFIX} ../reports/${BUILD_PREFIX}
+  artifacts:
+    paths:
+      - reports
+  when: always
+
+cleanup:
+  stage: cleanup
+  script:
+    - docker-compose kill && docker-compose rm -fv
+    - docker-compose down --rmi local --volumes
+  when: always

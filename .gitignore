@@ -1,0 +1,6 @@
+tests/_output
+tmp
+*.bak
+vendor
+.phptidy-cache
+docker-compose.override.yml

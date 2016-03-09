@@ -1,0 +1,33 @@
+# Codeception Test Suite Configuration
+
+# suite for acceptance tests.
+# perform tests in browser using the Selenium-like tools.
+# powered by Mink (http://mink.behat.org).
+# (tip: that's what your customer will see).
+# (tip: test your ajax and javascript by one of Mink drivers).
+
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver
+    config:
+        WebDriver:
+            host: seleniumfirefox
+            url: http://nginx:80/
+            browser: firefox
+            port: 4444
+            window_size: 1024x768
+            restart: true
+env:
+    chrome:
+         modules:
+            config:
+                WebDriver:
+                    browser: 'chrome'
+                    host: seleniumchrome
+                    window_size: 1280x720
+
+    firefox:
+        # nothing changed
