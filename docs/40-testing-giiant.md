@@ -16,6 +16,7 @@ Go to the `tests` directory
 Select the database you want to test
 
     export GIIANT_TEST_DB=sakila
+    cp docker-compose.override-dist.yml docker-compose.override.yml
 
 Initialize *Potemkin*
     
