@@ -53,10 +53,6 @@ class Generator extends \yii\gii\generators\module\Generator
             $modulePath . '/traits/ActiveRecordDbConnectionTrait.php',
             $this->render("db-connection-trait.php")
         );
-        $files[] = new CodeFile(
-            $modulePath . '/composer.json',
-            $this->render("composer.php")
-        );
 
         return $files;
     }
