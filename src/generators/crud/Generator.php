@@ -204,7 +204,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return ['modelClass','searchModelClass','controllerClass',
             'baseControllerClass','viewPath','pathPrefix','enableI18N',
             'singularEntities','indexWidgetType','formLayout',
-            'actionButtonClass', 'providerList'];
+            'actionButtonClass', 'providerList','template'];
     }
 
     /**
