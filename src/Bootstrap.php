@@ -33,6 +33,10 @@ class Bootstrap implements BootstrapInterface
             if (!isset($app->getModule('gii')->generators['giiant-model'])) {
                 $app->getModule('gii')->generators['giiant-model'] = 'schmunk42\giiant\generators\model\Generator';
             }
+            
+            if (!isset($app->getModule('gii')->generators['giiant-extension'])) {
+                $app->getModule('gii')->generators['giiant-extension'] = 'schmunk42\giiant\generators\extension\Generator';
+            }
 
             if (!isset($app->getModule('gii')->generators['giiant-crud'])) {
                 $app->getModule('gii')->generators['giiant-crud'] = 'schmunk42\giiant\generators\crud\Generator';
