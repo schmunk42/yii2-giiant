@@ -131,12 +131,16 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 EOS;
 
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
+        if(!$relation or !$relation->link){
+            continue;
+        }
+
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;
 
         if ($relation->via !== null) {
-            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via[0]));
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
 
@@ -190,8 +194,8 @@ EOS;
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
-        echo '<?= '.$output."?>\n";
-        echo "<?php Pjax::end() ?>\n";
+            echo '<?= '.$output."?>\n";
+            echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";
