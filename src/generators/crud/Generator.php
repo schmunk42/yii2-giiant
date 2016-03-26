@@ -12,6 +12,7 @@ use yii\gii\CodeFile;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use schmunk42\giiant\helpers\SaveForm;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -113,11 +114,6 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var string form field for selecting and loading saved gii forms 
      */
     public $savedForm;
-
-    /** 
-     * @var array all saved crud forms list found in module gii directories 
-     */
-    private $savedFormList;
     
     private $_p = [];
 
@@ -165,11 +161,11 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::hints(),
             [
-                'savedForm' => 'Choose saved form ad load it data to form.',
                 'providerList' => 'Choose the providers to be used.',
                 'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
-            ]
+            ],
+            SaveForm::hint()
         );
     }
 
@@ -181,7 +177,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix','savedForm','formLayout'], 'safe'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix','savedForm','formLayout','accessFilter','singularEntities'], 'safe'],
                 [['viewPath'], 'required'],
             ]
         );
@@ -204,97 +200,9 @@ class Generator extends \yii\gii\generators\crud\Generator
         return ['modelClass','searchModelClass','controllerClass',
             'baseControllerClass','viewPath','pathPrefix','enableI18N',
             'singularEntities','indexWidgetType','formLayout',
-            'actionButtonClass', 'providerList','template'];
+            'actionButtonClass', 'providerList','template','accessFilter',
+            'singularEntities'];
     }
-
-    /**
-     * get form attributes values.
-     */
-    public function getFormAttributesValues()
-    {
-        $attributes = $this->formAttributes();
-        $values = [];
-        foreach ($attributes as $name) {
-            $values[strtolower($name)] = [
-                'value' => $this->$name,
-                'name' => $name,
-                ];
-        }
-        
-        return $values;
-    }    
-    
-    /**
-     * walk througt all modules gii directories and collect Giant crud generator saved forms
-     * 
-     * @return array
-     */
-    public function loadSavedForms(){
-        
-        if($this->savedFormList){
-            return $this->savedFormList;
-        }        
-        
-        foreach(Yii::$app->modules as $moduleId =>$module){
-        
-            /**
-             * get module base path
-             */
-            if (method_exists($module, 'getBasePath')){
-                $basePath = $module->getBasePath();
-            }else{
-                $reflector = new \ReflectionClass($module['class']);
-                $basePath = StringHelper::dirname($reflector->getFileName());
-            }
-            $basePath .= '/gii';
-
-            /**
-             * search in module gii directory all controller forms json files 
-             */
-            if (!file_exists($basePath)){
-                continue;
-            }
-            $files = scandir($basePath);
-            foreach($files as $file){
-                if(!preg_match('#Controller\.json$#',$file)){
-                    continue;
-                }
-                $name=preg_replace('#Controller\.json$#','',$file);
-                $forms[$moduleId.$name] =[ 
-                    'jsonData' => file_get_contents($basePath . '/' . $file),
-                    'label' => $moduleId . ' - ' . $name,
-                    ];
-            }
-        }
-
-        return $this->savedFormList = $forms;
-    }
-    
-    /**
-     * get array for form field "Saved form" data
-     * @return array
-     */
-    public function getSavedFormsListbox(){
-        $r = ['0'=>' - '];
-        foreach($this->loadSavedForms() as $k => $row){
-            $r[$k] =  $row['label'];
-        }
-        return $r;
-    }
-
-    /**
-     * creata js statement for seting to variable savedFormas array with all forms and it data in json format
-     * @return string
-     */
-    public function getSavedFormsJs(){
-        $js = [];
-        
-        foreach($this->loadSavedForms() as $k => $row){
-            $js[] =  $k . ":'" . $row['jsonData'] . "'";
-        }
-        
-        return "var savedForms = {" . str_replace('\\','\\\\',implode(',',$js)) . "};";
-    }    
     
     /**
      * @return string the action view file path
@@ -364,16 +272,16 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         /**
-         * create gii/[name]Controller.json with actual form data
+         * create gii/[name]GiantCRUD.json with actual form data
          */
+        $suffix = str_replace(' ','', $this->getName());
         $controllerFileinfo = pathinfo($controllerFile);
         $formDataFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
                 . '/gii/'
-                . $controllerFileinfo['filename'].'.json' ;
-        $formData = json_encode($this->getFormAttributesValues());
+                . str_replace('Controller',$suffix,$controllerFileinfo['filename']).'.json' ;
+        //$formData = json_encode($this->getFormAttributesValues());
+        $formData = json_encode(SaveForm::getFormAttributesValues($this,$this->formAttributes()));
         $files[] = new CodeFile($formDataFile, $formData);
-        
-        $this->loadSavedForms();
         
         return $files;
     }
