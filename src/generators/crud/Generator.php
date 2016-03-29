@@ -115,6 +115,9 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $savedForm;
     
+    public $moduleNs;
+    public $migrationClass;
+    
     private $_p = [];
 
     /**
@@ -230,8 +233,21 @@ class Generator extends \yii\gii\generators\crud\Generator
         return Inflector::camel2id($class, '-', true);
     }
 
+    /**
+     * @return string the controller ID (without the module ID prefix)
+     */
+    public function getModelID()
+    {
+        return \yii\helpers\StringHelper::basename($this->moduleNs);
+    }
+
     public function generate()
     {
+        $this->controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+        $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
+        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass),0,-10);
+        $this->migrationClass = 'm' . date("ymd_H") . '0101_' . $controllerName . '_access'; 
+        
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
             $this->controllerClass = Inflector::singularize(
@@ -270,6 +286,12 @@ class Generator extends \yii\gii\generators\crud\Generator
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
             }
         }
+
+        $migrationFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
+                . '/migrations/'
+                . $this->migrationClass.'.php' ;
+        $files[] = new CodeFile($migrationFile, $this->render('migration_access.php'));
+
 
         /**
          * create gii/[name]GiantCRUD.json with actual form data
