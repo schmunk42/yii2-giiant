@@ -63,12 +63,19 @@ public $enableCsrfValidation = false;
     'access' => [
     'class' => AccessControl::className(),
     'rules' => [
+<?php 
+foreach($accessDefinitions['roles'] as $roleName => $actions){
+?>
     [
     'allow' => true,
-    'matchCallback' => function ($rule, $action) {return \Yii::$app->user->can($this->module->id . '_' . $this->id . '_' . $action->id, ['route' => true]);},
-    ]
-    ]
-    ]
+                        'actions' => ['<?=implode("', '",$actions)?>'],
+                        'roles' => ['<?=$roleName?>'],
+                    ],
+<?php    
+}
+?>    
+                ],
+            ],
     ];
     }
 <?php endif; ?>
