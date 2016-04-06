@@ -36,7 +36,37 @@ class Generator extends \yii\gii\generators\model\Generator
     public $tablePrefix = null;
 
     /**
-     * @var bool whether to use or not 2amigos/yii2-translateable-behavior
+     * @var bool whether or not to use BlameableBehavior
+     */
+    public $useBlameableBehavior = true;
+    
+    /**
+     * @var string the name of the column where the user who created the entry is stored
+     */
+    public $createdByColumn = 'created_by';
+    
+    /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $updatedByColumn = 'updated_by';
+    
+    /**
+     * @var bool whether or not to use TimestampBehavior
+     */
+    public $useTimestampBehavior = true;
+    
+    /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $createdAtColumn = 'created_at';
+    
+    /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $updatedAtColumn = 'updated_at';
+    
+    /**
+     * @var bool whether or not to use 2amigos/yii2-translateable-behavior
      */
     public $useTranslatableBehavior = true;
 
@@ -95,8 +125,8 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateModelClass', 'useTranslatableBehavior','generateHintsFromComments'], 'boolean'],
-                [['languageTableName', 'languageCodeColumn'], 'string'],
+                [['generateModelClass', 'useTranslatableBehavior','generateHintsFromComments', 'useBlameableBehavior', 'useTimestampBehavior'], 'boolean'],
+                [['languageTableName', 'languageCodeColumn', 'createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn'], 'string'],
                 [['tablePrefix'], 'safe'],
             ]
         );
@@ -130,6 +160,12 @@ class Generator extends \yii\gii\generators\model\Generator
                 'languageCodeColumn' => 'The column name where the language code is stored.',
                 'generateHintsFromComments' => 'This indicates whether the generator should generate attribute hints
                     by using the comments of the corresponding DB columns.',
+            	'useTimestampBehavior' => 'Use <code>TimestampBehavior</code> for tables with column(s) for created at and/or updated at timestamps.',
+            	'createdAtColumn' => 'The column name where the created at timestamp is stored.',
+            	'updatedAtColumn' => 'The column name where the updated at timestamp is stored.',
+            	'useBlameableBehavior' => 'Use <code>BlameableBehavior</code> for tables with column(s) for created by and/or updated by user IDs.',
+           		'createdByColumn' => "The column name where the record creator's user ID is stored.",
+           		'updatedByColumn' => "The column name where the record updater's user ID is stored.",
             ]
         );
     }
@@ -152,7 +188,6 @@ class Generator extends \yii\gii\generators\model\Generator
         $db = $this->getDbConnection();
 
         foreach ($this->getTableNames() as $tableName) {
-
             list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
 
             $className = $this->generateClassName($tableName);
@@ -175,7 +210,10 @@ class Generator extends \yii\gii\generators\model\Generator
             if (!empty($translations)) {
                 $params['translation'] = $translations;
             }
-
+           	
+            $params['blameable'] = $this->generateBlameable($tableSchema);
+            $params['timestamp'] = $this->generateTimestamp($tableSchema);
+            
             $files[] = new CodeFile(
                 Yii::getAlias(
                     '@' . str_replace('\\', '/', $this->ns)
@@ -400,6 +438,18 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generateRules($table)
     {
+    	$columns = [];
+    	foreach ($table->columns as $index => $column) {
+    		$isBlameableCol = ($column->name === $this->createdByColumn || $column->name === $this->updatedByColumn);
+    		$isTimestampCol = ($column->name === $this->createdAtColumn || $column->name === $this->updatedAtColumn);
+    		$removeCol = ($this->useBlameableBehavior && $isBlameableCol)
+    			|| ($this->useTimestampBehavior && $isTimestampCol);
+    		if ($removeCol) {
+    			$columns[$index] = $column;
+    			unset($table->columns[$index]);
+    		}
+    	}
+    	
         $rules = [];
 
         //for enum fields create rules "in range" for all enum values
@@ -414,12 +464,14 @@ class Generator extends \yii\gii\generators\model\Generator
                     $ea
                 ) . ",\n                ]\n            ]";
         }
-
-        return array_merge(parent::generateRules($table), $rules);
+     
+        $rules = array_merge(parent::generateRules($table), $rules);
+        $table->columns = array_merge($table->columns, $columns);
+		return $rules;
     }
 
     /**
-     * @return Connection the DB connection from the DI container or as application component specified by [[db]].
+     * @return \yii\db\Connection the DB connection from the DI container or as application component specified by [[db]].
      */
     protected function getDbConnection()
     {
@@ -512,5 +564,42 @@ class Generator extends \yii\gii\generators\model\Generator
         ];
 
     }
+    
+    /**
+     * @param \yii\db\TableSchema $table the table schema
+     * 
+     * @return string[]|null 
+     */
+    protected function generateBlameable($table)
+    {
+    	$createdBy = $table->getColumn($this->createdByColumn) !== null ? $this->createdByColumn : false;
+    	$updatedBy = $table->getColumn($this->updatedByColumn) !== null ? $this->updatedByColumn : false;
 
+    	if ($this->useBlameableBehavior && ($createdBy || $updatedBy)) {
+    		return [
+    				'createdByAttribute' => $createdBy,
+    				'updatedByAttribute' => $updatedBy,    				
+    		];
+    	}
+    	return [];
+    }
+    
+    /**
+     * @param \yii\db\TableSchema $table the table schema
+     * 
+     * @return string[]|null 
+     */
+    protected function generateTimestamp($table)
+    {
+    	$createdAt = $table->getColumn($this->createdAtColumn) !== null ? $this->createdAtColumn : false;
+    	$updatedAt = $table->getColumn($this->updatedAtColumn) !== null ? $this->updatedAtColumn : false;
+
+    	if ($this->useTimestampBehavior && ($createdAt || $updatedAt)) {
+    		return [
+    				'createdAtAttribute' => $createdAt,
+    				'updatedAtAttribute' => $updatedAt,
+    		];
+    	}
+    	return [];
+    }
 }

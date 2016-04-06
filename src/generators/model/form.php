@@ -44,3 +44,25 @@ echo $form->field($generator, 'messageCategory');
         </div>
     </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Blameable Behavior</div>
+    <div class="panel-body">
+        <?php
+        echo $form->field($generator, 'useBlameableBehavior')->checkbox();
+        echo $form->field($generator, 'createdByColumn');
+        echo $form->field($generator, 'updatedByColumn');
+        ?>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Timestamp Behavior</div>
+    <div class="panel-body">
+        <?php
+        echo $form->field($generator, 'useTimestampBehavior')->checkbox();
+        echo $form->field($generator, 'createdAtColumn');
+        echo $form->field($generator, 'updatedAtColumn');
+        ?>
+    </div>
+</div>
