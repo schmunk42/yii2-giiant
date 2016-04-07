@@ -1,11 +1,12 @@
 version: '2'
 services:
   phpfpm:
-    image: phundament/app:4.2.0-rc2
+    image: phundament/app:4.3.0-beta6
     working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
+      - DB_ENV_MYSQL_ROOT_USER=admin
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
