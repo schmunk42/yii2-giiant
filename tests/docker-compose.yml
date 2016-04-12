@@ -21,7 +21,7 @@ services:
       - ../:/app/vendor/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
       # host volume for local debugging of generated files
-      - ./tmp:/app/src/modules/${GIIANT_TEST_DB}
+      - ./tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
 
   nginx:
     image: schmunk42/nginx:1.9
