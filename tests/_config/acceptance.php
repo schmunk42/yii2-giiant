@@ -11,5 +11,11 @@ return yii\helpers\ArrayHelper::merge(
     [
         'controllerNamespace' => 'app\controllers',
         'language'            => 'en',
+        'modules' => [
+            'sakila' => [
+                'class'      => 'yii\sakila\Module',
+                'allowedIPs' => '*'
+            ]
+        ]
     ]
 );

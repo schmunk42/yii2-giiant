@@ -22,7 +22,7 @@ class LoginPage extends BasePage
         $this->actor->fillField('input[name="login-form[password]"]', $password);
         $this->actor->click('Sign in');
         if (method_exists($this->actor, 'waitForElement')) {
-            $this->actor->waitForElement('.user-footer', 5);
+            $this->actor->waitForText($username, 5);
         }
     }
 }
