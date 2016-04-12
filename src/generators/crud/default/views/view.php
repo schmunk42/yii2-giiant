@@ -87,6 +87,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     </div>
 
+    <hr />
 
     <?php
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";

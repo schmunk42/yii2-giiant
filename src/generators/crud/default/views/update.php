@@ -43,6 +43,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
         ) ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>
     </div>
 
+    <hr />
+
     <?= '<?php ' ?>echo $this->render('_form', [
     'model' => $model,
     ]); ?>
