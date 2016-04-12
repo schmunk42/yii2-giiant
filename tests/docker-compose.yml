@@ -10,7 +10,7 @@ services:
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
-      - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/config.php
+      - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
       - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
     depends_on:
       - mariadb
