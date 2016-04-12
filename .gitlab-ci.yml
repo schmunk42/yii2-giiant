@@ -2,7 +2,6 @@ before_script:
   - export BUILD_PREFIX=buildref${CI_BUILD_REF}$(echo ${CI_BUILD_REF_NAME} | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')giiant
   - export COMPOSE_PROJECT_NAME=${BUILD_PREFIX}
   - cd tests
-  - cp docker-compose.override-dist.yml docker-compose.override.yml
 
 stages:
   - test
