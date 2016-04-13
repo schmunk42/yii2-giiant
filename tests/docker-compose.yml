@@ -10,15 +10,18 @@ services:
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
-      - "APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations"
+      - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
+      - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
     depends_on:
       - mariadb
       - seleniumfirefox
     volumes:
       - /app
-      # host volume for local debugging of generated files
+      # host volume for local development
       - ../:/app/vendor/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
+      # host volume for local debugging of generated files
+      - ./tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
 
   nginx:
     image: schmunk42/nginx:1.9
@@ -40,7 +43,7 @@ services:
       - ./_build/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
-    image: 'selenium/standalone-firefox-debug:2.48.2'
+    image: 'selenium/standalone-firefox-debug:2.53.0'
     expose:
         - '4444'
     ports:

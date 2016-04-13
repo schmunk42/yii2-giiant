@@ -172,6 +172,7 @@ PHP;
         </div>
     </div>
 
+    <hr />
 
     <div class="table-responsive">
         <?= '<?= ' ?>GridView::widget([

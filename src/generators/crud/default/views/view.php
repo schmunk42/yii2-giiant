@@ -37,7 +37,7 @@ $copyParams = $model->attributes;
 
 $this->title = $model->getAliasModel() . $model-><?= $generator->getNameAttribute() ?>;
 $this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (string)$model-><?=$generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
@@ -61,25 +61,33 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <div class="clearfix crud-navigation">
+
         <!-- menu buttons -->
         <div class='pull-left'>
-            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString(
-                'Edit'
-            ) ?>, ['update', <?= $urlParams ?>],['class' => 'btn btn-info']) ?>
-            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString(
-                'Copy'
-            ) ?>, ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>
-            '=>$copyParams],['class' => 'btn btn-success']) ?>
-            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
-                'New'
-            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+            <?= '<?= ' ?>Html::a(
+            '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
+            [ 'update', <?= $urlParams ?>],
+            ['class' => 'btn btn-info']) ?>
+
+            <?= '<?= ' ?>Html::a(
+            '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
+            ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
+            ['class' => 'btn btn-success']) ?>
+
+            <?= '<?= ' ?>Html::a(
+            '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
+            ['create'],
+            ['class' => 'btn btn-success']) ?>
         </div>
+
         <div class="pull-right">
-            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> ' . <?= $generator->generateString('Full list') ?>, ['index'], ['class'=>'btn btn-default']) ?>
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> '
+            . <?= $generator->generateString('Full list') ?>, ['index'], ['class'=>'btn btn-default']) ?>
         </div>
 
     </div>
 
+    <hr />
 
     <?php
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";

@@ -10,6 +10,9 @@ return [
         'gii' => [
             'class'      => 'yii\gii\Module',
             'allowedIPs' => '*'
+        ],
+        'sakila' => [
+            'class'      => 'app\modules\sakila\Module',
         ]
     ],
 ];

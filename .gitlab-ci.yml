@@ -2,7 +2,6 @@ before_script:
   - export BUILD_PREFIX=buildref${CI_BUILD_REF}$(echo ${CI_BUILD_REF_NAME} | tr -dc '[:alnum:]\n\r' | tr '[:upper:]' '[:lower:]')giiant
   - export COMPOSE_PROJECT_NAME=${BUILD_PREFIX}
   - cd tests
-  - cp docker-compose.override-dist.yml docker-compose.override.yml
 
 stages:
   - test
@@ -18,7 +17,7 @@ test:
     - sleep 10
     - docker-compose run --rm phpfpm setup.sh
     - set +e
-    - docker-compose run --rm -e YII_ENV=test phpfpm codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,functional,acceptance; TESTS_EXIT_CODE=$?
+    - docker-compose run --rm -e YII_ENV=dev phpfpm bash -c 'codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,acceptance' || TESTS_EXIT_CODE=1
     - cp -r _output /tmp/${BUILD_PREFIX}
     - set -e
     - exit $TESTS_EXIT_CODE

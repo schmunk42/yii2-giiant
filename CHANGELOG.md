@@ -1,6 +1,14 @@
 Changelog
 =========
 
+### 0.7.2
+
+  * fixed copy button
+
+### 0.7.0-0.7.1
+
+*see git log*
+
 ### 0.6.1 (2015-12-28)
 
   * improved test stack isolation
