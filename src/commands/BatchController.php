@@ -24,6 +24,22 @@ class BatchController extends Controller
     public $overwrite = false;
 
     /**
+     * @var bool whether to use or not 2amigos/yii2-translateable-behavior
+     */
+    public $useTranslatableBehavior = true;
+
+    /**
+     * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
+     * "Table Name" field.
+     */
+    public $languageTableName = "{{table}}_lang";
+
+    /**
+     * @var string the column name where the language code is stored.
+     */
+    public $languageCodeColumn = "language";
+
+    /**
      * @var bool whether to overwrite extended models (from ModelBase)
      */
     public $extendedModels = false;
@@ -183,6 +199,9 @@ class BatchController extends Controller
             [
                 'template',
                 'overwrite',
+                'useTranslatableBehavior',
+                'languageTableName',
+                'languageCodeColumn',
                 'extendedModels',
                 'enableI18N',
                 'messageCategory',
@@ -264,6 +283,9 @@ class BatchController extends Controller
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
+                'useTranslatableBehavior' => $this->useTranslatableBehavior,
+                'languageTableName' => $this->languageTableName,
+                'languageCodeColumn' => $this->languageCodeColumn,
                 'template' => $this->template,
                 'ns' => $this->modelNamespace,
                 'db' => $this->modelDb,
