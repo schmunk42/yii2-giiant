@@ -30,6 +30,9 @@ switch (getenv('GIIANT_TEST_DB')) {
 
 
 return [
+    'aliases' => [
+      '@tests' => '@vendor/schmunk42/yii2-giiant/tests'
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\ApcCache',

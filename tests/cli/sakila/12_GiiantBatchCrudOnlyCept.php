@@ -5,8 +5,8 @@
 $I = new CliTester($scenario);
 
 // prepare output folders
-$I->runShellCommand('mkdir -p /app/src/controllers/crud');
-$I->runShellCommand('mkdir -p /app/src/models/crud/search');
+$I->runShellCommand('mkdir -p /app/src/controllers/crudonly');
+$I->runShellCommand('mkdir -p /app/src/models/crudonly/search');
 
 // model & crud command
 $batch = <<<'CMD'

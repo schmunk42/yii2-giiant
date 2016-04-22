@@ -39,10 +39,11 @@ use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\w
 <?php endif; ?>
 */
 
-$this->title = $searchModel->getAliasModel(true);
+<?php
+#$this->title = $searchModel->getAliasModel(true);
 $this->params['breadcrumbs'][] = $this->title;
 if($generator->accessFilter){
-?>        
+?>
 
 /**
 * create action column template depending acces rights
@@ -50,25 +51,25 @@ if($generator->accessFilter){
 $actionColumnTemplates = [];
 
 if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) { 
-    $actionColumnTemplates[] = 'view'; 
+    $actionColumnTemplates[] = '{view}';
 }
 
 if (\Yii::$app->user->can('<?=$permisions['update']['name']?>')) {
-    $actionColumnTemplates[] = 'update'; 
+    $actionColumnTemplates[] = '{update}';
 }
 
 if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>')) {
-    $actionColumnTemplates[] = 'delete'; 
+    $actionColumnTemplates[] = '{delete}';
 }
 
 $actionColumnTemplate = implode(' ', $actionColumnTemplates);
-<?php
-    $actionColumnTemplateString = '$actionColumnTemplate';
+    $actionColumnTemplateString = $actionColumnTemplate;
+    <?php
 }else{
-?>   
+?>
 Yii::$app->view->params['pageButtons'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']);
-<?php   
     $actionColumnTemplateString = "'{view} {update} {delete}'";
+    <?php
 }
 echo '?>';
 ?>
@@ -178,7 +179,6 @@ PHP;
         <?= '<?= ' ?>GridView::widget([
         'layout' => '{summary}{pager}{items}{pager}',
         'dataProvider' => $dataProvider,
-        'actionColumnTemplate' => <?=$actionColumnTemplateString?>,
         'pager' => [
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
@@ -195,6 +195,7 @@ PHP;
         $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',
+            'template' => \$actionColumnTemplateString,
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
                 // using the column name as key, not mapping to 'id' like the standard generator
                 \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
