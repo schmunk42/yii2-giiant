@@ -2,7 +2,6 @@ version: '2'
 services:
   phpfpm:
     image: phundament/app:latest
-    command: 'run.sh'
     working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
