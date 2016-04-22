@@ -12,6 +12,7 @@ use yii\gii\CodeFile;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use schmunk42\giiant\helpers\SaveForm;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -109,6 +110,14 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $tidyOutput;
 
+    /**
+     * @var string form field for selecting and loading saved gii forms 
+     */
+    public $savedForm;
+    
+    public $moduleNs;
+    public $migrationClass;
+    
     private $_p = [];
 
     /**
@@ -158,7 +167,8 @@ class Generator extends \yii\gii\generators\crud\Generator
                 'providerList' => 'Choose the providers to be used.',
                 'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
-            ]
+            ],
+            SaveForm::hint()
         );
     }
 
@@ -170,7 +180,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(
             parent::rules(),
             [
-                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix'], 'safe'],
+                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix','savedForm','formLayout','accessFilter','singularEntities'], 'safe'],
                 [['viewPath'], 'required'],
             ]
         );
@@ -184,6 +194,19 @@ class Generator extends \yii\gii\generators\crud\Generator
         return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
+    /**
+     * all form fields for saving in saved forms
+     * @return array
+     */
+    public function formAttributes()
+    {
+        return ['modelClass','searchModelClass','controllerClass',
+            'baseControllerClass','viewPath','pathPrefix','enableI18N',
+            'singularEntities','indexWidgetType','formLayout',
+            'actionButtonClass', 'providerList','template','accessFilter',
+            'singularEntities'];
+    }
+    
     /**
      * @return string the action view file path
      */
@@ -210,8 +233,29 @@ class Generator extends \yii\gii\generators\crud\Generator
         return Inflector::camel2id($class, '-', true);
     }
 
+    /**
+     * @return string the controller ID (without the module ID prefix)
+     */
+    public function getModuleId()
+    {
+        if(!$this->moduleNs){
+            $controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+            $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($controllerNs, '\\'));
+        }
+        return \yii\helpers\StringHelper::basename($this->moduleNs);
+    }
+
     public function generate()
     {
+        
+        $accessDefinitions = require($this->getTemplatePath() . '/access_definition.php');
+                
+        $this->controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+        $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
+        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass),0,-10);
+        
+        $this->migrationClass = 'm' . date("ymd_H") . '0101_' . $controllerName . '_access'; 
+        
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
             $this->controllerClass = Inflector::singularize(
@@ -224,7 +268,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         $baseControllerFile = StringHelper::dirname($controllerFile).'/base/'.StringHelper::basename($controllerFile);
         $restControllerFile = StringHelper::dirname($controllerFile).'/api/'.StringHelper::basename($controllerFile);
 
-        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php'));
+        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php',['accessDefinitions' => $accessDefinitions]));
         $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
 
         if ($this->overwriteControllerClass || !is_file($controllerFile)) {
@@ -247,10 +291,41 @@ class Generator extends \yii\gii\generators\crud\Generator
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file"));
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file",['permisions' => $permisions]));
             }
         }
 
+        if ($this->accessFilter){
+            
+            /**
+             * access migration
+             */
+            $migrationFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
+                    . '/migrations/'
+                    . $this->migrationClass.'.php' ;
+            $files[] = new CodeFile($migrationFile, $this->render('migration_access.php',['accessDefinitions' => $accessDefinitions]));
+
+            /**
+             * access roles translation
+             */
+            $forRoleTranslationFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
+                    . '/messages/for-translation/'
+                    . $controllerName.'.php' ;
+            $files[] = new CodeFile($forRoleTranslationFile, $this->render('roles-translation.php',['accessDefinitions' => $accessDefinitions]));
+        }
+
+        /**
+         * create gii/[name]GiantCRUD.json with actual form data
+         */
+        $suffix = str_replace(' ','', $this->getName());
+        $controllerFileinfo = pathinfo($controllerFile);
+        $formDataFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
+                . '/gii/'
+                . str_replace('Controller',$suffix,$controllerFileinfo['filename']).'.json' ;
+        //$formData = json_encode($this->getFormAttributesValues());
+        $formData = json_encode(SaveForm::getFormAttributesValues($this,$this->formAttributes()));
+        $files[] = new CodeFile($formDataFile, $formData);
+        
         return $files;
     }
 
@@ -278,4 +353,24 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
         parent::validateClass($attribute, $params);
     }
+    
+    public function var_export54($var, $indent="") {
+        switch (gettype($var)) {
+            case "string":
+                return '"' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '"';
+            case "array":
+                $indexed = array_keys($var) === range(0, count($var) - 1);
+                $r = [];
+                foreach ($var as $key => $value) {
+                    $r[] = "$indent    "
+                         . ($indexed ? "" : $this->var_export54($key) . " => ")
+                         . $this->var_export54($value, "$indent    ");
+                }
+                return "[\n" . implode(",\n", $r) . "\n" . $indent . "]";
+            case "boolean":
+                return $var ? "TRUE" : "FALSE";
+            default:
+                return var_export($var, TRUE);
+        }
+    }    
 }

@@ -41,6 +41,36 @@ use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\w
 
 $this->title = $searchModel->getAliasModel(true);
 $this->params['breadcrumbs'][] = $this->title;
+if($generator->accessFilter){
+?>        
+
+/**
+* create action column template depending acces rights
+*/
+$actionColumnTemplates = [];
+
+if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) { 
+    $actionColumnTemplates[] = 'view'; 
+}
+
+if (\Yii::$app->user->can('<?=$permisions['update']['name']?>')) {
+    $actionColumnTemplates[] = 'update'; 
+}
+
+if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>')) {
+    $actionColumnTemplates[] = 'delete'; 
+}
+
+$actionColumnTemplate = implode(' ', $actionColumnTemplates);
+<?php
+    $actionColumnTemplateString = '$actionColumnTemplate';
+}else{
+?>   
+Yii::$app->view->params['pageButtons'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']);
+<?php   
+    $actionColumnTemplateString = "'{view} {update} {delete}'";
+}
+echo '?>';
 ?>
 
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
@@ -63,11 +93,31 @@ $this->params['breadcrumbs'][] = $this->title;
         </small>
     </h1>
     <div class="clearfix crud-navigation">
+<?php
+if($generator->accessFilter){ 
+	echo "<?php\n"
+?>
+if(\Yii::$app->user->can('<?=$permisions['create']['name']?>')){
+<?php
+echo "?>\n"
+?>
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
                 'New'
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
+<?php
+	echo "<?php\n}\n?>";
+}else{
+?>
+        <div class="pull-left">
+            <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
+                'New'
+            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+        </div>
+<?php
+}
+?>
 
         <div class="pull-right">
 
@@ -128,6 +178,7 @@ PHP;
         <?= '<?= ' ?>GridView::widget([
         'layout' => '{summary}{pager}{items}{pager}',
         'dataProvider' => $dataProvider,
+        'actionColumnTemplate' => <?=$actionColumnTemplateString?>,
         'pager' => [
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
@@ -166,9 +217,9 @@ PHP;
                 continue;
             }
             if (++$count < $generator->gridMaxColumns) {
-                echo "\t\t\t{$format},\n";
+                echo "\t\t\t" . str_replace("\n", "\n\t\t\t", $format) . ",\n";
             } else {
-                echo "\t\t\t/*{$format}*/\n";
+                echo "\t\t\t/*" . str_replace("\n", "\n\t\t\t", $format) . ",*/\n";
             }
         }
 

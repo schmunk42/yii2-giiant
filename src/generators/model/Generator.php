@@ -10,6 +10,8 @@ namespace schmunk42\giiant\generators\model;
 use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
+use schmunk42\giiant\helpers\SaveForm;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -99,6 +101,11 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public $generateHintsFromComments = true;
 
+    /**
+     * @var string form field for selecting and loading saved gii forms 
+     */
+    public $savedForm;
+    
     protected $classNames2;
 
     /**
@@ -125,13 +132,46 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [['generateModelClass', 'useTranslatableBehavior','generateHintsFromComments', 'useBlameableBehavior', 'useTimestampBehavior'], 'boolean'],
-                [['languageTableName', 'languageCodeColumn', 'createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn'], 'string'],
+                [[
+                    'generateModelClass', 
+                    'useTranslatableBehavior',
+                    'generateHintsFromComments',
+                    'useBlameableBehavior', 
+                    'useTimestampBehavior',
+                    'singularEntities'
+                    ], 'boolean'],
+                [['languageTableName', 'languageCodeColumn','createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn','savedForm'], 'string'],
                 [['tablePrefix'], 'safe'],
             ]
         );
     }
 
+    /**
+     * all form fields for saving in saved forms
+     * @return array
+     */
+    public function formAttributes()
+    {
+        return [
+            'tableName',
+            'tablePrefix',
+            'modelClass',
+            'ns',
+            'baseClass',
+            'db',
+            'generateRelations',
+            'generateLabelsFromComments',
+            'generateHintsFromComments',
+            'generateModelClass', 
+            'enableI18N',
+            'singularEntities',
+            'messageCategory',
+            'useTranslatableBehavior',
+            'languageTableName', 
+            'languageCodeColumn',
+            ];
+    }    
+    
     /**
      * @inheritdoc
      */
@@ -166,7 +206,8 @@ class Generator extends \yii\gii\generators\model\Generator
             	'useBlameableBehavior' => 'Use <code>BlameableBehavior</code> for tables with column(s) for created by and/or updated by user IDs.',
            		'createdByColumn' => "The column name where the record creator's user ID is stored.",
            		'updatedByColumn' => "The column name where the record updater's user ID is stored.",
-            ]
+            ],
+            SaveForm::hint()
         );
     }
 
@@ -244,6 +285,18 @@ class Generator extends \yii\gii\generators\model\Generator
                     );
                 }
             }
+            
+            /**
+             * create gii/[name]GiiantModel.json with actual form data
+             */
+            $suffix = str_replace(' ','', $this->getName());
+            $formDataDir = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
+            $formDataFile = StringHelper::dirname($formDataDir) 
+                    . '/gii'
+                    . '/' . $tableName .$suffix .'.json' ;
+            
+            $formData = json_encode(SaveForm::getFormAttributesValues($this,$this->formAttributes()));
+            $files[] = new CodeFile($formDataFile, $formData);            
 
         }
         return $files;
