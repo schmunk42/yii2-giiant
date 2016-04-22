@@ -29,6 +29,12 @@ use Yii;
 <?php if (isset($translation)): ?>
 use dosamigos\translateable\TranslateableBehavior;
 <?php endif; ?>
+<?php if (!empty($blameable)): ?>
+use yii\behaviors\BlameableBehavior;
+<?php endif; ?>
+<?php if (!empty($timestamp)): ?>
+use yii\behaviors\TimestampBehavior;
+<?php endif; ?>
 
 /**
  * This is the base-model class for table "<?= $tableName ?>".
@@ -93,13 +99,37 @@ if(!empty($enum)){
             return Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>');
         }
     }
-<?php if (isset($translation)): ?>
+<?php if (isset($translation) || !empty($blameable) || !empty($timestamp)): ?>
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
+<?php if (!empty($blameable)): ?>
+			[
+				'class' => BlameableBehavior::className(),
+<?php if ($blameable['createdByAttribute'] !== 'created_by'): ?>
+				'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
+<?php endif; ?>
+<?php if ($blameable['updatedByAttribute'] !== 'updated_by'): ?>
+				'updatedByAttribute' => <?= $blameable['updatedByAttribute'] ? "'" . $blameable['updatedByAttribute'] . "'" : 'false' ?>,
+<?php endif; ?>
+			],
+<?php endif; ?>
+<?php if (!empty($timestamp)): ?>
+			[
+				'class' => TimestampBehavior::className(),
+<?php if ($timestamp['createdAtAttribute'] !== 'created_at'): ?>
+				'createdAtAttribute' => <?= $timestamp['createdAtAttribute'] ? "'" . $timestamp['createdAtAttribute'] . "'" : 'false' ?>,
+<?php endif; ?>
+<?php if ($timestamp['updatedAtAttribute'] !== 'updated_at'): ?>
+				'updatedAtAttribute' => <?= $timestamp['updatedAtAttribute'] ? "'" . $timestamp['updatedAtAttribute'] . "'" : 'false' ?>,
+<?php endif; ?>
+			],
+<?php endif; ?>
+<?php if (isset($translation)): ?>
             'translatable' => [
                 'class' => TranslateableBehavior::className(),
                 // in case you renamed your relation, you can setup its name
@@ -109,8 +139,9 @@ if(!empty($enum)){
 <?php endif; ?>
                 'translationAttributes' => [
                     <?= "'" . implode("',\n                    '", $translation['fields']) . "'\n" ?>
-                ]
-            ],
+                ],
+			],
+<?php endif; ?>
         ];
     }
 <?php endif; ?>
