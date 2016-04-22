@@ -14,7 +14,7 @@
     ],
     "require": {
         "cmrcx/phptidy": "2.*",
-        "dmstr/yii2-bootstrap": "*",
+        "dmstr/yii2-bootstrap": "^0.1.2 || ~0.2",
         "dmstr/yii2-helpers": "*",
         "dmstr/yii2-db": "*",
         "yiisoft/yii2": "~2.0.4",
