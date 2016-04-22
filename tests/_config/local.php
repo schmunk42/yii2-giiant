@@ -31,6 +31,9 @@ switch (getenv('GIIANT_TEST_DB')) {
 
 return [
     'components' => [
+        'cache' => [
+            'class' => 'yii\caching\ApcCache',
+        ],
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => getenv('DATABASE_DSN_BASE') . ';dbname=' . getenv('GIIANT_TEST_DB'), // DATABASE_DSN_DB

@@ -1,7 +1,8 @@
 version: '2'
 services:
   phpfpm:
-    image: phundament/app:4.3.0-beta6
+    image: phundament/app:latest
+    command: 'run.sh'
     working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
@@ -12,6 +13,8 @@ services:
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
       - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
       - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
+      - YII_ENV=dev
+      - YII_DEBUG=1
     depends_on:
       - mariadb
       - seleniumfirefox
