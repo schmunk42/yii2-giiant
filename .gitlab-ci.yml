@@ -4,9 +4,15 @@ before_script:
   - cd tests
 
 stages:
+  - build
   - test
   - report
   - cleanup
+
+build:
+  stage: build
+  script:
+    - docker-compose pull
 
 test:
   stage: test
