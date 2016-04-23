@@ -108,26 +108,26 @@ if(!empty($enum)){
     {
         return [
 <?php if (!empty($blameable)): ?>
-			[
-				'class' => BlameableBehavior::className(),
+            [
+                'class' => BlameableBehavior::className(),
 <?php if ($blameable['createdByAttribute'] !== 'created_by'): ?>
-				'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
+                'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
 <?php if ($blameable['updatedByAttribute'] !== 'updated_by'): ?>
-				'updatedByAttribute' => <?= $blameable['updatedByAttribute'] ? "'" . $blameable['updatedByAttribute'] . "'" : 'false' ?>,
+                'updatedByAttribute' => <?= $blameable['updatedByAttribute'] ? "'" . $blameable['updatedByAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
-			],
+            ],
 <?php endif; ?>
 <?php if (!empty($timestamp)): ?>
-			[
-				'class' => TimestampBehavior::className(),
+            [
+                'class' => TimestampBehavior::className(),
 <?php if ($timestamp['createdAtAttribute'] !== 'created_at'): ?>
-				'createdAtAttribute' => <?= $timestamp['createdAtAttribute'] ? "'" . $timestamp['createdAtAttribute'] . "'" : 'false' ?>,
+                'createdAtAttribute' => <?= $timestamp['createdAtAttribute'] ? "'" . $timestamp['createdAtAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
 <?php if ($timestamp['updatedAtAttribute'] !== 'updated_at'): ?>
-				'updatedAtAttribute' => <?= $timestamp['updatedAtAttribute'] ? "'" . $timestamp['updatedAtAttribute'] . "'" : 'false' ?>,
+                'updatedAtAttribute' => <?= $timestamp['updatedAtAttribute'] ? "'" . $timestamp['updatedAtAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
-			],
+            ],
 <?php endif; ?>
 <?php if (isset($translation)): ?>
             'translatable' => [
@@ -140,7 +140,7 @@ if(!empty($enum)){
                 'translationAttributes' => [
                     <?= "'" . implode("',\n                    '", $translation['fields']) . "'\n" ?>
                 ],
-			],
+            ],
 <?php endif; ?>
         ];
     }
@@ -172,11 +172,11 @@ if(!empty($enum)){
      */
     public function attributeHints()
     {
-		return array_merge(parent::attributeHints(), [
+        return array_merge(parent::attributeHints(), [
 <?php foreach ($hints as $name => $hint): ?>
             <?= "'$name' => " . $generator->generateString($hint) . ",\n" ?>
 <?php endforeach; ?>
-		]);
+        ]);
     }
 <?php endif; ?>
 <?php foreach ($relations as $name => $relation): ?>
