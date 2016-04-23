@@ -165,20 +165,20 @@ if(!empty($enum)){
 <?php endforeach; ?>
         ];
     }
+<?php if (!empty($hints)): ?>
 
     /**
      * @inheritdoc
      */
     public function attributeHints()
     {
-        return array_merge(
-            parent::attributeHints(),
-            [
+		return array_merge(parent::attributeHints(), [
 <?php foreach ($hints as $name => $hint): ?>
             <?= "'$name' => " . $generator->generateString($hint) . ",\n" ?>
 <?php endforeach; ?>
-            ]);
+		]);
     }
+<?php endif; ?>
 <?php foreach ($relations as $name => $relation): ?>
 
     /**

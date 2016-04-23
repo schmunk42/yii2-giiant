@@ -180,7 +180,8 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::attributeLabels(),
             [
-                'generateModelClass' => 'Generate Model Class',
+            	'generateModelClass' => 'Generate Model Class',
+            	'generateHintsFromComments' => 'Generate Hints from DB Comments',
             ]
         );
     }
@@ -364,22 +365,18 @@ class Generator extends \yii\gii\generators\model\Generator
      * Generates the attribute hints for the specified table.
      * @param \yii\db\TableSchema $table the table schema
      * @return array the generated attribute hints (name => hint)
+     * or an empty array if $this->generateHintsFromComments is false.
      */
     public function generateHints($table)
     {
         $hints = [];
-        foreach ($table->columns as $column) {
-            if ($this->generateHintsFromComments && !empty($column->comment)) {
-                $hints[$column->name] = $column->comment;
-            } elseif (!strcasecmp($column->name, 'id')) {
-                $hints[$column->name] = 'ID';
-            } else {
-                $hint = Inflector::camel2words($column->name);
-                if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
-                    $label = substr($label, 0, -3) . ' ID';
-                }
-                $hints[$column->name] = $hint;
-            }
+
+        if ($this->generateHintsFromComments) {
+			foreach ($table->columns as $column) {
+	            if (!empty($column->comment)) {
+	                $hints[$column->name] = $column->comment;
+	            }
+	        }
         }
 
         return $hints;
