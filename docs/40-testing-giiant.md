@@ -13,16 +13,9 @@ Go to the `tests` directory
 
     cd tests
 
-Select the database you want to test
-
-    export GIIANT_TEST_DB=sakila
-    cp docker-compose.override-dist.yml docker-compose.override.yml
-
-Initialize *Potemkin*
+Start *phd-potemkin-stack*
     
     docker-compose up -d
-    docker-compose run --rm -e YII_ENV=test phpfpm setup.sh
-
 
 ### Usage
    

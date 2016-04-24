@@ -4,18 +4,24 @@ before_script:
   - cd tests
 
 stages:
+  - build
   - test
   - report
   - cleanup
+
+build:
+  stage: build
+  script:
+    - docker-compose pull
 
 test:
   stage: test
   script:
     - export GIIANT_TEST_DB=sakila
     - docker-compose up -d
-    # test data import takes some time
+    # workaround (wait for db)
     - sleep 10
-    - docker-compose run --rm phpfpm setup.sh
+    - docker-compose run phpfpm setup.sh
     - set +e
     - docker-compose run --rm -e YII_ENV=dev phpfpm bash -c 'codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} cli,unit,acceptance' || TESTS_EXIT_CODE=1
     - cp -r _output /tmp/${BUILD_PREFIX}

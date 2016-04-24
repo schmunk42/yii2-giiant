@@ -34,4 +34,4 @@ $_SERVER['SERVER_PORT']     = parse_url(
 
 #var_dump($_SERVER);
 
-Yii::setAlias('@tests', dirname(__DIR__) . "/tests");
+Yii::setAlias('@tests', __DIR__);
