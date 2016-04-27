@@ -169,6 +169,12 @@ class Generator extends \yii\gii\generators\model\Generator
             'useTranslatableBehavior',
             'languageTableName', 
             'languageCodeColumn',
+            'useBlameableBehavior',
+            'createdByColumn',
+            'updatedByColumn',
+            'useTimestampBehavior',
+            'createdAtColumn',
+            'updatedAtColumn',
             ];
     }    
     
