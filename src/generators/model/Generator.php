@@ -163,6 +163,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'generateLabelsFromComments',
             'generateHintsFromComments',
             'generateModelClass', 
+            'generateQuery',
             'enableI18N',
             'singularEntities',
             'messageCategory',
