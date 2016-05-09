@@ -10,6 +10,7 @@ namespace schmunk42\giiant\generators\crud;
  * file that was distributed with this source code.
  */
 
+use ReflectionMethod;
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\db\ActiveQuery;
 use yii\helpers\Inflector;
@@ -73,7 +74,7 @@ trait ModelTrait
         $model = new $modelClass();
         $stack = [];
         $modelGenerator = new ModelGenerator();
-        foreach ($reflector->getMethods() as $method) {
+        foreach ($reflector->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             if (in_array(substr($method->name, 3), $this->skipRelations)) {
                 continue;
             }
