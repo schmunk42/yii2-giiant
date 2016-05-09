@@ -36,9 +36,11 @@ $I->makeScreenshot('crud-create-country');
 $I->click('Edit');
 $I->wait(1);
 
-$I->see('Xyzland', 'input');
+$I->seeInField('#country-country', 'Xyzland');
 $I->see('Country', 'h1');
 $I->fillField('#country-country', 'Abcstan');
 $I->click('Save');
+$I->wait(1);
 
+$I->see('Abcstan', 'table');
 $I->makeScreenshot('crud-edit-country');
