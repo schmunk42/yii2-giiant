@@ -48,7 +48,8 @@ $dataProvider = new \yii\data\ArrayDataProvider(
 $listView = \yii\widgets\ListView::widget(
 [
     'dataProvider' => $dataProvider,
-    'itemView'     => function ($data) {
+    'layout' => "{items}\n{pager}",
+    'itemView' => function ($data) {
         return '<div class="col-xs-6 col-sm-4 col-lg-3">'.insolita\wgadminlte\SmallBox::widget(
             [
                 'head'        => $data['head'],
