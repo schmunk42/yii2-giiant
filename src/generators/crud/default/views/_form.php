@@ -75,7 +75,7 @@ use \dmstr\bootstrap\Tabs;
 
         $items = <<<EOS
 [
-    'label'   => \$model->getAliasModel(),
+    'label'   => Yii::t('<?= $generator->messageCategory ?>', "<?= StringHelper::basename({$model::className()}) ?>"),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],

@@ -86,19 +86,6 @@ if(!empty($enum)){
         return '<?= $tableName ?>';
     }
 
-    /**
-     * Alias name of table for crud viewsLists all Area models.
-     * Change the alias name manual if needed later
-     * @return string
-     */
-    public function getAliasModel($plural=false)
-    {
-        if($plural){
-            return Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>');
-        }else{
-            return Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>');
-        }
-    }
 <?php if (isset($translation) || !empty($blameable) || !empty($timestamp)): ?>
 
     /**

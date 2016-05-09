@@ -14,6 +14,9 @@ $nameAttribute = $generator->getNameAttribute();
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
 $model->setScenario('crud');
+
+$modelName = Inflector::pluralize(StringHelper::basename($model::className()));
+
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
     /** @var \yii\db\ActiveRecord $model */
@@ -40,9 +43,12 @@ use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\w
 */
 
 <?php
-#$this->title = $searchModel->getAliasModel(true);
+$this->title = Yii::t($generator->messageCategory, $modelName);
 $this->params['breadcrumbs'][] = $this->title;
-if($generator->accessFilter){
+?>
+
+<?php
+if($generator->accessFilter):
 ?>
 
 /**
@@ -61,16 +67,17 @@ if (\Yii::$app->user->can('<?=$permisions['update']['name']?>')) {
 if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>')) {
     $actionColumnTemplates[] = '{delete}';
 }
-
+<?php
+endif;
+?>
+if (isset($actionColumnTemplates)) {
 $actionColumnTemplate = implode(' ', $actionColumnTemplates);
     $actionColumnTemplateString = $actionColumnTemplate;
-    <?php
-}else{
-?>
+} else {
 Yii::$app->view->params['pageButtons'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']);
     $actionColumnTemplateString = "'{view} {update} {delete}'";
-    <?php
 }
+<?php
 echo '?>';
 ?>
 
@@ -88,7 +95,7 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= '<?= $searchModel->getAliasModel(true) ?>' ?>
+        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
         <small>
             List
         </small>
@@ -245,5 +252,4 @@ PHP;
     ]); ?>
 
 <?php endif; ?>
-
 
