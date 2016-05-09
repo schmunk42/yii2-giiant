@@ -25,4 +25,4 @@ setup:	##@docker setup application
 	$(DOCKER_COMPOSE) run phpfpm setup.sh
 
 test: up setup
-	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila phpfpm bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila cli,unit,acceptance"
+	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila phpfpm bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila -g onlyCrud cli,unit,acceptance"
