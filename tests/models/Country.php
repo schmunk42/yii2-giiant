@@ -23,4 +23,8 @@ class Country extends \yii\db\ActiveRecord
     {
         return 'country';
     }
+
+    private function getTestForIssue146() {
+        return false;
+    }
 }

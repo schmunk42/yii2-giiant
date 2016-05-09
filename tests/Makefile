@@ -17,3 +17,12 @@ open-db:	 ##@docker open application web service in browser
 
 bash:	##@docker open application shell in container
 	$(DOCKER_COMPOSE) run --rm phpfpm bash
+
+up:	##@docker start application stack
+	$(DOCKER_COMPOSE) up -d
+
+setup:	##@docker setup application
+	$(DOCKER_COMPOSE) run phpfpm setup.sh
+
+test: up setup
+	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila phpfpm bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila cli,unit,acceptance"
