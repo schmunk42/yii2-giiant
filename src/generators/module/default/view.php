@@ -16,7 +16,7 @@ $favourites  = [];
 
 $patterns = [
     '^default$'  => ['color' => 'gray', 'icon' => FA::_CUBE],
-    '^.*$'       => ['color' => 'blue', 'icon' => FA::_CUBE],
+    '^.*$'       => ['color' => 'green', 'icon' => FA::_CUBE],
 ];
 
 foreach ($patterns AS $pattern => $options) {
