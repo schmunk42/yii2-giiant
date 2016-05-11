@@ -1,6 +1,13 @@
 Changelog
 =========
 
+### 0.8.0
+
+  * added giiant-extension generator
+  * :warning: removed `getAliasModel()`
+  * updated module template
+  * fixed form/cli validations
+
 ### 0.7.2
 
   * fixed copy button
