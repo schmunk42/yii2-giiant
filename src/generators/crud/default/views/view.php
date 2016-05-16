@@ -11,6 +11,9 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
 $model->setScenario('crud');
+$modelName = StringHelper::basename($model::className());
+
+$className = $model::className();
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -35,8 +38,8 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = $model->getAliasModel() . $model-><?= $generator->getNameAttribute() ?>;
-$this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
+$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
@@ -53,7 +56,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <h1>
-        <?= '<?= $model->getAliasModel() ?>' ?>
+        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
         <small>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
         </small>

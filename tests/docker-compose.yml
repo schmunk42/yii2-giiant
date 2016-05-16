@@ -11,6 +11,8 @@ services:
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
       - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
+      - APP_NAME=giiant-test
+      - APP_TITLE=Giiant [TEST]
       - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
       - YII_ENV=dev
       - YII_DEBUG=1
@@ -22,8 +24,11 @@ services:
       # host volume for local development
       - ../:/app/vendor/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
-      # host volume for local debugging of generated files
+      # host volumes for local debugging of generated files
       - ./tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+      - ./tmp/onlyCrud/controllers:/app/src/controllers/onlyCrud
+      - ./tmp/onlyCrud/models:/app/src/models/onlyCrud
+      - ./tmp/onlyCrud/views:/app/src/views/onlyCrud
 
   nginx:
     image: schmunk42/nginx:1.9

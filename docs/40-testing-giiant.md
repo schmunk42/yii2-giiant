@@ -31,8 +31,8 @@ Initialize database and application
 
 Run cli test suite, group *mandatory*
     
-    $ codecept run -g mandatory cli
-
+    $ codecept run -g mandatory cli,acceptance --steps
+    
 Your output should look similar to [this](https://ci.hrzg.de/projects/24/builds/2685).
 
 

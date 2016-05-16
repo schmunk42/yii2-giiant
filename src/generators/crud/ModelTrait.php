@@ -73,7 +73,7 @@ trait ModelTrait
         $model = new $modelClass();
         $stack = [];
         $modelGenerator = new ModelGenerator();
-        foreach ($reflector->getMethods() as $method) {
+        foreach ($reflector->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             if (in_array(substr($method->name, 3), $this->skipRelations)) {
                 continue;
             }

@@ -23,4 +23,20 @@ class Country extends \yii\db\ActiveRecord
     {
         return 'country';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['country'], 'required'],
+            [['last_update'], 'safe'],
+            [['country'], 'string', 'max' => 50]
+        ];
+    }
+    
+    private function getTestForIssue146() {
+        return false;
+    }
 }

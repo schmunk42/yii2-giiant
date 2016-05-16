@@ -9,6 +9,10 @@ use yii\helpers\StringHelper;
  */
 
 $urlParams = $generator->generateUrlParams();
+$model = new $generator->modelClass();
+$model->setScenario('crud');
+$className = $model::className();
+$modelName = StringHelper::basename($model::className());
 
 echo "<?php\n";
 ?>
@@ -20,9 +24,9 @@ use yii\helpers\Html;
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
 
-$this->title = $model->getAliasModel() . $model-><?= $generator->getNameAttribute(
+$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>') . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
-$this->params['breadcrumbs'][] = ['label' => $model->getAliasModel(true), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
 ) ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
@@ -30,7 +34,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= '<?= $model->getAliasModel() ?>' ?>
+        <?= "<?= Yii::t('<?= {$generator->messageCategory} ?>', '{$modelName}') ?>" ?>
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
