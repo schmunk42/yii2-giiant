@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.8.1
+
+  * added mission option `$useTimestampBehavior`, default is `true` to control the use of `yii\behaviors\Timestampbehavior` in CLI BatchController for model generation
+
 ### 0.8.0
 
   * added giiant-extension generator

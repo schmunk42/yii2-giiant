@@ -29,6 +29,11 @@ class BatchController extends Controller
     public $useTranslatableBehavior = true;
 
     /**
+     * @var bool whether to use yii\behaviors\TimestampBehavior in models
+     */
+    public $useTimestampBehavior = true;
+
+    /**
      * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
      * "Table Name" field.
      */
@@ -200,6 +205,7 @@ class BatchController extends Controller
                 'template',
                 'overwrite',
                 'useTranslatableBehavior',
+                'useTimestampBehavior',
                 'languageTableName',
                 'languageCodeColumn',
                 'extendedModels',
@@ -284,6 +290,7 @@ class BatchController extends Controller
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
                 'useTranslatableBehavior' => $this->useTranslatableBehavior,
+                'useTimestampBehavior' => $this->useTimestampBehavior,
                 'languageTableName' => $this->languageTableName,
                 'languageCodeColumn' => $this->languageCodeColumn,
                 'template' => $this->template,
