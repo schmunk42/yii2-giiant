@@ -34,7 +34,8 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= "<?= Yii::t('<?= {$generator->messageCategory} ?>', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
