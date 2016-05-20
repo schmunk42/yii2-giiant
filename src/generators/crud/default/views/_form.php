@@ -21,6 +21,7 @@ echo "<?php\n";
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use \dmstr\bootstrap\Tabs;
+use yii\helpers\StringHelper;
 
 /**
 * @var yii\web\View $this
@@ -75,7 +76,7 @@ use \dmstr\bootstrap\Tabs;
 
         $items = <<<EOS
 [
-    'label'   => Yii::t('<?= $generator->messageCategory ?>', "<?= StringHelper::basename({$model::className()}) ?>"),
+    'label'   => Yii::t('$generator->messageCategory', StringHelper::basename('{$model::className()}')),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],
