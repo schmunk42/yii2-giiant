@@ -39,7 +39,12 @@ class SaveForm {
         if (self::$savedFormList) {
             return self::$savedFormList;
         }
-        $forms = [];
+        
+        /**
+         * get all possible gii directories with out validation on existing
+         */
+        $giiDirs = [];
+        $giiDirs[] = \Yii::getAlias('@app/gii');
         foreach (\Yii::$app->modules as $moduleId => $module) {
 
             /**
@@ -52,13 +57,24 @@ class SaveForm {
                 $basePath = StringHelper::dirname($reflector->getFileName());
             }
             $basePath .= '/gii';
-
+            
+            $giiDirs[] = $basePath;
+        }           
+        
+        /**
+         * from all gii directories collec forms
+         */
+        $forms = [];
+        foreach($giiDirs as $basePath){
             /**
-             * search in module gii directory all controller forms json files 
+             * search in module gii directory all forms json files 
+             * with required suffix
              */
             if (!file_exists($basePath)) {
                 continue;
             }
+            
+            
             $files = scandir($basePath);
             foreach ($files as $file) {
                 if (!preg_match('#' . $suffix . '\.json$#', $file)) {
