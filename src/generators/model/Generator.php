@@ -362,7 +362,7 @@ class Generator extends \yii\gii\generators\model\Generator
             }
         }
 
-        $returnName = Inflector::id2camel($className, '_');
+        $returnName = Inflector::id2camel(strtolower($className), '_');
         if ($this->singularEntities) {
             $returnName = Inflector::singularize($returnName);
         }
