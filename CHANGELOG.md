@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.8.3
+
+  * fixed `$actionColumnTemplateString` in crud default view index.php
+
 ### 0.8.2
 
   * fixes for message catalogue / translatables
