@@ -75,7 +75,7 @@ $actionColumnTemplate = implode(' ', $actionColumnTemplates);
     $actionColumnTemplateString = $actionColumnTemplate;
 } else {
 Yii::$app->view->params['pageButtons'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']);
-    $actionColumnTemplateString = "'{view} {update} {delete}'";
+    $actionColumnTemplateString = "{view} {update} {delete}";
 }
 <?php
 echo '?>';

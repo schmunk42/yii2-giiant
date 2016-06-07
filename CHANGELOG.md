@@ -1,6 +1,15 @@
 Changelog
 =========
 
+### 0.8.3
+
+  * fixed `$actionColumnTemplateString` in crud default view index.php
+
+### 0.8.2
+
+  * fixes for message catalogue / translatables
+  * SavedForms fix
+
 ### 0.8.1
 
   * added mission option `$useTimestampBehavior`, default is `true` to control the use of `yii\behaviors\Timestampbehavior` in CLI BatchController for model generation
