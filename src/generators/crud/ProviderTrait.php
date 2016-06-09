@@ -185,6 +185,13 @@ trait ProviderTrait
         return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }
 
+    public function addUse($param)
+    {
+        Yii::trace("calling provider assUse for ", __METHOD__);
+
+        return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
+    }
+
     protected function shorthandAttributeFormat($attribute, $model)
     {
         $column = $this->getColumnByAttribute($attribute, $model);

@@ -31,6 +31,7 @@ use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
 use dmstr\bootstrap\Tabs;
+use kartik\editable\Editable;
 
 /**
 * @var yii\web\View $this
