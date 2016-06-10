@@ -164,6 +164,27 @@ trait ProviderTrait
         }
         // don't call parent anymore
     }
+    
+    public function attributeEditable($attribute, $model = null)
+    {
+        if ($model === null) {
+            $model = $this->modelClass;
+        }
+        $code = $this->callProviderQueue(__FUNCTION__, $attribute, $model, $this);
+        if ($code !== null) {
+            Yii::trace("found provider for '{$attribute}'", __METHOD__);
+
+            return $code;
+        }
+
+        $column = $this->getColumnByAttribute($attribute);
+        if (!$column) {
+            return;
+        } else {
+            return $this->shorthandAttributeFormat($attribute, $model);
+        }
+        // don't call parent anymore
+    }
 
     public function partialView($name, $model = null)
     {
@@ -181,13 +202,6 @@ trait ProviderTrait
     public function relationGrid($name, $relation, $showAllRecords = false)
     {
         Yii::trace("calling provider queue for '$name'", __METHOD__);
-
-        return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
-    }
-
-    public function addUse($param)
-    {
-        Yii::trace("calling provider assUse for ", __METHOD__);
 
         return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }

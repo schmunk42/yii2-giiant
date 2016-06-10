@@ -8,7 +8,7 @@ use yii\helpers\Inflector;
 /**
  * action list
  */
-$actions = ['index','view','create','update','delete','editable'];
+$actions = ['index','view','create','update','delete'];
 
 /**
  * permissions - create name and descriptions
@@ -33,7 +33,7 @@ foreach ($actions as $k => $action){
 $roles = [
         'Full' => ['index','view','create','update','delete'],
         'View' => ['index','view'],
-        'Edit' => ['update','create','delete','editable'],
+        'Edit' => ['update','create','delete'],
         ]; 
 
 /**

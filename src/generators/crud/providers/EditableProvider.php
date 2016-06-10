@@ -12,21 +12,16 @@ use yii\db\ColumnSchema;
 class EditableProvider extends \schmunk42\giiant\base\Provider
 {
 
-    public function addUse($param)
-    {
-        return "
-use kartik\editable\Editable;
-";        
-    }
 
-        /**
+
+    /**
      * 
      *
      * @param $column ColumnSchema
      *
      * @return null|string
      */
-    public function attributeFormat($attribute)
+    public function attributeEditable($attribute)
     {
        
         $this->generator->requires[] = '"kartik-v/yii2-editable": "@dev"';

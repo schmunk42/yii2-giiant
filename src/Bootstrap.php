@@ -39,7 +39,13 @@ class Bootstrap implements BootstrapInterface
             }
 
             if (!isset($app->getModule('gii')->generators['giiant-crud'])) {
-                $app->getModule('gii')->generators['giiant-crud'] = 'schmunk42\giiant\generators\crud\Generator';
+                $app->getModule('gii')->generators['giiant-crud'] =  [
+                    'class'     => 'schmunk42\giiant\generators\crud\Generator',
+                    'templates' => [
+                        'editable' => __DIR__.'/generators/crud/editable',
+                    ]
+                ];
+                
             }
 
             if (!isset($app->getModule('gii')->generators['giiant-module'])) {
