@@ -45,7 +45,7 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
                 'attribute'=>'{$attribute}',
                 'format' => 'raw',
                 'value' => Editable::widget([
-                    'name' => 'name',
+                    'name' => '{$attribute}',
                     'asPopover' => true,
                     'value' => \$model->{$attribute},
                     'header' => \$model->getAttributeLabel('{$attribute}'),

@@ -134,14 +134,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     // get relation info $ prepare add button
     $model = new $generator->modelClass();
 
-    $items = <<<EOS
-[
-    'label'   => '<b class=""># '.\$model->{$model->primaryKey()[0]}.'</b>',
-    'content' => \$this->blocks['{$generator->modelClass}'],
-    'active'  => true,
-],
-EOS;
-
+    $relItems = [];
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
@@ -210,26 +203,25 @@ EOS;
 
         // build tab items
         $label = Inflector::camel2words($name);
-        $items .= <<<EOS
-[
-    'content' => \$this->blocks['$name'],
-    'label'   => '<small>$label <span class="badge badge-default">'.count(\$model->get{$name}()->asArray()->all()).'</span></small>',
-    'active'  => false,
-],
-EOS;
+        $relItems[] = [
+            'block_name' => $name,
+            'label' => $label,
+        ];
     }
     ?>
-
-    <?=
-    // render tabs
-    "<?= Tabs::widget(
-                 [
-                     'id' => 'relation-tabs',
-                     'encodeLabels' => false,
-                     'items' => [ $items ]
-                 ]
-    );
-    ?>";
-    ?>
-
+    <div class="row">
+        <div class="col-md-4">
+            <?='<?'?>=$this->blocks['<?=$generator->modelClass?>']?>
+        </div>
+<?php 
+    foreach($relItems as $item){
+?>
+        <div class="col-md-8">
+            <h2><?=$item['label']?></h2>
+            <?='<?'?>=$this->blocks['<?=$item['block_name']?>']?>
+        </div>
+<?php
+    }
+?>
+    </div>    
 </div>

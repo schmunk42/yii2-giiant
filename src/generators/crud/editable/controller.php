@@ -218,13 +218,13 @@ return $this->redirect(['index']);
         // use Yii's response format to encode output as JSON
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;        
         if(!$post){
-            return ['output'=>'', 'message'=><?= $generator->generateString('Can not update this field') ?>];
+            return ['output'=>'', 'message'=> <?=$generator->generateString('Can not update this field') ?>];
         }
 
         $model = $this->findModel(<?= $actionParams ?>);
-   
+        $model->setAttributes($post, true);
         // read your posted model attributes
-        if ($model->setAttributes($post) && $model->save()) {
+        if ($model->save()) {
             // read or convert your posted information
             $value = $model->$name;
 
@@ -232,7 +232,7 @@ return $this->redirect(['index']);
             return ['output'=>$value, 'message'=>''];
 
             // alternatively you can return a validation error
-            // return ['output'=>'', 'message'=>'Validation error'];
+            // return ['output'=>'', 'message'=><?=$generator->generateString('Validation error') ?>];
         }
         // else if nothing to do always return an empty JSON encoded output
         else {
