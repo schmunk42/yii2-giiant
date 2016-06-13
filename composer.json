@@ -17,7 +17,7 @@
         "dmstr/yii2-bootstrap": "^0.1.2 || ~0.2",
         "dmstr/yii2-helpers": "*",
         "dmstr/yii2-db": "*",
-        "fabpot/php-cs-fixer": "1.* || 2.*",
+        "friendsofphp/php-cs-fixer": "1.*",
         "yiisoft/yii2": "~2.0.4",
         "yiisoft/yii2-gii": "~2.0.4"
     },
