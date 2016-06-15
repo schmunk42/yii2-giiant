@@ -206,6 +206,13 @@ trait ProviderTrait
         return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
     }
 
+    public function relationGridEditable($name, $relation, $showAllRecords = false)
+    {
+        Yii::trace("calling provider queue for '$name'", __METHOD__);
+
+        return $this->callProviderQueue(__FUNCTION__, $name, $relation, $showAllRecords);
+    }
+
     protected function shorthandAttributeFormat($attribute, $model)
     {
         $column = $this->getColumnByAttribute($attribute, $model);

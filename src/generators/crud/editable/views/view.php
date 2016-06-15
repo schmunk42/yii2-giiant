@@ -27,11 +27,12 @@ echo "<?php\n";
 
 use dmstr\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
 use dmstr\bootstrap\Tabs;
 use kartik\editable\Editable;
+use kartik\grid\GridView;
+use kartik\grid\EditableColumn;
 
 /**
 * @var yii\web\View $this
@@ -80,7 +81,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
             <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
-            ['create'],
+            ['editabl_create'],
             ['class' => 'btn btn-success']) ?>
         </div>
 
@@ -190,13 +191,15 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             $gridName = $name;
         }
 
-        $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
+        $output = $generator->relationGridEditable($gridName, $gridRelation, $showAllRecords);
 
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
-        echo '<?= '.$output."?>\n";
-        echo "<?php Pjax::end() ?>\n";
+            echo '    <div class="table-responsive">'.PHP_EOL;    
+            echo '        <?= '.$output."?>\n";
+            echo '    </div>'.PHP_EOL;
+            echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";

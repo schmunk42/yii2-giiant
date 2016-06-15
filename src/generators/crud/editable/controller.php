@@ -31,7 +31,7 @@ namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>
 
 use <?= ltrim($generator->modelClass, '\\') ?>;
 <?php if ($searchModelClass !== ''): ?>
-    use <?= ltrim(
+use <?= ltrim(
         $generator->searchModelClass,
         '\\'
     ) ?><?php if (isset($searchModelAlias)): ?> as <?= $searchModelAlias ?><?php endif ?>;
@@ -40,18 +40,18 @@ use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
-use dmstr\bootstrap\Tabs;
+use kartik\grid\EditableColumnAction;
 
 /**
 * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
 */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass)."\n" ?>
 {
-/**
-* @var boolean whether to enable CSRF validation for the actions in this controller.
-* CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
-*/
-public $enableCsrfValidation = false;
+    /**
+    * @var boolean whether to enable CSRF validation for the actions in this controller.
+    * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
+    */
+    public $enableCsrfValidation = false;
 
 <?php if ($generator->accessFilter): ?>
     /**
@@ -59,148 +59,158 @@ public $enableCsrfValidation = false;
     */
     public function behaviors()
     {
-    return [
-    'access' => [
-    'class' => AccessControl::className(),
-    'rules' => [
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
 <?php 
 foreach($accessDefinitions['roles'] as $roleName => $actions){
 ?>
-    [
-    'allow' => true,
+                    [
+                        'allow' => true,
                         'actions' => ['<?=implode("', '",$actions)?>'],
                         'roles' => ['<?=$roleName?>'],
                     ],
 <?php    
 }
-?>    
-                ],
+?>                ],
             ],
-    ];
+        ];
     }
 <?php endif; ?>
 
-/**
-* Lists all <?= $modelClass ?> models.
-* @return mixed
-*/
-public function actionIndex()
-{
+    public function actions() {
+        return [
+            'editable-column-update' => [
+                'class' => EditableColumnAction::className(), // action class name
+                'modelClass' => <?=$modelClass?>::className(),
+            ],
+        ];
+    }    
+    
+    /**
+    * Lists all <?= $modelClass ?> models.
+    * @return mixed
+    */
+    public function actionIndex()
+    {
 <?php if ($searchModelClass !== '') {
     ?>
-    $searchModel  = new <?= $searchModelClassName ?>;
-    $dataProvider = $searchModel->search($_GET);
+        $searchModel  = new <?= $searchModelClassName ?>;
+        $dataProvider = $searchModel->search($_GET);
 <?php 
 } else {
     ?>
-    $dataProvider = new ActiveDataProvider([
-    'query' => <?= $modelClass ?>::find(),
-    ]);
+        $dataProvider = new ActiveDataProvider([
+        'query' => <?= $modelClass ?>::find(),
+        ]);
 <?php 
 } ?>
 
-Tabs::clearLocalStorage();
+        Url::remember();
+        \Yii::$app->session['__crudReturnUrl'] = null;
 
-Url::remember();
-\Yii::$app->session['__crudReturnUrl'] = null;
-
-return $this->render('index', [
-'dataProvider' => $dataProvider,
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
 <?php if ($searchModelClass !== ''): ?>
-    'searchModel' => $searchModel,
+            'searchModel' => $searchModel,
 <?php endif; ?>
-]);
-}
+        ]);
+    }
 
-/**
-* Displays a single <?= $modelClass ?> model.
-* <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-*
-* @return mixed
-*/
-public function actionView(<?= $actionParams ?>)
-{
-\Yii::$app->session['__crudReturnUrl'] = Url::previous();
-Url::remember();
-Tabs::rememberActiveState();
+    /**
+    * Displays a single <?= $modelClass ?> model.
+    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+    *
+    * @return mixed
+    */
+    public function actionView(<?= $actionParams ?>)
+    {
+        \Yii::$app->session['__crudReturnUrl'] = Url::previous();
+        Url::remember();
 
-return $this->render('view', [
-'model' => $this->findModel(<?= $actionParams ?>),
-]);
-}
+        return $this->render('view', [
+            'model' => $this->findModel(<?= $actionParams ?>),
+        ]);
+    }
 
-/**
-* Creates a new <?= $modelClass ?> model.
-* If creation is successful, the browser will be redirected to the 'view' page.
-* @return mixed
-*/
-public function actionCreate()
-{
-$model = new <?= $modelClass ?>;
+    /**
+    * Creates a new <?= $modelClass ?> model.
+    * If creation is successful, the browser will be redirected to the 'view' page.
+    * @return mixed
+    */
+    public function actionCreate()
+    {
+        $model = new <?= $modelClass ?>;
 
-try {
-if ($model->load($_POST) && $model->save()) {
-return $this->redirect(['view', <?= $urlParams ?>]);
-} elseif (!\Yii::$app->request->isPost) {
-$model->load($_GET);
-}
-} catch (\Exception $e) {
-$msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-$model->addError('_exception', $msg);
-}
-return $this->render('create', ['model' => $model]);
-}
+        try {
+            if ($model->load($_POST) && $model->save()) {
+                return $this->redirect(['view', <?= $urlParams ?>]);
+            } elseif (!\Yii::$app->request->isPost) {
+                $model->load($_GET);
+            }
+        } catch (\Exception $e) {
+            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
+            $model->addError('_exception', $msg);
+        }
+        return $this->render('create', ['model' => $model]);
+    }
 
-/**
-* Updates an existing <?= $modelClass ?> model.
-* If update is successful, the browser will be redirected to the 'view' page.
-* <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-* @return mixed
-*/
-public function actionUpdate(<?= $actionParams ?>)
-{
-$model = $this->findModel(<?= $actionParams ?>);
+    /**
+    * Updates an existing <?= $modelClass ?> model.
+    * If update is successful, the browser will be redirected to the 'view' page.
+    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+    * @return mixed
+    */
+    public function actionUpdate(<?= $actionParams ?>)
+    {
+        $model = $this->findModel(<?= $actionParams ?>);
 
-if ($model->load($_POST) && $model->save()) {
-return $this->redirect(Url::previous());
-} else {
-return $this->render('update', [
-'model' => $model,
-]);
-}
-}
+        if ($model->load($_POST) && $model->save()) {
+            return $this->redirect(Url::previous());
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    }
 
-/**
-* Deletes an existing <?= $modelClass ?> model.
-* If deletion is successful, the browser will be redirected to the 'index' page.
-* <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-* @return mixed
-*/
-public function actionDelete(<?= $actionParams ?>)
-{
-try {
-$this->findModel(<?= $actionParams ?>)->delete();
-} catch (\Exception $e) {
-$msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-\Yii::$app->getSession()->addFlash('error', $msg);
-return $this->redirect(Url::previous());
-}
+    /**
+    * Deletes an existing <?= $modelClass ?> model.
+    * If deletion is successful, the browser will be redirected to the 'index' page.
+    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+    * @return mixed
+    */
+    public function actionDelete(<?= $actionParams ?>)
+    {
+        try {
+            $this->findModel(<?= $actionParams ?>)->delete();
+        } catch (\Exception $e) {
+            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
+            \Yii::$app->getSession()->addFlash('error', $msg);
+            return $this->redirect(Url::previous());
+        }
 
-// TODO: improve detection
-$isPivot = strstr('<?= $actionParams ?>',',');
-if ($isPivot == true) {
-return $this->redirect(Url::previous());
-} elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
-Url::remember(null);
-$url = \Yii::$app->session['__crudReturnUrl'];
-\Yii::$app->session['__crudReturnUrl'] = null;
+        // TODO: improve detection
+        $isPivot = strstr('<?= $actionParams ?>',',');
+        if ($isPivot == true) {
+            return $this->redirect(Url::previous());
+        } elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
+            Url::remember(null);
+            $url = \Yii::$app->session['__crudReturnUrl'];
+            \Yii::$app->session['__crudReturnUrl'] = null;
 
-return $this->redirect($url);
-} else {
-return $this->redirect(['index']);
-}
-}
+            return $this->redirect($url);
+        } else {
+            return $this->redirect(['index']);
+        }
+    }
 
+    /**
+    * Update <?= $modelClass ?> model record by editable.
+    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+    * @return mixed
+    */    
     public function actionEditable(<?= $actionParams ?>){
         
         // Check if there is an Editable ajax request
@@ -251,16 +261,15 @@ return $this->redirect(['index']);
         
     }    
 
-
-/**
-* Finds the <?= $modelClass ?> model based on its primary key value.
-* If the model is not found, a 404 HTTP exception will be thrown.
-* <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-* @return <?= $modelClass ?> the loaded model
-* @throws HttpException if the model cannot be found
-*/
-protected function findModel(<?= $actionParams ?>)
-{
+    /**
+    * Finds the <?= $modelClass ?> model based on its primary key value.
+    * If the model is not found, a 404 HTTP exception will be thrown.
+    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+    * @return <?= $modelClass ?> the loaded model
+    * @throws HttpException if the model cannot be found
+    */
+    protected function findModel(<?= $actionParams ?>)
+    {
 <?php
 if (count($pks) === 1) {
     $condition = '$'.$pks[0];
@@ -272,10 +281,10 @@ if (count($pks) === 1) {
     $condition = '['.implode(', ', $condition).']';
 }
 ?>
-if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
-return $model;
-} else {
-throw new HttpException(404, 'The requested page does not exist.');
-}
-}
+        if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
+            return $model;
+        } else {
+            throw new HttpException(404, 'The requested page does not exist.');
+        }
+    }
 }
