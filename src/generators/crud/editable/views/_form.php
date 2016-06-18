@@ -52,6 +52,9 @@ use yii\helpers\StringHelper;
         <p>
             <?php
             foreach ($safeAttributes as $attribute) {
+                if($model->primaryKey() = $attribute){
+                    continue;
+                }
                 $prepend = $generator->prependActiveField($attribute, $model);
                 $field = $generator->activeField($attribute, $model);
                 $append = $generator->appendActiveField($attribute, $model);
