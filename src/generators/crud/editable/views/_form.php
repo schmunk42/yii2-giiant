@@ -27,6 +27,7 @@ use yii\helpers\StringHelper;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 * @var yii\widgets\ActiveForm $form
+* @var string $relAttributes relation fields names for disabling 
 */
 
 ?>
@@ -52,9 +53,12 @@ use yii\helpers\StringHelper;
         <p>
             <?php
             foreach ($safeAttributes as $attribute) {
-                if($model->primaryKey() = $attribute){
+
+                //skip primeary key
+                if($model->isPrimaryKey([$attribute])){
                     continue;
                 }
+
                 $prepend = $generator->prependActiveField($attribute, $model);
                 $field = $generator->activeField($attribute, $model);
                 $append = $generator->appendActiveField($attribute, $model);

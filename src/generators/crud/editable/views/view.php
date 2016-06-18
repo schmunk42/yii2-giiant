@@ -29,20 +29,19 @@ use dmstr\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
-use dmstr\bootstrap\Tabs;
 use kartik\editable\Editable;
 use kartik\grid\GridView;
 use kartik\grid\EditableColumn;
 
 /**
-* @var yii\web\View $this
-* @var <?= ltrim($generator->modelClass, '\\') ?> $model
-*/
+ * @var yii\web\View $this
+ * @var <?= ltrim($generator->modelClass, '\\') ?> $model
+ */
 $copyParams = $model->attributes;
 
 $this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->params['breadcrumbs'][] = ['label' => (string) $model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
@@ -105,6 +104,12 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'attributes' => [
     <?php
     foreach ($safeAttributes as $attribute) {
+        
+        //skip primeary key
+        if($model->isPrimaryKey([$attribute])){
+            continue;
+        }        
+        
         $format = $generator->attributeEditable($attribute);
         if (!$format) {
             continue;
@@ -139,6 +144,19 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
+        // render pivot grid
+        if ($relation->via !== null) {
+            $pjaxId = "pjax-{$pivotName}";
+            $gridRelation = $pivotRelation;
+            $gridName = $pivotName;
+        } else {
+            $pjaxId = "pjax-{$name}";
+            $gridRelation = $relation;
+            $gridName = $name;
+        }        
+        
+        $gridModel = new $gridRelation->modelClass();        
+        
         $showAllRecords = false;
 
         if ($relation->via !== null) {
@@ -172,24 +190,13 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
-            ['".$generator->createRelationRoute($relation, 'create')."', '".
-            Inflector::singularize($name)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+            ['".$generator->createRelationRoute($relation, 'create-rel')."', '".
+            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;
 
         echo '</div></div>';#<div class='clearfix'></div>\n";
-
-        // render pivot grid
-        if ($relation->via !== null) {
-            $pjaxId = "pjax-{$pivotName}";
-            $gridRelation = $pivotRelation;
-            $gridName = $pivotName;
-        } else {
-            $pjaxId = "pjax-{$name}";
-            $gridRelation = $relation;
-            $gridName = $name;
-        }
 
         $output = $generator->relationGridEditable($gridName, $gridRelation, $showAllRecords);
 

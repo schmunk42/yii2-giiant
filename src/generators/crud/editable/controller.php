@@ -154,9 +154,36 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
             $model->addError('_exception', $msg);
         }
+        
         return $this->render('create', ['model' => $model]);
     }
 
+    /**
+    * Creates a new <?= $modelClass ?> model.
+    * If creation is successful, the browser will be redirected to the 'view' page.
+    * @return mixed
+    */
+    public function actionCreateRel()
+    {
+        $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
+
+        try {
+            if ($model->load($_POST) && $model->save()) {
+                return $this->goBack();
+            }
+        } catch (\Exception $e) {
+            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
+            $model->addError('_exception', $msg);
+        }
+        
+        return $this->render('create', [
+            'model' => $model, 
+            'relAttributes' => $relAttributes
+        ]);
+    }    
+    
     /**
     * Updates an existing <?= $modelClass ?> model.
     * If update is successful, the browser will be redirected to the 'view' page.
@@ -165,6 +192,10 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     */
     public function actionUpdate(<?= $actionParams ?>)
     {
+        $model = new TestContacts;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
+        
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load($_POST) && $model->save()) {
@@ -172,6 +203,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'relAttributes' => $relAttributes                
             ]);
         }
     }

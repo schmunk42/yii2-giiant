@@ -43,7 +43,7 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
         }
         return <<<EOS
             [
-                'attribute'=>'{$attribute}',
+                'attribute' => '{$attribute}',
                 'format' => 'raw',
                 'value' => Editable::widget([
                     'name' => '{$attribute}',
@@ -151,6 +151,12 @@ EOS;
             if ($counter > $this->generator->gridRelationMaxColumns) {
                 continue;
             }
+
+            //skip primeary key
+            if($model->isPrimaryKey([$attr])){
+                continue;
+            }
+            
             // skip virtual attributes
             if ($this->skipVirtualAttributes && !isset($model->tableSchema->columns[$attr])) {
                 continue;
@@ -161,18 +167,17 @@ EOS;
             }
 
             $code = "
-                        [
-                            'class' => '\kartik\grid\EditableColumn',
-                            'attribute' => '{$attr}',
-                            'editableOptions' => [
-                                'formOptions' => [
-                                    'action' => [
-                                        '{$controller}/editable-column-update'
-                                    ]
-                                ]
-                            ]
-                        ]            
-                    ";
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attr}',
+            'editableOptions' => [
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ]
+            ]
+        ]";
             
             //$code = $this->generator->columnFormat($attr, $model);
             if ($code == false) {
@@ -181,7 +186,19 @@ EOS;
             $columns .= $code.",\n";
             ++$counter;
         }
-
+        
+        // action column
+        $columns .= "  
+        [
+            'class' => '\kartik\grid\ActionColumn',
+            'urlCreator' =>  
+                function(\$action, \$model, \$key, \$index) {
+                    \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
+                    \$params[0] = '{$controller}/' . \$action;
+                    return Url::toRoute(\$params);            
+                },
+        ]            
+                 ";
         $query = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
