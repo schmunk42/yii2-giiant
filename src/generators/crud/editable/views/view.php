@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
             <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
-            ['editabl_create'],
+            ['create'],
             ['class' => 'btn btn-success']) ?>
         </div>
 

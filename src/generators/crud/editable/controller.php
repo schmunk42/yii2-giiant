@@ -41,6 +41,7 @@ use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
 use kartik\grid\EditableColumnAction;
+use yii\data\ActiveDataProvider;
 
 /**
 * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
