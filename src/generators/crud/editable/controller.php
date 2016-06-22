@@ -69,7 +69,9 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
 ?>
                     [
                         'allow' => true,
-                        'actions' => ['<?=implode("', '",$actions)?>'],
+                        'actions' => [
+                            '<?=implode("',".PHP_EOL."                            '",$actions)?>'
+                        ],
                         'roles' => ['<?=$roleName?>'],
                     ],
 <?php    
@@ -139,7 +141,6 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
      * Creates a new <?= $modelClass ?> model.
      * If creation is successful, the browser will be redirected 
      *  to the 'view' page or back, if parameter $goBack is true.
-     * @param boolean $goBack
      * @return mixed
      */
     public function actionCreate()
@@ -166,6 +167,19 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             'model' => $model,
             'relAttributes' => $relAttributes,            
             ]);
+    }
+    
+    /**
+     * Add a new TestContacts record for relation grid and redirect back.
+     * @return mixed
+     */
+    public function actionCreateForRel()
+    {
+        $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
+        $model->save();
+        return $this->goBack();
     }
     
     /**

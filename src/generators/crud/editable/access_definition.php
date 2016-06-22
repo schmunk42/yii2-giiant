@@ -17,6 +17,7 @@ $actions = [
     'delete',
     'editable',
     'editable-column-update',
+    'create-for-rel',
     ];
 
 /**
@@ -49,6 +50,7 @@ $roles = [
             'delete',
             'editable',
             'editable-column-update',
+            'create-for-rel',
             ],
         'View' => [
             'index',
@@ -61,6 +63,7 @@ $roles = [
             'delete',
             'editable',
             'editable-column-update',
+            'create-for-rel',
             ],
         ]; 
 

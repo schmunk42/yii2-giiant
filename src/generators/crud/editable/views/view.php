@@ -188,9 +188,14 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         ) ?>\n";
         // TODO: support multiple PKs
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
-            Inflector::singularize(Inflector::camel2words($name))."',
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New').",
             ['".$generator->createRelationRoute($relation, 'create')."', '".
+            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+            ['class'=>'btn btn-success btn-xs']
+        ); ?>\n";
+        echo "  <?= Html::a(
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('Add row').",
+            ['".$generator->createRelationRoute($relation, 'create-for-rel')."', '".
             $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
