@@ -268,6 +268,7 @@ EOS;
 
         $reflection = new \ReflectionClass($relation->modelClass);
         $controller = $this->generator->pathPrefix.Inflector::camel2id($reflection->getShortName(), '-', true);
+        $relKey = key($relation->link);
         $actionColumn = <<<EOS
 [
     'class'      => '{$this->generator->actionButtonClass}',
@@ -277,6 +278,7 @@ EOS;
         // using the column name as key, not mapping to 'id' like the standard generator
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
+        \$params['{$model->formName()}'] = ['$relKey' => \$model->id];
         return \$params;
     },
     'buttons'    => [
