@@ -137,9 +137,14 @@ return $this->render('view', [
 public function actionCreate()
 {
 $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
 
 try {
 if ($model->load($_POST) && $model->save()) {
+                if($relAttributes){
+                    return $this->goBack();
+                }      
 return $this->redirect(['view', <?= $urlParams ?>]);
 } elseif (!\Yii::$app->request->isPost) {
 $model->load($_GET);
@@ -148,7 +153,11 @@ $model->load($_GET);
 $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
 $model->addError('_exception', $msg);
 }
-return $this->render('create', ['model' => $model]);
+        
+        return $this->render('create', [
+            'model' => $model,
+            'relAttributes' => $relAttributes,            
+            ]);
 }
 
 /**
@@ -159,6 +168,10 @@ return $this->render('create', ['model' => $model]);
 */
 public function actionUpdate(<?= $actionParams ?>)
 {
+        $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
+        
 $model = $this->findModel(<?= $actionParams ?>);
 
 if ($model->load($_POST) && $model->save()) {
@@ -166,6 +179,7 @@ return $this->redirect(Url::previous());
 } else {
 return $this->render('update', [
 'model' => $model,
+                'relAttributes' => $relAttributes                
 ]);
 }
 }
@@ -186,6 +200,13 @@ $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
 return $this->redirect(Url::previous());
 }
 
+        $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;       
+        if($relAttributes){
+            return $this->redirect(Url::previous());
+        }        
+        
 // TODO: improve detection
 $isPivot = strstr('<?= $actionParams ?>',',');
 if ($isPivot == true) {

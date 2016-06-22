@@ -120,11 +120,11 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     }
 
     /**
-    * Displays a single <?= $modelClass ?> model.
-    * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-    *
-    * @return mixed
-    */
+     * Displays a single <?= $modelClass ?> model.
+     * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
+     *
+     * @return mixed
+     */
     public function actionView(<?= $actionParams ?>)
     {
         \Yii::$app->session['__crudReturnUrl'] = Url::previous();
@@ -136,16 +136,23 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     }
 
     /**
-    * Creates a new <?= $modelClass ?> model.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    * @return mixed
-    */
+     * Creates a new <?= $modelClass ?> model.
+     * If creation is successful, the browser will be redirected 
+     *  to the 'view' page or back, if parameter $goBack is true.
+     * @param boolean $goBack
+     * @return mixed
+     */
     public function actionCreate()
     {
         $model = new <?= $modelClass ?>;
-
+        $model->load($_GET);
+        $relAttributes = $model->attributes;
+        
         try {
             if ($model->load($_POST) && $model->save()) {
+                if($relAttributes){
+                    return $this->goBack();
+                }      
                 return $this->redirect(['view', <?= $urlParams ?>]);
             } elseif (!\Yii::$app->request->isPost) {
                 $model->load($_GET);
@@ -155,34 +162,11 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             $model->addError('_exception', $msg);
         }
         
-        return $this->render('create', ['model' => $model]);
-    }
-
-    /**
-    * Creates a new <?= $modelClass ?> model.
-    * If creation is successful, the browser will be redirected to the 'view' page.
-    * @return mixed
-    */
-    public function actionCreateRel()
-    {
-        $model = new <?= $modelClass ?>;
-        $model->load($_GET);
-        $relAttributes = $model->attributes;
-
-        try {
-            if ($model->load($_POST) && $model->save()) {
-                return $this->goBack();
-            }
-        } catch (\Exception $e) {
-            $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-            $model->addError('_exception', $msg);
-        }
-        
         return $this->render('create', [
-            'model' => $model, 
-            'relAttributes' => $relAttributes
-        ]);
-    }    
+            'model' => $model,
+            'relAttributes' => $relAttributes,            
+            ]);
+    }
     
     /**
     * Updates an existing <?= $modelClass ?> model.
@@ -192,7 +176,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     */
     public function actionUpdate(<?= $actionParams ?>)
     {
-        $model = new TestContacts;
+        $model = new <?= $modelClass ?>;
         $model->load($_GET);
         $relAttributes = $model->attributes;
         
@@ -224,6 +208,13 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             return $this->redirect(Url::previous());
         }
 
+        $model = new <?= $modelClass ?>;
+        $model->load($_GET);
+        $relAttributes = $model->attributes;       
+        if($relAttributes){
+            return $this->redirect(Url::previous());
+        }        
+        
         // TODO: improve detection
         $isPivot = strstr('<?= $actionParams ?>',',');
         if ($isPivot == true) {

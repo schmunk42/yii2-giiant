@@ -68,8 +68,8 @@ EOS;
     /**
      * Renders a grid view for a given relation.
      *
-     * @param $name
-     * @param $relation
+     * @param string $name grid name
+     * @param $relation grid relation
      * @param bool $showAllRecords
      *
      * @return mixed|string
@@ -195,6 +195,7 @@ EOS;
                 function(\$action, \$model, \$key, \$index) {
                     \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
                     \$params[0] = '{$controller}/' . \$action;
+                    \$params['{$model->formName()}'] = ['".key($relation->link)."' => \$model->id];
                     return Url::toRoute(\$params);            
                 },
         ]            

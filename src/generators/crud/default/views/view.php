@@ -198,17 +198,6 @@ EOS;
 
         echo '</div></div>';#<div class='clearfix'></div>\n";
 
-        // render pivot grid
-        if ($relation->via !== null) {
-            $pjaxId = "pjax-{$pivotName}";
-            $gridRelation = $pivotRelation;
-            $gridName = $pivotName;
-        } else {
-            $pjaxId = "pjax-{$name}";
-            $gridRelation = $relation;
-            $gridName = $name;
-        }
-
         $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
 
         // render relation grid

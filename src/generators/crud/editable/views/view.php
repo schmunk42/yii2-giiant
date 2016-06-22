@@ -190,7 +190,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
-            ['".$generator->createRelationRoute($relation, 'create-rel')."', '".
+            ['".$generator->createRelationRoute($relation, 'create')."', '".
             $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
