@@ -220,6 +220,12 @@ PHP;
         echo "\n"; // code-formatting
 
         foreach ($safeAttributes as $attribute) {
+
+            //skip primeary key
+            if($model->isPrimaryKey([$attribute])){
+                continue;
+            }
+
             $format = trim($generator->columnFormat($attribute, $model));
             if ($format == false) {
                 continue;
