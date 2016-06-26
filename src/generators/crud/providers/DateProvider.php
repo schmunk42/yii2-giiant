@@ -12,8 +12,8 @@ class DateProvider extends \schmunk42\giiant\base\Provider
             return;
         }
 
-        switch (true) {
-            case in_array($column->name, $this->columnNames):
+        switch ($column->type) {
+            case 'date':
                 $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
 
                 return <<<EOS

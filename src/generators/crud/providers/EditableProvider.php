@@ -28,41 +28,60 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
         $this->generator->requires[] = '"kartik-v/yii2-editable": "@dev"';
         $primaryKey = implode('_',$this->generator->getTableSchema()->primaryKey);
         $column = $this->generator->getTableSchema()->columns[$attribute];
-        
-        switch ($column->type){
-            case 'integer':
-            case 'char':
-            case 'string':
-                $inputType = 'Editable::INPUT_TEXT';
-                break;
-            case 'date':
-            case 'datetime':
-                $inputType = 'Editable::INPUT_TEXT';
-                break;
-            
-        }
-        return <<<EOS
-            [
-                'attribute' => '{$attribute}',
-                'format' => 'raw',
-                'value' => Editable::widget([
-                    'name' => '{$attribute}',
-                    'asPopover' => true,
-                    'value' => \$model->{$attribute},
-                    'header' => \$model->getAttributeLabel('{$attribute}'),
-                    'inputType' => {$inputType},
-                    'size' => 'md',
-                    'options' => [
-                        'class' => 'form-control',
-                        'placeholder' => 'Enter ...'
-                    ],
-                    'ajaxSettings' => [
-                        'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
-                    ],
-                ]),
-                
-            ]
+
+        $inputType = $this->getInputType($column);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
+        if ($relation && !$relation->multiple) {
+            $relPk = key($relation->link);
+            $relName = $this->generator->getModelNameAttribute($relation->modelClass);        
+            return <<<EOS
+                [
+                    'attribute' => '{$attribute}',
+                    'format' => 'raw',
+                    'value' => Editable::widget([
+                        'name' => '{$attribute}',
+                        'asPopover' => true,
+                        'value' => \$model->{$attribute},
+                        'header' => \$model->getAttributeLabel('{$attribute}'),
+                        'inputType' => {$inputType},
+                        'size' => 'md',
+                        'options' => [
+                            'class' => 'form-control',
+                            'placeholder' => 'Enter ...'
+                        ],
+                        'ajaxSettings' => [
+                            'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
+                        ],
+                        'data' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
+                        'displayValueConfig' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),                            
+                    ]),
+
+                ]
+EOS;            
+        }else{    
+            return <<<EOS
+                [
+                    'attribute' => '{$attribute}',
+                    'format' => 'raw',
+                    'value' => Editable::widget([
+                        'name' => '{$attribute}',
+                        'asPopover' => true,
+                        'value' => \$model->{$attribute},
+                        'header' => \$model->getAttributeLabel('{$attribute}'),
+                        'inputType' => {$inputType},
+                        'size' => 'md',
+                        'options' => [
+                            'class' => 'form-control',
+                            'placeholder' => 'Enter ...'
+                        ],
+                        'ajaxSettings' => [
+                            'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
+                        ],
+                    ]),
+
+                ]
 EOS;
+        }
     }
     
     /**
@@ -146,7 +165,7 @@ EOS;
             $safeAttributes = $model->getTableSchema()->columnNames;
         }
         foreach ($safeAttributes as $attr) {
-
+            
             // max seven columns
             if ($counter > $this->generator->gridRelationMaxColumns) {
                 continue;
@@ -165,8 +184,16 @@ EOS;
             if (key($relation->link) == $attr) {
                 continue;
             }
-
-            $code = "
+            
+            $tableColumn = $this->generator->getColumnByAttribute($attr, $model);
+            $inputType = $this->getInputType($tableColumn);
+            $relRelation = $this->generator->getRelationByColumn($model->ClassName(), $tableColumn);
+            
+            if ($relRelation && !$relRelation->multiple) {
+                $relPk = key($relRelation->link);
+                $relName = $this->generator->getModelNameAttribute($relRelation->modelClass);
+                
+                $code = "
         [
             'class' => '\kartik\grid\EditableColumn',
             'attribute' => '{$attr}',
@@ -175,10 +202,28 @@ EOS;
                     'action' => [
                         '{$controller}/editable-column-update'
                     ]
-                ]
+                ],
+                'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                'data' => \yii\helpers\ArrayHelper::map({$relRelation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
+                'displayValueConfig' => \yii\helpers\ArrayHelper::map({$relRelation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
             ]
         ]";
             
+            }else{
+                $code = "
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attr}',
+            'editableOptions' => [
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ],
+                'inputType => ".$inputType."
+            ]
+        ]";
+            }
             //$code = $this->generator->columnFormat($attr, $model);
             if ($code == false) {
                 continue;
@@ -223,4 +268,28 @@ EOS;
     }    
 
 
+    public function getInputType($column){
+
+        switch ($column->type){
+            case 'integer':
+            case 'smallint':
+            case 'char':
+            case 'string':
+                $inputType = 'Editable::INPUT_TEXT';
+                break;
+            case 'text':
+                $inputType = 'Editable::INPUT_TEXTAREA ';
+            case 'date':
+            case 'datetime':
+                $inputType = 'Editable::INPUT_TEXT';
+                break;
+            
+        }
+        if(!isset($inputType)){
+            throw new \Exception('No Defined column type: ' . $column->type);
+        }        
+        
+        return $inputType;
+    }
+    
 }

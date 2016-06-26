@@ -525,7 +525,16 @@ class Generator extends \yii\gii\generators\model\Generator
                 ) . ",\n                ]\n            ]";
         }
      
-        $rules = array_merge(parent::generateRules($table), $rules);
+        // inject namespace for targetClass
+        $parentRules = parent::generateRules($table);
+        $ns = "\\{$this->ns}\\";
+        $match = "'targetClass' => ";
+        $replace = $match . $ns;
+        foreach ($parentRules AS $k => $parentRule) {
+            $parentRules[$k] = str_replace($match, $replace, $parentRule);
+        }        
+        
+        $rules = array_merge($parentRules, $rules);
         $table->columns = array_merge($table->columns, $columns);
         return $rules;
     }
