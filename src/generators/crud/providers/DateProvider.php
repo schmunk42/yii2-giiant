@@ -23,6 +23,7 @@ class DateProvider extends \schmunk42\giiant\base\Provider
         'autoclose' => true,
         'todayHighlight' => true,
         'format' => 'yyyy-mm-dd',
+        'language' => \Yii::\$app->language,
     ],
 ])
 EOS;
