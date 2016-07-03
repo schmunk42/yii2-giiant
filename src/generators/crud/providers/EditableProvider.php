@@ -236,6 +236,7 @@ EOS;
         $columns .= "  
         [
             'class' => '\kartik\grid\ActionColumn',
+            'template' => '{view} {update} {delete}',
             'urlCreator' =>  
                 function(\$action, \$model, \$key, \$index) {
                     \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
