@@ -57,7 +57,7 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
                     ]),
 
                 ]
-EOS;            
+EOS;
         }else{    
             return <<<EOS
                 [
@@ -220,7 +220,7 @@ EOS;
                         '{$controller}/editable-column-update'
                     ]
                 ],
-                'inputType => ".$inputType."
+                'inputType' => ".$inputType."
             ]
         ]";
             }
@@ -274,6 +274,7 @@ EOS;
         switch ($column->type){
             case 'integer':
             case 'smallint':
+            case 'decimal':
             case 'char':
             case 'string':
                 $inputType = 'Editable::INPUT_TEXT';

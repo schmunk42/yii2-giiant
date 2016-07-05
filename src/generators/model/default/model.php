@@ -195,10 +195,10 @@ if(!empty($enum)){
      * @inheritdoc
      * @return <?= $queryClassFullName ?> the active query used by this AR class.
      */
-    public static function find()
-    {
-        return new <?= $queryClassFullName ?>(get_called_class());
-    }
+//    public static function find()
+//    {
+//        return new <?= $queryClassFullName ?>(get_called_class());
+//    }
 <?php endif; ?>
 
 <?php
