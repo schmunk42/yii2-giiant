@@ -254,8 +254,12 @@ EOS;
         $lastPageLabel = $this->generator->generateString('Last');
         $code = <<<EOS
 GridView::widget([
-//    'layout' => '{summary}{pager}<br/>{items}{pager}',
+    'layout' => '{items}{pager}',
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+    'tableOptions' => [
+        'class' => 'table table-striped table-success'
+    ],               
+    
 //    'pager'        => [
 //        'class'          => yii\widgets\LinkPager::className(),
 //        'firstPageLabel' => {$firstPageLabel},
@@ -273,6 +277,7 @@ EOS;
 
         switch ($column->type){
             case 'integer':
+            case 'bigint':
             case 'smallint':
             case 'decimal':
             case 'char':
