@@ -254,8 +254,6 @@ class Generator extends \yii\gii\generators\crud\Generator
         $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
         $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass),0,-10);
         
-        $this->migrationClass = 'm' . date("ymd_H") . '0101_' . $controllerName . '_access'; 
-        
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
             $this->controllerClass = Inflector::singularize(
@@ -268,6 +266,18 @@ class Generator extends \yii\gii\generators\crud\Generator
         $baseControllerFile = StringHelper::dirname($controllerFile).'/base/'.StringHelper::basename($controllerFile);
         $restControllerFile = StringHelper::dirname($controllerFile).'/api/'.StringHelper::basename($controllerFile);
 
+        /**
+         * search generated migration and overwrite it or create new
+         */
+        $migrationDir = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
+                    . '/migrations';
+        
+        if(file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir .'/m*0101_' . $controllerName . '_access.php')){
+            $this->migrationClass = pathinfo($migrationDirFiles[0], PATHINFO_FILENAME);
+        }else{        
+            $this->migrationClass = 'm' . date("ymd_H") . '0101_' . $controllerName . '_access'; 
+        }        
+        
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php',['accessDefinitions' => $accessDefinitions]));
         $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
 
@@ -300,9 +310,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             /**
              * access migration
              */
-            $migrationFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
-                    . '/migrations/'
-                    . $this->migrationClass.'.php' ;
+            $migrationFile = $migrationDir . '/' . $this->migrationClass . '.php' ;
             $files[] = new CodeFile($migrationFile, $this->render('migration_access.php',['accessDefinitions' => $accessDefinitions]));
 
             /**
