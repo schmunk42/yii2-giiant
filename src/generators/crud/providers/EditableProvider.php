@@ -6,9 +6,9 @@ use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
 
 /**
- * Class OptsProvider.
+ * Class EditableProvider.
  *
- * @author Christopher Stebe <c.stebe@herzogkommunikation.de>
+ * @author Uldis Nelsons
  */
 class EditableProvider extends \schmunk42\giiant\base\Provider
 {
@@ -29,6 +29,20 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
         $primaryKey = implode('_',$this->generator->getTableSchema()->primaryKey);
         $column = $this->generator->getTableSchema()->columns[$attribute];
 
+        /**
+         * search opts... method
+         */
+        $modelClass = $this->generator->modelClass;
+        $optsFunc = 'opts'.str_replace('_', '', $attribute);
+        $optsCamelFunc = 'opts'.str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
+        
+        $useOptsFunc = false;
+        if (method_exists($modelClass::className(), $optsFunc)) {
+            $useOptsFunc = $optsFunc;
+        } elseif (method_exists($modelClass::className(), $optsCamelFunc)) {
+            $useOptsFunc = $optsCamelFunc;
+        }        
+        
         $inputType = $this->getInputType($column);
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation && !$relation->multiple) {
@@ -43,7 +57,7 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
                         'asPopover' => true,
                         'value' => \$model->{$attribute},
                         'header' => \$model->getAttributeLabel('{$attribute}'),
-                        'inputType' => {$inputType},
+                        'inputType' => Editable::INPUT_LIST_BOX,
                         'size' => 'md',
                         'options' => [
                             'class' => 'form-control',
@@ -54,6 +68,31 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
                         ],
                         'data' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
                         'displayValueConfig' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),                            
+                    ]),
+
+                ]
+EOS;
+        }elseif($useOptsFunc){
+            return <<<EOS
+                [
+                    'attribute' => '{$attribute}',
+                    'format' => 'raw',
+                    'value' => Editable::widget([
+                        'name' => '{$attribute}',
+                        'asPopover' => true,
+                        'value' => \$model->{$attribute},
+                        'header' => \$model->getAttributeLabel('{$attribute}'),
+                        'inputType' => Editable::INPUT_LIST_BOX,
+                        'size' => 'md',
+                        'options' => [
+                            'class' => 'form-control',
+                            'placeholder' => 'Select ...'
+                        ],
+                        'ajaxSettings' => [
+                            'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
+                        ],
+                        'data' => {$modelClass}::{$func}(),
+                        'displayValueConfig' => {$modelClass}::{$func}(),                            
                     ]),
 
                 ]
@@ -72,7 +111,7 @@ EOS;
                         'size' => 'md',
                         'options' => [
                             'class' => 'form-control',
-                            'placeholder' => 'Enter ...'
+                            'placeholder' => 'Select ...'
                         ],
                         'ajaxSettings' => [
                             'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
@@ -276,6 +315,7 @@ EOS;
     public function getInputType($column){
 
         switch ($column->type){
+            case 'double':
             case 'integer':
             case 'bigint':
             case 'smallint':

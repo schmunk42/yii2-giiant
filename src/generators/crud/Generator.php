@@ -272,10 +272,10 @@ class Generator extends \yii\gii\generators\crud\Generator
         $migrationDir = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
                     . '/migrations';
         
-        if(file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir .'/m*0101_' . $controllerName . '_access.php')){
+        if(file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir .'/m*_' . $controllerName . '00_access.php')){
             $this->migrationClass = pathinfo($migrationDirFiles[0], PATHINFO_FILENAME);
         }else{        
-            $this->migrationClass = 'm' . date("ymd_H") . '0101_' . $controllerName . '_access'; 
+            $this->migrationClass = 'm' . date("ymd_Hi") . '00_' . $controllerName . '_access'; 
         }        
         
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php',['accessDefinitions' => $accessDefinitions]));
@@ -296,12 +296,15 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         $viewPath = $this->getViewPath();
         $templatePath = $this->getTemplatePath().'/views';
+
         foreach (scandir($templatePath) as $file) {
             if (empty($this->searchModelClass) && $file === '_search.php') {
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                echo $file;
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file",['permisions' => $permisions]));
+                
             }
         }
 
@@ -311,6 +314,7 @@ class Generator extends \yii\gii\generators\crud\Generator
              * access migration
              */
             $migrationFile = $migrationDir . '/' . $this->migrationClass . '.php' ;
+            //var_dump($migrationFile);exit;
             $files[] = new CodeFile($migrationFile, $this->render('migration_access.php',['accessDefinitions' => $accessDefinitions]));
 
             /**

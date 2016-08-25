@@ -619,7 +619,9 @@ class Generator extends \yii\gii\generators\model\Generator
                         'relations' => $relations,
                         'translations' => [
                             'fields' => $fields,
-                            'code' => $code
+                            'code' => $code,
+                            'language_table' => $langTableName,
+                            'language_table_pk' => $langTableSchema->primaryKey
                         ]
                     ];
 
