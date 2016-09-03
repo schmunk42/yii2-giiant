@@ -10,8 +10,7 @@ use yii\helpers\Inflector;
  *
  * @author Uldis Nelsons
  */
-class EditableProvider extends \schmunk42\giiant\base\Provider
-{
+class EditableProvider extends \schmunk42\giiant\base\Provider {
 
     public $skipVirtualAttributes = false;
 
@@ -22,32 +21,31 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
      *
      * @return null|string
      */
-    public function attributeEditable($attribute)
-    {
-       
+    public function attributeEditable($attribute) {
+
         $this->generator->requires[] = '"kartik-v/yii2-editable": "@dev"';
-        $primaryKey = implode('_',$this->generator->getTableSchema()->primaryKey);
+        $primaryKey = implode('_', $this->generator->getTableSchema()->primaryKey);
         $column = $this->generator->getTableSchema()->columns[$attribute];
 
         /**
          * search opts... method
          */
         $modelClass = $this->generator->modelClass;
-        $optsFunc = 'opts'.str_replace('_', '', $attribute);
-        $optsCamelFunc = 'opts'.str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
-        
+        $optsFunc = 'opts' . str_replace('_', '', $attribute);
+        $optsCamelFunc = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
+
         $useOptsFunc = false;
         if (method_exists($modelClass::className(), $optsFunc)) {
             $useOptsFunc = $optsFunc;
         } elseif (method_exists($modelClass::className(), $optsCamelFunc)) {
             $useOptsFunc = $optsCamelFunc;
-        }        
-        
+        }
+
         $inputType = $this->getInputType($column);
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
         if ($relation && !$relation->multiple) {
             $relPk = key($relation->link);
-            $relName = $this->generator->getModelNameAttribute($relation->modelClass);        
+            $relName = $this->generator->getModelNameAttribute($relation->modelClass);
             return <<<EOS
                 [
                     'attribute' => '{$attribute}',
@@ -72,7 +70,7 @@ class EditableProvider extends \schmunk42\giiant\base\Provider
 
                 ]
 EOS;
-        }elseif($useOptsFunc){
+        } elseif ($useOptsFunc) {
             return <<<EOS
                 [
                     'attribute' => '{$attribute}',
@@ -91,13 +89,13 @@ EOS;
                         'ajaxSettings' => [
                             'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
                         ],
-                        'data' => {$modelClass}::{$func}(),
-                        'displayValueConfig' => {$modelClass}::{$func}(),                            
+                        'data' => {$modelClass}::{$useOptsFunc}(),
+                        'displayValueConfig' => {$modelClass}::{$useOptsFunc}(),                            
                     ]),
 
                 ]
 EOS;
-        }else{    
+        } else {
             return <<<EOS
                 [
                     'attribute' => '{$attribute}',
@@ -122,7 +120,7 @@ EOS;
 EOS;
         }
     }
-    
+
     /**
      * Renders a grid view for a given relation.
      *
@@ -132,8 +130,7 @@ EOS;
      *
      * @return mixed|string
      */
-    public function relationGridEditable($name, $relation, $showAllRecords = false)
-    {
+    public function relationGridEditable($name, $relation, $showAllRecords = false) {
         $model = new $relation->modelClass();
 
         // column counter
@@ -153,8 +150,8 @@ EOS;
                     'class' => 'text-danger',
                     'title'         => {$this->generator->generateString('Remove')},
                     'data-confirm'  => {$this->generator->generateString(
-                'Are you sure you want to delete the related item?'
-            )},
+                            'Are you sure you want to delete the related item?'
+                    )},
                     'data-method' => 'post',
                     'data-pjax' => '0',
                 ]);
@@ -175,7 +172,7 @@ EOS;
         }
 
         $reflection = new \ReflectionClass($relation->modelClass);
-        $controller = $this->generator->pathPrefix.  Inflector::camel2id($reflection->getShortName(), '-', true);
+        $controller = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
 //        $actionColumn = <<<EOS
 //[
 //    'class'      => '{$this->generator->actionButtonClass}',
@@ -196,46 +193,132 @@ EOS;
 //
 //        // add action column
 //        $columns .= $actionColumn.",\n";
-
         // prepare grid column formatters
         $model->setScenario('crud');
         $safeAttributes = $model->safeAttributes();
         if (empty($safeAttributes)) {
             $safeAttributes = $model->getTableSchema()->columnNames;
         }
-        foreach ($safeAttributes as $attr) {
-            
+        $hasDate = false;
+        foreach ($safeAttributes as $attribute) {
+
             // max seven columns
             if ($counter > $this->generator->gridRelationMaxColumns) {
                 continue;
             }
 
             //skip primeary key
-            if($model->isPrimaryKey([$attr])){
+            if ($model->isPrimaryKey([$attribute])) {
                 continue;
             }
-            
+
             // skip virtual attributes
-            if ($this->skipVirtualAttributes && !isset($model->tableSchema->columns[$attr])) {
+            if ($this->skipVirtualAttributes && !isset($model->tableSchema->columns[$attribute])) {
                 continue;
             }
             // don't show current model
-            if (key($relation->link) == $attr) {
+            if (key($relation->link) == $attribute) {
                 continue;
             }
-            
-            $tableColumn = $this->generator->getColumnByAttribute($attr, $model);
+
+            /**
+             * search opts... method
+             */
+            $optsFunc = 'opts' . str_replace('_', '', $attribute);
+            $optsCamelFunc = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
+
+            $useOptsFunc = false;
+            if (method_exists($model::className(), $optsFunc)) {
+                $useOptsFunc = $optsFunc;
+            } elseif (method_exists($model::className(), $optsCamelFunc)) {
+                $useOptsFunc = $optsCamelFunc;
+            }
+
+
+            $tableColumn = $this->generator->getColumnByAttribute($attribute, $model);
             $inputType = $this->getInputType($tableColumn);
             $relRelation = $this->generator->getRelationByColumn($model->ClassName(), $tableColumn);
-            
-            if ($relRelation && !$relRelation->multiple) {
-                $relPk = key($relRelation->link);
-                $relName = $this->generator->getModelNameAttribute($relRelation->modelClass);
-                
+
+            if($tableColumn->type == 'date'){
+                $hasDate = true;
                 $code = "
         [
             'class' => '\kartik\grid\EditableColumn',
-            'attribute' => '{$attr}',
+            'attribute' => '{$attribute}',
+            'format' => 'date',                
+            'editableOptions' => [
+                'inputType' => \kartik\\editable\Editable::INPUT_WIDGET,
+                'widgetClass' => 'kartik\datecontrol\DateControl',
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ],                            
+                'options' => [
+                    'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
+                    'displayFormat' => \$datePattern,
+                    'saveFormat' => 'php:Y-m-d',
+                    'options' => [
+                        'pluginOptions' => [
+                            'autoclose' => true
+                        ]
+                    ]
+                ]
+            ]
+        ],
+
+        ]";                
+            }elseif ($relRelation && !$relRelation->multiple && method_exists($relRelation->modelClass, 'forListbox')) {
+                $hasParameterForValue = false;
+                $r = new \ReflectionMethod($relRelation->modelClass, 'forListbox');
+                $params = $r->getParameters();
+                foreach ($params as $param) {
+                    if ($hasParameterForValue = ($param->getName() == 'forValue')) {
+                        break;
+                    }
+                }
+                if ($hasParameterForValue) {
+                    $code = "
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attribute}',
+            'editableOptions' => [
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ],
+                'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                'data' => {$relRelation->modelClass}::forListbox(),
+                'displayValueConfig' => {$relRelation->modelClass}::forListbox(true),
+            ]
+        ]";
+                } else {
+                    $code = "
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attribute}',
+            'editableOptions' => [
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ],
+                'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                'data' => {$relRelation->modelClass}::forListbox(),
+                'displayValueConfig' => {$relRelation->modelClass}::forListbox(),
+            ]
+        ]";
+                }
+            } elseif ($relRelation && !$relRelation->multiple) {
+
+                $relPk = key($relRelation->link);
+                $relName = $this->generator->getModelNameAttribute($relRelation->modelClass);
+
+                $code = "
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attribute}',
             'editableOptions' => [
                 'formOptions' => [
                     'action' => [
@@ -247,19 +330,34 @@ EOS;
                 'displayValueConfig' => \yii\helpers\ArrayHelper::map({$relRelation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
             ]
         ]";
-            
-            }else{
+            } elseif ($useOptsFunc) {
                 $code = "
         [
             'class' => '\kartik\grid\EditableColumn',
-            'attribute' => '{$attr}',
+            'attribute' => '{$attribute}',
             'editableOptions' => [
                 'formOptions' => [
                     'action' => [
                         '{$controller}/editable-column-update'
                     ]
                 ],
-                'inputType' => ".$inputType."
+                'inputType' => Editable::INPUT_DROPDOWN_LIST,
+                'data' => {$model->ClassName()}::{$useOptsFunc}(),
+                'displayValueConfig' => {$model->ClassName()}::{$useOptsFunc}(),                            
+            ]
+        ]";
+            } else {
+                $code = "
+        [
+            'class' => '\kartik\grid\EditableColumn',
+            'attribute' => '{$attribute}',
+            'editableOptions' => [
+                'formOptions' => [
+                    'action' => [
+                        '{$controller}/editable-column-update'
+                    ]
+                ],
+                'inputType' => " . $inputType . "
             ]
         ]";
             }
@@ -267,10 +365,10 @@ EOS;
             if ($code == false) {
                 continue;
             }
-            $columns .= $code.",\n";
+            $columns .= $code . ",\n";
             ++$counter;
         }
-        
+
         // action column
         $columns .= "  
         [
@@ -280,41 +378,49 @@ EOS;
                 function(\$action, \$model, \$key, \$index) {
                     \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
                     \$params[0] = '{$controller}/' . \$action;
-                    \$params['{$model->formName()}'] = ['".key($relation->link)."' => \$model->id];
+                    \$params['{$model->formName()}'] = ['" . key($relation->link) . "' => \$model->id];
                     return Url::toRoute(\$params);            
                 },
         ]            
                  ";
         $query = $showAllRecords ?
-            "'query' => \\{$relation->modelClass}::find()" :
-            "'query' => \$model->get{$name}()";
+                "'query' => \\{$relation->modelClass}::find()" :
+                "'query' => \$model->get{$name}()";
         $pageParam = Inflector::slug("page-{$name}");
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel = $this->generator->generateString('Last');
-        $code = <<<EOS
-GridView::widget([
-    'layout' => '{items}{pager}',
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
-    'tableOptions' => [
-        'class' => 'table table-striped table-success'
-    ],               
-    
-//    'pager'        => [
-//        'class'          => yii\widgets\LinkPager::className(),
-//        'firstPageLabel' => {$firstPageLabel},
-//        'lastPageLabel'  => {$lastPageLabel}
-//    ],
-    'columns' => [$columns]
-])
+        $code = '';
+        if($hasDate){
+            $code .= <<<EOS
+            \$formatter = new IntlDateFormatter(\Yii::\$app->language,IntlDateFormatter::SHORT, IntlDateFormatter::NONE);            
+            \$datePattern = \$formatter->getPattern();
+
+
+EOS;
+        }
+        $code .= <<<EOS
+            echo GridView::widget([
+                'layout' => '{items}{pager}',
+                'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+                'tableOptions' => [
+                    'class' => 'table table-striped table-success'
+                ],               
+
+            //    'pager'        => [
+            //        'class'          => yii\widgets\LinkPager::className(),
+            //        'firstPageLabel' => {$firstPageLabel},
+            //        'lastPageLabel'  => {$lastPageLabel}
+            //    ],
+                'columns' => [$columns]
+            ]);
 EOS;
 
         return $code;
-    }    
+    }
 
+    public function getInputType($column) {
 
-    public function getInputType($column){
-
-        switch ($column->type){
+        switch ($column->type) {
             case 'double':
             case 'integer':
             case 'bigint':
@@ -330,13 +436,12 @@ EOS;
             case 'datetime':
                 $inputType = 'Editable::INPUT_TEXT';
                 break;
-            
         }
-        if(!isset($inputType)){
+        if (!isset($inputType)) {
             throw new \Exception('No Defined column type: ' . $column->type);
-        }        
-        
+        }
+
         return $inputType;
     }
-    
+
 }

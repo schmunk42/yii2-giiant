@@ -69,7 +69,7 @@ class <?= $className ?> extends Base<?= $className . "\n" ?>
             return self::$listBoxData;
         }
         
-        $rows = self::find()
+        $query = self::find()
                 ->select('`<?=$tableSchema->primaryKey[0]?>` `id`, `name`')
                 //->where(['hidded' => 0])
                 ->orderBy('`name`');
