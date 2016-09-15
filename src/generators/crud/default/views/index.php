@@ -15,7 +15,7 @@ $nameAttribute = $generator->getNameAttribute();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 
-$modelName = Inflector::pluralize(StringHelper::basename($model::className()));
+$modelName = Inflector::camel2words(Inflector::pluralize(StringHelper::basename($model::className())));
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {

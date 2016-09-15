@@ -13,7 +13,7 @@ use yii\helpers\StringHelper;
 
 $model = new $generator->modelClass();
 $model->setScenario('crud');
-$modelName = StringHelper::basename($model::className());
+$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
 
 $className = $model::className();
 
@@ -40,8 +40,8 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
+$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>

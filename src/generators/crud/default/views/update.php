@@ -12,7 +12,7 @@ $urlParams = $generator->generateUrlParams();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 $className = $model::className();
-$modelName = StringHelper::basename($model::className());
+$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
 
 echo "<?php\n";
 ?>
@@ -24,9 +24,9 @@ use yii\helpers\Html;
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
 
-$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>') . $model-><?= $generator->getNameAttribute(
+$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>') . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
 ) ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
