@@ -115,6 +115,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $overwriteRestControllerClass = false;
 
     /**
+     * @var bool whether to overwrite search classes
+     */
+    public $overwriteSearchModelClass = false;
+
+    /**
      * @var array whether to use phptidy on renderer files before saving
      */
     public $tidyOutput;
@@ -290,7 +295,9 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->searchModelClass, '\\').'.php'));
-            $files[] = new CodeFile($searchModel, $this->render('search.php'));
+            if ($this->overwriteSearchModelClass || !is_file($searchModel)) {
+                $files[] = new CodeFile($searchModel, $this->render('search.php'));
+            }
         }
 
         $viewPath = $this->getViewPath();
