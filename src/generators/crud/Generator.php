@@ -63,7 +63,12 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var string translation catalogue
      */
-    public $messageCatalog = 'app';
+    public $messageCategory = 'cruds';
+
+    /**
+     * @var string translation catalogue for model related translations
+     */
+    public $modelMessageCategory = 'models';
 
     /**
      * @var int maximum number of columns to show in grid

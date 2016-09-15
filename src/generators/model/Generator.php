@@ -105,7 +105,9 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var string form field for selecting and loading saved gii forms 
      */
     public $savedForm;
-    
+
+    public $messageCategory = 'models';
+
     protected $classNames2;
 
     /**

@@ -40,8 +40,8 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
+$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <h1>
-        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
         <small>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
         </small>

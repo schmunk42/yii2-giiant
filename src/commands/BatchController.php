@@ -367,6 +367,7 @@ class BatchController extends Controller
                 'enableI18N' => $this->enableI18N,
                 'singularEntities' => $this->singularEntities,
                 'messageCategory' => $this->crudMessageCategory,
+                'modelMessageCategory' => $this->modelMessageCategory,
                 'actionButtonClass' => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList' => $providers,

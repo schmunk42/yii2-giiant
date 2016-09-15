@@ -25,13 +25,13 @@ use yii\helpers\Html;
 */
 
 $this->title = <?= $generator->generateString('Create') ?>;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">
 
     <h1>
-        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
             <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>

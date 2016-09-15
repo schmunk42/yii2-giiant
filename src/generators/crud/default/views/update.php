@@ -24,9 +24,9 @@ use yii\helpers\Html;
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
 
-$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>') . $model-><?= $generator->getNameAttribute(
+$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>') . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
 ) ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
 
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
