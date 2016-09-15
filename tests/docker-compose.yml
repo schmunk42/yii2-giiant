@@ -51,6 +51,9 @@ services:
 
   seleniumfirefox:
     image: 'selenium/standalone-firefox-debug:2.53.0'
+    dns: 8.8.4.4
+    environment:
+        - no_proxy=localhost
     expose:
         - '4444'
     ports:
