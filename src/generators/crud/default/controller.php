@@ -47,6 +47,14 @@ use dmstr\bootstrap\Tabs;
 */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass)."\n" ?>
 {
+
+<?php
+$traits = $generator->baseTraits;
+if ($traits) {
+    echo "use {$traits};";
+}
+?>
+
 /**
 * @var boolean whether to enable CSRF validation for the actions in this controller.
 * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.

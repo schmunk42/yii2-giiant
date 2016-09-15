@@ -90,6 +90,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $accessFilter = false;
 
+    public $baseTraits;
+
     /**
      * @var sting controller base namespace
      */

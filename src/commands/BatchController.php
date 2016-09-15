@@ -155,6 +155,8 @@ class BatchController extends Controller
      */
     public $crudAccessFilter;
 
+    public $crudBaseTraits;
+
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
@@ -364,6 +366,7 @@ class BatchController extends Controller
                 'providerList' => $providers,
                 'skipRelations' => $this->crudSkipRelations,
                 'accessFilter' => $this->crudAccessFilter,
+                'baseTraits' => $this->crudBaseTraits,
                 'tidyOutput' => $this->crudTidyOutput,
             ];
             $route = 'gii/giiant-crud';
