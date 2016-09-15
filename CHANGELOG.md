@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.9.0-beta2
+
+  * added catalogue for model related translations to CRUD generator
+
 ### 0.9.0-beta1
 
   * fixed missing spaces in headlines
