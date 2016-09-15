@@ -56,15 +56,15 @@ if($generator->accessFilter):
 */
 $actionColumnTemplates = [];
 
-if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) { 
+if (\Yii::$app->user->can('<?=$permisions['view']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{view}';
 }
 
-if (\Yii::$app->user->can('<?=$permisions['update']['name']?>')) {
+if (\Yii::$app->user->can('<?=$permisions['update']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{update}';
 }
 
-if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>')) {
+if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{delete}';
 }
 <?php
@@ -105,7 +105,7 @@ echo '?>';
 if($generator->accessFilter){ 
 	echo "<?php\n"
 ?>
-if(\Yii::$app->user->can('<?=$permisions['create']['name']?>')){
+if(\Yii::$app->user->can('<?=$permisions['create']['name']?>', ['route' => true])){
 <?php
 echo "?>\n"
 ?>
