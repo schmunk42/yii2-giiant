@@ -180,7 +180,7 @@ EOS;
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
             ['".$generator->createRelationRoute($relation, 'create')."', '".
-            Inflector::singularize($name)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+            Inflector::id2camel($generator->generateRelationTo($relation), '-', true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;

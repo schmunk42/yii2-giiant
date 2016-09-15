@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.8.4
+
+  * fixed `crud/default/view` template, create new related record link param
+
 ### 0.8.3
 
   * fixed `$actionColumnTemplateString` in crud default view index.php
