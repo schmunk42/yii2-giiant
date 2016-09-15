@@ -19,10 +19,30 @@ namespace <?= $generator->ns ?>;
 
 use Yii;
 use \<?= $generator->ns ?>\base\<?= $className ?> as Base<?= $className ?>;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "<?= $tableName ?>".
  */
 class <?= $className ?> extends Base<?= $className . "\n" ?>
 {
+    public function behaviors()
+    {
+        return ArrayHelper::merge(
+            parent::behaviors(),
+            [
+                # custom behaviors
+            ]
+        );
+    }
+
+    public function rules()
+    {
+        return ArrayHelper::merge(
+             parent::rules(),
+             [
+                  # custom validation rules
+             ]
+        );
+    }
 }
