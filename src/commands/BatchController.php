@@ -105,10 +105,16 @@ class BatchController extends Controller
     public $singularEntities = true;
 
     /**
-     * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
+     * @var string the message category for models used by `Yii::t()` when `$enableI18N` is `true`.
      * Defaults to `app`.
      */
-    public $messageCategory = 'app';
+    public $modelMessageCategory = 'models';
+
+    /**
+     * @var string the message category for CRUDs used by `Yii::t()` when `$enableI18N` is `true`.
+     * Defaults to `app`.
+     */
+    public $crudMessageCategory = 'cruds';
 
     /**
      * @var string namespace path for crud controller
@@ -302,7 +308,7 @@ class BatchController extends Controller
                 'tablePrefix' => $this->tablePrefix,
                 'enableI18N' => $this->enableI18N,
                 'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->messageCategory,
+                'messageCategory' => $this->modelMessageCategory,
                 'generateModelClass' => $this->extendedModels,
                 'baseClassSuffix' => $this->modelBaseClassSuffix,
                 'modelClass' => isset($this->tableNameMap[$table]) ?
@@ -360,7 +366,7 @@ class BatchController extends Controller
                 'tablePrefix' => $this->tablePrefix,
                 'enableI18N' => $this->enableI18N,
                 'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->messageCategory,
+                'messageCategory' => $this->crudMessageCategory,
                 'actionButtonClass' => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList' => $providers,
