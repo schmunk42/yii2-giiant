@@ -89,6 +89,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to add an access filter to controllers
      */
     public $accessFilter = false;
+    
+    public $generateAccessFilterMigrations = false;
 
     public $baseTraits;
 
@@ -297,7 +299,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
         }
 
-        if ($this->accessFilter){
+        if ($this->generateAccessFilterMigrations){
             
             /**
              * access migration
