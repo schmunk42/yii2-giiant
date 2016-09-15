@@ -9,6 +9,8 @@ use yii\helpers\StringHelper;
  */
 
 /** @var \yii\db\ActiveRecord $model */
+/** @var $generator \schmunk42\giiant\generators\crud\Generator */
+
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 $modelName = StringHelper::basename($model::className());
@@ -25,7 +27,7 @@ $urlParams = $generator->generateUrlParams();
 echo "<?php\n";
 ?>
 
-use dmstr\helpers\Html;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\DetailView;
