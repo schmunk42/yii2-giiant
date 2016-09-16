@@ -1,6 +1,22 @@
 Changelog
 =========
 
+### 0.9.0-beta2
+
+  * added catalogue for model related translations to CRUD generator
+
+### 0.9.0-beta1
+
+  * fixed missing spaces in headlines
+  * fixed #141 - removed dependency to dmstr\helpers\Html
+  * fixed `crud/default/view` template, create new related record link param
+  * fixed #162
+  * added empty merge-with-parent methods for model
+  * added separate message categories for model and cruds (batch controller)
+  * added route param to permission check - see also https://github.com/dmstr/yii2-web/blob/master/src/User.php
+  * added parameter to enable access filter migrations
+  * added parameter for controller base traits
+
 ### 0.8.4
 
   * fixed `crud/default/view` template, create new related record link param

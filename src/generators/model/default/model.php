@@ -188,17 +188,17 @@ if(!empty($enum)){
 
 <?php if ($queryClassName): ?>
     <?php
-    $queryClassFullName = ($generator->ns === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
+    $queryClassFullName = ($generator->ns .'\\base' === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
     echo "\n";
     ?>
     /**
      * @inheritdoc
      * @return <?= $queryClassFullName ?> the active query used by this AR class.
      */
-//    public static function find()
-//    {
-//        return new <?= $queryClassFullName ?>(get_called_class());
-//    }
+    public static function find()
+    {
+        return new <?= $queryClassFullName ?>(get_called_class());
+    }
 <?php endif; ?>
 
 <?php

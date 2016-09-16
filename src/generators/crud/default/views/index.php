@@ -15,7 +15,7 @@ $nameAttribute = $generator->getNameAttribute();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 
-$modelName = Inflector::pluralize(StringHelper::basename($model::className()));
+$modelName = Inflector::camel2words(Inflector::pluralize(StringHelper::basename($model::className())));
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -43,7 +43,7 @@ use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\w
 */
 
 <?php
-$this->title = Yii::t($generator->messageCategory, $modelName);
+$this->title = Yii::t($generator->modelMessageCategory, $modelName);
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -56,15 +56,15 @@ if($generator->accessFilter):
 */
 $actionColumnTemplates = [];
 
-if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) { 
+if (\Yii::$app->user->can('<?=$permisions['view']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{view}';
 }
 
-if (\Yii::$app->user->can('<?=$permisions['update']['name']?>')) {
+if (\Yii::$app->user->can('<?=$permisions['update']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{update}';
 }
 
-if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>')) {
+if (\Yii::$app->user->can('<?=$permisions['delete']['name']?>', ['route' => true])) {
     $actionColumnTemplates[] = '{delete}';
 }
 <?php
@@ -95,7 +95,7 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
         <small>
             List
         </small>
@@ -105,7 +105,7 @@ echo '?>';
 if($generator->accessFilter){ 
 	echo "<?php\n"
 ?>
-if(\Yii::$app->user->can('<?=$permisions['create']['name']?>')){
+if(\Yii::$app->user->can('<?=$permisions['create']['name']?>', ['route' => true])){
 <?php
 echo "?>\n"
 ?>
@@ -150,7 +150,7 @@ echo "?>\n"
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . {$generator->generateString($label)} . '</i>',
+                'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
             ],
 PHP;
                 ?>

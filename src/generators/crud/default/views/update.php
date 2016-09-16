@@ -12,7 +12,7 @@ $urlParams = $generator->generateUrlParams();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 $className = $model::className();
-$modelName = StringHelper::basename($model::className());
+$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
 
 echo "<?php\n";
 ?>
@@ -28,9 +28,9 @@ if(!isset($relAttributes)){
     $relAttributes = false;
 }
 
-$this->title = Yii::t('<?= $generator->messageCategory ?>', '<?= StringHelper::basename($className) ?>') . $model-><?= $generator->getNameAttribute(
+$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>') . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($className)) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
 ) ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= "<?= Yii::t('{$generator->messageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
 
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>

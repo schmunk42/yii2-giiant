@@ -26,6 +26,7 @@ echo $form->field($generator, 'pathPrefix');
 echo $form->field($generator, 'accessFilter')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
+echo $form->field($generator, 'modelMessageCategory');
 echo $form->field($generator, 'singularEntities')->checkbox();
 echo $form->field($generator, 'indexWidgetType')->dropDownList(
         [

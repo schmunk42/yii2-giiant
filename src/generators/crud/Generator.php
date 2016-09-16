@@ -63,7 +63,12 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var string translation catalogue
      */
-    public $messageCatalog = 'app';
+    public $messageCategory = 'cruds';
+
+    /**
+     * @var string translation catalogue for model related translations
+     */
+    public $modelMessageCategory = 'models';
 
     /**
      * @var int maximum number of columns to show in grid
@@ -89,6 +94,10 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to add an access filter to controllers
      */
     public $accessFilter = false;
+    
+    public $generateAccessFilterMigrations = false;
+
+    public $baseTraits;
 
     /**
      * @var sting controller base namespace
@@ -104,6 +113,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to overwrite rest/api controller classes
      */
     public $overwriteRestControllerClass = false;
+
+    /**
+     * @var bool whether to overwrite search classes
+     */
+    public $overwriteSearchModelClass = false;
 
     /**
      * @var array whether to use phptidy on renderer files before saving
@@ -167,6 +181,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                 'providerList' => 'Choose the providers to be used.',
                 'viewPath' => 'Output path for view files, eg. <code>@backend/views/crud</code>.',
                 'pathPrefix' => 'Customized route/subfolder for controllers and views eg. <code>crud/</code>. <b>Note!</b> Should correspond to <code>viewPath</code>.',
+                'modelMessageCategory' => 'Model message categry.',
             ],
             SaveForm::hint()
         );
@@ -175,14 +190,26 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() 
     {
         return array_merge(
-            parent::rules(),
+                parent::rules(), [
             [
-                [['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix','savedForm','formLayout','accessFilter','singularEntities'], 'safe'],
-                [['viewPath'], 'required'],
-            ]
+                [
+                    'providerList',
+                    'actionButtonClass',
+                    'viewPath',
+                    'pathPrefix',
+                    'savedForm',
+                    'formLayout',
+                    'accessFilter',
+                    'singularEntities',
+                    'modelMessageCategory'
+                ], 
+                'safe'
+            ],
+            [['viewPath'], 'required'],
+                ]
         );
     }
 
@@ -200,11 +227,24 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function formAttributes()
     {
-        return ['modelClass','searchModelClass','controllerClass',
-            'baseControllerClass','viewPath','pathPrefix','enableI18N',
-            'singularEntities','indexWidgetType','formLayout',
-            'actionButtonClass', 'providerList','template','accessFilter',
-            'singularEntities'];
+        return [
+            'modelClass',
+            'searchModelClass',
+            'controllerClass',
+            'baseControllerClass',
+            'viewPath',
+            'pathPrefix',
+            'enableI18N',
+            'singularEntities',
+            'indexWidgetType',
+            'formLayout',
+            'actionButtonClass', 
+            'providerList',
+            'template',
+            'accessFilter',
+            'singularEntities',
+            'modelMessageCategory'
+            ];
     }
     
     /**
@@ -291,7 +331,9 @@ class Generator extends \yii\gii\generators\crud\Generator
 
         if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->searchModelClass, '\\').'.php'));
-            $files[] = new CodeFile($searchModel, $this->render('search.php'));
+            if ($this->overwriteSearchModelClass || !is_file($searchModel)) {
+                $files[] = new CodeFile($searchModel, $this->render('search.php'));
+            }
         }
 
         $viewPath = $this->getViewPath();
@@ -308,7 +350,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
         }
 
-        if ($this->accessFilter){
+        if ($this->generateAccessFilterMigrations){
             
             /**
              * access migration

@@ -77,7 +77,7 @@ use yii\helpers\StringHelper;
 
         $items = <<<EOS
 [
-    'label'   => Yii::t('$generator->messageCategory', StringHelper::basename('{$model::className()}')),
+    'label'   => Yii::t('$generator->modelMessageCategory', StringHelper::basename('{$model::className()}')),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],

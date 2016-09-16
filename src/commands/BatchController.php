@@ -105,10 +105,16 @@ class BatchController extends Controller
     public $singularEntities = true;
 
     /**
-     * @var string the message category used by `Yii::t()` when `$enableI18N` is `true`.
+     * @var string the message category for models used by `Yii::t()` when `$enableI18N` is `true`.
      * Defaults to `app`.
      */
-    public $messageCategory = 'app';
+    public $modelMessageCategory = 'models';
+
+    /**
+     * @var string the message category for CRUDs used by `Yii::t()` when `$enableI18N` is `true`.
+     * Defaults to `app`.
+     */
+    public $crudMessageCategory = 'cruds';
 
     /**
      * @var string namespace path for crud controller
@@ -154,6 +160,8 @@ class BatchController extends Controller
      * @var boolean whether to add accessFilter in behavior
      */
     public $crudAccessFilter;
+
+    public $crudBaseTraits;
 
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
@@ -300,7 +308,7 @@ class BatchController extends Controller
                 'tablePrefix' => $this->tablePrefix,
                 'enableI18N' => $this->enableI18N,
                 'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->messageCategory,
+                'messageCategory' => $this->modelMessageCategory,
                 'generateModelClass' => $this->extendedModels,
                 'baseClassSuffix' => $this->modelBaseClassSuffix,
                 'modelClass' => isset($this->tableNameMap[$table]) ?
@@ -358,12 +366,14 @@ class BatchController extends Controller
                 'tablePrefix' => $this->tablePrefix,
                 'enableI18N' => $this->enableI18N,
                 'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->messageCategory,
+                'messageCategory' => $this->crudMessageCategory,
+                'modelMessageCategory' => $this->modelMessageCategory,
                 'actionButtonClass' => 'yii\\grid\\ActionColumn',
                 'baseControllerClass' => $this->crudBaseControllerClass,
                 'providerList' => $providers,
                 'skipRelations' => $this->crudSkipRelations,
                 'accessFilter' => $this->crudAccessFilter,
+                'baseTraits' => $this->crudBaseTraits,
                 'tidyOutput' => $this->crudTidyOutput,
             ];
             $route = 'gii/giiant-crud';

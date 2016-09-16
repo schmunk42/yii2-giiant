@@ -1,5 +1,5 @@
 tests/_output
-tmp
+__tmp
 *.bak
 vendor
 .phptidy-cache

@@ -8,6 +8,8 @@ DOCKER_COMPOSE  ?= docker-compose
 
 export CI_APP_VOLUME   ?= ..
 
+export DOCKER_HOST_IP  = 127.0.0.1
+
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
 	OPEN_CMD        ?= open
@@ -17,17 +19,19 @@ else
 	DOCKER_HOST_IP  ?= 127.0.0.1
 endif
 
-
 default: help
 
 
-all: clean up setup test open bash
+all: up setup open
 
 open:	 ##@docker open application web service in browser
 	open http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
 
 open-db:	 ##@docker open application web service in browser
 	$(OPEN_CMD) mysql://admin:secretadmin@$(DOCKER_HOST_IP):$(shell $(DOCKER_COMPOSE) port mariadb 3306 | sed 's/[0-9.]*://')
+
+open-vnc:	 ##@test open application database service in browser
+	$(OPEN_CMD) vnc://x:secret@$(DOCKER_HOST_IP):$(shell $(DOCKER_COMPOSE) port seleniumfirefox 5900 | sed 's/[0-9.]*://')
 
 bash:	##@docker open application shell in container
 	$(DOCKER_COMPOSE) run --rm $(PHP) bash
@@ -38,7 +42,7 @@ up:	##@docker start application stack
 setup:	##@docker setup application
 	$(DOCKER_COMPOSE) run $(PHP) setup.sh
 
-test: up setup
+test:    ##@docker run tests
 	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila $(PHP) bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila -g onlyCrud cli,unit,acceptance"
 
 bash:	##@docker open application shell in container
