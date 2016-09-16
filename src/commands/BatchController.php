@@ -163,6 +163,8 @@ class BatchController extends Controller
 
     public $crudBaseTraits;
 
+    public $crudTemplate;
+
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
@@ -375,6 +377,7 @@ class BatchController extends Controller
                 'accessFilter' => $this->crudAccessFilter,
                 'baseTraits' => $this->crudBaseTraits,
                 'tidyOutput' => $this->crudTidyOutput,
+                'template' => $this->crudTemplate,
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
