@@ -177,31 +177,38 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             $addButton = '';
         }
 
-        // relation list, add, create buttons
-        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top: 0px;'>\n";
-
-        echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
-            Inflector::camel2words($name)."',
-            ['".$generator->createRelationRoute($relation, 'index')."'],
-            ['class'=>'btn text-muted btn-xs']
-        ) ?>\n";
-        // TODO: support multiple PKs
-        echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New').",
-            ['".$generator->createRelationRoute($relation, 'create')."', '".
-            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
-            ['class'=>'btn btn-success btn-xs']
-        ); ?>\n";
-        echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('Add row').",
-            ['".$generator->createRelationRoute($relation, 'create-for-rel')."', '".
-            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
-            ['class'=>'btn btn-success btn-xs']
-        ); ?>\n";
-        echo $addButton;
-
-        echo '</div></div>';#<div class='clearfix'></div>\n";
+        // HEADER, relation list, add, create buttons
+        $headerLabel = Inflector::camel2words($name);        
+        echo "
+            <div class=\"clearfix crud-navigation\">
+                <div class=\"pull-left\">
+                    <h2>".$headerLabel."</h2>
+                </div>        
+                <div class=\"pull-right\">
+                     <div class=\"btn-group\">
+                        <?= Html::a(
+                        '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
+                        Inflector::camel2words($name)."',
+                        ['".$generator->createRelationRoute($relation, 'index')."'],
+                        ['class'=>'btn text-muted btn-xs']
+                        ) ?>
+                        <?= Html::a(
+                            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New').",
+                            ['".$generator->createRelationRoute($relation, 'create')."', '".
+                            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+                            ['class'=>'btn btn-success btn-xs']
+                        ); 
+                        ?>
+                        <?= Html::a(
+                            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('Add row').",
+                            ['".$generator->createRelationRoute($relation, 'create-for-rel')."', '".
+                            $gridModel->formName()."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+                            ['class'=>'btn btn-success btn-xs']
+                        );?>
+                        " . $addButton . " 
+                    </div>
+                </div>
+            </div>\n";
 
         $output = $generator->relationGridEditable($gridName, $gridRelation, $showAllRecords);
 
@@ -209,18 +216,15 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
             echo '    <div class="table-responsive">'.PHP_EOL;    
-            echo '        <?= '.$output."?>\n";
+            echo '        <?php '.$output."?>\n";
             echo '    </div>'.PHP_EOL;
             echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";
 
-        // build tab items
-        $label = Inflector::camel2words($name);
         $relItems[] = [
             'block_name' => $name,
-            'label' => $label,
         ];
     }
     ?>
@@ -232,7 +236,6 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     foreach($relItems as $item){
 ?>
         <div class="col-md-8">
-            <h2><?=$item['label']?></h2>
             <?='<?'?>=$this->blocks['<?=$item['block_name']?>']?>
         </div>
 <?php
