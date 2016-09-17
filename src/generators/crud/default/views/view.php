@@ -148,6 +148,9 @@ EOS;
 
         // render pivot grid
         if ($relation->via !== null) {
+            // TODO: duplicated in if below
+            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotRelation = $model->{'get'.$pivotName}();
             $pjaxId = "pjax-{$pivotName}";
             $gridRelation = $pivotRelation;
             $gridName = $pivotName;
@@ -162,6 +165,7 @@ EOS;
         $showAllRecords = false;
 
         if ($relation->via !== null) {
+            // TODO: duplicated in if above
             $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
