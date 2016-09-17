@@ -163,7 +163,7 @@ class BatchController extends Controller
 
     public $crudBaseTraits;
 
-    public $crudTemplate;
+    public $crudTemplate = 'default';
 
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
@@ -245,6 +245,7 @@ class BatchController extends Controller
                 'crudSkipRelations',
                 'crudBaseControllerClass',
                 'crudAccessFilter',
+                'crudTemplate',
             ]
         );
     }
