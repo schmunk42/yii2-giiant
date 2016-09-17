@@ -402,6 +402,7 @@ EOS;
             echo GridView::widget([
                 'layout' => '{items}{pager}',
                 'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+                'export' => false,
                 'tableOptions' => [
                     'class' => 'table table-striped table-success'
                 ],               
