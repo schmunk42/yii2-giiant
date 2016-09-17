@@ -33,7 +33,7 @@ $batch = <<<'CMD'
     --crudViewPath=@app/modules/sakila/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\extensions\\EditorProvider \
     --tables=actor,film,film_actor,language,film_category,category,inventory,store,rental,payment,customer,staff,address,city,country
 CMD;
 
