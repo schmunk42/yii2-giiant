@@ -1,0 +1,55 @@
+{
+  "name": "phundament/app",
+  "description": "12factor Application Template for Yii 2.0 Framework",
+  "keywords": [
+    "phundament",
+    "yii2",
+    "app",
+    "framework",
+    "application",
+    "template",
+    "boilerplate",
+    "docker",
+    "docker-compose",
+    "12factor",
+    "dotenv"
+  ],
+  "homepage": "http://www.phundament.com/",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Tobias Munk",
+      "email": "tobias@diemeisterei.de",
+      "homepage": "http://www.diemeisterei.de"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/phundament/app/issues?state=open",
+    "source": "https://github.com/phundament/app"
+  },
+  "minimum-stability": "stable",
+  "require": {
+    "dmstr/yii2-cms-metapackage": "^4.2.0",
+    "vlucas/phpdotenv": "2.*",
+    "yiisoft/yii2": "^2.0.7",
+    "kartik-v/yii2-editable": "^1.7",
+    "kartik-v/yii2-grid": "^3.1"
+  },
+  "require-dev": {
+    "dmstr/yii2-cms-dev-metapackage": "^1.1.0"
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    },
+    "asset-vcs-driver-options": {
+      "github-no-api": true
+    },
+    "asset-pattern-skip-version": "(-build|-patch)"
+  },
+  "config": {
+    "process-timeout": 1800
+  }
+}
