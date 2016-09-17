@@ -5,7 +5,7 @@
  * Date: 14.03.14
  * Time: 10:21.
  */
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\extensions;
 
 class EditorProvider extends \schmunk42\giiant\base\Provider
 {

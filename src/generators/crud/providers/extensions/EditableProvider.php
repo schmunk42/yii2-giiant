@@ -1,6 +1,6 @@
 <?php
 
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\extensions;
 
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
@@ -289,8 +289,8 @@ EOS;
                     ]
                 ],
                 'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                'data' => {$relRelation->modelClass}::forListbox(),
-                'displayValueConfig' => {$relRelation->modelClass}::forListbox(true),
+                #'data' => {$relRelation->modelClass}::forListbox(),
+                #'displayValueConfig' => {$relRelation->modelClass}::forListbox(true),
             ]
         ]";
                 } else {
@@ -305,8 +305,8 @@ EOS;
                     ]
                 ],
                 'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                'data' => {$relRelation->modelClass}::forListbox(),
-                'displayValueConfig' => {$relRelation->modelClass}::forListbox(),
+                #'data' => {$relRelation->modelClass}::forListbox(),
+                #'displayValueConfig' => {$relRelation->modelClass}::forListbox(),
             ]
         ]";
                 }
@@ -378,7 +378,7 @@ EOS;
                 function(\$action, \$model, \$key, \$index) {
                     \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
                     \$params[0] = '{$controller}/' . \$action;
-                    \$params['{$model->formName()}'] = ['" . key($relation->link) . "' => \$model->id];
+                    \$params['{$model->formName()}'] = ['" . key($relation->link) . "' => \$model->primaryKey()[0]];
                     return Url::toRoute(\$params);            
                 },
         ]            
@@ -401,6 +401,7 @@ EOS;
         $code .= <<<EOS
             echo GridView::widget([
                 'layout' => '{items}{pager}',
+                'export' => false,                
                 'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
                 'tableOptions' => [
                     'class' => 'table table-striped table-success'
@@ -434,10 +435,12 @@ EOS;
                 $inputType = 'Editable::INPUT_TEXTAREA ';
             case 'date':
             case 'datetime':
+            case 'timestamp':
                 $inputType = 'Editable::INPUT_TEXT';
                 break;
         }
         if (!isset($inputType)) {
+            return false;
             throw new \Exception('No Defined column type: ' . $column->type);
         }
 
