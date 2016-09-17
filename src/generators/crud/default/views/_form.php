@@ -27,7 +27,6 @@ use yii\helpers\StringHelper;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 * @var yii\widgets\ActiveForm $form
-* @var string $relAttributes relation fields names for disabling 
 */
 
 ?>

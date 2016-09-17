@@ -22,11 +22,7 @@ use yii\helpers\Html;
 /**
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
-* @var string $relAttributes relation fields names for disabling
 */
-if(!isset($relAttributes)){
-    $relAttributes = false;
-}
 
 $this->title = <?= $generator->generateString('Create') ?>;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
@@ -56,7 +52,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= '<?= ' ?>$this->render('_form', [
     'model' => $model,
-        'relAttributes' => $relAttributes,
     ]); ?>
 
 </div>
