@@ -403,6 +403,7 @@ EOS;
                 'layout' => '{items}{pager}',
                 'export' => false,                
                 'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+                'export' => false,
                 'tableOptions' => [
                     'class' => 'table table-striped table-success'
                 ],               
