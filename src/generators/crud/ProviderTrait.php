@@ -22,7 +22,7 @@ trait ProviderTrait
     public static function getCoreProviders()
     {
         $files = FileHelper::findFiles(
-            __DIR__.DIRECTORY_SEPARATOR.'providers',
+            __DIR__.DIRECTORY_SEPARATOR.'providers/core',
             [
                 'only' => ['*.php'],
                 'recursive' => false,

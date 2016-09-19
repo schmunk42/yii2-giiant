@@ -5,7 +5,7 @@
  * Date: 19.03.14
  * Time: 01:01.
  */
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\core;
 
 class CallbackProvider extends \schmunk42\giiant\base\Provider
 {

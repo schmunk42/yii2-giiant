@@ -146,19 +146,6 @@ EOS;
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
-        // render pivot grid
-        if ($relation->via !== null) {
-            $pjaxId = "pjax-{$pivotName}";
-            $gridRelation = $pivotRelation;
-            $gridName = $pivotName;
-        } else {
-            $pjaxId = "pjax-{$name}";
-            $gridRelation = $relation;
-            $gridName = $name;
-        }        
-        
-        $gridModel = new $gridRelation->modelClass();        
-        
         $showAllRecords = false;
 
         if ($relation->via !== null) {
@@ -199,6 +186,17 @@ EOS;
         echo $addButton;
 
         echo '</div></div>';#<div class='clearfix'></div>\n";
+
+        // render pivot grid
+        if ($relation->via !== null) {
+            $pjaxId = "pjax-{$pivotName}";
+            $gridRelation = $pivotRelation;
+            $gridName = $pivotName;
+        } else {
+            $pjaxId = "pjax-{$name}";
+            $gridRelation = $relation;
+            $gridName = $name;
+        }
 
         $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
 

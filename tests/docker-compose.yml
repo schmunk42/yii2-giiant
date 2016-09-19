@@ -1,7 +1,7 @@
 version: '2'
 services:
   phpfpm:
-    image: phundament/app:latest
+    build: .
     working_dir: /app/vendor/schmunk42/yii2-giiant
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
@@ -29,6 +29,10 @@ services:
       - ./__tmp/onlyCrud/controllers:/app/src/controllers/onlyCrud
       - ./__tmp/onlyCrud/models:/app/src/models/onlyCrud
       - ./__tmp/onlyCrud/views:/app/src/views/onlyCrud
+      # update development image
+      - ~/.composer/cache:/root/.composer/cache
+      - ./_build/composer.json:/app/composer.json
+      - ./_build/composer.lock:/app/composer.lock
 
   nginx:
     image: schmunk42/nginx:1.9

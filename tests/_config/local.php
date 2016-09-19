@@ -28,6 +28,8 @@ switch (getenv('GIIANT_TEST_DB')) {
 
 }
 
+// TODO: add note to dependencies for CRUDs to docs
+$giiantTestModule['gridview'] = ['class'=>'kartik\grid\Module'];
 
 return [
     'aliases' => [

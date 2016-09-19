@@ -40,13 +40,13 @@ up:	##@docker start application stack
 	$(DOCKER_COMPOSE) up -d
 
 setup:	##@docker setup application
-	$(DOCKER_COMPOSE) run $(PHP) setup.sh
+	$(DOCKER_COMPOSE) run --rm $(PHP) setup.sh
 
 test:    ##@docker run tests
 	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila $(PHP) bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila -g onlyCrud cli,unit,acceptance"
 
 bash:	##@docker open application shell in container
-	$(DOCKER_COMPOSE) run $(PHP) bash
+	$(DOCKER_COMPOSE) run --rm $(PHP) bash
 
 clean:
 	$(DOCKER_COMPOSE) kill
