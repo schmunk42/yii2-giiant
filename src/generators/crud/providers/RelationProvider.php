@@ -200,7 +200,7 @@ EOS;
     'class' => yii\\grid\\DataColumn::className(),
     'attribute' => '{$column->name}',
     'value' => function (\$model) {
-            return {$modelClassStatic}::getListData(true);
+            return {$modelClassStatic}::getLabel(\$model->{$column->name});
     },
 
 ]
