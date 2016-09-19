@@ -43,7 +43,38 @@ class EditableProvider extends \schmunk42\giiant\base\Provider {
 
         $inputType = $this->getInputType($column);
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
-        if ($relation && !$relation->multiple) {
+        if($relation){
+            $relModelStatic = $relation->modelClass . 'Static';
+        }        
+        if ($relation && !$relation->multiple && method_exists($relModelStatic, 'getListData')) {
+            $relPk = key($relation->link);
+            $relName = $this->generator->getModelNameAttribute($relation->modelClass);
+            return <<<EOS
+                [
+                    'attribute' => '{$attribute}',
+                    'format' => 'raw',
+                    'value' => Editable::widget([
+                        'name' => '{$attribute}',
+                        'asPopover' => true,
+                        'value' => \$model->{$attribute},
+                        'header' => \$model->getAttributeLabel('{$attribute}'),
+                        'inputType' => Editable::INPUT_LIST_BOX,
+                        'size' => 'md',
+                        'options' => [
+                            'class' => 'form-control',
+                            'placeholder' => 'Enter ...'
+                        ],
+                        'ajaxSettings' => [
+                            'url' => Url::to(['editable', '{$primaryKey}' => \$model->primaryKey]),
+                        ],
+                        'data' => {$relation->modelClass}Static::getListData(),
+                        'displayValueConfig' => {$relation->modelClass}Static::getListData(true),                        
+                    ]),
+
+                ]
+EOS;
+            
+        }elseif ($relation && !$relation->multiple) {
             $relPk = key($relation->link);
             $relName = $this->generator->getModelNameAttribute($relation->modelClass);
             return <<<EOS
@@ -66,6 +97,8 @@ class EditableProvider extends \schmunk42\giiant\base\Provider {
                         ],
                         'data' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),
                         'displayValueConfig' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$relPk}', '{$relName}'),                            
+                    'data' => {$relRelation->modelClass}Static::getListData(),
+                    'displayValueConfig' => {$relRelation->modelClass}Static::getListData(true),                        
                     ]),
 
                 ]
@@ -238,6 +271,9 @@ EOS;
             $tableColumn = $this->generator->getColumnByAttribute($attribute, $model);
             $inputType = $this->getInputType($tableColumn);
             $relRelation = $this->generator->getRelationByColumn($model->ClassName(), $tableColumn);
+            if($relRelation){
+                $relModelStatic = $relRelation->modelClass . 'Static';
+            }
 
             if($tableColumn->type == 'date'){
                 $hasDate = true;
@@ -268,9 +304,9 @@ EOS;
         ],
 
         ]";                
-            }elseif ($relRelation && !$relRelation->multiple && method_exists($relRelation->modelClass, 'forListbox')) {
+            }elseif ($relRelation && !$relRelation->multiple && method_exists($relModelStatic, 'getListData')) {
                 $hasParameterForValue = false;
-                $r = new \ReflectionMethod($relRelation->modelClass, 'forListbox');
+                $r = new \ReflectionMethod($relModelStatic, 'getListData');
                 $params = $r->getParameters();
                 foreach ($params as $param) {
                     if ($hasParameterForValue = ($param->getName() == 'forValue')) {
@@ -289,8 +325,8 @@ EOS;
                     ]
                 ],
                 'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                'data' => {$relRelation->modelClass}::forListbox(),
-                'displayValueConfig' => {$relRelation->modelClass}::forListbox(true),
+                'data' => {$relRelation->modelClass}Static::getListData(),
+                'displayValueConfig' => {$relRelation->modelClass}Static::getListData(true),
             ]
         ]";
                 } else {
@@ -305,8 +341,8 @@ EOS;
                     ]
                 ],
                 'inputType' => Editable::INPUT_DROPDOWN_LIST,
-                'data' => {$relRelation->modelClass}::forListbox(),
-                'displayValueConfig' => {$relRelation->modelClass}::forListbox(),
+                'data' => {$relRelation->modelClass}Static::getListData,
+                'displayValueConfig' => {$relRelation->modelClass}Static::getListData,
             ]
         ]";
                 }
