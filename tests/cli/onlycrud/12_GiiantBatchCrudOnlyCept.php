@@ -21,7 +21,7 @@ $batch = <<<CMD
     --crudViewPath=@app/views/{$name} \
     --crudPathPrefix={$name}/ \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\\\giiant\\\\generators\\\\crud\\\\providers\\\\optsProvider \
+    --crudProviders=schmunk42\\\\giiant\\\\generators\\\\crud\\\\providers\\\\extensions\\\\EditorProvider \
     --tables=country
 CMD;
 

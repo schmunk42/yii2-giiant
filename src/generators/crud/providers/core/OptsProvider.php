@@ -1,6 +1,6 @@
 <?php
 
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\core;
 
 use yii\db\ColumnSchema;
 

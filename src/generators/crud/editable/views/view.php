@@ -146,6 +146,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
         // render pivot grid
         if ($relation->via !== null) {
+            // TODO: $pivotName
+            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotRelation = $model->{'get'.$pivotName}();
             $pjaxId = "pjax-{$pivotName}";
             $gridRelation = $pivotRelation;
             $gridName = $pivotName;

@@ -33,7 +33,7 @@ $batch = <<<'CMD'
     --crudViewPath=@app/modules/tagai/views \
     --crudPathPrefix= \
     --crudSkipRelations=Variant,Variants \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\extensions\\EditorProvider \
     --tables=klientai,tagai
 CMD;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\extensions;
 
 class DateProvider extends \schmunk42\giiant\base\Provider
 {

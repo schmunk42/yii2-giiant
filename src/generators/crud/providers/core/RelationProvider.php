@@ -5,7 +5,7 @@
  * Date: 14.03.14
  * Time: 10:21.
  */
-namespace schmunk42\giiant\generators\crud\providers;
+namespace schmunk42\giiant\generators\crud\providers\core;
 
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\db\ActiveRecord;
@@ -278,7 +278,7 @@ EOS;
         // using the column name as key, not mapping to 'id' like the standard generator
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
-        \$params['{$model->formName()}'] = ['$relKey' => \$model->id];
+        \$params['{$model->formName()}'] = ['$relKey' => \$model->primaryKey()[0]];
         return \$params;
     },
     'buttons'    => [
