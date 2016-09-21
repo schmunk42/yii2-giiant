@@ -140,7 +140,10 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function init()
     {
         parent::init();
-        $this->providerList = self::getCoreProviders();
+        if(!$this->providerList){
+            $this->providerList = self::getCoreProviders();
+            $this->overwriteSearchModelClass = true;
+        }
     }
 
     /**
@@ -328,7 +331,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($this->overwriteRestControllerClass || !is_file($restControllerFile)) {
             $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
         }
-
+        
         if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->searchModelClass, '\\').'.php'));
             if ($this->overwriteSearchModelClass || !is_file($searchModel)) {
