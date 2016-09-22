@@ -45,6 +45,8 @@ class SaveForm {
          */
         $giiDirs = [];
         $giiDirs[] = \Yii::getAlias('@app/gii');
+        if ($commonGiiDir = \Yii::getAlias('@common/gii', false))
+            $giiDirs[] = $commonGiiDir;
         foreach (\Yii::$app->modules as $moduleId => $module) {
 
             /**
