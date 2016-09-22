@@ -40,31 +40,6 @@ trait ProviderTrait
             }
         );
     }
-    
-    /**
-     * @return array Class names of the providers declared directly under crud/providers folder.
-     */
-    public static function getExtensionsProviders()
-    {
-        $files = FileHelper::findFiles(
-            __DIR__.DIRECTORY_SEPARATOR.'providers/extensions',
-            [
-                'only' => ['*.php'],
-                'recursive' => false,
-            ]
-        );
-
-        foreach ($files as $file) {
-            require_once $file;
-        }
-
-        return array_filter(
-            get_declared_classes(),
-            function ($a) {
-                return stripos($a, __NAMESPACE__.'\providers') !== false;
-            }
-        );
-    }
 
     /**
      * @return array List of providers. Keys and values contain the same strings.
@@ -72,9 +47,8 @@ trait ProviderTrait
     public function generateProviderCheckboxListData()
     {
         $coreProviders = self::getCoreProviders();
-        $extensionsProviders = self::getExtensionsProviders();
-        $providers = array_merge($coreProviders, $extensionsProviders);
-        return array_combine($providers, $providers);
+
+        return array_combine($coreProviders, $coreProviders);
     }
 
     protected function initializeProviders()

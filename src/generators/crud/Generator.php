@@ -140,10 +140,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function init()
     {
         parent::init();
-        if(!$this->providerList){
-            $this->providerList = self::getCoreProviders();
-            $this->overwriteSearchModelClass = true;
-        }
+        $this->providerList = self::getCoreProviders();
     }
 
     /**
