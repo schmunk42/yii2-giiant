@@ -11,17 +11,20 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 /** @var $generator \schmunk42\giiant\generators\crud\Generator */
 
+## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
 $model->setScenario('crud');
-$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
-
-$className = $model::className();
-
 $safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    $model->setScenario('default');
+    $safeAttributes = $model->safeAttributes();
+}
 if (empty($safeAttributes)) {
     $safeAttributes = $model->getTableSchema()->columnNames;
 }
 
+$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
+$className = $model::className();
 $urlParams = $generator->generateUrlParams();
 
 echo "<?php\n";
