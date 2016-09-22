@@ -284,6 +284,14 @@ class Generator extends \yii\gii\generators\model\Generator
                 );
             }
 
+            $modelStaticClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . 'Static.php';
+            if ($this->generateModelClass || !is_file($modelStaticClassFile)) {
+                $files[] = new CodeFile(
+                    $modelStaticClassFile,
+                    $this->render('model-static.php', $params)
+                );
+            }
+
             if ($queryClassName) {
                 $queryClassFile = Yii::getAlias(
                         '@' . str_replace('\\', '/', $this->queryNs)
