@@ -23,4 +23,24 @@ class Callback
             return "'$attribute'";
         };
     }
+
+    /**
+     * @return \Closure standard field from yii2-gii generator
+     */
+    public static function field()
+    {
+        return function ($attribute, $model, $generator) {
+            return $generator->generateActiveField("$attribute");
+        };
+    }
+
+    /**
+     * @return \Closure standard column, without any formatting
+     */
+    public static function column()
+    {
+        return function ($attribute) {
+            return "'$attribute'";
+        };
+    }
 }
