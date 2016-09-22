@@ -407,6 +407,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         parent::validateClass($attribute, $params);
     }
 
+    // TODO: replace with VarDumper::export
     public function var_export54($var, $indent = '')
     {
         switch (gettype($var)) {
