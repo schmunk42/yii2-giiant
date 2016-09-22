@@ -35,14 +35,14 @@ class BatchController extends Controller
 
     /**
      * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
-     * "Table Name" field.
+     *             "Table Name" field
      */
-    public $languageTableName = "{{table}}_lang";
+    public $languageTableName = '{{table}}_lang';
 
     /**
-     * @var string the column name where the language code is stored.
+     * @var string the column name where the language code is stored
      */
-    public $languageCodeColumn = "language";
+    public $languageCodeColumn = 'language';
 
     /**
      * @var bool whether to overwrite extended models (from ModelBase)
@@ -95,24 +95,24 @@ class BatchController extends Controller
     public $modelRemoveDuplicateRelations = false;
 
     /**
-     * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
+     * @var bool whether the strings will be generated using `Yii::t()` or normal strings
      */
     public $enableI18N = true;
 
     /**
-     * @var boolean whether the entity names will be singular or the same as the table name.
+     * @var bool whether the entity names will be singular or the same as the table name
      */
     public $singularEntities = true;
 
     /**
      * @var string the message category for models used by `Yii::t()` when `$enableI18N` is `true`.
-     * Defaults to `app`.
+     *             Defaults to `app`
      */
     public $modelMessageCategory = 'models';
 
     /**
      * @var string the message category for CRUDs used by `Yii::t()` when `$enableI18N` is `true`.
-     * Defaults to `app`.
+     *             Defaults to `app`
      */
     public $crudMessageCategory = 'cruds';
 
@@ -157,7 +157,7 @@ class BatchController extends Controller
     public $crudSkipRelations = [];
 
     /**
-     * @var boolean whether to add accessFilter in behavior
+     * @var bool whether to add accessFilter in behavior
      */
     public $crudAccessFilter;
 
@@ -186,12 +186,12 @@ class BatchController extends Controller
     public $modelQueryBaseClass = 'yii\db\ActiveQuery';
 
     /**
-     * @var bool This indicates whether the generator should generate attribute labels by using the comments of the corresponding DB columns.
+     * @var bool This indicates whether the generator should generate attribute labels by using the comments of the corresponding DB columns
      */
     public $modelGenerateLabelsFromComments = false;
 
     /**
-     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns.
+     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
     public $modelGenerateHintsFromComments = true;
     /**
@@ -205,7 +205,7 @@ class BatchController extends Controller
     protected $modelGenerator;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($id)
     {
@@ -251,7 +251,7 @@ class BatchController extends Controller
     }
 
     /**
-     * Loads application configuration and checks tables parameter
+     * Loads application configuration and checks tables parameter.
      *
      * @param \yii\base\Action $action
      *
@@ -277,9 +277,9 @@ class BatchController extends Controller
     }
 
     /**
-     * Run batch process to generate models and CRUDs for all given tables
+     * Run batch process to generate models and CRUDs for all given tables.
      *
-     * @param string $message the message to be echoed.
+     * @param string $message the message to be echoed
      */
     public function actionIndex()
     {
@@ -289,14 +289,15 @@ class BatchController extends Controller
     }
 
     /**
-     * Run batch process to generate models all given tables
+     * Run batch process to generate models all given tables.
+     *
      * @throws \yii\console\Exception
      */
     public function actionModels()
     {
         // create models
-        foreach ($this->tables AS $table) {
-            #var_dump($this->tableNameMap, $table);exit;
+        foreach ($this->tables as $table) {
+            //var_dump($this->tableNameMap, $table);exit;
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
@@ -336,11 +337,11 @@ class BatchController extends Controller
             \Yii::$app = $app;
             \Yii::$app->log->logger->flush(true);
         }
-
     }
 
     /**
-     * Run batch process to generate CRUDs all given tables
+     * Run batch process to generate CRUDs all given tables.
+     *
      * @throws \yii\console\Exception
      */
     public function actionCruds()
@@ -352,7 +353,7 @@ class BatchController extends Controller
         $this->createDirectoryFromNamespace($this->crudControllerNamespace);
         $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
 
-        foreach ($this->tables AS $table) {
+        foreach ($this->tables as $table) {
             $table = str_replace($this->tablePrefix, '', $table);
             $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
                 $this->modelGenerator->generateClassName($table);
@@ -360,10 +361,10 @@ class BatchController extends Controller
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
                 'template' => $this->template,
-                'modelClass' => $this->modelNamespace . '\\' . $name,
-                'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
+                'modelClass' => $this->modelNamespace.'\\'.$name,
+                'searchModelClass' => $this->crudSearchModelNamespace.'\\'.$name.$this->crudSearchModelSuffix,
                 'controllerNs' => $this->crudControllerNamespace,
-                'controllerClass' => $this->crudControllerNamespace . '\\' . $name . 'Controller',
+                'controllerClass' => $this->crudControllerNamespace.'\\'.$name.'Controller',
                 'viewPath' => $this->crudViewPath,
                 'pathPrefix' => $this->crudPathPrefix,
                 'tablePrefix' => $this->tablePrefix,
@@ -391,9 +392,10 @@ class BatchController extends Controller
     }
 
     /**
-     * Returns Yii's initial configuration array
+     * Returns Yii's initial configuration array.
      *
      * @todo should be removed, if this issue is closed -> https://github.com/yiisoft/yii2/pull/5687
+     *
      * @return array
      */
     protected function getYiiConfiguration()
@@ -402,30 +404,29 @@ class BatchController extends Controller
             $config = $GLOBALS['config'];
         } else {
             $config = \yii\helpers\ArrayHelper::merge(
-                require(\Yii::getAlias('@app') . '/../common/config/main.php'),
-                (is_file(\Yii::getAlias('@app') . '/../common/config/main-local.php')) ?
-                    require(\Yii::getAlias('@app') . '/../common/config/main-local.php')
+                require(\Yii::getAlias('@app').'/../common/config/main.php'),
+                (is_file(\Yii::getAlias('@app').'/../common/config/main-local.php')) ?
+                    require(\Yii::getAlias('@app').'/../common/config/main-local.php')
                     : [],
-                require(\Yii::getAlias('@app') . '/../console/config/main.php'),
-                (is_file(\Yii::getAlias('@app') . '/../console/config/main-local.php')) ?
-                    require(\Yii::getAlias('@app') . '/../console/config/main-local.php')
+                require(\Yii::getAlias('@app').'/../console/config/main.php'),
+                (is_file(\Yii::getAlias('@app').'/../console/config/main-local.php')) ?
+                    require(\Yii::getAlias('@app').'/../console/config/main-local.php')
                     : []
             );
         }
+
         return $config;
     }
 
-
     /**
-     * Helper function to create
+     * Helper function to create.
      *
      * @param $ns Namespace
      */
     private function createDirectoryFromNamespace($ns)
     {
         echo \Yii::getRootAlias($ns);
-        $dir = \Yii::getAlias('@' . str_replace('\\', '/', ltrim($ns, '\\')));
+        $dir = \Yii::getAlias('@'.str_replace('\\', '/', ltrim($ns, '\\')));
         @mkdir($dir);
     }
-
 }

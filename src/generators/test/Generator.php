@@ -1,4 +1,5 @@
 <?php
+
 namespace schmunk42\giiant\generators\test;
 
 use Yii;
@@ -6,7 +7,7 @@ use yii\gii\CodeFile;
 use yii\db\Schema;
 
 /**
- * This generator generates unit tests for crud operations
+ * This generator generates unit tests for crud operations.
  *
  * @author Github: gradosevic
  */
@@ -19,29 +20,28 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
 
     /**
      * @var string Codeception's root path
-     *
      */
     public $codeceptionPath = '/tests/codeception/';
 
     /**
      * @var string Controller's class name
      */
-    public $controllerClass = "";
+    public $controllerClass = '';
 
     /**
      * @var string Model's class name
      */
-    public $modelClass = "";
+    public $modelClass = '';
 
-    public $modelNs = "";
+    public $modelNs = '';
 
     /**
      * @var string Search model's class name
      */
-    public $searchModelClass = "";
+    public $searchModelClass = '';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -49,7 +49,7 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDescription()
     {
@@ -57,7 +57,7 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function requiredTemplates()
     {
@@ -66,14 +66,16 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
 
     /**
      * @param $table Table schema
+     *
      * @return array Attributes containing all required model's information for test generator
      */
-    public function generateAttributes($table){
+    public function generateAttributes($table)
+    {
         $labels = $this->generateLabels($table);
         $attributes = [];
         foreach ($table->columns as $column) {
             $label = $column->name;
-            if(isset($labels[$column->name])){
+            if (isset($labels[$column->name])) {
                 $label = $labels[$column->name];
             }
             $attribute = [];
@@ -117,20 +119,21 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
             }
             $attributes[] = $attribute;
         }
+
         return $attributes;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function generate()
     {
-        $files     = [];
+        $files = [];
        // $relations = $this->generateRelations();
-        $db        = $this->getDbConnection();
+        $db = $this->getDbConnection();
 
         $class = $this->modelNs.$this->modelClass;
-        $classTableNameMethod = "tableName";
+        $classTableNameMethod = 'tableName';
         $this->tableName = $class::$classTableNameMethod();
 
         //TODO: Add unit tests for search model
@@ -141,24 +144,25 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
         foreach ($this->getTableNames() as $tableName) {
             $className = $this->generateClassName($tableName);
             $tableSchema = $db->getTableSchema($tableName);
-            $params      = [
-                'tableName'      => $tableName,
-                'className'      => $className,
-                'modelClass'     => $this->modelClass,
-                'controllerClass'=> $this->controllerClass,
-                'labels'         => $this->generateLabels($tableSchema),
-                'rules'          => $this->generateRules($tableSchema),
-                'attributes'     => $this->generateAttributes($tableSchema),
+            $params = [
+                'tableName' => $tableName,
+                'className' => $className,
+                'modelClass' => $this->modelClass,
+                'controllerClass' => $this->controllerClass,
+                'labels' => $this->generateLabels($tableSchema),
+                'rules' => $this->generateRules($tableSchema),
+                'attributes' => $this->generateAttributes($tableSchema),
                 //TODO: Add unit tests for relations
                 //'relations'      => isset($relations[$tableName]) ? $relations[$tableName] : [],
-                'ns'             => $this->ns,
+                'ns' => $this->ns,
             ];
 
             $files[] = new CodeFile(
-                Yii::getAlias('@app/..'. $this->codeceptionPath . str_replace('\\', '/', $this->ns)) . '/' . $className . $this->baseClassSuffix . 'UnitTest.php',
+                Yii::getAlias('@app/..'.$this->codeceptionPath.str_replace('\\', '/', $this->ns)).'/'.$className.$this->baseClassSuffix.'UnitTest.php',
                 $this->render('unit.php', $params)
             );
         }
+
         return $files;
     }
 }

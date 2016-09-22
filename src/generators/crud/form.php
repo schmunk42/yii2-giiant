@@ -1,12 +1,14 @@
 <?php
+
 use schmunk42\giiant\helpers\SaveForm;
-/**
+
+/*
  * @var yii\web\View
  * @var yii\widgets\ActiveForm            $form
  * @var yii\gii\generators\crud\Generator $generator
  */
 
-/**
+/*
  * JS for listbox "Saved Form"
  * on chenging listbox, form fill with selected saved forma data
  * currently work with input text, input checkbox and select form fields

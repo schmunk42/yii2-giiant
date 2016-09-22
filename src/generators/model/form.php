@@ -7,7 +7,7 @@ use schmunk42\giiant\helpers\SaveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $generator yii\gii\generators\form\Generator */
 
-/**
+/*
  * JS for listbox "Saved Form"
  * on chenging listbox, form fill with selected saved forma data
  * currently work with input text, input checkbox and select form fields
@@ -17,8 +17,6 @@ $this->registerJs(SaveForm::jsFillForm(), yii\web\View::POS_END);
 echo $form->field($generator, 'savedForm')->dropDownList(
         SaveForm::getSavedFormsListbox($generator->getName()), ['onchange' => 'fillForm(this.value)']
 );
-
-
 
 echo $form->field($generator, 'tableName');
 echo $form->field($generator, 'tablePrefix');
@@ -31,7 +29,7 @@ echo $form->field($generator, 'generateRelations')->dropDownList([
     Generator::RELATIONS_ALL => Yii::t('yii', 'All relations'),
     Generator::RELATIONS_ALL_INVERSE => Yii::t('yii', 'All relations with inverse'),
 ]);
-#echo $form->field($generator, 'generateRelationsFromCurrentSchema')->checkbox();
+//echo $form->field($generator, 'generateRelationsFromCurrentSchema')->checkbox();
 echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'generateHintsFromComments')->checkbox();
 echo $form->field($generator, 'generateModelClass')->checkbox();

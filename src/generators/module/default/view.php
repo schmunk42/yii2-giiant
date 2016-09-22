@@ -3,7 +3,7 @@
 /* @var $generator yii\gii\generators\module\Generator */
 ?>
 
-<?= "<?php" ?>
+<?= '<?php' ?>
 
 use rmrevin\yii\fontawesome\FA;
 use yii\helpers\Inflector;
