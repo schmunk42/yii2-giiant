@@ -8,9 +8,14 @@ use yii\helpers\StringHelper;
  */
 
 /** @var \yii\db\ActiveRecord $model */
+## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 $safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    $model->setScenario('default');
+    $safeAttributes = $model->safeAttributes();
+}
 if (empty($safeAttributes)) {
     $safeAttributes = $model->getTableSchema()->columnNames;
 }
@@ -52,6 +57,7 @@ use yii\helpers\StringHelper;
         <p>
             <?php
             foreach ($safeAttributes as $attribute) {
+                echo "\n\n<!-- attribute $attribute -->";
                 $prepend = $generator->prependActiveField($attribute, $model);
                 $field = $generator->activeField($attribute, $model);
                 $append = $generator->appendActiveField($attribute, $model);
