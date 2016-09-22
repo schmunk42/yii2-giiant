@@ -208,11 +208,9 @@ EOS;
     'format' => 'raw',
 ]
 EOS;
-            }
             return $code;
-        } else {
-            return;
         }
+
     }
 
     /**
