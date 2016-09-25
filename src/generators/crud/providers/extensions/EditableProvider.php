@@ -293,10 +293,12 @@ EOS;
                     'displayFormat' => \$datePattern,
                     'saveFormat' => 'php:Y-m-d',
                     'options' => [
+                        'class' => 'form-control',
                         'pluginOptions' => [
-                            'autoclose' => true
+                            'autoclose' => true,
+                            'todayHighlight' => true,
                         ]
-                    ]
+                    ],
                 ]
             ]
         ],
