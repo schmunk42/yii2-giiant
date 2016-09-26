@@ -4,8 +4,8 @@ use schmunk42\giiant\helpers\SaveForm;
 
 /*
  * @var yii\web\View
- * @var yii\widgets\ActiveForm            $form
- * @var yii\gii\generators\crud\Generator $generator
+ * @var yii\bootstrap\ActiveForm                   $form
+ * @var schmunk42\giiant\generators\crud\Generator $generator
  */
 
 /*
