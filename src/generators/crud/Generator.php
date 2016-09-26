@@ -131,6 +131,8 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $moduleNs;
     public $migrationClass;
 
+    public $indexGridClass = 'yii\\grid\\GridView';
+
     private $_p = [];
 
     /**
