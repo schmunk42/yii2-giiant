@@ -10,5 +10,7 @@ before_install:
   - docker-compose build --pull
 
 script:
-  - docker-compose run --rm php yii app/setup
+  - docker-compose run --rm phpfpm yii app/setup
+  - make all
+  - make test
 
