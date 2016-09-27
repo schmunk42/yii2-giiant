@@ -14,3 +14,8 @@ script:
   - make all
   - make test
 
+addons:
+  artifacts:
+    s3_region: eu-west-1
+    paths:
+      - tests/_output
