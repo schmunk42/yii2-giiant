@@ -1,0 +1,18 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+before_install:
+  - export COMPOSE_FILE=./docker-compose.yml:./docker-compose.test.yml
+  - export APP_VERSION=$(git describe --always --dirty)
+  - export STACK_PHP_IMAGE=${TRAVIS_REPO_SLUG}:${APP_VERSION}
+  - export STACK_PHP_IMAGE_LATEST=${TRAVIS_REPO_SLUG}:latest
+  - cd tests
+  - docker-compose build --pull
+
+script:
+  - docker-compose run --rm php yii app/setup
+
