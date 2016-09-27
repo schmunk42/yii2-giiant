@@ -22,7 +22,7 @@ endif
 default: help
 
 
-all: up setup open
+all: up setup
 
 open:	 ##@docker open application web service in browser
 	open http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
