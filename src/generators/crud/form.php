@@ -39,7 +39,7 @@ echo $form->field($generator, 'indexWidgetType')->dropDownList(
 echo $form->field($generator, 'formLayout')->dropDownList(
         [
             /* Form Types */
-            'vertical' => 'vertical',
+            'default' => 'full-width',
             'horizontal' => 'horizontal',
             'inline' => 'inline',
         ]
