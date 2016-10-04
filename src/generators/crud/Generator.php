@@ -95,7 +95,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public $accessFilter = false;
     
-    public $generateAccessFilterMigrations = false;
+    public $generateAccessFilterMigrations = true;
 
     public $baseTraits;
 
