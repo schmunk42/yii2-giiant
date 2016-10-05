@@ -42,10 +42,8 @@ use <?= $generator->indexWidgetType === 'grid' ? $generator->indexGridClass : 'y
 <?php endif; ?>
 */
 
-<?php
-$this->title = Yii::t($generator->modelMessageCategory, $modelName);
+$this->title = Yii::t(<?= "'{$generator->modelMessageCategory}', '{$modelName}'" ?>);
 $this->params['breadcrumbs'][] = $this->title;
-?>
 
 <?php
 if($generator->accessFilter):
@@ -84,7 +82,7 @@ echo '?>';
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
     <?=
-    '<?php '.($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
+    "<?php\n".($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
     <?php if ($generator->searchModelClass !== ''): ?>
         echo $this->render('_search', ['model' =>$searchModel]);
     <?php endif; ?>
@@ -95,8 +93,8 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
-        <small>
+            <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
+            <small>
             List
         </small>
     </h1>
@@ -152,6 +150,7 @@ echo "?>\n"
                 'url' => ['{$route}'],
                 'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
             ],
+                    
 PHP;
                 ?>
             <?php endforeach; ?>
@@ -169,15 +168,15 @@ PHP;
             'class' => 'dropdown-menu-right'
             ],
             'encodeLabels' => false,
-            'items' => [<?= $items ?>]
-            ],
+                    'items' => [<?= "\n".$items."\n" ?>]
+                ],
             'options' => [
             'class' => 'btn-default'
             ]
             ]
             );
-            <?= '?>' ?>
-        </div>
+                <?= "?>\n" ?>
+            </div>
     </div>
 
     <hr />
@@ -188,16 +187,15 @@ PHP;
         'pager' => [
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
-        'lastPageLabel' => <?= $generator->generateString('Last') ?>
-        ],
+        'lastPageLabel' => <?= $generator->generateString('Last').",\n" ?>
+            ],
         <?php if ($generator->searchModelClass !== ''): ?>
             'filterModel' => $searchModel,
         <?php endif; ?>
         'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
         'headerRowOptions' => ['class'=>'x'],
-        'columns' => [
-
-        <?php
+                'columns' => [
+            <?php
         $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',
