@@ -177,4 +177,34 @@ class SaveForm
     }
         ';
     }
+    
+    public static function jsPopulateCrudFields()
+    {
+        return '
+        
+    $("#generator-modelclass").on("blur", function(){
+        var modelClass = $(this).val().split("\\\\");
+        var modelClassName = modelClass.pop();
+        searchModelClass(modelClass.slice(0), modelClassName);
+        controllerModelClass(modelClass.slice(0), modelClassName);
+    });
+    
+    
+    function searchModelClass(modelClass, modelClassName){
+        modelClass.push("search");
+        modelClass.push(modelClassName + "Search");
+        $("#generator-searchmodelclass").val(modelClass.join("\\\\"));
+    }
+    
+    function controllerModelClass(modelClass, modelClassName){
+        if(modelClass[modelClass.length-1] == "models"){
+            modelClass.pop();
+        }
+    
+        modelClass.push("controllers");
+        modelClass.push(modelClassName + "Controller");
+        $("#generator-controllerclass").val(modelClass.join("\\\\"));
+    }
+        ';
+    }
 }
