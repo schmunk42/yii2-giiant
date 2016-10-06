@@ -204,6 +204,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     'savedForm',
                     'formLayout',
                     'accessFilter',
+                    'generateAccessFilterMigrations',
                     'singularEntities',
                     'modelMessageCategory',
                 ],
