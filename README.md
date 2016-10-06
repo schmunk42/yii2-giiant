@@ -7,8 +7,7 @@ yii2-giiant
 
 Note: Major changes from 0.4 to 0.5, see [upgrading](UPGRADING.md) for details.
 
-[![build status](https://git.hrzg.de/dmstr/yii2-giiant/badges/master/build.svg)](https://git.hrzg.de/dmstr/yii2-giiant/builds?scope=all)
-
+[![Build Status](https://travis-ci.org/schmunk42/yii2-giiant.svg?branch=master)](https://travis-ci.org/schmunk42/yii2-giiant)
 
 What is this?
 -------------

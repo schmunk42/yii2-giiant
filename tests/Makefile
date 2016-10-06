@@ -22,7 +22,7 @@ endif
 default: help
 
 
-all: up setup open
+all: up setup
 
 open:	 ##@docker open application web service in browser
 	open http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
@@ -54,9 +54,9 @@ clean:
 
 lint:
 	mkdir -p _artifacts/lint && chmod -R 777 _artifacts/lint
-	docker run --rm -v "${PWD}:/project" jolicode/phaudit php-cs-fixer fix --format=txt -v --dry-run src || export ERROR=1; \
-	docker run --rm -v "${PWD}:/project" jolicode/phaudit phpmetrics --report-html=_artifacts/lint/metrics.html src/ || ERROR=1; \
-	docker run --rm -v "${PWD}:/project" jolicode/phaudit phpmd src html cleancode,codesize,controversial,design,unusedcode > _artifacts/lint/mess.html || ERROR=1; \
+	docker run --rm -v "${PWD}/..:/project" jolicode/phaudit php-cs-fixer fix --format=txt -v --dry-run src || export ERROR=1; \
+	docker run --rm -v "${PWD}/..:/project" jolicode/phaudit phpmetrics --report-html=_artifacts/lint/metrics.html src/ || ERROR=1; \
+	docker run --rm -v "${PWD}/..:/project" jolicode/phaudit phpmd src html cleancode,codesize,controversial,design,unusedcode > _artifacts/lint/mess.html || ERROR=1; \
 	exit ${ERROR}
 
 # Help based on https://gist.github.com/prwhite/8168133 thanks to @nowox and @prwhite

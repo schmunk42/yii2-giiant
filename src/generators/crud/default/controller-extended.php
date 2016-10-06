@@ -10,7 +10,7 @@ namespace <?= \yii\helpers\StringHelper::dirname(ltrim($generator->controllerCla
 /**
 * This is the class for controller "<?= $controllerClassName ?>".
 */
-class <?= $controllerClassName ?> extends \<?= $generator->controllerNs.'\base\\'.$controllerClassName."\n" ?>
+class <?= $controllerClassName ?> extends <?= (isset($generator->controllerNs) ? '\\'.$generator->controllerNs.'\\' : '') .'base\\'.$controllerClassName."\n" ?>
 {
 
 }

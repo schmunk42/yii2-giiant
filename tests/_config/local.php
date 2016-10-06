@@ -6,6 +6,10 @@ switch (getenv('GIIANT_TEST_DB')) {
             'sakila' => [
                 'class' => 'app\modules\sakila\Module',
                 'layout' => '@admin-views/layouts/main',
+            ],
+            'backend2' => [
+                'class' => 'app\modules\backend\Module',
+                'layout' => '@admin-views/layouts/main',
             ]
         ];
         break;
@@ -29,11 +33,13 @@ switch (getenv('GIIANT_TEST_DB')) {
 }
 
 // TODO: add note to dependencies for CRUDs to docs
-$giiantTestModule['gridview'] = ['class'=>'kartik\grid\Module'];
+$giiantTestModule['gridview'] = ['class' => 'kartik\grid\Module'];
 
 return [
     'aliases' => [
-      '@tests' => '@vendor/schmunk42/yii2-giiant/tests'
+        '@tests' => '@vendor/schmunk42/yii2-giiant/tests',
+        '@common' => '@app/common',
+        '@backend' => '@app/modules/backend'
     ],
     'components' => [
         'cache' => [
@@ -41,12 +47,12 @@ return [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => getenv('DATABASE_DSN_BASE') . ';dbname=' . getenv('GIIANT_TEST_DB'), // DATABASE_DSN_DB
+            'dsn' => getenv('DATABASE_DSN_BASE').';dbname='.getenv('GIIANT_TEST_DB'), // DATABASE_DSN_DB
             'username' => getenv('DATABASE_USER'),
             'password' => getenv('DATABASE_PASSWORD'),
             'charset' => 'utf8',
             'tablePrefix' => getenv('DATABASE_TABLE_PREFIX'),
-            'enableSchemaCache'=> true,
+            'enableSchemaCache' => true,
         ],
     ],
     'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,

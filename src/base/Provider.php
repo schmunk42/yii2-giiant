@@ -3,11 +3,9 @@
  * Created by PhpStorm.
  * User: tobias
  * Date: 19.03.14
- * Time: 01:02
+ * Time: 01:02.
  */
-
 namespace schmunk42\giiant\base;
-
 
 use yii\base\Object;
 
@@ -21,4 +19,4 @@ class Provider extends Object
     public $columnNames = [];
 
     public $columnPatterns = [];
-} 
+}

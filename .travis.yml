@@ -1,0 +1,20 @@
+sudo: required
+
+language: php
+
+services:
+  - docker
+
+before_install:
+  - cd tests
+  - docker-compose build --pull
+
+script:
+  - make all
+  - make test
+
+addons:
+  artifacts:
+    s3_region: eu-west-1
+    paths:
+      - tests/_output
