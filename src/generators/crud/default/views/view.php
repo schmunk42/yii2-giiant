@@ -11,7 +11,7 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 /** @var $generator \schmunk42\giiant\generators\crud\Generator */
 ## TODO: move to generator (?); cleanup
-$model          = new $generator->modelClass();
+$model = new $generator->modelClass();
 $model->setScenario('crud');
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes))
@@ -161,9 +161,9 @@ EOS;
 
         if ($relation->via !== null)
         {
-            $pivotName     = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
             $pivotRelation = $model->{'get'.$pivotName}();
-            $pivotPk       = key($pivotRelation->link);
+            $pivotPk = key($pivotRelation->link);
 
             $addButton = "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-link\"></span> ' . ".$generator->generateString('Attach')." . ' ".
@@ -203,15 +203,15 @@ EOS;
         // render pivot grid
         if ($relation->via !== null)
         {
-            $pjaxId       = "pjax-{$pivotName}";
+            $pjaxId = "pjax-{$pivotName}";
             $gridRelation = $pivotRelation;
-            $gridName     = $pivotName;
+            $gridName = $pivotName;
         }
         else
         {
-            $pjaxId       = "pjax-{$name}";
+            $pjaxId = "pjax-{$name}";
             $gridRelation = $relation;
-            $gridName     = $name;
+            $gridName = $name;
         }
 
         $output = $generator->relationGrid($gridName, $gridRelation, $showAllRecords);
