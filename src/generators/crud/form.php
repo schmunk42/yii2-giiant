@@ -26,6 +26,7 @@ echo $form->field($generator, 'baseControllerClass');
 echo $form->field($generator, 'viewPath');
 echo $form->field($generator, 'pathPrefix');
 echo $form->field($generator, 'accessFilter')->checkbox();
+echo $form->field($generator, 'generateAccessFilterMigrations')->checkbox();
 echo $form->field($generator, 'enableI18N')->checkbox();
 echo $form->field($generator, 'messageCategory');
 echo $form->field($generator, 'modelMessageCategory');
