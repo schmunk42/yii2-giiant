@@ -32,7 +32,7 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use <?= $generator->indexWidgetType === 'grid' ? 'yii\\grid\\GridView' : 'yii\\widgets\\ListView' ?>;
+use <?= $generator->indexWidgetType === 'grid' ? $generator->indexGridClass : 'yii\\widgets\\ListView' ?>;
 
 /**
 * @var yii\web\View $this
@@ -184,7 +184,6 @@ PHP;
 
     <div class="table-responsive">
         <?= '<?= ' ?>GridView::widget([
-        'layout' => '{summary}{pager}{items}{pager}',
         'dataProvider' => $dataProvider,
         'pager' => [
         'class' => yii\widgets\LinkPager::className(),

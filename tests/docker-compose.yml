@@ -26,6 +26,8 @@ services:
       - ../tests/_config/local.php:/app/src/config/local.php
       # host volumes for local debugging of generated files
       - ./__tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+      - ./__tmp/common:/app/test-defaults/common
+      - ./__tmp/backend:/app/test-defaults/modules/backend
       - ./__tmp/onlyCrud/controllers:/app/src/controllers/onlyCrud
       - ./__tmp/onlyCrud/models:/app/src/models/onlyCrud
       - ./__tmp/onlyCrud/views:/app/src/views/onlyCrud

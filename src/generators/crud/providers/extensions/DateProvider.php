@@ -32,7 +32,7 @@ EOS;
                 return;
         }
     }
-    
+
     /**
      * Formatter for detail view attributes, who have get[..]ValueLabel function.
      *
@@ -49,7 +49,7 @@ EOS;
             return;
         }
 
-        if($column->type != 'date'){
+        if ($column->type != 'date') {
             return;
         }
 
@@ -70,5 +70,5 @@ EOS;
         ]).'</div>',                
 ]        
 EOS;
-    }    
+    }
 }

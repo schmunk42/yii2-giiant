@@ -57,7 +57,6 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var string Bootstrap CSS-class for form-layout
      */
-
     public $formLayout = 'horizontal';
 
     /**
@@ -94,8 +93,8 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var bool whether to add an access filter to controllers
      */
     public $accessFilter = false;
-    
-    public $generateAccessFilterMigrations = true;
+
+    public $generateAccessFilterMigrations = false;
 
     public $baseTraits;
 
@@ -125,13 +124,15 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $tidyOutput;
 
     /**
-     * @var string form field for selecting and loading saved gii forms 
+     * @var string form field for selecting and loading saved gii forms
      */
     public $savedForm;
-    
+
     public $moduleNs;
     public $migrationClass;
-    
+
+    public $indexGridClass = 'yii\\grid\\GridView';
+
     private $_p = [];
 
     /**
@@ -140,10 +141,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function init()
     {
         parent::init();
-        if(!$this->providerList){
-            $this->providerList = self::getCoreProviders();
-            $this->overwriteSearchModelClass = true;
-        }
+        $this->providerList = self::getCoreProviders();
     }
 
     /**
@@ -193,7 +191,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * {@inheritdoc}
      */
-    public function rules() 
+    public function rules()
     {
         return array_merge(
                 parent::rules(), [
@@ -207,9 +205,9 @@ class Generator extends \yii\gii\generators\crud\Generator
                     'formLayout',
                     'accessFilter',
                     'singularEntities',
-                    'modelMessageCategory'
-                ], 
-                'safe'
+                    'modelMessageCategory',
+                ],
+                'safe',
             ],
             [['viewPath'], 'required'],
                 ]
@@ -225,7 +223,8 @@ class Generator extends \yii\gii\generators\crud\Generator
     }
 
     /**
-     * all form fields for saving in saved forms
+     * all form fields for saving in saved forms.
+     *
      * @return array
      */
     public function formAttributes()
@@ -241,15 +240,15 @@ class Generator extends \yii\gii\generators\crud\Generator
             'singularEntities',
             'indexWidgetType',
             'formLayout',
-            'actionButtonClass', 
+            'actionButtonClass',
             'providerList',
             'template',
             'accessFilter',
             'singularEntities',
-            'modelMessageCategory'
+            'modelMessageCategory',
             ];
     }
-    
+
     /**
      * @return string the action view file path
      */
@@ -281,22 +280,22 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function getModuleId()
     {
-        if(!$this->moduleNs){
+        if (!$this->moduleNs) {
             $controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
             $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($controllerNs, '\\'));
         }
+
         return \yii\helpers\StringHelper::basename($this->moduleNs);
     }
 
     public function generate()
     {
-        
-        $accessDefinitions = require($this->getTemplatePath() . '/access_definition.php');
-                
+        $accessDefinitions = require $this->getTemplatePath().'/access_definition.php';
+
         $this->controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
         $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
-        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass),0,-10);
-        
+        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass), 0, -10);
+
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
             $this->controllerClass = Inflector::singularize(
@@ -309,19 +308,19 @@ class Generator extends \yii\gii\generators\crud\Generator
         $baseControllerFile = StringHelper::dirname($controllerFile).'/base/'.StringHelper::basename($controllerFile);
         $restControllerFile = StringHelper::dirname($controllerFile).'/api/'.StringHelper::basename($controllerFile);
 
-        /**
+        /*
          * search generated migration and overwrite it or create new
          */
-        $migrationDir = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
-                    . '/migrations';
-        
-        if(file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir .'/m*_' . $controllerName . '00_access.php')){
+        $migrationDir = StringHelper::dirname(StringHelper::dirname($controllerFile))
+                    .'/migrations';
+
+        if (file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir.'/m*_'.$controllerName.'00_access.php')) {
             $this->migrationClass = pathinfo($migrationDirFiles[0], PATHINFO_FILENAME);
-        }else{        
-            $this->migrationClass = 'm' . date("ymd_Hi") . '00_' . $controllerName . '_access'; 
-        }        
-        
-        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php',['accessDefinitions' => $accessDefinitions]));
+        } else {
+            $this->migrationClass = 'm'.date('ymd_Hi').'00_'.$controllerName.'_access';
+        }
+
+        $files[] = new CodeFile($baseControllerFile, $this->render('controller.php', ['accessDefinitions' => $accessDefinitions]));
         $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
 
         if ($this->overwriteControllerClass || !is_file($controllerFile)) {
@@ -331,7 +330,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         if ($this->overwriteRestControllerClass || !is_file($restControllerFile)) {
             $files[] = new CodeFile($restControllerFile, $this->render('controller-rest.php', $params));
         }
-        
+
         if (!empty($this->searchModelClass)) {
             $searchModel = Yii::getAlias('@'.str_replace('\\', '/', ltrim($this->searchModelClass, '\\').'.php'));
             if ($this->overwriteSearchModelClass || !is_file($searchModel)) {
@@ -348,41 +347,40 @@ class Generator extends \yii\gii\generators\crud\Generator
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 echo $file;
-                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file",['permisions' => $permisions]));
-                
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", ['permisions' => $permisions]));
             }
         }
 
-        if ($this->generateAccessFilterMigrations){
-            
-            /**
+        if ($this->generateAccessFilterMigrations) {
+
+            /*
              * access migration
              */
-            $migrationFile = $migrationDir . '/' . $this->migrationClass . '.php' ;
+            $migrationFile = $migrationDir.'/'.$this->migrationClass.'.php';
             //var_dump($migrationFile);exit;
-            $files[] = new CodeFile($migrationFile, $this->render('migration_access.php',['accessDefinitions' => $accessDefinitions]));
+            $files[] = new CodeFile($migrationFile, $this->render('migration_access.php', ['accessDefinitions' => $accessDefinitions]));
 
-            /**
+            /*
              * access roles translation
              */
-            $forRoleTranslationFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
-                    . '/messages/for-translation/'
-                    . $controllerName.'.php' ;
-            $files[] = new CodeFile($forRoleTranslationFile, $this->render('roles-translation.php',['accessDefinitions' => $accessDefinitions]));
+            $forRoleTranslationFile = StringHelper::dirname(StringHelper::dirname($controllerFile))
+                    .'/messages/for-translation/'
+                    .$controllerName.'.php';
+            $files[] = new CodeFile($forRoleTranslationFile, $this->render('roles-translation.php', ['accessDefinitions' => $accessDefinitions]));
         }
 
-        /**
+        /*
          * create gii/[name]GiantCRUD.json with actual form data
          */
-        $suffix = str_replace(' ','', $this->getName());
+        $suffix = str_replace(' ', '', $this->getName());
         $controllerFileinfo = pathinfo($controllerFile);
-        $formDataFile = StringHelper::dirname(StringHelper::dirname($controllerFile)) 
-                . '/gii/'
-                . str_replace('Controller',$suffix,$controllerFileinfo['filename']).'.json' ;
+        $formDataFile = StringHelper::dirname(StringHelper::dirname($controllerFile))
+                .'/gii/'
+                .str_replace('Controller', $suffix, $controllerFileinfo['filename']).'.json';
         //$formData = json_encode($this->getFormAttributesValues());
-        $formData = json_encode(SaveForm::getFormAttributesValues($this,$this->formAttributes()));
+        $formData = json_encode(SaveForm::getFormAttributesValues($this, $this->formAttributes()));
         $files[] = new CodeFile($formDataFile, $formData);
-        
+
         return $files;
     }
 
@@ -410,24 +408,27 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
         parent::validateClass($attribute, $params);
     }
-    
-    public function var_export54($var, $indent="") {
+
+    // TODO: replace with VarDumper::export
+    public function var_export54($var, $indent = '')
+    {
         switch (gettype($var)) {
-            case "string":
-                return '"' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '"';
-            case "array":
+            case 'string':
+                return '"'.addcslashes($var, "\\\$\"\r\n\t\v\f").'"';
+            case 'array':
                 $indexed = array_keys($var) === range(0, count($var) - 1);
                 $r = [];
                 foreach ($var as $key => $value) {
                     $r[] = "$indent    "
-                         . ($indexed ? "" : $this->var_export54($key) . " => ")
-                         . $this->var_export54($value, "$indent    ");
+                         .($indexed ? '' : $this->var_export54($key).' => ')
+                         .$this->var_export54($value, "$indent    ");
                 }
-                return "[\n" . implode(",\n", $r) . "\n" . $indent . "]";
-            case "boolean":
-                return $var ? "TRUE" : "FALSE";
+
+                return "[\n".implode(",\n", $r)."\n".$indent.']';
+            case 'boolean':
+                return $var ? 'TRUE' : 'FALSE';
             default:
-                return var_export($var, TRUE);
+                return var_export($var, true);
         }
-    }    
+    }
 }

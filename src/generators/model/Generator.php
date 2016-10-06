@@ -1,10 +1,10 @@
 <?php
 /**
  * @link http://www.phundament.com
+ *
  * @copyright Copyright (c) 2014 herzog kommunikation GmbH
  * @license http://www.phundament.com/license/
  */
-
 namespace schmunk42\giiant\generators\model;
 
 use Yii;
@@ -17,6 +17,7 @@ use schmunk42\giiant\helpers\SaveForm;
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
  *
  * @author Tobias Munk <schmunk@usrbin.de>
+ *
  * @since 0.0.1
  */
 class Generator extends \yii\gii\generators\model\Generator
@@ -31,7 +32,6 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public $baseTraits = null;
 
-
     /**
      * @var null string for the table prefix, which is ignored in generated class name
      */
@@ -41,32 +41,32 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var bool whether or not to use BlameableBehavior
      */
     public $useBlameableBehavior = true;
-    
+
     /**
      * @var string the name of the column where the user who created the entry is stored
      */
     public $createdByColumn = 'created_by';
-    
+
     /**
      * @var string the name of the column where the user who updated the entry is stored
      */
     public $updatedByColumn = 'updated_by';
-    
+
     /**
      * @var bool whether or not to use TimestampBehavior
      */
     public $useTimestampBehavior = true;
-    
+
     /**
      * @var string the name of the column where the user who updated the entry is stored
      */
     public $createdAtColumn = 'created_at';
-    
+
     /**
      * @var string the name of the column where the user who updated the entry is stored
      */
     public $updatedAtColumn = 'updated_at';
-    
+
     /**
      * @var bool whether or not to use 2amigos/yii2-translateable-behavior
      */
@@ -74,14 +74,14 @@ class Generator extends \yii\gii\generators\model\Generator
 
     /**
      * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
-     * "Table Name" field.
+     *             "Table Name" field
      */
-    public $languageTableName = "{{table}}_lang";
+    public $languageTableName = '{{table}}_lang';
 
     /**
-     * @var string the column name where the language code is stored.
+     * @var string the column name where the language code is stored
      */
-    public $languageCodeColumn = "language";
+    public $languageCodeColumn = 'language';
 
     /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
@@ -97,12 +97,12 @@ class Generator extends \yii\gii\generators\model\Generator
     public $removeDuplicateRelations = false;
 
     /**
-     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns.
+     * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
     public $generateHintsFromComments = true;
 
     /**
-     * @var string form field for selecting and loading saved gii forms 
+     * @var string form field for selecting and loading saved gii forms
      */
     public $savedForm;
 
@@ -111,7 +111,7 @@ class Generator extends \yii\gii\generators\model\Generator
     protected $classNames2;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -119,7 +119,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDescription()
     {
@@ -127,7 +127,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -135,21 +135,22 @@ class Generator extends \yii\gii\generators\model\Generator
             parent::rules(),
             [
                 [[
-                    'generateModelClass', 
+                    'generateModelClass',
                     'useTranslatableBehavior',
                     'generateHintsFromComments',
-                    'useBlameableBehavior', 
+                    'useBlameableBehavior',
                     'useTimestampBehavior',
-                    'singularEntities'
+                    'singularEntities',
                     ], 'boolean'],
-                [['languageTableName', 'languageCodeColumn','createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn','savedForm'], 'string'],
+                [['languageTableName', 'languageCodeColumn', 'createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn', 'savedForm'], 'string'],
                 [['tablePrefix'], 'safe'],
             ]
         );
     }
 
     /**
-     * all form fields for saving in saved forms
+     * all form fields for saving in saved forms.
+     *
      * @return array
      */
     public function formAttributes()
@@ -165,7 +166,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'generateRelationsFromCurrentSchema',
             'generateLabelsFromComments',
             'generateHintsFromComments',
-            'generateModelClass', 
+            'generateModelClass',
             'generateQuery',
             'queryNs',
             'queryClass',
@@ -174,7 +175,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'singularEntities',
             'messageCategory',
             'useTranslatableBehavior',
-            'languageTableName', 
+            'languageTableName',
             'languageCodeColumn',
             'useBlameableBehavior',
             'createdByColumn',
@@ -183,10 +184,10 @@ class Generator extends \yii\gii\generators\model\Generator
             'createdAtColumn',
             'updatedAtColumn',
             ];
-    }    
-    
+    }
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -200,7 +201,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hints()
     {
@@ -226,7 +227,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function requiredTemplates()
     {
@@ -234,7 +235,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function generate()
     {
@@ -265,18 +266,18 @@ class Generator extends \yii\gii\generators\model\Generator
             if (!empty($translations)) {
                 $params['translation'] = $translations;
             }
-           	
+
             $params['blameable'] = $this->generateBlameable($tableSchema);
             $params['timestamp'] = $this->generateTimestamp($tableSchema);
-            
+
             $files[] = new CodeFile(
                 Yii::getAlias(
-                    '@' . str_replace('\\', '/', $this->ns)
-                ) . '/base/' . $className . $this->baseClassSuffix . '.php',
+                    '@'.str_replace('\\', '/', $this->ns)
+                ).'/base/'.$className.$this->baseClassSuffix.'.php',
                 $this->render('model.php', $params)
             );
 
-            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php';
+            $modelClassFile = Yii::getAlias('@'.str_replace('\\', '/', $this->ns)).'/'.$className.'.php';
             if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
                     $modelClassFile,
@@ -284,18 +285,10 @@ class Generator extends \yii\gii\generators\model\Generator
                 );
             }
 
-            $modelStaticClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . 'Static.php';
-            if ($this->generateModelClass || !is_file($modelStaticClassFile)) {
-                $files[] = new CodeFile(
-                    $modelStaticClassFile,
-                    $this->render('model-static.php', $params)
-                );
-            }
-
             if ($queryClassName) {
                 $queryClassFile = Yii::getAlias(
-                        '@' . str_replace('\\', '/', $this->queryNs)
-                    ) . '/' . $queryClassName . '.php';
+                        '@'.str_replace('\\', '/', $this->queryNs)
+                    ).'/'.$queryClassName.'.php';
                 if ($this->generateModelClass || !is_file($queryClassFile)) {
                     $params = [
                         'className' => $queryClassName,
@@ -307,20 +300,20 @@ class Generator extends \yii\gii\generators\model\Generator
                     );
                 }
             }
-            
-            /**
+
+            /*
              * create gii/[name]GiiantModel.json with actual form data
              */
-            $suffix = str_replace(' ','', $this->getName());
-            $formDataDir = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
-            $formDataFile = StringHelper::dirname($formDataDir) 
-                    . '/gii'
-                    . '/' . $tableName .$suffix .'.json' ;
-            
-            $formData = json_encode(SaveForm::getFormAttributesValues($this,$this->formAttributes()));
-            $files[] = new CodeFile($formDataFile, $formData);            
+            $suffix = str_replace(' ', '', $this->getName());
+            $formDataDir = Yii::getAlias('@'.str_replace('\\', '/', $this->ns));
+            $formDataFile = StringHelper::dirname($formDataDir)
+                    .'/gii'
+                    .'/'.$tableName.$suffix.'.json';
 
+            $formData = json_encode(SaveForm::getFormAttributesValues($this, $this->formAttributes()));
+            $files[] = new CodeFile($formDataFile, $formData);
         }
+
         return $files;
     }
 
@@ -334,14 +327,15 @@ class Generator extends \yii\gii\generators\model\Generator
     public function generateClassName($tableName, $useSchemaName = null)
     {
 
-        #Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
+        //Yii::trace("Generating class name for '{$tableName}'...", __METHOD__);
         if (isset($this->classNames2[$tableName])) {
-            #Yii::trace("Using '{$this->classNames2[$tableName]}' for '{$tableName}' from classNames2.", __METHOD__);
+            //Yii::trace("Using '{$this->classNames2[$tableName]}' for '{$tableName}' from classNames2.", __METHOD__);
             return $this->classNames2[$tableName];
         }
 
         if (isset($this->tableNameMap[$tableName])) {
             Yii::trace("Converted '{$tableName}' from tableNameMap.", __METHOD__);
+
             return $this->classNames2[$tableName] = $this->tableNameMap[$tableName];
         }
 
@@ -361,7 +355,7 @@ class Generator extends \yii\gii\generators\model\Generator
             if (($pos = strrpos($pattern, '.')) !== false) {
                 $pattern = substr($pattern, $pos + 1);
             }
-            $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
+            $patterns[] = '/^'.str_replace('*', '(\w+)', $pattern).'$/';
         }
 
         $className = $tableName;
@@ -379,14 +373,17 @@ class Generator extends \yii\gii\generators\model\Generator
         }
 
         Yii::trace("Converted '{$tableName}' to '{$returnName}'.", __METHOD__);
+
         return $this->classNames2[$tableName] = $returnName;
     }
 
     /**
      * Generates the attribute hints for the specified table.
+     *
      * @param \yii\db\TableSchema $table the table schema
+     *
      * @return array the generated attribute hints (name => hint)
-     * or an empty array if $this->generateHintsFromComments is false.
+     *               or an empty array if $this->generateHintsFromComments is false
      */
     public function generateHints($table)
     {
@@ -404,7 +401,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function generateRelationName($relations, $table, $key, $multiple)
     {
@@ -417,8 +414,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
         // inject namespace
         $ns = "\\{$this->ns}\\";
-        foreach ($relations AS $model => $relInfo) {
-            foreach ($relInfo AS $relName => $relData) {
+        foreach ($relations as $model => $relInfo) {
+            foreach ($relInfo as $relName => $relData) {
 
                 // removed duplicated relations, eg. klientai, klientai0
                 if ($this->removeDuplicateRelations && is_numeric(substr($relName, -1))) {
@@ -439,7 +436,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * prepare ENUM field values
+     * prepare ENUM field values.
      *
      * @param array $columns
      *
@@ -447,7 +444,6 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function getEnum($columns)
     {
-
         $enum = [];
         foreach ($columns as $column) {
             if (!$this->isEnum($column)) {
@@ -455,17 +451,16 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
-            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
-            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
+            $enum[$column->name]['func_opts_name'] = 'opts'.$column_camel_name;
+            $enum[$column->name]['func_get_label_name'] = 'get'.$column_camel_name.'ValueLabel';
             $enum[$column->name]['values'] = [];
 
             $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
 
             foreach ($enum_values as $value) {
-
                 $value = trim($value, "()'");
 
-                $const_name = strtoupper($column->name . '_' . $value);
+                $const_name = strtoupper($column->name.'_'.$value);
                 $const_name = preg_replace('/\s+/', '_', $const_name);
                 $const_name = str_replace(['-', '_', ' '], '_', $const_name);
                 $const_name = preg_replace('/[^A-Z0-9_]/', '', $const_name);
@@ -480,15 +475,14 @@ class Generator extends \yii\gii\generators\model\Generator
                     'const_name' => $const_name,
                     'label' => $label,
                 ];
-
             }
         }
-        return $enum;
 
+        return $enum;
     }
 
     /**
-     * validate is ENUM
+     * validate is ENUM.
      *
      * @param  $column table column
      *
@@ -498,7 +492,6 @@ class Generator extends \yii\gii\generators\model\Generator
     {
         return substr(strtoupper($column->dbType), 0, 4) == 'ENUM';
     }
-
 
     /**
      * Generates validation rules for the specified table and add enum value validation.
@@ -528,30 +521,31 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($enum as $field_name => $field_details) {
             $ea = array();
             foreach ($field_details['values'] as $field_enum_values) {
-                $ea[] = 'self::' . $field_enum_values['const_name'];
+                $ea[] = 'self::'.$field_enum_values['const_name'];
             }
-            $rules[] = "['" . $field_name . "', 'in', 'range' => [\n                    " . implode(
+            $rules[] = "['".$field_name."', 'in', 'range' => [\n                    ".implode(
                     ",\n                    ",
                     $ea
-                ) . ",\n                ]\n            ]";
+                ).",\n                ]\n            ]";
         }
-     
+
         // inject namespace for targetClass
         $parentRules = parent::generateRules($table);
         $ns = "\\{$this->ns}\\";
         $match = "'targetClass' => ";
-        $replace = $match . $ns;
-        foreach ($parentRules AS $k => $parentRule) {
+        $replace = $match.$ns;
+        foreach ($parentRules as $k => $parentRule) {
             $parentRules[$k] = str_replace($match, $replace, $parentRule);
-        }        
-        
+        }
+
         $rules = array_merge($parentRules, $rules);
         $table->columns = array_merge($table->columns, $columns);
+
         return $rules;
     }
 
     /**
-     * @return \yii\db\Connection the DB connection from the DI container or as application component specified by [[db]].
+     * @return \yii\db\Connection the DB connection from the DI container or as application component specified by [[db]]
      */
     protected function getDbConnection()
     {
@@ -575,7 +569,7 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getTableNames()
     {
@@ -583,13 +577,13 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @param $relations all database's relations.
+     * @param $relations all database's relations
      *
-     * @return array associative array containing the extracted relations and the modified translations.
+     * @return array associative array containing the extracted relations and the modified translations
      */
     protected function extractTranslations($tableName, $relations)
     {
-        $langTableName = str_replace("{{table}}", $tableName, $this->languageTableName);
+        $langTableName = str_replace('{{table}}', $tableName, $this->languageTableName);
 
         if ($this->useTranslatableBehavior and isset($relations[$langTableName], $relations[$tableName])) {
             $db = $this->getDbConnection();
@@ -607,7 +601,6 @@ class Generator extends \yii\gii\generators\model\Generator
             $langClassName = $this->generateClassName($langTableName);
 
             foreach ($relations[$tableName] as $relationName => $relation) {
-
                 list($code, $referencedClassName) = $relation;
 
                 if ($referencedClassName === $langClassName) {
@@ -626,30 +619,29 @@ class Generator extends \yii\gii\generators\model\Generator
                     }
 
                     unset($relations[$tableName][$relationName]);
+
                     return [
                         'relations' => $relations,
                         'translations' => [
                             'fields' => $fields,
                             'code' => $code,
                             'language_table' => $langTableName,
-                            'language_table_pk' => $langTableSchema->primaryKey
-                        ]
+                            'language_table_pk' => $langTableSchema->primaryKey,
+                        ],
                     ];
-
                 }
             }
         }
 
         return [
             'relations' => $relations,
-            'translations' => []
+            'translations' => [],
         ];
-
     }
-    
+
     /**
      * @param \yii\db\TableSchema $table the table schema
-     * 
+     *
      * @return string[]
      */
     protected function generateBlameable($table)
@@ -660,15 +652,16 @@ class Generator extends \yii\gii\generators\model\Generator
         if ($this->useBlameableBehavior && ($createdBy || $updatedBy)) {
             return [
                 'createdByAttribute' => $createdBy,
-                'updatedByAttribute' => $updatedBy,    				
+                'updatedByAttribute' => $updatedBy,
             ];
         }
+
         return [];
     }
-    
+
     /**
      * @param \yii\db\TableSchema $table the table schema
-     * 
+     *
      * @return string[]
      */
     protected function generateTimestamp($table)
@@ -682,6 +675,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 'updatedAtAttribute' => $updatedAt,
             ];
         }
+
         return [];
     }
 }

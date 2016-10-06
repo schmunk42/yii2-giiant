@@ -10,29 +10,27 @@ use yii\helpers\Inflector;
  *
  * @author Uldis Nelsons
  */
-class EditableProvider extends \schmunk42\giiant\base\Provider {
-
+class EditableProvider extends \schmunk42\giiant\base\Provider
+{
     public $skipVirtualAttributes = false;
 
     /**
-     * 
-     *
      * @param $column ColumnSchema
      *
      * @return null|string
      */
-    public function attributeEditable($attribute) {
-
+    public function attributeEditable($attribute)
+    {
         $this->generator->requires[] = '"kartik-v/yii2-editable": "@dev"';
         $primaryKey = implode('_', $this->generator->getTableSchema()->primaryKey);
         $column = $this->generator->getTableSchema()->columns[$attribute];
 
-        /**
+        /*
          * search opts... method
          */
         $modelClass = $this->generator->modelClass;
-        $optsFunc = 'opts' . str_replace('_', '', $attribute);
-        $optsCamelFunc = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
+        $optsFunc = 'opts'.str_replace('_', '', $attribute);
+        $optsCamelFunc = 'opts'.str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
 
         $useOptsFunc = false;
         if (method_exists($modelClass::className(), $optsFunc)) {
@@ -43,12 +41,13 @@ class EditableProvider extends \schmunk42\giiant\base\Provider {
 
         $inputType = $this->getInputType($column);
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
-        if($relation){
-            $relModelStatic = $relation->modelClass . 'Static';
-        }        
+        if ($relation) {
+            $relModelStatic = $relation->modelClass.'Static';
+        }
         if ($relation && !$relation->multiple && method_exists($relModelStatic, 'getListData')) {
             $relPk = key($relation->link);
             $relName = $this->generator->getModelNameAttribute($relation->modelClass);
+
             return <<<EOS
                 [
                     'attribute' => '{$attribute}',
@@ -73,10 +72,10 @@ class EditableProvider extends \schmunk42\giiant\base\Provider {
 
                 ]
 EOS;
-            
-        }elseif ($relation && !$relation->multiple) {
+        } elseif ($relation && !$relation->multiple) {
             $relPk = key($relation->link);
             $relName = $this->generator->getModelNameAttribute($relation->modelClass);
+
             return <<<EOS
                 [
                     'attribute' => '{$attribute}',
@@ -161,7 +160,8 @@ EOS;
      *
      * @return mixed|string
      */
-    public function relationGridEditable($name, $relation, $showAllRecords = false) {
+    public function relationGridEditable($name, $relation, $showAllRecords = false)
+    {
         $model = new $relation->modelClass();
 
         // column counter
@@ -203,7 +203,7 @@ EOS;
         }
 
         $reflection = new \ReflectionClass($relation->modelClass);
-        $controller = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
+        $controller = $this->generator->pathPrefix.Inflector::camel2id($reflection->getShortName(), '-', true);
 //        $actionColumn = <<<EOS
 //[
 //    'class'      => '{$this->generator->actionButtonClass}',
@@ -221,7 +221,7 @@ EOS;
 //    'controller' => '$controller'
 //]
 //EOS;
-//
+
 //        // add action column
 //        $columns .= $actionColumn.",\n";
         // prepare grid column formatters
@@ -252,11 +252,11 @@ EOS;
                 continue;
             }
 
-            /**
+            /*
              * search opts... method
              */
-            $optsFunc = 'opts' . str_replace('_', '', $attribute);
-            $optsCamelFunc = 'opts' . str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
+            $optsFunc = 'opts'.str_replace('_', '', $attribute);
+            $optsCamelFunc = 'opts'.str_replace(' ', '', ucwords(implode(' ', explode('_', $attribute))));
 
             $useOptsFunc = false;
             if (method_exists($model::className(), $optsFunc)) {
@@ -265,15 +265,14 @@ EOS;
                 $useOptsFunc = $optsCamelFunc;
             }
 
-
             $tableColumn = $this->generator->getColumnByAttribute($attribute, $model);
             $inputType = $this->getInputType($tableColumn);
             $relRelation = $this->generator->getRelationByColumn($model->ClassName(), $tableColumn);
-            if($relRelation){
-                $relModelStatic = $relRelation->modelClass . 'Static';
+            if ($relRelation) {
+                $relModelStatic = $relRelation->modelClass.'Static';
             }
 
-            if($tableColumn->type == 'date'){
+            if ($tableColumn->type == 'date') {
                 $hasDate = true;
                 $code = "
         [
@@ -303,8 +302,8 @@ EOS;
             ]
         ],
 
-        ]";                
-            }elseif ($relRelation && !$relRelation->multiple && method_exists($relModelStatic, 'getListData')) {
+        ]";
+            } elseif ($relRelation && !$relRelation->multiple && method_exists($relModelStatic, 'getListData')) {
                 $hasParameterForValue = false;
                 $r = new \ReflectionMethod($relModelStatic, 'getListData');
                 $params = $r->getParameters();
@@ -347,7 +346,6 @@ EOS;
         ]";
                 }
             } elseif ($relRelation && !$relRelation->multiple) {
-
                 $relPk = key($relRelation->link);
                 $relName = $this->generator->getModelNameAttribute($relRelation->modelClass);
 
@@ -393,15 +391,15 @@ EOS;
                         '{$controller}/editable-column-update'
                     ]
                 ],
-                'inputType' => " . $inputType . "
+                'inputType' => ".$inputType.'
             ]
-        ]";
+        ]';
             }
             //$code = $this->generator->columnFormat($attr, $model);
             if ($code == false) {
                 continue;
             }
-            $columns .= $code . ",\n";
+            $columns .= $code.",\n";
             ++$counter;
         }
 
@@ -414,7 +412,7 @@ EOS;
                 function(\$action, \$model, \$key, \$index) {
                     \$params = is_array(\$key) ? \$key : ['id' => (string) \$key];
                     \$params[0] = '{$controller}/' . \$action;
-                    \$params['{$model->formName()}'] = ['" . key($relation->link) . "' => \$model->primaryKey()[0]];
+                    \$params['{$model->formName()}'] = ['".key($relation->link)."' => \$model->primaryKey()[0]];
                     return Url::toRoute(\$params);            
                 },
         ]            
@@ -426,7 +424,7 @@ EOS;
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel = $this->generator->generateString('Last');
         $code = '';
-        if($hasDate){
+        if ($hasDate) {
             $code .= <<<EOS
             \$formatter = new IntlDateFormatter(\Yii::\$app->language,IntlDateFormatter::SHORT, IntlDateFormatter::NONE);            
             \$datePattern = \$formatter->getPattern();
@@ -456,8 +454,8 @@ EOS;
         return $code;
     }
 
-    public function getInputType($column) {
-
+    public function getInputType($column)
+    {
         switch ($column->type) {
             case 'double':
             case 'integer':
@@ -478,10 +476,9 @@ EOS;
         }
         if (!isset($inputType)) {
             return false;
-            throw new \Exception('No Defined column type: ' . $column->type);
+            throw new \Exception('No Defined column type: '.$column->type);
         }
 
         return $inputType;
     }
-
 }

@@ -24,7 +24,6 @@ class Db
                 case 'longtext':
                     return false;
             }
-
         };
     }
 
@@ -32,7 +31,6 @@ class Db
     {
         // hide AI columns
         return function ($attribute, $model, $generator) {
-
             $column = $generator->getColumnByAttribute($attribute);
             if (!$column) {
                 return;
@@ -41,7 +39,6 @@ class Db
             if ($column->autoIncrement) {
                 return false;
             }
-
         };
     }
 }

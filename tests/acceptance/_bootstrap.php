@@ -1,2 +1,3 @@
 <?php
-new yii\web\Application(require(dirname(__DIR__) . '/_config/acceptance.php'));
+# TODO: remove absolute path
+new yii\web\Application(require ('/app/src/config/main.php'));

@@ -4,18 +4,20 @@ namespace schmunk42\giiant\helpers;
 
 use yii\helpers\StringHelper;
 
-class SaveForm {
-
+class SaveForm
+{
     public static $savedFormList = false;
 
-    public static function hint() {
+    public static function hint()
+    {
         return ['savedForm' => 'Choose saved form ad load it data to form.'];
     }
 
     /**
      * get form attributes values.
      */
-    public static function getFormAttributesValues($generator, $attributes) {
+    public static function getFormAttributesValues($generator, $attributes)
+    {
         $values = [];
         foreach ($attributes as $name) {
             $values[strtolower($name)] = [
@@ -28,26 +30,29 @@ class SaveForm {
     }
 
     /**
-     * walk througt all modules gii directories and collect Giant crud generator saved forms
-     * 
+     * walk througt all modules gii directories and collect Giant crud generator saved forms.
+     *
      * @return array
      */
-    public static function loadSavedForms($generatorName) {
-
+    public static function loadSavedForms($generatorName)
+    {
         $suffix = str_replace(' ', '', $generatorName);
 
         if (self::$savedFormList) {
             return self::$savedFormList;
         }
-        
-        /**
+
+        /*
          * get all possible gii directories with out validation on existing
          */
         $giiDirs = [];
         $giiDirs[] = \Yii::getAlias('@app/gii');
+        if ($commonGiiDir = \Yii::getAlias('@common/gii', false)) {
+            $giiDirs[] = $commonGiiDir;
+        }
         foreach (\Yii::$app->modules as $moduleId => $module) {
 
-            /**
+            /*
              * get module base path
              */
             if (method_exists($module, 'getBasePath')) {
@@ -57,33 +62,32 @@ class SaveForm {
                 $basePath = StringHelper::dirname($reflector->getFileName());
             }
             $basePath .= '/gii';
-            
+
             $giiDirs[] = $basePath;
-        }           
-        
-        /**
+        }
+
+        /*
          * from all gii directories collec forms
          */
         $forms = [];
-        foreach($giiDirs as $basePath){
-            /**
-             * search in module gii directory all forms json files 
+        foreach ($giiDirs as $basePath) {
+            /*
+             * search in module gii directory all forms json files
              * with required suffix
              */
             if (!file_exists($basePath)) {
                 continue;
             }
-            
-            
+
             $files = scandir($basePath);
             foreach ($files as $file) {
-                if (!preg_match('#' . $suffix . '\.json$#', $file)) {
+                if (!preg_match('#'.$suffix.'\.json$#', $file)) {
                     continue;
                 }
-                $name = preg_replace('#' . $suffix . '\.json$#', '', $file);
-                $forms[$moduleId . $name] = [
-                    'jsonData' => file_get_contents($basePath . '/' . $file),
-                    'label' => $moduleId . ' - ' . $name,
+                $name = preg_replace('#'.$suffix.'\.json$#', '', $file);
+                $forms[$moduleId.$name] = [
+                    'jsonData' => file_get_contents($basePath.'/'.$file),
+                    'label' => $moduleId.' - '.$name,
                 ];
             }
         }
@@ -92,32 +96,38 @@ class SaveForm {
     }
 
     /**
-     * get array for form field "Saved form" data
+     * get array for form field "Saved form" data.
+     *
      * @return array
      */
-    public static function getSavedFormsListbox($generatorName) {
+    public static function getSavedFormsListbox($generatorName)
+    {
         $r = ['0' => ' - '];
-        foreach (SaveForm::loadSavedForms($generatorName) as $k => $row) {
+        foreach (self::loadSavedForms($generatorName) as $k => $row) {
             $r[$k] = $row['label'];
         }
+
         return $r;
     }
 
     /**
-     * creata js statement for seting to variable savedFormas array with all forms and it data in json format
+     * creata js statement for seting to variable savedFormas array with all forms and it data in json format.
+     *
      * @return string
      */
-    public static function getSavedFormsJs($generatorName) {
+    public static function getSavedFormsJs($generatorName)
+    {
         $js = [];
 
-        foreach (SaveForm::loadSavedForms($generatorName) as $k => $row) {
-            $js[] = $k . ":'" . $row['jsonData'] . "'";
+        foreach (self::loadSavedForms($generatorName) as $k => $row) {
+            $js[] = $k.":'".$row['jsonData']."'";
         }
 
-        return "var savedForms = {" . str_replace('\\', '\\\\', implode(',', $js)) . "};";
+        return 'var savedForms = {'.str_replace('\\', '\\\\', implode(',', $js)).'};';
     }
 
-    public static function jsFillForm() {
+    public static function jsFillForm()
+    {
         return '
     function fillForm(id){
         if (id=="0") return;
@@ -167,5 +177,4 @@ class SaveForm {
     }
         ';
     }
-
 }
