@@ -29,6 +29,11 @@ class Generator extends \yii\gii\generators\crud\Generator
      * @var null comma separated list of provider classes
      */
     public $providerList = null;
+
+    /**
+     * @var json encoded list of provider classes for remembering after posts
+     */
+    public $providerListPostHidded = null;
     /**
      * @todo review
      *
@@ -141,7 +146,12 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function init()
     {
         parent::init();
-        $this->providerList = self::getCoreProviders();
+        if(!$this->providerList){
+            $this->providerList = [];
+        }
+        $this->providerList = array_merge(self::getCoreProviders(),$this->providerList);
+        $this->providerListPostHidded = json_encode($this->providerList);
+
     }
 
     /**
@@ -219,7 +229,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function stickyAttributes()
     {
-        return array_merge(parent::stickyAttributes(), ['providerList', 'actionButtonClass', 'viewPath', 'pathPrefix']);
+        return array_merge(parent::stickyAttributes(), ['actionButtonClass', 'viewPath', 'pathPrefix']);
     }
 
     /**
