@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <hr />
 
     <?php
-    echo "<?php \$this->beginBlock('".substr(strrchr($model::className(), '\\'), 1)."'); ?>\n";
+    echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
     ?>
 
     <?= $generator->partialView('detail_prepend', $model); ?>
@@ -137,11 +137,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     // get relation info $ prepare add button
     $model = new $generator->modelClass();
-    $label = substr(strrchr($model::className(), '\\'), 1);
+
     $items = <<<EOS
 [
     'label'   => '<b class=""># '.\$model->{$model->primaryKey()[0]}.'</b>',
-    'content' => \$this->blocks['{$label}'],
+    'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
 
