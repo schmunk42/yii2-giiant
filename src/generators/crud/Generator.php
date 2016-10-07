@@ -119,9 +119,9 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $overwriteSearchModelClass = false;
 
     /**
-     * @var array whether to use phptidy on renderer files before saving
+     * @var bool whether to use phptidy on renderer files before saving
      */
-    public $tidyOutput;
+    public $tidyOutput = true;
 
     /**
      * @var string form field for selecting and loading saved gii forms
@@ -393,8 +393,8 @@ class Generator extends \yii\gii\generators\crud\Generator
             FileHelper::createDirectory($tmpDir);
             $tmpFile = $tmpDir.'/'.md5($template);
             file_put_contents($tmpFile, $code);
-
-            shell_exec('vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace '.$tmpFile);
+            $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$tmpFile;
+            shell_exec($command);
 
             return file_get_contents($tmpFile);
         } else {

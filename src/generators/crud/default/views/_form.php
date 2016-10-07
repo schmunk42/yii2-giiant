@@ -82,7 +82,7 @@ use yii\helpers\StringHelper;
 
         $items = <<<EOS
 [
-    'label'   => Yii::t('$generator->modelMessageCategory', StringHelper::basename('{$model::className()}')),
+    'label'   => Yii::t('$generator->modelMessageCategory', '$label'),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],
@@ -93,8 +93,10 @@ EOS;
         "<?=
     Tabs::widget(
                  [
-                   'encodeLabels' => false,
-                     'items' => [ $items ]
+                    'encodeLabels' => false,
+                    'items' => [ 
+                        $items
+                    ]
                  ]
     );
     ?>";
