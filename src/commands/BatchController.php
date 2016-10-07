@@ -177,7 +177,7 @@ class BatchController extends Controller
     /**
      * @var bool whether to tidy generated code
      */
-    public $crudTidyOutput;
+    public $crudTidyOutput = true;
 
     /**
      * @var string the namespace of the ActiveQuery class to be generated
