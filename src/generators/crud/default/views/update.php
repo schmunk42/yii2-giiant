@@ -23,7 +23,7 @@ use yii\helpers\Html;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
-
+    
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>') . " " . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];

@@ -392,8 +392,8 @@ class Generator extends \yii\gii\generators\crud\Generator
             FileHelper::createDirectory($tmpDir);
             $tmpFile = $tmpDir.'/'.md5($template);
             file_put_contents($tmpFile, $code);
-
-            shell_exec('..'.DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'phptidy replace '.$tmpFile);
+            $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$tmpFile;
+            shell_exec($command);
 
             return file_get_contents($tmpFile);
         } else {

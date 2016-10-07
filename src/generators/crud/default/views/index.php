@@ -93,8 +93,8 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-            <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
-            <small>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
+        <small>
             List
         </small>
     </h1>
@@ -168,15 +168,15 @@ PHP;
             'class' => 'dropdown-menu-right'
             ],
             'encodeLabels' => false,
-                    'items' => [<?= "\n".$items."\n" ?>]
-                ],
+            'items' => [<?= "\n".$items."\n" ?>]
+            ],
             'options' => [
             'class' => 'btn-default'
             ]
             ]
             );
-                <?= "?>\n" ?>
-            </div>
+            <?= "?>\n" ?>
+        </div>
     </div>
 
     <hr />
@@ -188,14 +188,14 @@ PHP;
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
         'lastPageLabel' => <?= $generator->generateString('Last').",\n" ?>
-            ],
+        ],
         <?php if ($generator->searchModelClass !== ''): ?>
             'filterModel' => $searchModel,
         <?php endif; ?>
         'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
         'headerRowOptions' => ['class'=>'x'],
-                'columns' => [
-            <?php
+        'columns' => [
+        <?php
         $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',

@@ -10,17 +10,16 @@ use yii\helpers\StringHelper;
 
 /** @var \yii\db\ActiveRecord $model */
 /** @var $generator \schmunk42\giiant\generators\crud\Generator */
+
 ## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 $safeAttributes = $model->safeAttributes();
-if (empty($safeAttributes))
-{
+if (empty($safeAttributes)) {
     $model->setScenario('default');
     $safeAttributes = $model->safeAttributes();
 }
-if (empty($safeAttributes))
-{
+if (empty($safeAttributes)) {
     $safeAttributes = $model->getTableSchema()->columnNames;
 }
 
@@ -64,7 +63,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <h1>
         <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
         <small>
-                        <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass)." ?>\n" ?>
+            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass)." ?>\n" ?>
         </small>
     </h1>
 
@@ -73,24 +72,24 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
         <!-- menu buttons -->
         <div class='pull-left'>
-                        <?= '<?= ' ?>Html::a(
+            <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
             [ 'update', <?= $urlParams ?>],
             ['class' => 'btn btn-info']) ?>
 
-                        <?= '<?= ' ?>Html::a(
+            <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
             ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
             ['class' => 'btn btn-success']) ?>
 
-                        <?= '<?= ' ?>Html::a(
+            <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
             ['create'],
             ['class' => 'btn btn-success']) ?>
         </div>
 
         <div class="pull-right">
-                        <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> '
+            <?= "<?= " ?>Html::a('<span class="glyphicon glyphicon-list"></span> '
             . <?= $generator->generateString('Full list') ?>, ['index'], ['class'=>'btn btn-default']) ?>
         </div>
 
@@ -104,19 +103,15 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= $generator->partialView('detail_prepend', $model); ?>
 
-        <?= '<?= ' ?>DetailView::widget([
+    <?= '<?= ' ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
-    foreach ($safeAttributes as $attribute)
-    {
+    foreach ($safeAttributes as $attribute) {
         $format = $generator->attributeFormat($attribute);
-        if (!$format)
-        {
+        if (!$format) {
             continue;
-        }
-        else
-        {
+        } else {
             echo $format.",\n";
         }
     }
@@ -128,11 +123,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <hr/>
 
-        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?=
-    $generator->generateString(
+    <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
         'Delete'
-    )
-    ?>, ['delete', <?= $urlParams ?>],
+    ) ?>, ['delete', <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
@@ -141,10 +134,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
+
     // get relation info $ prepare add button
     $model = new $generator->modelClass();
     $label = substr(strrchr($model::className(), '\\'), 1);
-$items = <<<EOS
+    $items = <<<EOS
 [
     'label'   => '<b class=""># '.\$model->{$model->primaryKey()[0]}.'</b>',
     'content' => \$this->blocks['{$label}'],
@@ -153,14 +147,12 @@ $items = <<<EOS
 
 EOS;
 
-    foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation)
-    {
+    foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;
 
-        if ($relation->via !== null)
-        {
+        if ($relation->via !== null) {
             $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
@@ -174,9 +166,7 @@ EOS;
                 )."'=>\$model->{$model->primaryKey()[0]}]],
             ['class'=>'btn btn-info btn-xs']
         ) ?>\n";
-        }
-        else
-        {
+        } else {
             $addButton = '';
         }
 
@@ -185,30 +175,27 @@ EOS;
 
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
-        Inflector::camel2words($name)."',
+            Inflector::camel2words($name)."',
             ['".$generator->createRelationRoute($relation, 'index')."'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
-        Inflector::singularize(Inflector::camel2words($name))."',
+            Inflector::singularize(Inflector::camel2words($name))."',
             ['".$generator->createRelationRoute($relation, 'create')."', '".
-        Inflector::id2camel($generator->generateRelationTo($relation), '-', true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+            Inflector::id2camel($generator->generateRelationTo($relation), '-', true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;
 
         echo "</div>\n</div>\n"; #<div class='clearfix'></div>\n";
         // render pivot grid
-        if ($relation->via !== null)
-        {
+        if ($relation->via !== null) {
             $pjaxId = "pjax-{$pivotName}";
             $gridRelation = $pivotRelation;
             $gridName = $pivotName;
-        }
-        else
-        {
+        } else {
             $pjaxId = "pjax-{$name}";
             $gridRelation = $relation;
             $gridName = $name;
@@ -237,8 +224,8 @@ EOS;
     }
     ?>
 
-        <?=
-// render tabs
+    <?=
+    // render tabs
     "<?= Tabs::widget(
                  [
                      'id' => 'relation-tabs',
@@ -247,6 +234,6 @@ EOS;
                  ]
     );
     ?>";
-?>
+    ?>
 
 </div>
