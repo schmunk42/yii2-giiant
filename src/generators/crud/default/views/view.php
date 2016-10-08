@@ -161,7 +161,7 @@ EOS;
             $addButton = "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-link\"></span> ' . ".$generator->generateString('Attach')." . ' ".
                 Inflector::singularize(Inflector::camel2words($name)).
-                "', ['".$generator->createRelationRoute($pivotRelation, 'create')."', '".
+                "', ['".$generator->createRelationRoute($pivotRelation, 'create')."', 'ru' => ReturnUrl::getToken(), '".
                 Inflector::singularize($pivotName)."'=>['".key(
                     $pivotRelation->link
                 )."'=>\$model->{$model->primaryKey()[0]}]],
