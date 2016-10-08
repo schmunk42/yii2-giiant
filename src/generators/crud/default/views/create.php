@@ -18,6 +18,8 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * @var yii\web\View $this
@@ -43,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= '<?= ' ?>
             Html::a(
             <?= $generator->generateString('Cancel') ?>,
-            \yii\helpers\Url::previous(),
+            ReturnUrl::getUrl(Url::previous()),
             ['class' => 'btn btn-default']) ?>
         </div>
     </div>

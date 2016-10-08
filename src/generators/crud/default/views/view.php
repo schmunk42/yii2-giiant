@@ -36,6 +36,7 @@ use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
 use dmstr\bootstrap\Tabs;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * @var yii\web\View $this
@@ -52,11 +53,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <!-- flash message -->
     <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
-        <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
+        <div class=\"alert alert-info alert-dismissible\" role=\"alert\">
             <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
             <span aria-hidden=\"true\">&times;</span></button>
-            <?= \\Yii::\$app->session->getFlash('deleteError') ?>
-        </span>
+            <?= implode("\n", \Yii::$app->session->getFlash('deleteError')); ?>
+        </div>
     <?php endif; ?>" ?>
 
 
@@ -74,17 +75,17 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         <div class='pull-left'>
             <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
-            [ 'update', <?= $urlParams ?>],
+            [ 'update', 'ru' => ReturnUrl::getToken(), <?= $urlParams ?>],
             ['class' => 'btn btn-info']) ?>
 
             <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
-            ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
+            ['create', 'ru' => ReturnUrl::getToken(), <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
             ['class' => 'btn btn-success']) ?>
 
             <?= '<?= ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
-            ['create'],
+            ['create', 'ru' => ReturnUrl::getToken()],
             ['class' => 'btn btn-success']) ?>
         </div>
 
@@ -125,7 +126,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
         'Delete'
-    ) ?>, ['delete', <?= $urlParams ?>],
+    ) ?>, ['delete', 'ru' => ReturnUrl::getRequestToken(), <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
@@ -183,7 +184,7 @@ EOS;
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
-            ['".$generator->createRelationRoute($relation, 'create')."', '".
+            ['".$generator->createRelationRoute($relation, 'create')."', 'ru' => ReturnUrl::getToken(), '".
             Inflector::id2camel($generator->generateRelationTo($relation), '-', true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";

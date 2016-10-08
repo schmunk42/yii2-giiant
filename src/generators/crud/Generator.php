@@ -82,7 +82,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var array array of composer packages (only to show information to the developer in the web UI)
      */
-    public $requires = [];
+    public $requires = ['cornernote/yii2-returnurl'];
 
     /**
      * @var bool whether to convert controller name to singular

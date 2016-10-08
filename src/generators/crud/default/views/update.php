@@ -18,6 +18,8 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * @var yii\web\View $this
@@ -43,6 +45,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
     </h1>
 
     <div class="crud-navigation">
+        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-remove"></span> ' . <?= $generator->generateString('Cancel') ?>, ReturnUrl::getUrl(Url::previous()), ['class' => 'btn btn-default']) ?>
         <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . <?= $generator->generateString(
             'View'
         ) ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>

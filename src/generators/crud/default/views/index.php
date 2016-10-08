@@ -33,6 +33,7 @@ echo "<?php\n";
 use yii\helpers\Html;
 use yii\helpers\Url;
 use <?= $generator->indexWidgetType === 'grid' ? $generator->indexGridClass : 'yii\\widgets\\ListView' ?>;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * @var yii\web\View $this
@@ -81,6 +82,15 @@ echo '?>';
 
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
+    <!-- flash message -->
+    <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
+        <div class=\"alert alert-info alert-dismissible\" role=\"alert\">
+            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+            <span aria-hidden=\"true\">&times;</span></button>
+            <?= implode("\n", \Yii::$app->session->getFlash('deleteError')); ?>
+        </div>
+    <?php endif; ?>" ?>
+
     <?=
     "<?php\n".($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
     <?php if ($generator->searchModelClass !== ''): ?>
@@ -110,7 +120,7 @@ echo "?>\n"
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
                 'New'
-            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+            ) ?>, ['create', 'ru' => ReturnUrl::getToken()], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
 	echo "<?php\n}\n?>";
@@ -119,7 +129,7 @@ echo "?>\n"
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
                 'New'
-            ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
+            ) ?>, ['create', 'ru' => ReturnUrl::getToken()], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
 }
@@ -204,6 +214,7 @@ PHP;
                 // using the column name as key, not mapping to 'id' like the standard generator
                 \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
                 \$params[0] = \Yii::\$app->controller->id ? \Yii::\$app->controller->id . '/' . \$action : \$action;
+                \$params['ru'] = ReturnUrl::getToken();
                 return Url::toRoute(\$params);
             },
             'contentOptions' => ['nowrap'=>'nowrap']

@@ -200,7 +200,7 @@ EOS;
     'attribute' => '{$column->name}',
     'value' => function (\$model) {
         if (\$rel = \$model->{$relationGetter}->one()) {
-            return Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
+            return Html::a(\$rel->{$title}, ['{$route}', 'ru' => ReturnUrl::getToken(), {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
             return '';
         }
@@ -277,6 +277,7 @@ EOS;
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
         \$params['{$model->formName()}'] = ['$relKey' => \$model->primaryKey()[0]];
+        \$params['ru'] = ReturnUrl::getToken();
         return \$params;
     },
     'buttons'    => [

@@ -41,6 +41,7 @@ use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\filters\AccessControl;
 use dmstr\bootstrap\Tabs;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -128,7 +129,7 @@ return $this->render('index', [
 */
 public function actionView(<?= $actionParams ?>)
 {
-\Yii::$app->session['__crudReturnUrl'] = Url::previous();
+\Yii::$app->session['__crudReturnUrl'] = ReturnUrl::getUrl(Url::previous());
 Url::remember();
 Tabs::rememberActiveState();
 
@@ -170,7 +171,7 @@ public function actionUpdate(<?= $actionParams ?>)
 $model = $this->findModel(<?= $actionParams ?>);
 
 if ($model->load($_POST) && $model->save()) {
-return $this->redirect(Url::previous());
+return $this->redirect(ReturnUrl::getUrl(Url::previous()));
 } else {
 return $this->render('update', [
 'model' => $model,
@@ -190,22 +191,9 @@ try {
 $this->findModel(<?= $actionParams ?>)->delete();
 } catch (\Exception $e) {
 $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
-\Yii::$app->getSession()->addFlash('error', $msg);
-return $this->redirect(Url::previous());
-}
-
-// TODO: improve detection
-$isPivot = strstr('<?= $actionParams ?>',',');
-if ($isPivot == true) {
-return $this->redirect(Url::previous());
-} elseif (isset(\Yii::$app->session['__crudReturnUrl']) && \Yii::$app->session['__crudReturnUrl'] != '/') {
-Url::remember(null);
-$url = \Yii::$app->session['__crudReturnUrl'];
-\Yii::$app->session['__crudReturnUrl'] = null;
-
-return $this->redirect($url);
-} else {
-return $this->redirect(['index']);
+\Yii::$app->getSession()->addFlash('deleteError', $msg);
+} finally {
+return $this->redirect(ReturnUrl::getUrl(Url::previous()));    
 }
 }
 

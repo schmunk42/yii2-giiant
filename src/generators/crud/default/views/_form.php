@@ -27,6 +27,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use \dmstr\bootstrap\Tabs;
 use yii\helpers\StringHelper;
+use cornernote\returnurl\ReturnUrl;
 
 /**
 * @var yii\web\View $this
@@ -49,6 +50,7 @@ use yii\helpers\StringHelper;
     'errorSummaryCssClass' => 'error-summary alert alert-error'
     ]
     );
+    echo Html::hiddenInput('ru', ReturnUrl::getRequestToken());
     ?>
 
     <div class="">
