@@ -300,8 +300,6 @@ EOS;
                     ],
                 ]
             ]
-        ],
-
         ]";
             } elseif ($relRelation && !$relRelation->multiple && method_exists($relModelStatic, 'getListData')) {
                 $hasParameterForValue = false;
