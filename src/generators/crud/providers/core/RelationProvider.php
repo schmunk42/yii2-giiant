@@ -11,6 +11,7 @@ use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {
@@ -118,6 +119,11 @@ EOS;
             }
             $title = $this->generator->getModelNameAttribute($relation->modelClass);
             $route = $this->generator->createRelationRoute($relation, 'view');
+
+            // prepare URLs
+            $routeAttach = 'create';
+            $routeIndex = $this->generator->createRelationRoute($relation, 'index');
+
             $modelClass = $this->generator->modelClass;
             $relationGetter = 'get'.(new ModelGenerator())->generateRelationName(
                     [$relation],
@@ -126,11 +132,13 @@ EOS;
                     $relation->multiple
                 ).'()';
             $relationModel = new $relation->modelClass();
+            $relationModelName = StringHelper::basename($modelClass);
             $pks = $relationModel->primaryKey();
             $paramArrayItems = '';
             foreach ($pks as $attr) {
                 $paramArrayItems .= "'{$attr}' => \$model->{$relationGetter}->one()->{$attr},";
             }
+            $attachArrayItems = "'{$relationModelName}'=>['{$column->name}' => \$model->{$column->name}]";
 
             $method = __METHOD__;
             $code = <<<EOS
@@ -139,7 +147,10 @@ EOS;
     'format' => 'html',
     'attribute' => '$column->name',
     'value' => (\$model->{$relationGetter}->one() ? 
-        Html::a('<i class="glyphicon glyphicon-circle-arrow-right"></i>'.\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : 
+        Html::a('<i class="glyphicon glyphicon-list"></i>', ['{$routeIndex}']).' '.
+        Html::a('<i class="glyphicon glyphicon-circle-arrow-right"></i> '.\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]).' '.
+        Html::a('<i class="glyphicon glyphicon-paperclip"></i>', ['{$routeAttach}', {$attachArrayItems}])
+        : 
         '<span class="label label-warning">?</span>'),
 ]
 EOS;
