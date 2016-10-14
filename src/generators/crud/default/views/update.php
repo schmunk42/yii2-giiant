@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
     </h1>
 
     <div class="crud-navigation">
-        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . <?= $generator->generateString(
+        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-file"></span> ' . <?= $generator->generateString(
             'View'
         ) ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>
     </div>
