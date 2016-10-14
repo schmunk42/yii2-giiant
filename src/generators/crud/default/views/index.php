@@ -136,7 +136,7 @@ echo "?>\n"
                 // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
                 if ($generator->isPivotRelation($relation)) {
-                    $iconType = 'random';
+                    $iconType = 'random text-muted';
                 }
                 $controller = $generator->pathPrefix.Inflector::camel2id(
                         StringHelper::basename($relation->modelClass),
@@ -148,7 +148,7 @@ echo "?>\n"
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
+                'label' => '<i class="glyphicon glyphicon-{$iconType}">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
             ],
                     
 PHP;
