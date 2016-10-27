@@ -409,7 +409,8 @@ EOS;
         }
 
         // action column
-        $columns .= "  
+        $columns .= "
+        [    
             'class' => '\kartik\grid\ActionColumn',
             'template' => '{view} {update} {delete}',
             'urlCreator' =>  
