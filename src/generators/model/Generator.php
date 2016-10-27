@@ -246,7 +246,10 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($this->getTableNames() as $tableName) {
             list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
 //var_dump($relations,$tableName);exit;
-            $className = $this->generateClassName($tableName);
+            $className = php_sapi_name() === 'cli'
+                ? $this->generateClassName($tableName)
+                : $this->modelClass;
+
             $queryClassName = ($this->generateQuery) ? $this->generateQueryClassName($className) : false;
             $tableSchema = $db->getTableSchema($tableName);
 
