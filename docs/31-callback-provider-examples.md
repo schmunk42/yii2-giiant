@@ -103,6 +103,21 @@ $columnFormats = [
 ];
 ```
 
+Renders a color column
+
+```php
+$colorColumn = function ($attribute, $model, $generator) {
+    return <<<FORMAT
+[
+    'attribute' => '{$attribute}',
+    'format' => 'raw',
+    'value' => function (\$model) {
+        return \yii\helpers\Html::tag('div', '', ['style' => 'background-color: '.\$model->{$attribute}.'; width: 30px; height: 30px;']);
+    },
+]
+FORMAT;
+};
+```
 
 Define callbacks for grid columns in `index` view
 
