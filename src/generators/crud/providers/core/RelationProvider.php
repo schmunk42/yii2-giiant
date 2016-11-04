@@ -146,12 +146,7 @@ EOS;
 [
     'format' => 'html',
     'attribute' => '$column->name',
-    'value' => (\$model->{$relationGetter}->one() ? 
-        Html::a('<i class="glyphicon glyphicon-list"></i>', ['{$routeIndex}']).' '.
-        Html::a('<i class="glyphicon glyphicon-circle-arrow-right"></i> '.\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]).' '.
-        Html::a('<i class="glyphicon glyphicon-paperclip"></i>', ['{$routeAttach}', {$attachArrayItems}])
-        : 
-        '<span class="label label-warning">?</span>'),
+    'value' => (\$model->{$relationGetter}->one() ?  Html::a(\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : '<span class="label label-warning">?</span>'),
 ]
 EOS;
 
