@@ -23,8 +23,8 @@ use yii\helpers\Html;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
-
-$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>') . $model-><?= $generator->getNameAttribute(
+    
+$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>') . " " . $model-><?= $generator->getNameAttribute(
 ) ?> . ', ' . <?= $generator->generateString('Edit') ?>;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute(
@@ -38,12 +38,12 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
-            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
+            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass)." ?>\n" ?>
         </small>
     </h1>
 
     <div class="crud-navigation">
-        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-eye-open"></span> ' . <?= $generator->generateString(
+        <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-file"></span> ' . <?= $generator->generateString(
             'View'
         ) ?>, ['view', <?= $urlParams ?>], ['class' => 'btn btn-default']) ?>
     </div>

@@ -11,6 +11,7 @@ use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\db\ActiveRecord;
 use yii\db\ColumnSchema;
 use yii\helpers\Inflector;
+use yii\helpers\StringHelper;
 
 class RelationProvider extends \schmunk42\giiant\base\Provider
 {
@@ -118,6 +119,11 @@ EOS;
             }
             $title = $this->generator->getModelNameAttribute($relation->modelClass);
             $route = $this->generator->createRelationRoute($relation, 'view');
+
+            // prepare URLs
+            $routeAttach = 'create';
+            $routeIndex = $this->generator->createRelationRoute($relation, 'index');
+
             $modelClass = $this->generator->modelClass;
             $relationGetter = 'get'.(new ModelGenerator())->generateRelationName(
                     [$relation],
@@ -126,11 +132,13 @@ EOS;
                     $relation->multiple
                 ).'()';
             $relationModel = new $relation->modelClass();
+            $relationModelName = StringHelper::basename($modelClass);
             $pks = $relationModel->primaryKey();
             $paramArrayItems = '';
             foreach ($pks as $attr) {
                 $paramArrayItems .= "'{$attr}' => \$model->{$relationGetter}->one()->{$attr},";
             }
+            $attachArrayItems = "'{$relationModelName}'=>['{$column->name}' => \$model->{$column->name}]";
 
             $method = __METHOD__;
             $code = <<<EOS
@@ -138,7 +146,12 @@ EOS;
 [
     'format' => 'html',
     'attribute' => '$column->name',
-    'value' => (\$model->{$relationGetter}->one() ? Html::a(\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : '<span class="label label-warning">?</span>'),
+    'value' => (\$model->{$relationGetter}->one() ? 
+        Html::a('<i class="glyphicon glyphicon-list"></i>', ['{$routeIndex}']).' '.
+        Html::a('<i class="glyphicon glyphicon-circle-arrow-right"></i> '.\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]).' '.
+        Html::a('<i class="glyphicon glyphicon-paperclip"></i>', ['{$routeAttach}', {$attachArrayItems}])
+        : 
+        '<span class="label label-warning">?</span>'),
 ]
 EOS;
 
@@ -324,20 +337,26 @@ EOS;
         $pageParam = Inflector::slug("page-{$name}");
         $firstPageLabel = $this->generator->generateString('First');
         $lastPageLabel = $this->generator->generateString('Last');
-        $code = '\'<div class="table-responsive">\' . ';
+        $code = "'<div class=\"table-responsive\">'\n . ";
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
     'layout' => '{summary}{pager}<br/>{items}{pager}',
-    'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
+    'dataProvider' => new \\yii\\data\\ActiveDataProvider([
+        {$query},
+        'pagination' => [
+            'pageSize' => 20,
+            'pageParam'=>'{$pageParam}',
+        ]
+    ]),
     'pager'        => [
         'class'          => yii\widgets\LinkPager::className(),
         'firstPageLabel' => {$firstPageLabel},
         'lastPageLabel'  => {$lastPageLabel}
     ],
-    'columns' => [$columns]
+    'columns' => [\n $columns]
 ])
 EOS;
-        $code .= ' . \'</div>\' ';
+        $code .= "\n . '</div>' ";
 
         return $code;
     }

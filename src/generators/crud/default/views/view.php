@@ -44,7 +44,7 @@ use dmstr\bootstrap\Tabs;
 $copyParams = $model->attributes;
 
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?=Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
@@ -61,9 +61,9 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
         <small>
-            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass).' ?>' ?>
+            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass)." ?>\n" ?>
         </small>
     </h1>
 
@@ -144,6 +144,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
+
 EOS;
 
     foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
@@ -170,7 +171,7 @@ EOS;
         }
 
         // relation list, add, create buttons
-        echo "<div style='position: relative'><div style='position:absolute; right: 0px; top: 0px;'>\n";
+        echo "<div style='position: relative'>\n<div style='position:absolute; right: 0px; top: 0px;'>\n";
 
         echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
@@ -188,8 +189,7 @@ EOS;
         ); ?>\n";
         echo $addButton;
 
-        echo '</div></div>';#<div class='clearfix'></div>\n";
-
+        echo "</div>\n</div>\n"; #<div class='clearfix'></div>\n";
         // render pivot grid
         if ($relation->via !== null) {
             $pjaxId = "pjax-{$pivotName}";
@@ -206,8 +206,8 @@ EOS;
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
-        echo '<?= '.$output."?>\n";
-        echo "<?php Pjax::end() ?>\n";
+            echo "<?=\n ".$output."\n?>\n";
+            echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";
@@ -219,7 +219,7 @@ EOS;
     'content' => \$this->blocks['$name'],
     'label'   => '<small>$label <span class="badge badge-default">'.count(\$model->get{$name}()->asArray()->all()).'</span></small>',
     'active'  => false,
-],
+],\n
 EOS;
     }
     ?>
@@ -230,7 +230,7 @@ EOS;
                  [
                      'id' => 'relation-tabs',
                      'encodeLabels' => false,
-                     'items' => [ $items ]
+                     'items' => [\n $items ]
                  ]
     );
     ?>";

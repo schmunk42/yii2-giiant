@@ -1,6 +1,24 @@
 Changelog
 =========
 
+### 0.9.0
+
+*beta3-beta6*
+
+ - added color column example
+ - apply cutom model name in UI giiant
+ - added icons, relation buttons
+ - wrap action column buttons in div
+ - enable tidyOuput in batch controller by default
+ - generate Access Filter Migrations #179
+ - do not overwrite search model class by default; added parameter
+ - splitted providers into core and extension providers, getCoreProviders should return core providers only
+ - removed hardcoded layout from grid, use DI to configure grid
+ - added static callback functions for field and column
+ - removed logic from model-extended template, see also #170
+ - added kartik gridview to modules in test config
+ - updated tests
+
 ### 0.9.0-beta2
 
   * added catalogue for model related translations to CRUD generator

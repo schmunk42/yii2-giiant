@@ -42,10 +42,8 @@ use <?= $generator->indexWidgetType === 'grid' ? $generator->indexGridClass : 'y
 <?php endif; ?>
 */
 
-<?php
-$this->title = Yii::t($generator->modelMessageCategory, $modelName);
+$this->title = Yii::t(<?= "'{$generator->modelMessageCategory}', '{$modelName}'" ?>);
 $this->params['breadcrumbs'][] = $this->title;
-?>
 
 <?php
 if($generator->accessFilter):
@@ -77,6 +75,7 @@ $actionColumnTemplate = implode(' ', $actionColumnTemplates);
 Yii::$app->view->params['pageButtons'] = Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>, ['create'], ['class' => 'btn btn-success']);
     $actionColumnTemplateString = "{view} {update} {delete}";
 }
+$actionColumnTemplateString = '<div class="action-buttons">'.$actionColumnTemplateString.'</div>';
 <?php
 echo '?>';
 ?>
@@ -84,7 +83,7 @@ echo '?>';
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
     <?=
-    '<?php '.($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
+    "<?php\n".($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
     <?php if ($generator->searchModelClass !== ''): ?>
         echo $this->render('_search', ['model' =>$searchModel]);
     <?php endif; ?>
@@ -95,7 +94,7 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
         <small>
             List
         </small>
@@ -138,7 +137,7 @@ echo "?>\n"
                 // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
                 if ($generator->isPivotRelation($relation)) {
-                    $iconType = 'random';
+                    $iconType = 'random text-muted';
                 }
                 $controller = $generator->pathPrefix.Inflector::camel2id(
                         StringHelper::basename($relation->modelClass),
@@ -150,8 +149,9 @@ echo "?>\n"
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-arrow-right">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
+                'label' => '<i class="glyphicon glyphicon-{$iconType}">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
             ],
+                    
 PHP;
                 ?>
             <?php endforeach; ?>
@@ -169,14 +169,14 @@ PHP;
             'class' => 'dropdown-menu-right'
             ],
             'encodeLabels' => false,
-            'items' => [<?= $items ?>]
+            'items' => [<?= "\n".$items."\n" ?>]
             ],
             'options' => [
             'class' => 'btn-default'
             ]
             ]
             );
-            <?= '?>' ?>
+            <?= "?>\n" ?>
         </div>
     </div>
 
@@ -188,7 +188,7 @@ PHP;
         'pager' => [
         'class' => yii\widgets\LinkPager::className(),
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
-        'lastPageLabel' => <?= $generator->generateString('Last') ?>
+        'lastPageLabel' => <?= $generator->generateString('Last').",\n" ?>
         ],
         <?php if ($generator->searchModelClass !== ''): ?>
             'filterModel' => $searchModel,
@@ -196,12 +196,21 @@ PHP;
         'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
         'headerRowOptions' => ['class'=>'x'],
         'columns' => [
-
         <?php
         $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',
             'template' => \$actionColumnTemplateString,
+            'buttons' => [
+                'view' => function (\$url, \$model, \$key) {
+                    \$options = [
+                        'title' => Yii::t('yii', 'View'),
+                        'aria-label' => Yii::t('yii', 'View'),
+                        'data-pjax' => '0',
+                    ];
+                    return Html::a('<span class="glyphicon glyphicon-file"></span>', \$url, \$options);
+                }
+            ],
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
                 // using the column name as key, not mapping to 'id' like the standard generator
                 \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
