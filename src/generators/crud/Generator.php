@@ -124,6 +124,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $tidyOutput = true;
 
     /**
+     * @var bool whether to use php-cs-fixer to generate PSR compatible output
+     */
+    public $fixOutput = false;
+
+    /**
      * @var string form field for selecting and loading saved gii forms
      */
     public $savedForm;
@@ -388,18 +393,28 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function render($template, $params = [])
     {
         $code = parent::render($template, $params);
+
+        // create temp file for code formatting
+        $tmpDir = Yii::getAlias('@runtime/giiant');
+        FileHelper::createDirectory($tmpDir);
+        $tmpFile = $tmpDir.'/'.md5($template);
+        file_put_contents($tmpFile, $code);
+
         if ($this->tidyOutput) {
-            $tmpDir = Yii::getAlias('@runtime/giiant');
-            FileHelper::createDirectory($tmpDir);
-            $tmpFile = $tmpDir.'/'.md5($template);
-            file_put_contents($tmpFile, $code);
             $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$tmpFile;
             shell_exec($command);
-
-            return file_get_contents($tmpFile);
-        } else {
-            return $code;
+            $code = file_get_contents($tmpFile);
         }
+
+        if ($this->fixOutput) {
+            $command = Yii::getAlias('@vendor/bin/php-cs-fixer').' fix '.$tmpFile;
+            shell_exec($command);
+            $code = file_get_contents($tmpFile);
+        }
+
+        unlink($tmpFile);
+
+        return $code;
     }
 
     public function validateClass($attribute, $params)

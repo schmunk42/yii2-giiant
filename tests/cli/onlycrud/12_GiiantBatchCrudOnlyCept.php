@@ -22,6 +22,7 @@ $batch = <<<CMD
     --crudPathPrefix={$name}/ \
     --crudSkipRelations=Variant,Variants \
     --crudProviders=schmunk42\\\\giiant\\\\generators\\\\crud\\\\providers\\\\extensions\\\\EditorProvider \
+    --crudFixOutput=1 \
     --tables=country
 CMD;
 

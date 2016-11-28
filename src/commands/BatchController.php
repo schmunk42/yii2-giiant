@@ -180,6 +180,11 @@ class BatchController extends Controller
     public $crudTidyOutput = true;
 
     /**
+     * @var bool whether to fix generated code (PSR-2)
+     */
+    public $crudFixOutput = true;
+
+    /**
      * @var string the namespace of the ActiveQuery class to be generated
      */
     public $modelQueryNamespace = 'app\models\query';
@@ -240,6 +245,7 @@ class BatchController extends Controller
                 'modelGenerateLabelsFromComments',
                 'modelGenerateHintsFromComments',
                 'crudTidyOutput',
+                'crudFixOutput',
                 'crudControllerNamespace',
                 'crudSearchModelNamespace',
                 'crudSearchModelSuffix',
@@ -383,6 +389,7 @@ class BatchController extends Controller
                 'accessFilter' => $this->crudAccessFilter,
                 'baseTraits' => $this->crudBaseTraits,
                 'tidyOutput' => $this->crudTidyOutput,
+                'fixOutput' => $this->crudFixOutput,
                 'template' => $this->crudTemplate,
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,
