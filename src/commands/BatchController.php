@@ -180,9 +180,9 @@ class BatchController extends Controller
     public $crudTidyOutput = true;
 
     /**
-     * @var bool whether to fix generated code (PSR-2)
+     * @var bool whether to fix generated code (PSR-2). Note: May take some time, depending on file size and numbers.
      */
-    public $crudFixOutput = true;
+    public $crudFixOutput = false;
 
     /**
      * @var string the namespace of the ActiveQuery class to be generated
