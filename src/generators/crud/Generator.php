@@ -352,7 +352,6 @@ class Generator extends \yii\gii\generators\crud\Generator
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                echo $file;
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", ['permisions' => $permisions]));
             }
         }
@@ -363,7 +362,6 @@ class Generator extends \yii\gii\generators\crud\Generator
              * access migration
              */
             $migrationFile = $migrationDir.'/'.$this->migrationClass.'.php';
-            //var_dump($migrationFile);exit;
             $files[] = new CodeFile($migrationFile, $this->render('migration_access.php', ['accessDefinitions' => $accessDefinitions]));
 
             /*
