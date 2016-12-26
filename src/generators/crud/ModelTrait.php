@@ -93,6 +93,10 @@ trait ModelTrait
             if (in_array($method->name, $skipMethods)) {
                 continue;
             }
+            //don't call get functions if there is a parameter
+            if (count($method->getParameters()) > 0) {
+                continue;
+            }
             // check for relation
             try {
                 $relation = @call_user_func(array($model, $method->name));
@@ -118,6 +122,9 @@ trait ModelTrait
                 }
             } catch (Exception $e) {
                 Yii::error('Error: '.$e->getMessage(), __METHOD__);
+            } catch (\Error $e) {
+                //bypass get functions if calling to them results in errors (only for PHP7)
+                \Yii::error('Error: ' . $e->getMessage(), __METHOD__);
             }
         }
 
