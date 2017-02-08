@@ -238,7 +238,7 @@ Join it all together
 To invoke the callback provider we pass in our callbacks as follows:
 
 ```php
-\Yii::$container->set('schmunk42\giiant\generators\crud\providers\CallbackProvider', [
+\Yii::$container->set('schmunk42\giiant\generators\crud\providers\core\CallbackProvider', [
     'columnFormats' => $columnFormats,
     'attributeFormats' => $attributeFormats,
     'activeFields' => $activeFields,

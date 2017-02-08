@@ -149,7 +149,7 @@ echo "?>\n"
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-{$iconType}">&nbsp;' . Yii::t('$generator->modelMessageCategory', '$label') . '</i>',
+                'label' => '<i class="glyphicon glyphicon-{$iconType}"></i> ' . Yii::t('$generator->modelMessageCategory', '$label'),
             ],
                     
 PHP;
