@@ -8,7 +8,7 @@ DOCKER_COMPOSE  ?= docker-compose
 
 export CI_APP_VOLUME   ?= ..
 
-export DOCKER_HOST_IP  = 127.0.0.1
+export DOCKER_HOST_IP  ?= 127.0.0.1
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)

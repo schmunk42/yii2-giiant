@@ -215,8 +215,8 @@ trait ProviderTrait
 
     protected function shorthandAttributeFormat($attribute, $model)
     {
-
-        if (!method_exists($model,'getTableSchema') || !$model->getTableSchema()){
+        // TODO: cleanup
+        if (is_object($model) && (!method_exists($model,'getTableSchema') || !$model->getTableSchema())){
             return;
         }
 

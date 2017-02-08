@@ -16,7 +16,7 @@ use yii\helpers\Inflector;
 
 trait ModelTrait
 {
-    public function getModelNameAttribute($modelClass)
+    public static function getModelNameAttribute($modelClass)
     {
         $model = new $modelClass();
         // TODO: cleanup, get-label-methods, move to config
@@ -27,7 +27,7 @@ trait ModelTrait
             return 'label';
         }
         if (method_exists($modelClass,'getTableSchema')) {
-            foreach ($modelClass::getTableSchema()->getColumnNames() as $name) {
+            foreach ($model->getTableSchema()->getColumnNames() as $name) {
                 switch (strtolower($name)) {
                     case 'name':
                     case 'title':
