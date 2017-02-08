@@ -101,7 +101,7 @@ public function actionIndex()
 <?php 
 } else {
     ?>
-    $dataProvider = new ActiveDataProvider([
+    $dataProvider = new \yii\data\ActiveDataProvider([
     'query' => <?= $modelClass ?>::find(),
     ]);
 <?php 
