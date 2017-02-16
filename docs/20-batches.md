@@ -8,7 +8,7 @@ Batches
 Configuration
 -------------
 
-It's recommended to configure a customized `batch` command in your application CLI configuration.
+It's recommended to configure a customized `batch` command in your application CLI configuration, add the following code to your console application configuration.
 
     'controllerMap' => [
         'batch' => [
