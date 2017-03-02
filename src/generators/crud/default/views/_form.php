@@ -46,7 +46,7 @@ use yii\helpers\StringHelper;
     'id' => '<?= $model->formName() ?>',
     'layout' => '<?= $generator->formLayout ?>',
     'enableClientValidation' => true,
-    'errorSummaryCssClass' => 'error-summary alert alert-error'
+    'errorSummaryCssClass' => 'error-summary alert alert-danger'
     ]
     );
     ?>
