@@ -1,6 +1,29 @@
-# CLI command options
+# CLI
 
-## Model
+## Batch command
+
+```
+$ yii giiant-batch -h
+```
+
+```
+DESCRIPTION
+
+SUB-COMMANDS
+
+- giiant-batch/cruds            Run batch process to generate CRUDs all given tables.
+- giiant-batch/index (default)  Run batch process to generate models and CRUDs for all given tables.
+- giiant-batch/models           Run batch process to generate models all given tables.
+
+To see the detailed information about individual sub-commands, enter:
+
+  yii help <sub-command>
+```
+
+Example: `yii giiant-batch/models` will generate only model classes.
+
+
+## Model (Gii template)
 
 ```
 $ yii gii/giiant-model -h
@@ -174,7 +197,7 @@ OPTIONS
   translation table.
 ```
 
-## CRUD
+## CRUD (Gii template)
 
 ```
 $ yii gii/giiant-crud -h
