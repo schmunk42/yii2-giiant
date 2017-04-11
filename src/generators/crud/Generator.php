@@ -34,7 +34,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @var string
      */
-    public $actionButtonClass = 'yii\web\grid\ActionColumn';
+    public $actionButtonClass = 'yii\grid\ActionColumn';
     /**
      * @var array relations to be excluded in UI rendering
      */

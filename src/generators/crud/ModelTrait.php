@@ -16,7 +16,7 @@ use yii\helpers\Inflector;
 
 trait ModelTrait
 {
-    public function getModelNameAttribute($modelClass)
+    public static function getModelNameAttribute($modelClass)
     {
         $model = new $modelClass();
         // TODO: cleanup, get-label-methods, move to config
@@ -26,20 +26,22 @@ trait ModelTrait
         if ($model->hasMethod('getLabel')) {
             return 'label';
         }
-        foreach ($modelClass::getTableSchema()->getColumnNames() as $name) {
-            switch (strtolower($name)) {
-                case 'name':
-                case 'title':
-                case 'name_id':
-                case 'default_title':
-                case 'default_name':
-                case 'ns'://name short
-                case 'nl'://name long
-                    return $name;
-                    break;
-                default:
-                    continue;
-                    break;
+        if (method_exists($modelClass,'getTableSchema')) {
+            foreach ($model->getTableSchema()->getColumnNames() as $name) {
+                switch (strtolower($name)) {
+                    case 'name':
+                    case 'title':
+                    case 'name_id':
+                    case 'default_title':
+                    case 'default_name':
+                    case 'ns'://name short
+                    case 'nl'://name long
+                        return $name;
+                        break;
+                    default:
+                        continue;
+                        break;
+                }
             }
         }
 
@@ -141,7 +143,12 @@ trait ModelTrait
             $model = $this;
         }
 
-        return $model->getTableSchema()->getColumn($attribute);
+        // omit schema for NOSQL models
+        if (method_exists($model,'getTableSchema') && $model->getTableSchema()) {
+            return $model->getTableSchema()->getColumn($attribute);
+        } else {
+            return $attribute;
+        }
     }
 
     /**
