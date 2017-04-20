@@ -433,7 +433,6 @@ EOS;
         $code .= <<<EOS
             echo GridView::widget([
                 'layout' => '{items}{pager}',
-                'export' => false,                
                 'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
                 'export' => false,
                 'tableOptions' => [
