@@ -215,6 +215,11 @@ trait ProviderTrait
 
     protected function shorthandAttributeFormat($attribute, $model)
     {
+        // TODO: cleanup
+        if (is_object($model) && (!method_exists($model,'getTableSchema') || !$model->getTableSchema())){
+            return;
+        }
+
         $column = $this->getColumnByAttribute($attribute, $model);
         if (!$column) {
             Yii::trace("No column for '{$attribute}' found", __METHOD__);

@@ -18,7 +18,13 @@ if ($modelClass === $searchModelClass) {
     $searchModelClassName = $searchModelAlias;
 }
 
-$pks = $generator->getTableSchema()->primaryKey;
+// TODO: improve detetction of NOSQL primary keys
+if ($generator->getTableSchema()) {
+    $pks = $generator->getTableSchema()->primaryKey;
+} else {
+    $pks = ['_id'];
+}
+
 $urlParams = $generator->generateUrlParams();
 $actionParams = $generator->generateActionParams();
 $actionParamComments = $generator->generateActionParamComments();
@@ -101,7 +107,7 @@ public function actionIndex()
 <?php 
 } else {
     ?>
-    $dataProvider = new ActiveDataProvider([
+    $dataProvider = new \yii\data\ActiveDataProvider([
     'query' => <?= $modelClass ?>::find(),
     ]);
 <?php 

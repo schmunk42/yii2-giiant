@@ -43,6 +43,10 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
             return;
         }
 
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return null;
+        }
         $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to']);
         if ($relation) {
             switch (true) {
@@ -103,6 +107,11 @@ EOS;
         $column = $this->generator->getColumnByAttribute($attribute);
         if (!$column) {
             return;
+        }
+
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return "'$column'";
         }
 
         // handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
@@ -174,6 +183,11 @@ EOS;
         $column = $this->generator->getColumnByAttribute($attribute, $model);
         if (!$column) {
             return;
+        }
+
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return $column;
         }
 
         // handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
