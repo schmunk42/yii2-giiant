@@ -43,7 +43,7 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
             return;
         }
 
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to']);
         if ($relation) {
             switch (true) {
                 case !$relation->multiple:
@@ -112,7 +112,7 @@ EOS;
             //return null; #TODO: double check with primary keys not named `id` of non-pivot tables
         }
 
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to']);
         if ($relation) {
             if ($relation->multiple) {
                 return;
@@ -183,7 +183,7 @@ EOS;
             //return null;
         }
 
-        $relation = $this->generator->getRelationByColumn($model, $column);
+        $relation = $this->generator->getRelationByColumn($model, $column, ['belongs_to']);
         if ($relation) {
             if ($relation->multiple) {
                 return;

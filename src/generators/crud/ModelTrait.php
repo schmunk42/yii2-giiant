@@ -67,7 +67,7 @@ trait ModelTrait
      *
      * @return array
      */
-    public function getModelRelations($modelClass, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
+    public function getModelRelations($modelClass, $types = [])
     {
         $reflector = new \ReflectionClass($modelClass);
         $model = new $modelClass();
@@ -102,9 +102,13 @@ trait ModelTrait
             try {
                 $relation = @call_user_func(array($model, $method->name));
                 if ($relation instanceof \yii\db\ActiveQuery) {
-                    //var_dump($relation->primaryModel->primaryKey);
+                    // detect relation
                     if ($relation->multiple === false) {
-                        $relationType = 'belongs_to';
+                        if (current($relation->link) == (new $relation->modelClass)->primaryKey()[0]) {
+                            $relationType = 'has_one';
+                        } else {
+                            $relationType = 'belongs_to';
+                        }
                     } elseif ($this->isPivotRelation($relation)) { // TODO: detecttion
                         $relationType = 'pivot';
                     } else {
@@ -128,7 +132,6 @@ trait ModelTrait
                 \Yii::error('Error: ' . $e->getMessage(), __METHOD__);
             }
         }
-
         return $stack;
     }
 
@@ -149,9 +152,9 @@ trait ModelTrait
      *
      * @return null|\yii\db\ActiveQuery
      */
-    public function getRelationByColumn($model, $column)
+    public function getRelationByColumn($model, $column, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
     {
-        $relations = $this->getModelRelations($model);
+        $relations = $this->getModelRelations($model, $types);
         foreach ($relations as $relation) {
             // TODO: check multiple link(s)
             if ($relation->link && reset($relation->link) == $column->name) {
