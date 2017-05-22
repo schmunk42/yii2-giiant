@@ -42,7 +42,7 @@ Command line example for Windows
 ```
 yii giiant-batch ^
     --modelNamespace=app\models ^
-    --crudProviders=schmunk42\giiant\generators\crud\\providers\optsProvider ^
+    --crudProviders=schmunk42\giiant\generators\crud\providers\core\OptsProvider ^
     --tables=account,article
 ```
 

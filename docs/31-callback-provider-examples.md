@@ -264,7 +264,7 @@ use schmunk42\giiant\generators\crud\callbacks\yii\Db;
 use schmunk42\giiant\generators\crud\callbacks\yii\Html;
 
 \Yii::$container->set(
-    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
+    'schmunk42\giiant\generators\crud\providers\core\CallbackProvider',
     [
         'columnFormats'    => [
             // hide system fields, but not ID in table
