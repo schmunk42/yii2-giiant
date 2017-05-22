@@ -20,19 +20,18 @@ Examples for this use-case are editors, file-uploads or choosers, complex input 
 data via AJAX and so on.
 
 With Giiant Providers you can create a queue of instances which may provide custom code depending on more complex
-rules. Take a look at some existing [giiant providers](https://github.com/schmunk42/yii2-giiant/tree/master/crud/providers).
+rules. Take a look at some existing [giiant providers](https://github.com/schmunk42/yii2-giiant/tree/master/src/generators/crud/providers).
 
-Configure providers, add this to your provider list in the form or command configuration:
+To configure providers, add this to your provider list in the form or command configuration:
 
-    \schmunk42\giiant\generators\crud\providers\EditorProvider,
-    \schmunk42\giiant\generators\crud\providers\SelectProvider,
-    \schmunk42\giiant\generators\crud\providers\OptsProvider,
+    \schmunk42\giiant\generators\crud\providers\extensions\EditorProvider,
+    \schmunk42\giiant\generators\crud\providers\core\OptsProvider,
 
 
-And configure the settings of the provider, add setting via dependecy injection this to your application config, eg. in `console/config/bootstrap.php`:
+And to configure the settings of the provider, add settings via dependecy injection to your application config, e.g. in `console/config/bootstrap.php`:
 
     \Yii::$container->set(
-        'schmunk42\giiant\generators\crud\providers\EditorProvider',
+        \schmunk42\giiant\generators\crud\providers\extensions\EditorProvider::class,
         [
             'columnNames' => ['description']
         ]
@@ -41,7 +40,7 @@ And configure the settings of the provider, add setting via dependecy injection 
 This will render a Ckeditor widget for every column named `description`.
 
     <?= $form->field($model, 'description')->widget(
-    \dosamigos\ckeditor\CKEditor::className(),
+    \dosamigos\ckeditor\CKEditor::class,
     [
         'options' => ['rows' => 6],
         'preset' => 'basic'
@@ -87,7 +86,7 @@ Finally add the configuration via DI container
 
 ```
 \Yii::$container->set(
-    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
+    \schmunk42\giiant\generators\crud\providers\core\CallbackProvider::class,
     [
         'activeFields'  => $activeFields,
         'columnFormats' => $columnFormats,
@@ -107,7 +106,7 @@ Finally add the configuration via DI container
 Use a DateTimePicker for the `scheduled_at` field:
 
 ```php
-\Yii::$container->set('schmunk42\giiant\generators\crud\providers\DateTimeProvider', [
+\Yii::$container->set('schmunk42\giiant\generators\crud\providers\extensions\DateTimeProvider', [
     'columnNames' => ['scheduled_at'],
 ]);
 ```
