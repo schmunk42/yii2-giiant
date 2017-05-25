@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.9.1
+
+ - improved detection of database text columns in callbacks
+
 ### 0.9.0
 
 *beta3-beta6*
