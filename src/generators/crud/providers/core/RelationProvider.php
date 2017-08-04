@@ -125,18 +125,18 @@ EOS;
             $routeIndex = $this->generator->createRelationRoute($relation, 'index');
 
             $modelClass = $this->generator->modelClass;
-            $relationGetter = 'get'.(new ModelGenerator())->generateRelationName(
-                    [$relation],
-                    $modelClass::getTableSchema(),
-                    $column->name,
-                    $relation->multiple
-                ).'()';
+            $relationProperty = lcfirst((new ModelGenerator())->generateRelationName(
+                [$relation],
+                $modelClass::getTableSchema(),
+                $column->name,
+                $relation->multiple
+            ));
             $relationModel = new $relation->modelClass();
             $relationModelName = StringHelper::basename($modelClass);
             $pks = $relationModel->primaryKey();
             $paramArrayItems = '';
             foreach ($pks as $attr) {
-                $paramArrayItems .= "'{$attr}' => \$model->{$relationGetter}->one()->{$attr},";
+                $paramArrayItems .= "'{$attr}' => \$model->{$relationProperty}->{$attr},";
             }
             $attachArrayItems = "'{$relationModelName}'=>['{$column->name}' => \$model->{$column->name}]";
 
@@ -146,7 +146,9 @@ EOS;
 [
     'format' => 'html',
     'attribute' => '$column->name',
-    'value' => (\$model->{$relationGetter}->one() ?  Html::a(\$model->{$relationGetter}->one()->{$title}, ['{$route}', {$paramArrayItems}]) : '<span class="label label-warning">?</span>'),
+    'value' => \$model->{$relationProperty}
+        ? Html::a(\$model->{$relationProperty}->{$title}, ['{$route}', {$paramArrayItems}])
+        : '<span class="label label-warning">?</span>',
 ]
 EOS;
 
@@ -187,12 +189,12 @@ EOS;
             $route = $this->generator->createRelationRoute($relation, 'view');
             $method = __METHOD__;
             $modelClass = $this->generator->modelClass;
-            $relationGetter = 'get'.(new ModelGenerator())->generateRelationName(
-                    [$relation],
-                    $modelClass::getTableSchema(),
-                    $column->name,
-                    $relation->multiple
-                ).'()';
+            $relationProperty = lcfirst((new ModelGenerator())->generateRelationName(
+                [$relation],
+                $modelClass::getTableSchema(),
+                $column->name,
+                $relation->multiple
+            ));
             $relationModel = new $relation->modelClass();
             $pks = $relationModel->primaryKey();
             $paramArrayItems = '';
@@ -207,7 +209,7 @@ EOS;
     'class' => yii\\grid\\DataColumn::className(),
     'attribute' => '{$column->name}',
     'value' => function (\$model) {
-        if (\$rel = \$model->{$relationGetter}->one()) {
+        if (\$rel = \$model->{$relationProperty}) {
             return Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
         } else {
             return '';
