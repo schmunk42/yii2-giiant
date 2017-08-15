@@ -116,8 +116,8 @@ trait ModelTrait
                     } else {
                         $relationType = 'has_many';
                     }
-
-                    if (in_array($relationType, $types)) {
+                    // if types is empty, return all types -> no filter
+                    if ((count($types) == 0) || in_array($relationType, $types)) {
                         $name = $modelGenerator->generateRelationName(
                             [$relation],
                             $model->getTableSchema(),
