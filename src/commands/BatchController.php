@@ -120,6 +120,11 @@ class BatchController extends Controller
     public $modelRemoveDuplicateRelations = false;
 
     /**
+     * @var
+     */
+    public $modelGenerateRelations = ModelGenerator::RELATIONS_ALL;
+
+    /**
      * @var bool whether the strings will be generated using `Yii::t()` or normal strings
      */
     public $enableI18N = true;
@@ -269,6 +274,7 @@ class BatchController extends Controller
                 'modelBaseTraits',
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
+                'modelGenerateRelations',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
@@ -366,6 +372,7 @@ class BatchController extends Controller
                 'baseClass' => $this->modelBaseClass,
                 'baseTraits' => $this->modelBaseTraits,
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
+                'generateRelations' => $this->modelGenerateRelations,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
                 'queryNs' => $this->modelQueryNamespace,
