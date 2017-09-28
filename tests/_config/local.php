@@ -48,6 +48,9 @@ return [
         '@common' => '@app/common',
         '@backend' => '@app/modules/backend',
     ],
+    'bootstrap' => [
+        'gii'
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\ApcCache',

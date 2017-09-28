@@ -6,13 +6,13 @@
         }
     ],
     "require": {
-        "wikimedia/composer-merge-plugin": "~1.4",
-        "schmunk42/yii2-giiant": "dev-develop"
+        "wikimedia/composer-merge-plugin": "~1.4"
     },
     "extra": {
         "merge-plugin": {
             "require": [
-                "/app/composer.json"
+                "/app/composer.json",
+                "/repo/schmunk42/yii2-giiant/composer.json"
             ]
         }
     },
