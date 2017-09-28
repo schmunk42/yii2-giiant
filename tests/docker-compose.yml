@@ -16,13 +16,15 @@ services:
       - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
       - YII_ENV=dev
       - YII_DEBUG=1
+    ports:
+      - '80'
     depends_on:
       - mariadb
       - seleniumfirefox
     volumes:
       - /app
       # host volume for local development
-      - ../:/app/vendor/schmunk42/yii2-giiant
+      - ../:/dev/vendor/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
       # host volumes for local debugging of generated files
       - ./__tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
@@ -32,18 +34,9 @@ services:
       - ./__tmp/onlyCrud/models:/app/src/models/onlyCrud
       - ./__tmp/onlyCrud/views:/app/src/views/onlyCrud
       # update development image
-      - ~/.composer/cache:/root/.composer/cache
+      - ~/.docker-composer/cache:/root/.composer/cache
       - ./_build/composer.json:/app/composer.json
       - ./_build/composer.lock:/app/composer.lock
-
-  nginx:
-    image: schmunk42/nginx:1.9
-    depends_on:
-      - phpfpm
-    volumes_from:
-      - phpfpm
-    ports:
-      - '80'
 
   mariadb:
     image: 'schmunk42/mariadb-example-databases:2.0.0'

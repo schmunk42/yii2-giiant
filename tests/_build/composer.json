@@ -1,20 +1,6 @@
 {
-  "name": "phundament/app",
-  "description": "12factor Application Template for Yii 2.0 Framework",
-  "keywords": [
-    "phundament",
-    "yii2",
-    "app",
-    "framework",
-    "application",
-    "template",
-    "boilerplate",
-    "docker",
-    "docker-compose",
-    "12factor",
-    "dotenv"
-  ],
-  "homepage": "http://www.phundament.com/",
+  "name": "testing/yii2-giiant",
+  "description": "composer.json for test-installation",
   "type": "project",
   "license": "BSD-3-Clause",
   "authors": [
@@ -30,14 +16,9 @@
   },
   "minimum-stability": "stable",
   "require": {
-    "dmstr/yii2-cms-metapackage": "^4.2.0",
-    "vlucas/phpdotenv": "2.*",
-    "yiisoft/yii2": "^2.0.7",
-    "kartik-v/yii2-editable": "^1.7",
-    "kartik-v/yii2-grid": "^3.1"
+    "schmunk42/yii2-giiant": "@dev"
   },
   "require-dev": {
-    "dmstr/yii2-cms-dev-metapackage": "^1.1.0"
   },
   "extra": {
     "asset-installer-paths": {
