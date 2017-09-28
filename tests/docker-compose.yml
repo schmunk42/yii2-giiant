@@ -2,7 +2,7 @@ version: '2'
 services:
   phpfpm:
     build: .
-    working_dir: /app/vendor/schmunk42/yii2-giiant
+    working_dir: /repo/schmunk42/yii2-giiant/tests/_app
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
@@ -10,12 +10,15 @@ services:
       - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
-      - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
+      - APP_CONFIG_FILE=/repo/schmunk42/yii2-giiant/tests/_config/local.php
       - APP_NAME=giiant-test
       - APP_TITLE=Giiant [TEST]
       - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
       - YII_ENV=dev
       - YII_DEBUG=1
+      - FXP_ASSET__GIT_SKIP_UPDATE=2 days
+      - 'FXP_ASSET__VCS_DRIVER_OPTIONS={"github-no-api":true}'
+
     ports:
       - '80'
     depends_on:
@@ -24,7 +27,7 @@ services:
     volumes:
       - /app
       # host volume for local development
-      - ../:/dev/vendor/schmunk42/yii2-giiant
+      - ../:/repo/schmunk42/yii2-giiant
       - ../tests/_config/local.php:/app/src/config/local.php
       # host volumes for local debugging of generated files
       - ./__tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
@@ -34,9 +37,9 @@ services:
       - ./__tmp/onlyCrud/models:/app/src/models/onlyCrud
       - ./__tmp/onlyCrud/views:/app/src/views/onlyCrud
       # update development image
-      - ~/.docker-composer/cache:/root/.composer/cache
-      - ./_build/composer.json:/app/composer.json
-      - ./_build/composer.lock:/app/composer.lock
+      - ~/.docker-composer/cache:/root/.composer/cache:cached
+      #- ./_build/composer.json:/app/composer.json
+      #- ./_build/composer.lock:/app/composer.lock
 
   mariadb:
     image: 'schmunk42/mariadb-example-databases:2.0.0'

@@ -1,5 +1,11 @@
 <?php
 
+use yii\gii\Module;
+
+$testVendorPath = '/repo/schmunk42/yii2-giiant/tests/_app/vendor';
+
+require ($testVendorPath.'/autoload.php');
+
 switch (getenv('GIIANT_TEST_DB')) {
     case 'sakila':
         $giiantTestModule = [
@@ -36,6 +42,7 @@ switch (getenv('GIIANT_TEST_DB')) {
 $giiantTestModule['gridview'] = ['class' => 'kartik\grid\Module'];
 
 return [
+    'vendorPath' => $testVendorPath,
     'aliases' => [
         '@tests' => '@vendor/schmunk42/yii2-giiant/tests',
         '@common' => '@app/common',
@@ -55,7 +62,13 @@ return [
             'enableSchemaCache' => true,
         ],
     ],
-    'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,
+    #'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,
+    'modules' => [
+        'gii' => [
+            'class' => Module::class,
+            'allowedIPs' => ['*']
+        ]
+    ],
     'params' => [
         'yii.migrations' => [
             '@vendor/schmunk42/yii2-giiant/tests/_migrations'

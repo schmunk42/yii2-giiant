@@ -1,0 +1,27 @@
+{
+    "require": {
+        "wikimedia/composer-merge-plugin": "~1.4",
+        "schmunk42/yii2-giiant": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "file:///repo/schmunk42/yii2-giiant"
+        }
+    ],
+    "extra": {
+        "merge-plugin": {
+            "require": [
+                "/app/composer.json"
+            ]
+        }
+    },
+    "config": {
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "vendor/npm",
+                "bower-asset-library": "vendor/bower"
+            }
+        }
+    }
+}
