@@ -1,14 +1,14 @@
 {
-    "require": {
-        "wikimedia/composer-merge-plugin": "~1.4",
-        "schmunk42/yii2-giiant": "dev-master"
-    },
     "repositories": [
         {
             "type": "vcs",
             "url": "file:///repo/schmunk42/yii2-giiant"
         }
     ],
+    "require": {
+        "wikimedia/composer-merge-plugin": "~1.4",
+        "schmunk42/yii2-giiant": "dev-develop"
+    },
     "extra": {
         "merge-plugin": {
             "require": [
