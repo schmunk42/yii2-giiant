@@ -4,7 +4,7 @@ use yii\gii\Module;
 
 $testVendorPath = '/repo/schmunk42/yii2-giiant/tests/_app/vendor';
 
-require ($testVendorPath.'/autoload.php');
+require($testVendorPath.'/autoload.php');
 
 switch (getenv('GIIANT_TEST_DB')) {
     case 'sakila':
@@ -16,7 +16,7 @@ switch (getenv('GIIANT_TEST_DB')) {
             'backend2' => [
                 'class' => 'app\modules\backend\Module',
                 'layout' => '@admin-views/layouts/main',
-            ]
+            ],
         ];
         break;
     case 'employees':
@@ -24,7 +24,7 @@ switch (getenv('GIIANT_TEST_DB')) {
             'employees' => [
                 'class' => 'app\modules\employees\Module',
                 'layout' => '@admin-views/layouts/main',
-            ]
+            ],
         ];
         break;
 
@@ -33,7 +33,7 @@ switch (getenv('GIIANT_TEST_DB')) {
             getenv('GIIANT_TEST_DB') => [
                 'class' => 'app\modules\\'.getenv('GIIANT_TEST_DB').'\Module',
                 'layout' => '@admin-views/layouts/main',
-            ]
+            ],
         ];
 
 }
@@ -46,7 +46,7 @@ return [
     'aliases' => [
         '@tests' => '@vendor/schmunk42/yii2-giiant/tests',
         '@common' => '@app/common',
-        '@backend' => '@app/modules/backend'
+        '@backend' => '@app/modules/backend',
     ],
     'components' => [
         'cache' => [
@@ -54,24 +54,32 @@ return [
         ],
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => getenv('DATABASE_DSN_BASE').';dbname='.getenv('GIIANT_TEST_DB'), // DATABASE_DSN_DB
-            'username' => getenv('DATABASE_USER'),
-            'password' => getenv('DATABASE_PASSWORD'),
+            'dsn' => 'mysql:host='.getenv('DB_PORT_3306_TCP_ADDR').';dbname='.getenv('GIIANT_TEST_DB'),
+            // DATABASE_DSN_DB
+            'username' => getenv('MYSQL_USER'),
+            'password' => getenv('MYSQL_PASSWORD'),
             'charset' => 'utf8',
             'tablePrefix' => getenv('DATABASE_TABLE_PREFIX'),
             'enableSchemaCache' => true,
+        ],
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                ],
+            ],
         ],
     ],
     #'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,
     'modules' => [
         'gii' => [
             'class' => Module::class,
-            'allowedIPs' => ['*']
-        ]
+            'allowedIPs' => ['*'],
+        ],
     ],
     'params' => [
         'yii.migrations' => [
-            '@vendor/schmunk42/yii2-giiant/tests/_migrations'
-        ]
-    ]
+            '@vendor/schmunk42/yii2-giiant/tests/_migrations',
+        ],
+    ],
 ];

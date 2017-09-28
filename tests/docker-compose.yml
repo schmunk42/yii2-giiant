@@ -2,12 +2,12 @@ version: '2'
 services:
   phpfpm:
     build: .
-    working_dir: /repo/schmunk42/yii2-giiant/tests/_app
+    working_dir: /repo/schmunk42/yii2-giiant/tests
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
-      - DB_ENV_MYSQL_ROOT_USER=admin
-      - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
       - APP_CONFIG_FILE=/repo/schmunk42/yii2-giiant/tests/_config/local.php
@@ -49,7 +49,7 @@ services:
       - MARIADB_PASS=secretadmin
       - INSTALL_SAKILA=1
     volumes:
-      - ./_build/test.cnf:/etc/mysql/conf.d/test.cnf
+      - ./_mysql/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
     image: 'selenium/standalone-firefox-debug:2.53.0'

@@ -21,6 +21,9 @@
         "yiisoft/yii2": "~2.0.4",
         "yiisoft/yii2-gii": "~2.0.4"
     },
+    "require-dev": {
+        "codeception/codeception/": "^2.2"
+    },
     "autoload": {
         "psr-4": {
             "schmunk42\\giiant\\": "src"
