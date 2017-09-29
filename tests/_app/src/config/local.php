@@ -1,6 +1,9 @@
 <?php
 
+use app\components\EditorIdentity;
 use yii\gii\Module;
+use yii\rbac\PhpManager;
+use yii\web\Application;
 
 $testVendorPath = '/repo/schmunk42/yii2-giiant/tests/_app/vendor';
 
@@ -11,11 +14,11 @@ switch (getenv('GIIANT_TEST_DB')) {
         $giiantTestModule = [
             'sakila' => [
                 'class' => 'app\modules\sakila\Module',
-                'layout' => '@admin-views/layouts/main',
+                #'layout' => '@admin-views/layouts/main',
             ],
             'backend2' => [
                 'class' => 'app\modules\backend\Module',
-                'layout' => '@admin-views/layouts/main',
+                #'layout' => '@admin-views/layouts/main',
             ],
         ];
         break;
@@ -23,7 +26,7 @@ switch (getenv('GIIANT_TEST_DB')) {
         $giiantTestModule = [
             'employees' => [
                 'class' => 'app\modules\employees\Module',
-                'layout' => '@admin-views/layouts/main',
+                #'layout' => '@admin-views/layouts/main',
             ],
         ];
         break;
@@ -32,14 +35,14 @@ switch (getenv('GIIANT_TEST_DB')) {
         $giiantTestModule = [
             getenv('GIIANT_TEST_DB') => [
                 'class' => 'app\modules\\'.getenv('GIIANT_TEST_DB').'\Module',
-                'layout' => '@admin-views/layouts/main',
+                #'layout' => '@admin-views/layouts/main',
             ],
         ];
 
 }
 
 // TODO: add note to dependencies for CRUDs to docs
-$giiantTestModule['gridview'] = ['class' => 'kartik\grid\Module'];
+#$giiantTestModule['gridview'] = ['class' => 'kartik\grid\Module'];
 
 if (php_sapi_name() != 'cli') {
     $modules = $giiantTestModule;
@@ -60,7 +63,15 @@ return [
     'bootstrap' => [
         'gii',
     ],
+    'on '.Application::EVENT_BEFORE_REQUEST => function (){
+        if (php_sapi_name() != 'cli') {
+            Yii::$app->user->login(new EditorIdentity());
+        }
+    },
     'components' => [
+        'authManager' => [
+            'class' => PhpManager::class
+        ],
         /*'cache' => [
             'class' => 'yii\caching\ApcCache',
         ],*/
@@ -82,8 +93,8 @@ return [
             ],
         ],
         'user' => [
-            'class' => 'yii\web\User',
-            'identityClass' => 'app\models\User',
+            'class' => 'dmstr\web\User',
+            'identityClass' => 'app\components\EditorIdentity',
         ],
     ],
     'modules' => $modules,

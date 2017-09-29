@@ -14,7 +14,7 @@ services:
       - APP_NAME=giiant-test
       - APP_TITLE=Giiant [TEST]
       - APP_MIGRATION_LOOKUP=@app/migrations
-      - YII_ENV=dev
+      - YII_ENV=test
       - YII_DEBUG=1
       - FXP_ASSET__GIT_SKIP_UPDATE=2 days
       - 'FXP_ASSET__VCS_DRIVER_OPTIONS={"github-no-api":true}'
@@ -29,10 +29,12 @@ services:
       # host volume for local development
       - ../:/repo/schmunk42/yii2-giiant
       - ./_app/src/config/local.php:/app/src/config/local.php
+      - ./_app/src/components:/app/src/components
+      - ./_app/src/rbac:/app/src/rbac
       # host volumes for local debugging of generated files
       - ./_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
-      - ./_app/_generated/common:/app/test-defaults/common
-      - ./_app/_generated/backend:/app/test-defaults/modules/backend
+      - ./_app/_generated/common:/app/src/common
+      - ./_app/_generated/backend:/app/src/modules/backend
       - ./_app/_generated/onlyCrud/controllers:/app/src/controllers/onlyCrud
       - ./_app/_generated/onlyCrud/models:/app/src/models/onlyCrud
       - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
