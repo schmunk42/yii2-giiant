@@ -21,7 +21,7 @@ endif
 default: help
 
 
-all: build up
+all: build setup up
 
 open:	 ##@docker open application web service in browser
 	$(OPEN_CMD) http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
@@ -35,7 +35,10 @@ open-vnc:	 ##@test open application database service in browser
 build:	##@docker build images
 	$(DOCKER_COMPOSE) build
 
-up:	##@docker start application stack
+setup:	##@docker prepare test-application stack
+	$(DOCKER_COMPOSE) run --rm $(PHP) bash -c "cd .. && composer install"
+
+up:	##@docker start test-application stack
 	$(DOCKER_COMPOSE) up -d
 
 test:    ##@docker run tests
