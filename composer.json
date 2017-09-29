@@ -19,6 +19,7 @@
         "dmstr/yii2-db": "*",
         "friendsofphp/php-cs-fixer": "1.* || 2.*",
         "yiisoft/yii2": "~2.0.4",
+        "yiisoft/yii2-codeception": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.4"
     },
     "require-dev": {
