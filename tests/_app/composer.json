@@ -6,7 +6,8 @@
         }
     ],
     "require": {
-        "wikimedia/composer-merge-plugin": "~1.4"
+        "wikimedia/composer-merge-plugin": "~1.4",
+        "schmunk42/yii2-giiant": "dev-develop"
     },
     "extra": {
         "merge-plugin": {
