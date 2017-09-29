@@ -5,3 +5,4 @@ vendor
 .phptidy-cache
 docker-compose.override.yml
 _artifacts
+tests/_helpers/_generated
