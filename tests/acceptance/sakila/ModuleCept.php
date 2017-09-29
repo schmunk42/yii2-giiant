@@ -7,6 +7,8 @@ use tests\_pages\LoginPage;
 $I = new AcceptanceTester($scenario);
 
 $I->wantTo('ensure that crud works with access rules');
+$I->comment('editor configured in test application');
+
 $I->amOnPage('/sakila');
 $I->dontSee('Actors', 'h1');
 $I->makeScreenshot('module-login');

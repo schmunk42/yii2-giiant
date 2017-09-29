@@ -38,8 +38,6 @@ services:
       - ./_app/_generated/onlyCrud/controllers:/app/src/controllers/onlyCrud
       - ./_app/_generated/onlyCrud/models:/app/src/models/onlyCrud
       - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
-      # update development image
-      - ~/.docker-composer/cache:/root/.composer/cache:cached
 
   mariadb:
     image: 'schmunk42/mariadb-example-databases:2.0.0'

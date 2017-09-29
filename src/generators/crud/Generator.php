@@ -121,7 +121,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var bool whether to use phptidy on renderer files before saving
      */
-    public $tidyOutput = true;
+    public $tidyOutput = false;
 
     /**
      * @var bool whether to use php-cs-fixer to generate PSR compatible output

@@ -7,11 +7,7 @@ use tests\_pages\LoginPage;
 $I = new AcceptanceTester($scenario);
 
 $I->wantTo('ensure that crud tabs remember their state');
-
-$I->amGoingTo('try to login with correct credentials');
-LoginPage::openBy($I);
-$loginPage = LoginPage::openBy($I);
-$loginPage->login('admin', 'admin');
+$I->comment('editor configured in test application');
 
 $I->amGoingTo('select a tab');
 $I->amOnPage('/sakila/category/view?category_id=1');

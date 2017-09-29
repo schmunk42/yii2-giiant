@@ -1,0 +1,5 @@
+version: '2'
+services:
+  phpfpm:
+    volumes:
+      - ~/.docker-composer/cache:/root/.composer/cache:cached
