@@ -41,6 +41,15 @@ switch (getenv('GIIANT_TEST_DB')) {
 // TODO: add note to dependencies for CRUDs to docs
 $giiantTestModule['gridview'] = ['class' => 'kartik\grid\Module'];
 
+if (php_sapi_name() != 'cli') {
+    $modules = $giiantTestModule;
+}
+
+$modules['gii'] = [
+    'class' => Module::class,
+    'allowedIPs' => ['*'],
+];
+
 return [
     'vendorPath' => $testVendorPath,
     'aliases' => [
@@ -49,12 +58,12 @@ return [
         '@backend' => '@app/modules/backend',
     ],
     'bootstrap' => [
-        'gii'
+        'gii',
     ],
     'components' => [
-        'cache' => [
+        /*'cache' => [
             'class' => 'yii\caching\ApcCache',
-        ],
+        ],*/
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host='.getenv('DB_PORT_3306_TCP_ADDR').';dbname='.getenv('GIIANT_TEST_DB'),
@@ -72,17 +81,15 @@ return [
                 ],
             ],
         ],
-    ],
-    #'modules' => (php_sapi_name() == 'cli') ? [] : $giiantTestModule,
-    'modules' => [
-        'gii' => [
-            'class' => Module::class,
-            'allowedIPs' => ['*'],
+        'user' => [
+            'class' => 'yii\web\User',
+            'identityClass' => 'app\models\User',
         ],
     ],
+    'modules' => $modules,
     'params' => [
         'yii.migrations' => [
-            '@vendor/schmunk42/yii2-giiant/tests/_migrations',
+            '@app/src/migrations/test',
         ],
     ],
 ];

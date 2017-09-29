@@ -6,3 +6,5 @@ vendor
 docker-compose.override.yml
 _artifacts
 tests/_helpers/_generated
+tests/_app/_generated
+.php_cs.cache
