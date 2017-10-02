@@ -11,3 +11,6 @@ settings:
 config:
     # the entry script URL (with host info) for functional tests
     test_entry_url: http://phpfpm:80/index.php
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed

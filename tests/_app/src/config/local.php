@@ -92,6 +92,11 @@ return [
                 ],
             ],
         ],
+        # TODO: bug in `Tabs`, see also https://github.com/dmstr/yii2-bootstrap/issues/4
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+        ],
         'user' => [
             'class' => 'dmstr\web\User',
             'identityClass' => 'app\components\EditorIdentity',
