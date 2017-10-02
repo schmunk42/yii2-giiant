@@ -42,6 +42,7 @@ up:	##@docker start test-application stack
 	$(DOCKER_COMPOSE) up -d
 
 test:    ##@docker run tests
+	$(DOCKER_COMPOSE) run --rm $(PHP) bash -c "while ! curl mariadb:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"
 	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila $(PHP) bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila -g onlyCrud cli,unit,acceptance"
 
 bash:	##@docker open application shell in container
