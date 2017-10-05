@@ -40,7 +40,7 @@ services:
       - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
 
   mariadb:
-    image: 'schmunk42/mariadb-example-databases:2.0.0'
+    image: 'schmunk42/mariadb-example-databases'
     ports:
       - '3306'
     environment:
