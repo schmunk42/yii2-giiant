@@ -40,6 +40,7 @@ setup:	##@docker prepare test-application stack
 
 up:	##@docker start test-application stack
 	$(DOCKER_COMPOSE) up -d
+	$(DOCKER_COMPOSE) exec mariadb /init-example-databases.sh
 
 test:    ##@docker run tests
 	$(DOCKER_COMPOSE) run $(PHP) bash -c "while ! curl mariadb:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"

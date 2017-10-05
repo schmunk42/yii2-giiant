@@ -40,14 +40,16 @@ services:
       - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
 
   mariadb:
-    image: 'schmunk42/mariadb-example-databases'
+    image: 'schmunk42/mariadb-example-databases:3.0.0-beta1'
     ports:
       - '3306'
     environment:
-      - MARIADB_PASS=secretadmin
+      - MYSQL_ROOT_PASSWORD=secretadmin
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secretadmin
       - INSTALL_SAKILA=1
-    volumes:
-      - ./_mysql/test.cnf:/etc/mysql/conf.d/test.cnf
+    #volumes:
+    #  - ./_mysql/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
     image: 'selenium/standalone-firefox-debug:2.53.0'
