@@ -34,6 +34,31 @@ class BatchController extends Controller
     public $useTimestampBehavior = true;
 
     /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $createdAtColumn = 'created_at';
+
+    /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $updatedAtColumn = 'updated_at';
+
+    /**
+     * @var bool whether or not to use BlameableBehavior
+     */
+    public $useBlameableBehavior = true;
+
+    /**
+     * @var string the name of the column where the user who created the entry is stored
+     */
+    public $createdByColumn = 'created_by';
+
+    /**
+     * @var string the name of the column where the user who updated the entry is stored
+     */
+    public $updatedByColumn = 'updated_by';
+
+    /**
      * @var string the name of the table containing the translations. {{table}} will be replaced with the value in
      *             "Table Name" field
      */
@@ -93,6 +118,11 @@ class BatchController extends Controller
      * @var
      */
     public $modelRemoveDuplicateRelations = false;
+
+    /**
+     * @var
+     */
+    public $modelGenerateRelations = ModelGenerator::RELATIONS_ALL;
 
     /**
      * @var bool whether the strings will be generated using `Yii::t()` or normal strings
@@ -223,10 +253,15 @@ class BatchController extends Controller
             [
                 'template',
                 'overwrite',
-                'useTranslatableBehavior',
                 'useTimestampBehavior',
+                'createdAtColumn',
+                'updatedAtColumn',
+                'useTranslatableBehavior',
                 'languageTableName',
                 'languageCodeColumn',
+                'useBlameableBehavior',
+                'createdByColumn',
+                'updatedByColumn',
                 'extendedModels',
                 'enableI18N',
                 'messageCategory',
@@ -239,6 +274,7 @@ class BatchController extends Controller
                 'modelBaseTraits',
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
+                'modelGenerateRelations',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
@@ -311,10 +347,15 @@ class BatchController extends Controller
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
-                'useTranslatableBehavior' => $this->useTranslatableBehavior,
                 'useTimestampBehavior' => $this->useTimestampBehavior,
+                'createdAtColumn' => $this->createdAtColumn,
+                'updatedAtColumn' => $this->updatedAtColumn,
+                'useTranslatableBehavior' => $this->useTranslatableBehavior,
                 'languageTableName' => $this->languageTableName,
                 'languageCodeColumn' => $this->languageCodeColumn,
+                'useBlameableBehavior' => $this->useBlameableBehavior,
+                'createdByColumn' => $this->createdByColumn,
+                'updatedByColumn' => $this->updatedByColumn,
                 'template' => $this->template,
                 'ns' => $this->modelNamespace,
                 'db' => $this->modelDb,
@@ -331,6 +372,7 @@ class BatchController extends Controller
                 'baseClass' => $this->modelBaseClass,
                 'baseTraits' => $this->modelBaseTraits,
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
+                'generateRelations' => $this->modelGenerateRelations,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
                 'queryNs' => $this->modelQueryNamespace,

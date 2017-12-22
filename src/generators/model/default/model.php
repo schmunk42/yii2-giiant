@@ -84,7 +84,16 @@ if(!empty($enum)){
     {
         return '<?= $tableName ?>';
     }
+<?php if ($generator->db !== 'db'): ?>
 
+    /**
+     * @return \yii\db\Connection the database connection used by this AR class.
+     */
+    public static function getDb()
+    {
+        return Yii::$app->get('<?= $generator->db ?>');
+    }
+<?php endif; ?>
 <?php if (isset($translation) || !empty($blameable) || !empty($timestamp)): ?>
 
     /**
