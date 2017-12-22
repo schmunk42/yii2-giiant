@@ -50,4 +50,7 @@ echo $form->field($generator, 'actionButtonClass')->dropDownList(
             'yii\\grid\\ActionColumn' => 'Default',
         ]
 );
+
 echo $form->field($generator, 'providerList')->checkboxList($generator->generateProviderCheckboxListData());
+
+echo $form->field($generator, 'providerListPostHidded')->hiddenInput();

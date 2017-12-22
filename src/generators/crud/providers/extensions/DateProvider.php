@@ -14,17 +14,17 @@ class DateProvider extends \schmunk42\giiant\base\Provider
 
         switch ($column->type) {
             case 'date':
-                $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
+                $this->generator->requires[] = 'kartik-v/yii2-datecontrol';
 
                 return <<<EOS
-\$form->field(\$model, '{$column->name}')->widget(\zhuravljov\widgets\DatePicker::className(), [
-    'options' => ['class' => 'form-control'],
-    'clientOptions' => [
-        'autoclose' => true,
-        'todayHighlight' => true,
-        'format' => 'yyyy-mm-dd',
-        'language' => \Yii::\$app->language,
-    ],
+\$form->field(\$model, '{$column->name}')->widget(DateControl::classname(), [
+        'options' => [
+            'class' => 'form-control',
+            'pluginOptions' => [
+                'autoclose' => true,
+                'todayHighlight' => true,
+            ]
+        ],
 ])
 EOS;
                 break;

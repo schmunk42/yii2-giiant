@@ -292,14 +292,14 @@ EOS;
                     'displayFormat' => \$datePattern,
                     'saveFormat' => 'php:Y-m-d',
                     'options' => [
+                        'class' => 'form-control',
                         'pluginOptions' => [
-                            'autoclose' => true
+                            'autoclose' => true,
+                            'todayHighlight' => true,
                         ]
-                    ]
+                    ],
                 ]
             ]
-        ],
-
         ]";
             } elseif ($relRelation && !$relRelation->multiple && method_exists($relModelStatic, 'getListData')) {
                 $hasParameterForValue = false;
@@ -433,7 +433,6 @@ EOS;
         $code .= <<<EOS
             echo GridView::widget([
                 'layout' => '{items}{pager}',
-                'export' => false,                
                 'dataProvider' => new \\yii\\data\\ActiveDataProvider([{$query}, 'pagination' => ['pageSize' => 20, 'pageParam'=>'{$pageParam}']]),
                 'export' => false,
                 'tableOptions' => [

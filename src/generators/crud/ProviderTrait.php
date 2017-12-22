@@ -46,9 +46,8 @@ trait ProviderTrait
      */
     public function generateProviderCheckboxListData()
     {
-        $coreProviders = self::getCoreProviders();
-
-        return array_combine($coreProviders, $coreProviders);
+        $list = json_decode($this->providerListPostHidded, true);
+        return array_combine($list, $list);
     }
 
     protected function initializeProviders()

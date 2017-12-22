@@ -29,7 +29,7 @@ echo $form->field($generator, 'generateRelations')->dropDownList([
     Generator::RELATIONS_ALL => Yii::t('giiant', 'All relations'),
     Generator::RELATIONS_ALL_INVERSE => Yii::t('giiant', 'All relations with inverse'),
 ]);
-//echo $form->field($generator, 'generateRelationsFromCurrentSchema')->checkbox();
+echo $form->field($generator, 'generateRelationsFromCurrentSchema')->checkbox();
 echo $form->field($generator, 'generateLabelsFromComments')->checkbox();
 echo $form->field($generator, 'generateHintsFromComments')->checkbox();
 echo $form->field($generator, 'generateModelClass')->checkbox();

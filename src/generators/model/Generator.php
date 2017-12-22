@@ -163,7 +163,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'baseClass',
             'db',
             'generateRelations',
-            //'generateRelationsFromCurrentSchema',
+            'generateRelationsFromCurrentSchema',
             'generateLabelsFromComments',
             'generateHintsFromComments',
             'generateModelClass',
@@ -194,8 +194,8 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::attributeLabels(),
             [
-                'generateModelClass' => 'Generate Model Class',
-                'generateHintsFromComments' => 'Generate Hints from DB Comments',
+            	'generateModelClass' => 'Generate Model Class',
+            	'generateHintsFromComments' => 'Generate Hints from DB Comments',
             ]
         );
     }
