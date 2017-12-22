@@ -5,8 +5,6 @@ yii2-giiant
 
 **PROJECT IS IN BETA STAGE!**
 
-Note: Major changes from 0.4 to 0.5, see [upgrading](UPGRADING.md) for details.
-
 [![Build Status](https://travis-ci.org/schmunk42/yii2-giiant.svg?branch=master)](https://travis-ci.org/schmunk42/yii2-giiant)
 
 What is this?
@@ -25,6 +23,7 @@ Resources
 ---------
 
 - [Documentation](docs/README.md)
+- [Upgrading instructions](UPGRADING.md)
 - [Project Source-Code](https://github.com/schmunk42/yii2-giiant)
 - [Packagist](https://packagist.org/packages/schmunk42/yii2-giiant)
 - [Yii Extensions](http://www.yiiframework.com/extension/yii2-giiant/)
