@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     </div>
 
-    <hr />
+    <hr/>
 
     <?php
     echo "<?php \$this->beginBlock('{$generator->modelClass}'); ?>\n";
@@ -184,7 +184,9 @@ EOS;
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
             ['".$generator->createRelationRoute($relation, 'create')."', '".
-            Inflector::id2camel($generator->generateRelationTo($relation), '-', true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+            Inflector::id2camel($generator->generateRelationTo($relation),
+                '-',
+                true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
         echo $addButton;
@@ -205,7 +207,7 @@ EOS;
 
         // render relation grid
         if (!empty($output)):
-            echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
+            echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a']) ?>\n";
             echo "<?=\n ".$output."\n?>\n";
             echo "<?php Pjax::end() ?>\n";
         endif;
@@ -217,7 +219,7 @@ EOS;
         $items .= <<<EOS
 [
     'content' => \$this->blocks['$name'],
-    'label'   => '<small>$label <span class="badge badge-default">'.count(\$model->get{$name}()->asArray()->all()).'</span></small>',
+    'label'   => '<small>$label <span class="badge badge-default">'. \$model->get{$name}()->count() . '</span></small>',
     'active'  => false,
 ],\n
 EOS;
