@@ -124,9 +124,19 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $tidyOutput = true;
 
     /**
+     * @var string command-line options for phptidy command
+     */
+    public $tidyOptions = '';
+
+    /**
      * @var bool whether to use php-cs-fixer to generate PSR compatible output
      */
     public $fixOutput = false;
+
+    /**
+     * @var string command-line options for php-cs-fixer command
+     */
+    public $fixOptions = '';
 
     /**
      * @var string form field for selecting and loading saved gii forms
@@ -134,6 +144,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $savedForm;
 
     public $moduleNs;
+
     public $migrationClass;
 
     public $indexGridClass = 'yii\\grid\\GridView';
@@ -399,13 +410,13 @@ class Generator extends \yii\gii\generators\crud\Generator
         file_put_contents($tmpFile, $code);
 
         if ($this->tidyOutput) {
-            $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$tmpFile;
+            $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$this->tidyOptions.' '.$tmpFile;
             shell_exec($command);
             $code = file_get_contents($tmpFile);
         }
 
         if ($this->fixOutput) {
-            $command = Yii::getAlias('@vendor/bin/php-cs-fixer').' fix '.$tmpFile;
+            $command = Yii::getAlias('@vendor/bin/php-cs-fixer').' fix '.$this->fixOptions.' '.$tmpFile;
             shell_exec($command);
             $code = file_get_contents($tmpFile);
         }
