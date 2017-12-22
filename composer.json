@@ -18,8 +18,8 @@
         "dmstr/yii2-helpers": "*",
         "dmstr/yii2-db": "*",
         "friendsofphp/php-cs-fixer": "1.* || 2.*",
-        "yiisoft/yii2": "~2.0.4",
-        "yiisoft/yii2-gii": "~2.0.4"
+        "yiisoft/yii2": "~2.0.5",
+        "yiisoft/yii2-gii": "dev-master"
     },
     "autoload": {
         "psr-4": {
