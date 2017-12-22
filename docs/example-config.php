@@ -11,7 +11,7 @@ $aceEditorField = function ($attribute, $model, $generator) {
 };
 
 \Yii::$container->set(
-    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
+    \schmunk42\giiant\generators\crud\providers\core\CallbackProvider::class,
     [
         'columnFormats' => [
             // hide system fields, but not ID in table

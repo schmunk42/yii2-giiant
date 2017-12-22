@@ -6,10 +6,7 @@ use tests\_pages\LoginPage;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that copy button works');
-
-LoginPage::openBy($I);
-$loginPage = LoginPage::openBy($I);
-$loginPage->login('admin', 'admin');
+$I->comment('editor configured in test application');
 
 $I->amOnPage('/sakila/actor/view?actor_id=1');
 $I->see('1', 'h1');

@@ -1,11 +1,12 @@
 sudo: required
 
-language: php
+language: generic
 
 services:
   - docker
 
 before_install:
+  - git fetch --unshallow
   - cd tests
   - docker-compose build --pull
 

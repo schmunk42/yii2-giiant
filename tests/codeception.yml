@@ -1,0 +1,16 @@
+actor: Tester
+paths:
+    tests: .
+    log: ./_output
+    data: ./_data
+    helpers: ./_helpers
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+config:
+    # the entry script URL (with host info) for functional tests
+    test_entry_url: http://phpfpm:80/index.php
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed

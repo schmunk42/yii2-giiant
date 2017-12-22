@@ -20,7 +20,9 @@ class Db
             }
 
             switch ($column->dbType) {
+                case 'tinytext':
                 case 'text':
+                case 'mediumtext':
                 case 'longtext':
                     return false;
             }

@@ -7,16 +7,11 @@ use tests\_pages\LoginPage;
 $I = new AcceptanceTester($scenario);
 
 $I->wantTo('ensure that crud works with access rules');
-$I->amOnPage('/sakila');
-$I->dontSee('Actors', 'h1');
-$I->makeScreenshot('module-login');
+$I->comment('editor configured in test application');
 
-$I->see('Sign in', 'h3');
-$I->amGoingTo('try to login with correct credentials');
-LoginPage::openBy($I);
-$loginPage = LoginPage::openBy($I);
-$loginPage->login('admin', 'admin');
-
+$I->amOnPage('/sakila/store');
+$I->dontSee('Store', 'h1');
+$I->makeScreenshot('module-access-denied');
 
 $I->wantTo('ensure that module works');
 $I->amOnPage('/sakila');

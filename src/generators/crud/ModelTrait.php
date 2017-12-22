@@ -16,7 +16,7 @@ use yii\helpers\Inflector;
 
 trait ModelTrait
 {
-    public function getModelNameAttribute($modelClass)
+    public static function getModelNameAttribute($modelClass)
     {
         $model = new $modelClass();
         // TODO: cleanup, get-label-methods, move to config
@@ -26,20 +26,22 @@ trait ModelTrait
         if ($model->hasMethod('getLabel')) {
             return 'label';
         }
-        foreach ($modelClass::getTableSchema()->getColumnNames() as $name) {
-            switch (strtolower($name)) {
-                case 'name':
-                case 'title':
-                case 'name_id':
-                case 'default_title':
-                case 'default_name':
-                case 'ns'://name short
-                case 'nl'://name long
-                    return $name;
-                    break;
-                default:
-                    continue;
-                    break;
+        if (method_exists($modelClass,'getTableSchema')) {
+            foreach ($model->getTableSchema()->getColumnNames() as $name) {
+                switch (strtolower($name)) {
+                    case 'name':
+                    case 'title':
+                    case 'name_id':
+                    case 'default_title':
+                    case 'default_name':
+                    case 'ns'://name short
+                    case 'nl'://name long
+                        return $name;
+                        break;
+                    default:
+                        continue;
+                        break;
+                }
             }
         }
 
@@ -67,7 +69,7 @@ trait ModelTrait
      *
      * @return array
      */
-    public function getModelRelations($modelClass, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
+    public function getModelRelations($modelClass, $types = [])
     {
         $reflector = new \ReflectionClass($modelClass);
         $model = new $modelClass();
@@ -102,16 +104,20 @@ trait ModelTrait
             try {
                 $relation = @call_user_func(array($model, $method->name));
                 if ($relation instanceof \yii\db\ActiveQuery) {
-                    //var_dump($relation->primaryModel->primaryKey);
+                    // detect relation
                     if ($relation->multiple === false) {
-                        $relationType = 'belongs_to';
+                        if (current($relation->link) == (new $relation->modelClass)->primaryKey()[0]) {
+                            $relationType = 'has_one';
+                        } else {
+                            $relationType = 'belongs_to';
+                        }
                     } elseif ($this->isPivotRelation($relation)) { // TODO: detecttion
                         $relationType = 'pivot';
                     } else {
                         $relationType = 'has_many';
                     }
-
-                    if (in_array($relationType, $types)) {
+                    // if types is empty, return all types -> no filter
+                    if ((count($types) == 0) || in_array($relationType, $types)) {
                         $name = $modelGenerator->generateRelationName(
                             [$relation],
                             $model->getTableSchema(),
@@ -128,7 +134,6 @@ trait ModelTrait
                 \Yii::error('Error: ' . $e->getMessage(), __METHOD__);
             }
         }
-
         return $stack;
     }
 
@@ -141,7 +146,12 @@ trait ModelTrait
             $model = $this;
         }
 
-        return $model->getTableSchema()->getColumn($attribute);
+        // omit schema for NOSQL models
+        if (method_exists($model,'getTableSchema') && $model->getTableSchema()) {
+            return $model->getTableSchema()->getColumn($attribute);
+        } else {
+            return $attribute;
+        }
     }
 
     /**
@@ -149,9 +159,9 @@ trait ModelTrait
      *
      * @return null|\yii\db\ActiveQuery
      */
-    public function getRelationByColumn($model, $column)
+    public function getRelationByColumn($model, $column, $types = ['belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'])
     {
-        $relations = $this->getModelRelations($model);
+        $relations = $this->getModelRelations($model, $types);
         foreach ($relations as $relation) {
             // TODO: check multiple link(s)
             if ($relation->link && reset($relation->link) == $column->name) {

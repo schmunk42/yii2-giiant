@@ -2,58 +2,54 @@ version: '2'
 services:
   phpfpm:
     build: .
-    working_dir: /app/vendor/schmunk42/yii2-giiant
+    working_dir: /repo/schmunk42/yii2-giiant/tests
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
-      - DB_ENV_MYSQL_ROOT_USER=admin
-      - DB_ENV_MYSQL_ROOT_PASSWORD=secretadmin
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secretadmin
       - DATABASE_DSN_DB=${GIIANT_TEST_DB}
       - GIIANT_TEST_DB=${GIIANT_TEST_DB}
-      - APP_CONFIG_FILE=/app/vendor/schmunk42/yii2-giiant/tests/_config/local.php
+      - APP_CONFIG_FILE=/app/src/config/local.php
       - APP_NAME=giiant-test
       - APP_TITLE=Giiant [TEST]
-      - APP_MIGRATION_LOOKUP=@vendor/schmunk42/yii2-giiant/tests/_migrations
-      - YII_ENV=dev
+      - APP_MIGRATION_LOOKUP=@app/migrations
+      - YII_ENV=test
       - YII_DEBUG=1
+      - FXP_ASSET__GIT_SKIP_UPDATE=2 days
+      - 'FXP_ASSET__VCS_DRIVER_OPTIONS={"github-no-api":true}'
+
+    ports:
+      - '80'
     depends_on:
       - mariadb
       - seleniumfirefox
     volumes:
       - /app
       # host volume for local development
-      - ../:/app/vendor/schmunk42/yii2-giiant
-      - ../tests/_config/local.php:/app/src/config/local.php
+      - ../:/repo/schmunk42/yii2-giiant
+      - ./_app/src/config/local.php:/app/src/config/local.php
+      - ./_app/src/components:/app/src/components
+      - ./_app/src/rbac:/app/src/rbac
       # host volumes for local debugging of generated files
-      - ./__tmp/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
-      - ./__tmp/common:/app/test-defaults/common
-      - ./__tmp/backend:/app/test-defaults/modules/backend
-      - ./__tmp/onlyCrud/controllers:/app/src/controllers/onlyCrud
-      - ./__tmp/onlyCrud/models:/app/src/models/onlyCrud
-      - ./__tmp/onlyCrud/views:/app/src/views/onlyCrud
-      # update development image
-      - ~/.composer/cache:/root/.composer/cache
-      - ./_build/composer.json:/app/composer.json
-      - ./_build/composer.lock:/app/composer.lock
-
-  nginx:
-    image: schmunk42/nginx:1.9
-    depends_on:
-      - phpfpm
-    volumes_from:
-      - phpfpm
-    ports:
-      - '80'
+      - ./_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+      - ./_app/_generated/common:/app/src/common
+      - ./_app/_generated/backend:/app/src/modules/backend
+      - ./_app/_generated/onlyCrud/controllers:/app/src/controllers/onlyCrud
+      - ./_app/_generated/onlyCrud/models:/app/src/models/onlyCrud
+      - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
 
   mariadb:
-    image: 'schmunk42/mariadb-example-databases:2.0.0'
+    image: 'schmunk42/mariadb-example-databases:3.0.0-beta1'
     ports:
       - '3306'
     environment:
-      - MARIADB_PASS=secretadmin
+      - MYSQL_ROOT_PASSWORD=secretadmin
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secretadmin
       - INSTALL_SAKILA=1
-    volumes:
-      - ./_build/test.cnf:/etc/mysql/conf.d/test.cnf
+    #volumes:
+    #  - ./_mysql/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
     image: 'selenium/standalone-firefox-debug:2.53.0'

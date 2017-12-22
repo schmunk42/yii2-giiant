@@ -139,7 +139,7 @@ class BatchController extends Controller
     /**
      * @var string route prefix for crud controller actions
      */
-    public $crudPathPrefix = 'crud/';
+    public $crudPathPrefix = '/crud/';
 
     /**
      * @var array list of code provider classes (fully namespaced path required)

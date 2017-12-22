@@ -147,7 +147,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 EOS;
 
-    foreach ($generator->getModelRelations($generator->modelClass, ['has_many']) as $name => $relation) {
+    foreach ($generator->getModelRelations($generator->modelClass, ['has_many', 'has_one']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;

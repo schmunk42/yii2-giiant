@@ -15,7 +15,7 @@ modules:
     config:
         WebDriver:
             host: seleniumfirefox
-            url: http://nginx:80/
+            url: http://phpfpm:80/
             browser: firefox
             port: 4444
             window_size: 1024x768

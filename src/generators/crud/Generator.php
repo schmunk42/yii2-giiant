@@ -34,7 +34,7 @@ class Generator extends \yii\gii\generators\crud\Generator
      *
      * @var string
      */
-    public $actionButtonClass = 'yii\web\grid\ActionColumn';
+    public $actionButtonClass = 'yii\grid\ActionColumn';
     /**
      * @var array relations to be excluded in UI rendering
      */
@@ -121,7 +121,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     /**
      * @var bool whether to use phptidy on renderer files before saving
      */
-    public $tidyOutput = true;
+    public $tidyOutput = false;
 
     /**
      * @var string command-line options for phptidy command

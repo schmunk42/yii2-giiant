@@ -26,8 +26,7 @@ class SakilaActiveRecord extends ActiveRecord
 }
 ```
 
-Use custom generators, model and crud templates
------------------------------------------------
+### Use custom generators, model and crud templates
 
 ```
 $config['modules']['gii'] = [
@@ -47,4 +46,18 @@ $config['modules']['gii'] = [
         ]
     ],
 ];
+```
+
+### Customize the order of attributes in Gridview, DetailView and form
+
+You can define the order of attributes that is used when generating Gridview, DetailView and form by definining a `crud` scenario in the model:
+
+```php
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        // define order of columns for Giiant generator
+        $scenarios['crud'] = ['id', 'name', 'user_id', 'status', 'reference', 'created_at', 'updated_at'];
+        return $scenarios;
+    }
 ```

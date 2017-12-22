@@ -9,7 +9,7 @@ $attributeJobStatus = function ($attribute, $generator) {
 return <<<INPUT
     [
         'format' => 'html',
-        'attribute' => '{$attribute->name}',
+        'attribute' => '{$attribute}',
         'value' => \$model->getStatusLabel(),
     ]
 INPUT;
@@ -23,7 +23,7 @@ $attributeMultiLine = function ($attribute, $generator) {
 return <<<INPUT
     [
         'format' => 'ntext',
-        'attribute' => '{$attribute->name}',
+        'attribute' => '{$attribute}',
     ]
 INPUT;
 };
@@ -52,8 +52,8 @@ $attributeFormats = [
 [
     'format' => 'html',
     #'label'=>'FOOFOO',
-    'attribute' => '{$attribute->name}',
-    'value'=> {$formattter}::contentJsonToHtml(\$model->{$attribute->name})
+    'attribute' => '{$attribute}',
+    'value'=> {$formattter}::contentJsonToHtml(\$model->{$attribute})
 
 ]
 FORMAT;
@@ -73,7 +73,7 @@ Display a column using a callback to `Job::getStatusLabel()`:
 $columnJobStatus = function ($attribute, $generator) {
 return <<<INPUT
 [
-    'attribute' => '{$attribute->name}',
+    'attribute' => '{$attribute}',
     'format' => 'raw',
     'value' => function (\$model) {
         return \$model->getStatusLabel();
@@ -87,7 +87,7 @@ INPUT;
 $columnMultiLine = function ($attribute, $generator) {
 return <<<INPUT
 [
-    'attribute' => '{$attribute->name}',
+    'attribute' => '{$attribute}',
     'format' => 'ntext',
 ]
 INPUT;
@@ -165,7 +165,7 @@ Use a radio list field:
 $fieldJobType = function ($attribute, $generator) {
     $data = \yii\helpers\VarDumper::export(['pickup' => Yii::t('app', 'Pickup'), 'delivery' => Yii::t('app', 'Delivery')]);
     return <<<INPUT
-\$form->field(\$model, '{$attribute->name}')->radioList({$data});
+\$form->field(\$model, '{$attribute}')->radioList({$data});
 INPUT;
 },
 ```
@@ -175,7 +175,7 @@ Customise the select field (the generator will already create this, only needed 
 ```php
 $fieldJobStatus = function ($attribute, $generator) {
     return <<<INPUT
-$form->field($model, '{$attribute->name}')->dropDownList(Job::optsStatus());
+$form->field($model, '{$attribute}')->dropDownList(Job::optsStatus());
 INPUT;
 },
 ```
@@ -185,7 +185,7 @@ Use a text area for multi-line attributes:
 ```php
 $fieldMultiLine = function ($attribute, $generator) {
 return <<<INPUT
-    \$form->field(\$model, '{$attribute->name}')->textarea();
+    \$form->field(\$model, '{$attribute}')->textarea();
 INPUT;
 },
 ```
@@ -209,7 +209,7 @@ For example we only want to show the fields that are safe:
 ```php
 $prependFieldSafe = function ($attribute, $generator) {
     return <<<INPUT
-if(\$model->isAttributeSafe('{$attribute->name}')) {
+if(\$model->isAttributeSafe('{$attribute}')) {
 INPUT;
 };
 $appendFieldSafe = function ($attribute, $generator) {
@@ -264,7 +264,7 @@ use schmunk42\giiant\generators\crud\callbacks\yii\Db;
 use schmunk42\giiant\generators\crud\callbacks\yii\Html;
 
 \Yii::$container->set(
-    'schmunk42\giiant\generators\crud\providers\CallbackProvider',
+    'schmunk42\giiant\generators\crud\providers\core\CallbackProvider',
     [
         'columnFormats'    => [
             // hide system fields, but not ID in table

@@ -1,31 +1,30 @@
 .PHONY: open bash test
 
-PHP				?= phpfpm
-WEB				?= nginx
-
-DOCKER_HOST_IP  ?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
 DOCKER_COMPOSE  ?= docker-compose
 
-export CI_APP_VOLUME   ?= ..
-
-export DOCKER_HOST_IP  = 127.0.0.1
+PHP				?= phpfpm
+WEB				?= phpfpm
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
 	OPEN_CMD        ?= open
-	DOCKER_HOST_IP  ?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
 else
 	OPEN_CMD        ?= xdg-open
+endif
+
+ifdef ($(DOCKER_HOST))
+	DOCKER_HOST_IP  ?= $(shell echo $(DOCKER_HOST) | sed 's/tcp:\/\///' | sed 's/:[0-9.]*//')
+else
 	DOCKER_HOST_IP  ?= 127.0.0.1
 endif
 
 default: help
 
 
-all: up setup
+all: build up setup
 
 open:	 ##@docker open application web service in browser
-	open http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
+	$(OPEN_CMD) http://$(DOCKER_HOST_IP):`$(DOCKER_COMPOSE) port $(WEB) 80 | sed 's/[0-9.]*://'`
 
 open-db:	 ##@docker open application web service in browser
 	$(OPEN_CMD) mysql://admin:secretadmin@$(DOCKER_HOST_IP):$(shell $(DOCKER_COMPOSE) port mariadb 3306 | sed 's/[0-9.]*://')
@@ -33,16 +32,18 @@ open-db:	 ##@docker open application web service in browser
 open-vnc:	 ##@test open application database service in browser
 	$(OPEN_CMD) vnc://x:secret@$(DOCKER_HOST_IP):$(shell $(DOCKER_COMPOSE) port seleniumfirefox 5900 | sed 's/[0-9.]*://')
 
-bash:	##@docker open application shell in container
-	$(DOCKER_COMPOSE) run --rm $(PHP) bash
+build:	##@docker build images
+	$(DOCKER_COMPOSE) build
 
-up:	##@docker start application stack
+setup:	##@docker prepare test-application stack
+	$(DOCKER_COMPOSE) run $(PHP) bash -c "cd _app && composer install"
+
+up:	##@docker start test-application stack
 	$(DOCKER_COMPOSE) up -d
-
-setup:	##@docker setup application
-	$(DOCKER_COMPOSE) run --rm $(PHP) setup.sh
+	$(DOCKER_COMPOSE) exec mariadb /init-example-databases.sh
 
 test:    ##@docker run tests
+	$(DOCKER_COMPOSE) run $(PHP) bash -c "while ! curl mariadb:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"
 	$(DOCKER_COMPOSE) run --rm -e YII_ENV=dev -e GIIANT_TEST_DB=sakila $(PHP) bash -c "codecept run --steps --html=_report.html -g mandatory -g sakila -g onlyCrud cli,unit,acceptance"
 
 bash:	##@docker open application shell in container

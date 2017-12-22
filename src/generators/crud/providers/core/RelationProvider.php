@@ -43,7 +43,11 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
             return;
         }
 
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return null;
+        }
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to']);
         if ($relation) {
             switch (true) {
                 case !$relation->multiple:
@@ -105,6 +109,11 @@ EOS;
             return;
         }
 
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return "'$column'";
+        }
+
         // handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
         // TODO double check with primary keys not named `id` of non-pivot tables
         // TODO Note: condition does not apply in every case
@@ -112,7 +121,7 @@ EOS;
             //return null; #TODO: double check with primary keys not named `id` of non-pivot tables
         }
 
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to']);
         if ($relation) {
             if ($relation->multiple) {
                 return;
@@ -176,6 +185,11 @@ EOS;
             return;
         }
 
+        // TODO: NoSQL hotfix
+        if (is_string($column)) {
+            return $column;
+        }
+
         // handle columns with a primary key, to create links in pivot tables (changed at 0.3-dev; 03.02.2015)
         // TODO double check with primary keys not named `id` of non-pivot tables
         // TODO Note: condition does not apply in every case
@@ -183,7 +197,7 @@ EOS;
             //return null;
         }
 
-        $relation = $this->generator->getRelationByColumn($model, $column);
+        $relation = $this->generator->getRelationByColumn($model, $column, ['belongs_to']);
         if ($relation) {
             if ($relation->multiple) {
                 return;
