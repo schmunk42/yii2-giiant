@@ -302,16 +302,16 @@
         },
         {
             "name": "cmrcx/phptidy",
-            "version": "v3.0",
+            "version": "v3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cmrcx/phptidy.git",
-                "reference": "e36e3d0941841806c5cb479c3ad169eefc3c4e85"
+                "reference": "ca690d8692d03242f4ffd66cc8e4460ad0198f0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cmrcx/phptidy/zipball/e36e3d0941841806c5cb479c3ad169eefc3c4e85",
-                "reference": "e36e3d0941841806c5cb479c3ad169eefc3c4e85",
+                "url": "https://api.github.com/repos/cmrcx/phptidy/zipball/ca690d8692d03242f4ffd66cc8e4460ad0198f0f",
+                "reference": "ca690d8692d03242f4ffd66cc8e4460ad0198f0f",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "ext-mbstring": "*"
             },
             "bin": [
-                "phptidy"
+                "phptidy.php"
             ],
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -339,7 +339,7 @@
             ],
             "description": "PHP code formatter",
             "homepage": "https://github.com/cmrcx/phptidy",
-            "time": "2017-03-09T21:38:08+00:00"
+            "time": "2018-01-02T21:17:57+00:00"
         },
         {
             "name": "codemix/yii2-streamlog",
@@ -1095,7 +1095,7 @@
             "source": {
                 "type": "git",
                 "url": "/repo/schmunk42/yii2-giiant",
-                "reference": "c089713766b66e06797a59ed87d32d4b16c48e0f"
+                "reference": "16850363b675aa603f915349c8a268a687a62c45"
             },
             "require": {
                 "cmrcx/phptidy": "^3.0",
@@ -1105,7 +1105,7 @@
                 "friendsofphp/php-cs-fixer": "1.* || 2.*",
                 "yiisoft/yii2": "~2.0.4",
                 "yiisoft/yii2-codeception": "~2.0.0",
-                "yiisoft/yii2-gii": "~2.0.4"
+                "yiisoft/yii2-gii": "~2.0.6"
             },
             "require-dev": {
                 "codeception/codeception": "^2.2",
@@ -1144,7 +1144,7 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2017-12-22T15:11:33+00:00"
+            "time": "2017-12-26T22:23:37+00:00"
         },
         {
             "name": "symfony/console",

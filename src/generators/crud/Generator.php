@@ -410,7 +410,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         file_put_contents($tmpFile, $code);
 
         if ($this->tidyOutput) {
-            $command = Yii::getAlias('@vendor/bin/phptidy').' replace '.$this->tidyOptions.' '.$tmpFile;
+            $command = Yii::getAlias('@vendor/bin/phptidy.php').' replace '.$this->tidyOptions.' '.$tmpFile;
             shell_exec($command);
             $code = file_get_contents($tmpFile);
         }
