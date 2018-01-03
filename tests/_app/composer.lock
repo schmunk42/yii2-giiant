@@ -444,16 +444,16 @@
         },
         {
             "name": "dmstr/yii2-bootstrap",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dmstr/yii2-bootstrap.git",
-                "reference": "df2afef6509390e6d754c16b72f3c5a980169e19"
+                "reference": "07b42ef940ff50e011e5b250ac6cabbdae7dd431"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dmstr/yii2-bootstrap/zipball/df2afef6509390e6d754c16b72f3c5a980169e19",
-                "reference": "df2afef6509390e6d754c16b72f3c5a980169e19",
+                "url": "https://api.github.com/repos/dmstr/yii2-bootstrap/zipball/07b42ef940ff50e011e5b250ac6cabbdae7dd431",
+                "reference": "07b42ef940ff50e011e5b250ac6cabbdae7dd431",
                 "shasum": ""
             },
             "require": {
@@ -481,7 +481,7 @@
                 "extension",
                 "yii2"
             ],
-            "time": "2016-04-22T18:33:17+00:00"
+            "time": "2018-01-03T11:05:52+00:00"
         },
         {
             "name": "dmstr/yii2-db",
@@ -1095,10 +1095,10 @@
             "source": {
                 "type": "git",
                 "url": "/repo/schmunk42/yii2-giiant",
-                "reference": "16850363b675aa603f915349c8a268a687a62c45"
+                "reference": "0aa9c4cb7e78dd996d1827bb33e4359ab62cb47a"
             },
             "require": {
-                "cmrcx/phptidy": "^3.0",
+                "cmrcx/phptidy": "^3.1",
                 "dmstr/yii2-bootstrap": "^0.1.2 || ~0.2",
                 "dmstr/yii2-db": "*",
                 "dmstr/yii2-helpers": "*",
@@ -1144,7 +1144,7 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2017-12-26T22:23:37+00:00"
+            "time": "2018-01-03T09:52:49+00:00"
         },
         {
             "name": "symfony/console",
