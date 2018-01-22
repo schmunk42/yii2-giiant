@@ -5,7 +5,7 @@ use yii\gii\Module;
 use yii\rbac\PhpManager;
 use yii\web\Application;
 
-$testVendorPath = '/repo/schmunk42/yii2-giiant/tests/_app/vendor';
+$testVendorPath = '/repo/tests/_app/vendor';
 
 require($testVendorPath.'/autoload.php');
 

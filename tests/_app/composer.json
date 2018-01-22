@@ -2,7 +2,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "file:///repo/schmunk42/yii2-giiant"
+            "url": "file:///repo"
         }
     ],
     "require": {
@@ -13,7 +13,7 @@
         "merge-plugin": {
             "require": [
                 "/app/composer.json",
-                "/repo/schmunk42/yii2-giiant/composer.json"
+                "/repo/composer.json"
             ]
         }
     },

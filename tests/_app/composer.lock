@@ -1094,7 +1094,7 @@
             "version": "dev-develop",
             "source": {
                 "type": "git",
-                "url": "/repo/schmunk42/yii2-giiant",
+                "url": "/repo",
                 "reference": "0aa9c4cb7e78dd996d1827bb33e4359ab62cb47a"
             },
             "require": {

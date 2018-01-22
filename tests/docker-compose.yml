@@ -2,7 +2,7 @@ version: '2'
 services:
   phpfpm:
     build: .
-    working_dir: /repo/schmunk42/yii2-giiant/tests
+    working_dir: /repo/tests
     environment:
       - DB_PORT_3306_TCP_ADDR=mariadb
       - DB_PORT_3306_TCP_PORT=3306
@@ -27,7 +27,7 @@ services:
     volumes:
       - /app
       # host volume for local development
-      - ../:/repo/schmunk42/yii2-giiant
+      - ../:/repo
       - ./_app/src/config/local.php:/app/src/config/local.php
       - ./_app/src/components:/app/src/components
       - ./_app/src/rbac:/app/src/rbac
