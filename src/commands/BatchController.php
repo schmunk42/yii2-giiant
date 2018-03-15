@@ -199,6 +199,8 @@ class BatchController extends Controller
 
     public $crudIndexGridClass = 'yii\\grid\\GridView';
 
+    public $crudFormLayout = 'horizontal';
+
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
@@ -292,6 +294,7 @@ class BatchController extends Controller
                 'crudBaseControllerClass',
                 'crudAccessFilter',
                 'crudTemplate',
+                'crudFormLayout'
             ]
         );
     }
@@ -435,6 +438,7 @@ class BatchController extends Controller
                 'template' => $this->crudTemplate,
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,
+                'formLayout' => $this->crudFormLayout,
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
