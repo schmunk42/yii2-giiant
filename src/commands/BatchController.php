@@ -80,6 +80,11 @@ class BatchController extends Controller
     public $tables = [];
 
     /**
+     * @var array skip db tables for generating models
+     */
+    public $skipTables = [];
+
+    /**
      * @var string eg. `app_`
      */
     public $tablePrefix = '';
@@ -269,6 +274,7 @@ class BatchController extends Controller
                 'messageCategory',
                 'singularEntities',
                 'tables',
+                'skipTables',
                 'tablePrefix',
                 'modelDb',
                 'modelNamespace',
@@ -346,51 +352,53 @@ class BatchController extends Controller
     {
         // create models
         foreach ($this->tables as $table) {
-            //var_dump($this->tableNameMap, $table);exit;
-            $params = [
-                'interactive' => $this->interactive,
-                'overwrite' => $this->overwrite,
-                'useTimestampBehavior' => $this->useTimestampBehavior,
-                'createdAtColumn' => $this->createdAtColumn,
-                'updatedAtColumn' => $this->updatedAtColumn,
-                'useTranslatableBehavior' => $this->useTranslatableBehavior,
-                'languageTableName' => $this->languageTableName,
-                'languageCodeColumn' => $this->languageCodeColumn,
-                'useBlameableBehavior' => $this->useBlameableBehavior,
-                'createdByColumn' => $this->createdByColumn,
-                'updatedByColumn' => $this->updatedByColumn,
-                'template' => $this->template,
-                'ns' => $this->modelNamespace,
-                'db' => $this->modelDb,
-                'tableName' => $table,
-                'tablePrefix' => $this->tablePrefix,
-                'enableI18N' => $this->enableI18N,
-                'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->modelMessageCategory,
-                'generateModelClass' => $this->extendedModels,
-                'baseClassSuffix' => $this->modelBaseClassSuffix,
-                'modelClass' => isset($this->tableNameMap[$table]) ?
-                    $this->tableNameMap[$table] :
-                    Inflector::camelize($table),
-                'baseClass' => $this->modelBaseClass,
-                'baseTraits' => $this->modelBaseTraits,
-                'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
-                'generateRelations' => $this->modelGenerateRelations,
-                'tableNameMap' => $this->tableNameMap,
-                'generateQuery' => $this->modelGenerateQuery,
-                'queryNs' => $this->modelQueryNamespace,
-                'queryBaseClass' => $this->modelQueryBaseClass,
-                'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
-                'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
-            ];
-            $route = 'gii/giiant-model';
+            // var_dump($this->tableNameMap, $table, !in_array($table, $this->skipTables));exit;
+            if (!in_array($table, $this->skipTables)) {
+                $params = [
+                    'interactive' => $this->interactive,
+                    'overwrite' => $this->overwrite,
+                    'useTimestampBehavior' => $this->useTimestampBehavior,
+                    'createdAtColumn' => $this->createdAtColumn,
+                    'updatedAtColumn' => $this->updatedAtColumn,
+                    'useTranslatableBehavior' => $this->useTranslatableBehavior,
+                    'languageTableName' => $this->languageTableName,
+                    'languageCodeColumn' => $this->languageCodeColumn,
+                    'useBlameableBehavior' => $this->useBlameableBehavior,
+                    'createdByColumn' => $this->createdByColumn,
+                    'updatedByColumn' => $this->updatedByColumn,
+                    'template' => $this->template,
+                    'ns' => $this->modelNamespace,
+                    'db' => $this->modelDb,
+                    'tableName' => $table,
+                    'tablePrefix' => $this->tablePrefix,
+                    'enableI18N' => $this->enableI18N,
+                    'singularEntities' => $this->singularEntities,
+                    'messageCategory' => $this->modelMessageCategory,
+                    'generateModelClass' => $this->extendedModels,
+                    'baseClassSuffix' => $this->modelBaseClassSuffix,
+                    'modelClass' => isset($this->tableNameMap[$table]) ?
+                        $this->tableNameMap[$table] :
+                        Inflector::camelize($table),
+                    'baseClass' => $this->modelBaseClass,
+                    'baseTraits' => $this->modelBaseTraits,
+                    'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
+                    'generateRelations' => $this->modelGenerateRelations,
+                    'tableNameMap' => $this->tableNameMap,
+                    'generateQuery' => $this->modelGenerateQuery,
+                    'queryNs' => $this->modelQueryNamespace,
+                    'queryBaseClass' => $this->modelQueryBaseClass,
+                    'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
+                    'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
+                ];
+                $route = 'gii/giiant-model';
 
-            $app = \Yii::$app;
-            $temp = new \yii\console\Application($this->appConfig);
-            $temp->runAction(ltrim($route, '/'), $params);
-            unset($temp);
-            \Yii::$app = $app;
-            \Yii::$app->log->logger->flush(true);
+                $app = \Yii::$app;
+                $temp = new \yii\console\Application($this->appConfig);
+                $temp->runAction(ltrim($route, '/'), $params);
+                unset($temp);
+                \Yii::$app = $app;
+                \Yii::$app->log->logger->flush(true);
+            }
         }
     }
 
@@ -409,44 +417,46 @@ class BatchController extends Controller
         $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
 
         foreach ($this->tables as $table) {
-            $table = str_replace($this->tablePrefix, '', $table);
-            $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
-                $this->modelGenerator->generateClassName($table);
-            $params = [
-                'interactive' => $this->interactive,
-                'overwrite' => $this->overwrite,
-                'template' => $this->template,
-                'modelClass' => $this->modelNamespace.'\\'.$name,
-                'searchModelClass' => $this->crudSearchModelNamespace.'\\'.$name.$this->crudSearchModelSuffix,
-                'controllerNs' => $this->crudControllerNamespace,
-                'controllerClass' => $this->crudControllerNamespace.'\\'.$name.'Controller',
-                'viewPath' => $this->crudViewPath,
-                'pathPrefix' => $this->crudPathPrefix,
-                'tablePrefix' => $this->tablePrefix,
-                'enableI18N' => $this->enableI18N,
-                'singularEntities' => $this->singularEntities,
-                'messageCategory' => $this->crudMessageCategory,
-                'modelMessageCategory' => $this->modelMessageCategory,
-                'actionButtonClass' => 'yii\\grid\\ActionColumn',
-                'baseControllerClass' => $this->crudBaseControllerClass,
-                'providerList' => $providers,
-                'skipRelations' => $this->crudSkipRelations,
-                'accessFilter' => $this->crudAccessFilter,
-                'baseTraits' => $this->crudBaseTraits,
-                'tidyOutput' => $this->crudTidyOutput,
-                'fixOutput' => $this->crudFixOutput,
-                'template' => $this->crudTemplate,
-                'indexWidgetType' => $this->crudIndexWidgetType,
-                'indexGridClass' => $this->crudIndexGridClass,
-                'formLayout' => $this->crudFormLayout,
-            ];
-            $route = 'gii/giiant-crud';
-            $app = \Yii::$app;
-            $temp = new \yii\console\Application($this->appConfig);
-            $temp->runAction(ltrim($route, '/'), $params);
-            unset($temp);
-            \Yii::$app = $app;
-            \Yii::$app->log->logger->flush(true);
+            if (!in_array($table, $this->skipTables)) {
+                $table = str_replace($this->tablePrefix, '', $table);
+                $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
+                    $this->modelGenerator->generateClassName($table);
+                $params = [
+                    'interactive' => $this->interactive,
+                    'overwrite' => $this->overwrite,
+                    'template' => $this->template,
+                    'modelClass' => $this->modelNamespace.'\\'.$name,
+                    'searchModelClass' => $this->crudSearchModelNamespace.'\\'.$name.$this->crudSearchModelSuffix,
+                    'controllerNs' => $this->crudControllerNamespace,
+                    'controllerClass' => $this->crudControllerNamespace.'\\'.$name.'Controller',
+                    'viewPath' => $this->crudViewPath,
+                    'pathPrefix' => $this->crudPathPrefix,
+                    'tablePrefix' => $this->tablePrefix,
+                    'enableI18N' => $this->enableI18N,
+                    'singularEntities' => $this->singularEntities,
+                    'messageCategory' => $this->crudMessageCategory,
+                    'modelMessageCategory' => $this->modelMessageCategory,
+                    'actionButtonClass' => 'yii\\grid\\ActionColumn',
+                    'baseControllerClass' => $this->crudBaseControllerClass,
+                    'providerList' => $providers,
+                    'skipRelations' => $this->crudSkipRelations,
+                    'accessFilter' => $this->crudAccessFilter,
+                    'baseTraits' => $this->crudBaseTraits,
+                    'tidyOutput' => $this->crudTidyOutput,
+                    'fixOutput' => $this->crudFixOutput,
+                    'template' => $this->crudTemplate,
+                    'indexWidgetType' => $this->crudIndexWidgetType,
+                    'indexGridClass' => $this->crudIndexGridClass,
+                    'formLayout' => $this->crudFormLayout,
+                ];
+                $route = 'gii/giiant-crud';
+                $app = \Yii::$app;
+                $temp = new \yii\console\Application($this->appConfig);
+                $temp->runAction(ltrim($route, '/'), $params);
+                unset($temp);
+                \Yii::$app = $app;
+                \Yii::$app->log->logger->flush(true);
+            }
         }
     }
 
