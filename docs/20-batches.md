@@ -10,25 +10,28 @@ Configuration
 
 It's recommended to configure a customized `batch` command in your application CLI configuration, add the following code to your console application configuration.
 
+    $crudNs = '\project\modules\crud';
+
+With the config array...
+
     'controllerMap' => [
         'batch' => [
             'class' => 'schmunk42\giiant\commands\BatchController',
             'overwrite' => true,
-            'modelNamespace' => 'app\\modules\\crud\\models',
-            'modelQueryNamespace' => 'app\\modules\\crud\\models\\query',
-            'crudControllerNamespace' => 'app\\modules\\crud\\controllers',
-            'crudSearchModelNamespace' => 'app\\modules\\crud\\models\\search',
-            'crudViewPath' => '@app/modules/crud/views',
+            'modelNamespace' => $crudNs . '\models',
+            'modelQueryNamespace' => $crudNs . '\models\query',
+            'crudControllerNamespace' => $crudNs . '\controllers',
+            'crudSearchModelNamespace' => $crudNs . '\models\search',
+            'crudViewPath' => '@project/modules/crud/views',
             'crudPathPrefix' => '/crud/',
             'crudTidyOutput' => true,
-            'crudAccessFilter' => true,
             'crudProviders' => [
-                'schmunk42\\giiant\\generators\\crud\\providers\\optsProvider',
+                \schmunk42\giiant\generators\crud\providers\core\OptsProvider::class
             ],
             'tablePrefix' => 'app_',
-            /*'tables' => [
+            'tables' => [
                 'app_profile',
-            ]*/
+            ]
         ]
     ],
 
@@ -59,6 +62,6 @@ You can also override the batch defaults via command line options, this example 
     --overwrite=1 \
     --modelDb=db \
     --modelBaseClass=yii\\db\\ActiveRecord \
-    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\optsProvider \
+    --crudProviders=schmunk42\\giiant\\generators\\crud\\providers\\core\\optsProvider \
     --tables=account,article,variation_status
 ```
