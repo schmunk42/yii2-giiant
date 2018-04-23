@@ -59,7 +59,7 @@ class SaveForm
                 $basePath = $module->getBasePath();
             } else {
                 if (is_array($module)) {
-                    $reflector = new \ReflectionClass($module['class'];
+                    $reflector = new \ReflectionClass($module['class']);
                 } else {
                     $reflector = new \ReflectionClass($module);
                 }
