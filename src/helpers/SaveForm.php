@@ -58,7 +58,11 @@ class SaveForm
             if (method_exists($module, 'getBasePath')) {
                 $basePath = $module->getBasePath();
             } else {
-                $reflector = new \ReflectionClass($module['class']);
+                if (is_array($module)) {
+                    $reflector = new \ReflectionClass($module['class'];
+                } else {
+                    $reflector = new \ReflectionClass($module);
+                }
                 $basePath = StringHelper::dirname($reflector->getFileName());
             }
             $basePath .= '/gii';
