@@ -127,8 +127,8 @@ trait ModelTrait
                         $stack[$name] = $relation;
                     }
                 }
-            } catch (Exception $e) {
-                Yii::error('Error: '.$e->getMessage(), __METHOD__);
+            } catch (\Exception $e) {
+                \Yii::error('Error: '.$e->getMessage(), __METHOD__);
             } catch (\Error $e) {
                 //bypass get functions if calling to them results in errors (only for PHP7)
                 \Yii::error('Error: ' . $e->getMessage(), __METHOD__);
