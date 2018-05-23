@@ -403,6 +403,7 @@ class BatchController extends Controller
             $app = \Yii::$app;
             $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
+            $temp->get($this->modelDb)->close();
             unset($temp);
             \Yii::$app = $app;
             \Yii::$app->log->logger->flush(true);
