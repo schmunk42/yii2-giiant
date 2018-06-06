@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 
         <small>
             <?php $label = StringHelper::basename($generator->modelClass); ?>
-            <?= '<?= $model->'.$generator->getModelNameAttribute($generator->modelClass)." ?>\n" ?>
+            <?= '<?= Html::encode($model->'.$generator->getModelNameAttribute($generator->modelClass).") ?>\n" ?>
         </small>
     </h1>
 
