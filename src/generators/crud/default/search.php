@@ -38,9 +38,9 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
 */
 public function rules()
 {
-return [
-<?= implode(",\n            ", $rules) ?>,
-];
+    return [
+    <?= implode(",\n            ", $rules) ?>,
+    ];
 }
 
 /**
@@ -48,8 +48,8 @@ return [
 */
 public function scenarios()
 {
-// bypass scenarios() implementation in the parent class
-return Model::scenarios();
+    // bypass scenarios() implementation in the parent class
+    return Model::scenarios();
 }
 
 /**
@@ -61,22 +61,22 @@ return Model::scenarios();
 */
 public function search($params)
 {
-$query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
+    $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
 
-$dataProvider = new ActiveDataProvider([
-'query' => $query,
-]);
+    $dataProvider = new ActiveDataProvider([
+    'query' => $query,
+    ]);
 
-$this->load($params);
+    $this->load($params);
 
-if (!$this->validate()) {
-// uncomment the following line if you do not want to any records when validation fails
-// $query->where('0=1');
-return $dataProvider;
-}
+    if (!$this->validate()) {
+        // uncomment the following line if you do not want to any records when validation fails
+        // $query->where('0=1');
+        return $dataProvider;
+    }
 
-<?= implode("\n        ", $searchConditions) ?>
+    <?= implode("\n        ", $searchConditions) ?>
 
-return $dataProvider;
+    return $dataProvider;
 }
 }
