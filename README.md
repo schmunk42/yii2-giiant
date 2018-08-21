@@ -39,7 +39,7 @@ Features
 ### Model generator
 
 - generates separate model classes to customize and base models classes which can be regenerated on schema changes
-- table prefixes can be stipped off model class names (not bound to `db` connection settings from Yii 2.0)
+- table prefixes can be stripped off model class names (not bound to `db` connection settings from Yii 2.0)
 
 ### CRUD generator
 
