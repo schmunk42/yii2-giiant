@@ -58,6 +58,9 @@ class SaveForm
             if (method_exists($module, 'getBasePath')) {
                 $basePath = $module->getBasePath();
             } else {
+                if(!class_exit($module['class'])){
+                    continue;
+                }    
                 $reflector = new \ReflectionClass($module['class']);
                 $basePath = StringHelper::dirname($reflector->getFileName());
             }
@@ -67,7 +70,7 @@ class SaveForm
         }
 
         /*
-         * from all gii directories collec forms
+         * from all gii directories collect forms
          */
         $forms = [];
         foreach ($giiDirs as $basePath) {
