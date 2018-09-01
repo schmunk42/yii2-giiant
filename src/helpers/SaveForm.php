@@ -59,6 +59,7 @@ class SaveForm
                 $basePath = $module->getBasePath();
             } else {
                 if(!class_exit($module['class'])){
+                    \Yii::warning('Invalid class definition for module ' . $moduleId);
                     continue;
                 }    
                 $reflector = new \ReflectionClass($module['class']);
