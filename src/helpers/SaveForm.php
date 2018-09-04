@@ -58,7 +58,7 @@ class SaveForm
             if (method_exists($module, 'getBasePath')) {
                 $basePath = $module->getBasePath();
             } else {
-                if(!class_exit($module['class'])){
+                if(!class_exists($module['class'])){
                     \Yii::warning('Invalid class definition for module ' . $moduleId);
                     continue;
                 }    
