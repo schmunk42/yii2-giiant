@@ -158,7 +158,7 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
             ];
 
             $files[] = new CodeFile(
-                Yii::getAlias('@app/..'.$this->codeceptionPath.str_replace('\\', '/', $this->ns)).'/'.$className.$this->baseClassSuffix.'UnitTest.php',
+                Yii::getAlias('@app/..'.$this->codeceptionPath.str_replace('\\', '/', $this->ns)).'/'.$this->baseClassPrefix.$className.$this->baseClassSuffix.'UnitTest.php',
                 $this->render('unit.php', $params)
             );
         }
@@ -166,3 +166,4 @@ class Generator extends \schmunk42\giiant\generators\model\Generator
         return $files;
     }
 }
+

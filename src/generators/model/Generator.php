@@ -7,11 +7,11 @@
  */
 namespace schmunk42\giiant\generators\model;
 
+use schmunk42\giiant\helpers\SaveForm;
 use Yii;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-use schmunk42\giiant\helpers\SaveForm;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -82,6 +82,11 @@ class Generator extends \yii\gii\generators\model\Generator
      * @var string the column name where the language code is stored
      */
     public $languageCodeColumn = 'language';
+
+    /**
+     * @var string prefix to prepend to the base model, setting "Base" will result in a model named "BasePost"
+     */
+    public $baseClassPrefix = '';
 
     /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
@@ -275,8 +280,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
             $files[] = new CodeFile(
                 Yii::getAlias(
-                    '@'.str_replace('\\', '/', $this->ns)
-                ).'/base/'.$className.$this->baseClassSuffix.'.php',
+                    '@' . str_replace('\\', '/', $this->ns)
+                ) . '/base/' . $this->baseClassPrefix . $className . $this->baseClassSuffix . '.php',
                 $this->render('model.php', $params)
             );
 
@@ -682,3 +687,4 @@ class Generator extends \yii\gii\generators\model\Generator
         return [];
     }
 }
+

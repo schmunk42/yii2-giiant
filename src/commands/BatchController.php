@@ -100,6 +100,11 @@ class BatchController extends Controller
     public $modelNamespace = 'common\\models';
 
     /**
+     * @var string suffix to prepend to the base model, setting "Base" will result in a model named "BasePost"
+     */
+    public $modelBaseClassPrefix = '';
+
+    /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
      */
     public $modelBaseClassSuffix = '';
@@ -280,6 +285,7 @@ class BatchController extends Controller
                 'modelNamespace',
                 'modelBaseClass',
                 'modelBaseTraits',
+                'modelBaseClassPrefix',
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
                 'modelGenerateRelations',
@@ -383,6 +389,7 @@ class BatchController extends Controller
                 'singularEntities' => $this->singularEntities,
                 'messageCategory' => $this->modelMessageCategory,
                 'generateModelClass' => $this->extendedModels,
+                'baseClassPrefix' => $this->modelBaseClassPrefix,
                 'baseClassSuffix' => $this->modelBaseClassSuffix,
                 'modelClass' => isset($this->tableNameMap[$table]) ?
                     $this->tableNameMap[$table] :
@@ -505,3 +512,4 @@ class BatchController extends Controller
         @mkdir($dir);
     }
 }
+
