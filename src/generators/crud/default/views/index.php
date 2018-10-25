@@ -204,8 +204,8 @@ PHP;
             'buttons' => [
                 'view' => function (\$url, \$model, \$key) {
                     \$options = [
-                        'title' => Yii::t('cruds', 'View'),
-                        'aria-label' => Yii::t('cruds', 'View'),
+                        'title' => Yii::t('{$generator->messageCategory}', 'View'),
+                        'aria-label' => Yii::t('{$generator->messageCategory}', 'View'),
                         'data-pjax' => '0',
                     ];
                     return Html::a('<span class="glyphicon glyphicon-file"></span>', \$url, \$options);
