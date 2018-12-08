@@ -39,7 +39,6 @@ trait ModelTrait
                         return $name;
                         break;
                     default:
-                        continue;
                         break;
                 }
             }
