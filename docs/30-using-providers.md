@@ -97,6 +97,16 @@ Finally add the configuration via DI container
 
 **[More examples for this provider...](31-callback-provider-examples.md)**
 
+To generate dropdown list in GridView filed search filter set configuration via DI container
+
+```php
+\Yii::$container->set(
+    \schmunk42\giiant\generators\crud\providers\core\RelationProvider::class,
+    [
+        'gridFilterDropdownRelation' => true,
+    ]
+);
+``` 
 
 
 ### Specialized providers
