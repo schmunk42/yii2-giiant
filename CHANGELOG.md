@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.11
+
+ - added dropdown list in GridView filed search filter
+
 ### 0.9.1
 
  - improved detection of database text columns in callbacks
