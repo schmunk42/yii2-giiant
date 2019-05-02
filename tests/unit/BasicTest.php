@@ -5,9 +5,8 @@ namespace tests\codeception\unit\models;
 use Codeception\Specify;
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use Yii;
-use yii\codeception\TestCase;
 
-class BasicTest extends TestCase
+class BasicTest extends \PHPUnit\Framework\TestCase
 {
     use Specify;
 

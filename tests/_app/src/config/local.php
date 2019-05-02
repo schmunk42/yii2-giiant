@@ -7,8 +7,6 @@ use yii\web\Application;
 
 $testVendorPath = '/repo/tests/_app/vendor';
 
-require($testVendorPath.'/autoload.php');
-
 switch (getenv('GIIANT_TEST_DB')) {
     case 'sakila':
         $giiantTestModule = [
