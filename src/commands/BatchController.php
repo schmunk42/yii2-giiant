@@ -201,6 +201,11 @@ class BatchController extends Controller
      */
     public $crudAccessFilter;
 
+    /**
+     * @var bool whether to generate access filter migrations
+     */
+    public $generateAccessFilterMigrations;
+    
     public $crudBaseTraits;
 
     public $crudTemplate = 'default';
@@ -306,7 +311,8 @@ class BatchController extends Controller
                 'crudBaseControllerClass',
                 'crudAccessFilter',
                 'crudTemplate',
-                'crudFormLayout'
+                'crudFormLayout',
+                'generateAccessFilterMigrations'
             ]
         );
     }
@@ -462,6 +468,7 @@ class BatchController extends Controller
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,
                 'formLayout' => $this->crudFormLayout,
+                'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
