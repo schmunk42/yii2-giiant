@@ -1205,7 +1205,7 @@
             "source": {
                 "type": "git",
                 "url": "/repo",
-                "reference": "25e655bd6df1031081307ad2db73a20ea7b67fce"
+                "reference": "a49c7eac62dcf2abdb52354ac54f59957d83350b"
             },
             "require": {
                 "cmrcx/phptidy": "^3.1",
@@ -1252,7 +1252,7 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2019-05-02T13:07:32+00:00"
+            "time": "2019-05-02T13:44:45+00:00"
         },
         {
             "name": "symfony/console",

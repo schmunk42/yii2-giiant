@@ -25,7 +25,6 @@ services:
       - mariadb
       - seleniumfirefox
     volumes:
-      - /app
       # host volume for local development
       - ../:/repo
       - ./_app/src/config/local.php:/app/src/config/local.php
