@@ -5,7 +5,6 @@
 
 <?= '<?php' ?>
 
-use rmrevin\yii\fontawesome\FA;
 use yii\helpers\Inflector;
 
 /*
@@ -15,8 +14,8 @@ $controllers = \dmstr\helpers\Metadata::getModuleControllers($this->context->mod
 $favourites  = [];
 
 $patterns = [
-    '^default$'  => ['color' => 'gray', 'icon' => FA::_CUBE],
-    '^.*$'       => ['color' => 'green', 'icon' => FA::_CUBE],
+    '^default$'  => ['color' => 'gray', 'icon' => 'cube'],
+    '^.*$'       => ['color' => 'green', 'icon' => 'cube'],
 ];
 
 foreach ($patterns AS $pattern => $options) {
