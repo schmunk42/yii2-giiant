@@ -330,7 +330,9 @@ EOS;
 EOS;
 
         // add action column
-        $columns .= $actionColumn.",\n";
+        if ($this->generator->actionButtonColumnPosition != 'right') {
+            $columns .= $actionColumn . ",\n";
+        }
 
         // prepare grid column formatters
         $model->setScenario('crud');
@@ -359,6 +361,10 @@ EOS;
             }
             $columns .= $code.",\n";
             ++$counter;
+        }
+
+        if ($this->generator->actionButtonColumnPosition == 'right') {
+            $columns .= $actionColumn . ",\n";
         }
 
         $query = $showAllRecords ?

@@ -149,6 +149,11 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     public $indexGridClass = 'yii\\grid\\GridView';
 
+    /**
+     * @var string position of action column in gridview 'left' or 'right'
+     */
+    public $actionButtonColumnPosition = 'left';
+
     private $_p = [];
 
     /**

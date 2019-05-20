@@ -221,11 +221,12 @@ PHP;
         ],
 PHP;
 
-        // action buttons first
-        echo $actionButtonColumn;
-
         $count = 0;
-        echo "\n"; // code-formatting
+        // action buttons first
+        if ($generator->actionButtonColumnPosition != 'right') {
+            echo $actionButtonColumn;
+            echo "\n"; // code-formatting
+        }
 
         foreach ($safeAttributes as $attribute) {
             $format = trim($generator->columnFormat($attribute, $model));
@@ -240,7 +241,11 @@ PHP;
         }
 
         ?>
-        ],
+        <?php if ($generator->actionButtonColumnPosition == 'right') {
+            echo $actionButtonColumn;
+            echo "\n"; // code-formatting
+        } ?>
+        ]
         ]); ?>
     </div>
 
