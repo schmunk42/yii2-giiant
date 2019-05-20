@@ -233,7 +233,7 @@ EOS;
                 $name = $this->generator->getModelNameAttribute($relation->modelClass);
                 $pk = key($relation->link);
 
-                $filter = "\n'filter' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$pk}', '{$name}'),";
+                $filter = "\n'filter' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->select(['{$pk}', '{$name}'])->asArray()->all(), '{$pk}', '{$name}'),";
             }
 
             $code = <<<EOS
