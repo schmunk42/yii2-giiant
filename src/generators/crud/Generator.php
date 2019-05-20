@@ -99,7 +99,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $baseTraits;
 
     /**
-     * @var sting controller base namespace
+     * @var string controller base namespace
      */
     public $controllerNs;
 

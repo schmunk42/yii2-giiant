@@ -208,7 +208,7 @@ PHP;
                         'aria-label' => Yii::t('{$generator->messageCategory}', 'View'),
                         'data-pjax' => '0',
                     ];
-                    return Html::a('<span class="glyphicon glyphicon-file"></span>', \$url, \$options);
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', \$url, \$options);
                 }
             ],
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
