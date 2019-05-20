@@ -376,7 +376,7 @@ EOS;
         $code = "'<div class=\"table-responsive\">'\n . ";
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
-    'layout' => '{summary}{pager}<br/>{items}{pager}',
+    'layout' => '{summary}<div class="text-center">{pager}</div>{items}<div class="text-center">{pager}</div>',
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([
         {$query},
         'pagination' => [

@@ -7,6 +7,7 @@ Changelog
  - dropdown list in GridView filed search filter optimization
  - select position ActionColumn in GridView (left or right)
  - fix view icon in ActionColumn
+ - pager align in GridView
   
 ### 0.11-beta1
 
