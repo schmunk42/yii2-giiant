@@ -216,6 +216,8 @@ class BatchController extends Controller
 
     public $crudFormLayout = 'horizontal';
 
+    public $crudActionButtonColumnPosition = 'left';
+
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
@@ -469,6 +471,7 @@ class BatchController extends Controller
                 'indexGridClass' => $this->crudIndexGridClass,
                 'formLayout' => $this->crudFormLayout,
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
+                'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;

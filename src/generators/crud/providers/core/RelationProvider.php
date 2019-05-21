@@ -233,7 +233,7 @@ EOS;
                 $name = $this->generator->getModelNameAttribute($relation->modelClass);
                 $pk = key($relation->link);
 
-                $filter = "\n'filter' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->all(), '{$pk}', '{$name}'),";
+                $filter = "\n'filter' => \yii\helpers\ArrayHelper::map({$relation->modelClass}::find()->select(['{$pk}', '{$name}'])->asArray()->all(), '{$pk}', '{$name}'),";
             }
 
             $code = <<<EOS
@@ -330,7 +330,9 @@ EOS;
 EOS;
 
         // add action column
-        $columns .= $actionColumn.",\n";
+        if ($this->generator->actionButtonColumnPosition != 'right') {
+            $columns .= $actionColumn . ",\n";
+        }
 
         // prepare grid column formatters
         $model->setScenario('crud');
@@ -361,6 +363,10 @@ EOS;
             ++$counter;
         }
 
+        if ($this->generator->actionButtonColumnPosition == 'right') {
+            $columns .= $actionColumn . ",\n";
+        }
+
         $query = $showAllRecords ?
             "'query' => \\{$relation->modelClass}::find()" :
             "'query' => \$model->get{$name}()";
@@ -370,7 +376,7 @@ EOS;
         $code = "'<div class=\"table-responsive\">'\n . ";
         $code .= <<<EOS
 \\yii\\grid\\GridView::widget([
-    'layout' => '{summary}{pager}<br/>{items}{pager}',
+    'layout' => '{summary}<div class="text-center">{pager}</div>{items}<div class="text-center">{pager}</div>',
     'dataProvider' => new \\yii\\data\\ActiveDataProvider([
         {$query},
         'pagination' => [

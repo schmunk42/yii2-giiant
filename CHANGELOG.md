@@ -1,7 +1,15 @@
 Changelog
 =========
 
-### 0.11
+### 0.11-beta2
+
+ - generateAccessFilterMigrations option
+ - dropdown list in GridView filed search filter optimization
+ - select position ActionColumn in GridView (left or right)
+ - fix view icon in ActionColumn
+ - pager align in GridView
+  
+### 0.11-beta1
 
  - added dropdown list in GridView filed search filter
 

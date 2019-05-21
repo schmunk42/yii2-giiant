@@ -99,7 +99,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $baseTraits;
 
     /**
-     * @var sting controller base namespace
+     * @var string controller base namespace
      */
     public $controllerNs;
 
@@ -148,6 +148,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $migrationClass;
 
     public $indexGridClass = 'yii\\grid\\GridView';
+
+    /**
+     * @var string position of action column in gridview 'left' or 'right'
+     */
+    public $actionButtonColumnPosition = 'left';
 
     private $_p = [];
 
