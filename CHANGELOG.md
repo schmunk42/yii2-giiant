@@ -50,7 +50,7 @@ Changelog
  - Fix #196
  - update for skip db tables
  
-### tag: 0.10.0 
+### 0.10.0
  - added "formLayout" property
  
 ### 0.10.0-beta2 
