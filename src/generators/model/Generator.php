@@ -473,10 +473,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $const_name = str_replace(['-', '_', ' '], '_', $const_name);
                 $const_name = preg_replace('/[^A-Z0-9_]/', '', $const_name);
 
-                $label = ucwords(
-                    trim(strtolower(str_replace(['-', '_'], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $value))))
-                );
-                $label = preg_replace('/\s+/', ' ', $label);
+                $label = Inflector::camel2words($value);
 
                 $enum[$column->name]['values'][] = [
                     'value' => $value,
