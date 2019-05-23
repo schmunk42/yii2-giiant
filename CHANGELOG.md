@@ -1,6 +1,12 @@
 Changelog
 =========
 
+### dev-master
+
+ - pager align in GridView
+ - changed icons in index view
+ - fixed enum values
+
 ### 0.11-beta2
  - generateAccessFilterMigrations option
  - dropdown list in GridView filed search filter optimization
