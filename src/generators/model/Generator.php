@@ -249,8 +249,6 @@ class Generator extends \yii\gii\generators\model\Generator
         $db = $this->getDbConnection();
 
         foreach ($this->getTableNames() as $tableName) {
-            $oldClassName = $this->modelClass;
-            $oldTableName = $this->tableName;
             list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
 //var_dump($relations,$tableName);exit;
             $className = $this->modelClass === '' || php_sapi_name() === 'cli'
@@ -319,12 +317,11 @@ class Generator extends \yii\gii\generators\model\Generator
             $formDataFile = StringHelper::dirname($formDataDir)
                     .'/gii'
                     .'/'.$tableName.$suffix.'.json';
-            $this->tableName = $tableName;
-            $this->modelClass = $className;
-            $formData = json_encode(SaveForm::getFormAttributesValues($this, $this->formAttributes()));
+            $generatorForm = (clone $this);
+            $generatorForm->tableName = $tableName;
+			$generatorForm->modelClass = $className;
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()));
             $files[] = new CodeFile($formDataFile, $formData);
-            $this->modelClass = $oldClassName;
-            $this->tableName = $oldTableName;
         }
 
         return $files;
