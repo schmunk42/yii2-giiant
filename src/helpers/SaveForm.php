@@ -4,17 +4,20 @@ namespace schmunk42\giiant\helpers;
 
 use yii\helpers\StringHelper;
 
-class SaveForm {
+class SaveForm
+{
     public static $savedFormList = false;
 
-    public static function hint() {
+    public static function hint()
+    {
         return ['savedForm' => 'Choose saved form ad load it data to form.'];
     }
 
     /**
      * get form attributes values.
      */
-    public static function getFormAttributesValues($generator, $attributes) {
+    public static function getFormAttributesValues($generator, $attributes)
+    {
         $values = [];
         foreach ($attributes as $name) {
             $values[strtolower($name)] = [
@@ -27,7 +30,7 @@ class SaveForm {
     }
 
     /**
-     * walk through all modules, gii directories and collect Giant crud generator saved forms.
+     * walk through all modules gii directories and collect Giant crud generator saved forms.
      *
      * @param $generatorName
      * @return array|bool
@@ -78,7 +81,8 @@ class SaveForm {
      * @param array $forms
      * @param string $suffix
      */
-    protected static function buildJson($path, &$forms, $suffix, $moduleId = NULL) {
+    protected static function buildJson($path, &$forms, $suffix, $moduleId = NULL)
+    {
         /*
          * search in module gii directory all forms json files
          * with required suffix
@@ -105,7 +109,8 @@ class SaveForm {
      *
      * @return array
      */
-    public static function getSavedFormsListbox($generatorName) {
+    public static function getSavedFormsListbox($generatorName)
+    {
         $r = ['0' => ' - '];
         foreach (self::loadSavedForms($generatorName) as $k => $row) {
             $r[$k] = $row['label'];
@@ -119,17 +124,19 @@ class SaveForm {
      *
      * @return string
      */
-    public static function getSavedFormsJs($generatorName) {
+    public static function getSavedFormsJs($generatorName)
+    {
         $js = [];
 
         foreach (self::loadSavedForms($generatorName) as $k => $row) {
-            $js[] = $k . ":'" . $row['jsonData'] . "'";
+            $js[] = $k.":'".$row['jsonData']."'";
         }
 
-        return 'var savedForms = {' . str_replace('\\', '\\\\', implode(',', $js)) . '};';
+        return 'var savedForms = {'.str_replace('\\', '\\\\', implode(',', $js)).'};';
     }
 
-    public static function jsFillForm() {
+    public static function jsFillForm()
+    {
         return '
     function fillForm(id){
         if (id=="0") return;
@@ -172,7 +179,7 @@ class SaveForm {
             if (jQuery("#" + fieldId).is("input") || jQuery("#" + fieldId).is("select")){
                 jQuery("#" + fieldId).val(formData[filedName]["value"]).trigger("input");
                 continue;
-            }
+            }    
         }    
     }
         ';
