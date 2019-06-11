@@ -317,8 +317,10 @@ class Generator extends \yii\gii\generators\model\Generator
             $formDataFile = StringHelper::dirname($formDataDir)
                     .'/gii'
                     .'/'.$tableName.$suffix.'.json';
-
-            $formData = json_encode(SaveForm::getFormAttributesValues($this, $this->formAttributes()));
+            $generatorForm = (clone $this);
+            $generatorForm->tableName = $tableName;
+			$generatorForm->modelClass = $className;
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()));
             $files[] = new CodeFile($formDataFile, $formData);
         }
 
