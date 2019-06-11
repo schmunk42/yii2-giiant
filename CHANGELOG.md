@@ -1,11 +1,12 @@
 Changelog
 =========
 
-### dev-master
+### 0.11-beta3
 
  - pager align in GridView
  - changed icons in index view
  - fixed enum values
+ - fixed multi-table model json generation
 
 ### 0.11-beta2
  - generateAccessFilterMigrations option
