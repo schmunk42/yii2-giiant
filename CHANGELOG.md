@@ -1,22 +1,29 @@
 Changelog
 =========
 
-### 0.11-beta3
+### 0.11.0
 
+ - *no changes*
+
+### 0.11.0-beta3
+
+ - fixed multi-table json generation table names
+ - fixed module labels for json files
  - pager align in GridView
  - changed icons in index view
  - fixed enum values
  - fixed multi-table model json generation
 
-### 0.11-beta2
+### 0.11.0-beta2
  - generateAccessFilterMigrations option
  - dropdown list in GridView filed search filter optimization
  - select position ActionColumn in GridView (left or right)
  - fix view icon in ActionColumn
  - pager align in GridView
   
-### 0.11-beta1
+### 0.11.0-beta1
  - added dropdown list in GridView filed search filter
+ - allow usage with `yiisoft/yii2-gii:^2.1`
  
 ### 0.10.8
  - fixed error with php 7.3
