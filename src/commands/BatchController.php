@@ -34,6 +34,11 @@ class BatchController extends Controller
     public $useTimestampBehavior = true;
 
     /**
+     * @var string support user custom TimestampBehavior class
+     */
+    public $timestampBehaviorClass = 'yii\behaviors\TimestampBehavior';
+
+    /**
      * @var string the name of the column where the user who updated the entry is stored
      */
     public $createdAtColumn = 'created_at';
@@ -205,7 +210,7 @@ class BatchController extends Controller
      * @var bool whether to generate access filter migrations
      */
     public $generateAccessFilterMigrations;
-    
+
     public $crudBaseTraits;
 
     public $crudTemplate = 'default';
@@ -273,6 +278,7 @@ class BatchController extends Controller
                 'template',
                 'overwrite',
                 'useTimestampBehavior',
+                'timestampBehaviorClass',
                 'createdAtColumn',
                 'updatedAtColumn',
                 'useTranslatableBehavior',
@@ -380,6 +386,7 @@ class BatchController extends Controller
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
                 'useTimestampBehavior' => $this->useTimestampBehavior,
+                'timestampBehaviorClass' => $this->timestampBehaviorClass,
                 'createdAtColumn' => $this->createdAtColumn,
                 'updatedAtColumn' => $this->updatedAtColumn,
                 'useTranslatableBehavior' => $this->useTranslatableBehavior,

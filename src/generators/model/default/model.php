@@ -32,7 +32,7 @@ use dosamigos\translateable\TranslateableBehavior;
 use yii\behaviors\BlameableBehavior;
 <?php endif; ?>
 <?php if (!empty($timestamp)): ?>
-use yii\behaviors\TimestampBehavior;
+use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 <?php endif; ?>
 
 /**
