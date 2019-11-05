@@ -447,9 +447,14 @@ class BatchController extends Controller
         $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
 
         foreach ($this->tables as $table) {
-            $table = str_replace($this->tablePrefix, '', $table);
-            $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
-                $this->modelGenerator->generateClassName($table);
+
+            if (isset($this->tableNameMap[$table])) {
+                $tmp_name = $this->tableNameMap[$table];
+            } else {
+                $tmp_name = str_replace($this->tablePrefix, '', $table);
+            }
+            $name = $this->modelGenerator->generateClassName($tmp_name);
+
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
