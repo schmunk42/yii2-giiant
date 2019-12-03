@@ -207,6 +207,21 @@ class BatchController extends Controller
     public $crudAccessFilter;
 
     /**
+     * @var bool whether to overwrite extended controller classes in crud generator
+     */
+    public $crudOverwriteControllerClass = false;
+
+    /**
+     * @var bool whether to overwrite rest/api controller classes in crud generator
+     */
+    public $crudOverwriteRestControllerClass = false;
+
+    /**
+     * @var bool whether to overwrite search classes in crud generator
+     */
+    public $crudOverwriteSearchModelClass = false;
+
+    /**
      * @var bool whether to generate access filter migrations
      */
     public $generateAccessFilterMigrations;
@@ -320,6 +335,9 @@ class BatchController extends Controller
                 'crudAccessFilter',
                 'crudTemplate',
                 'crudFormLayout',
+                'crudOverwriteSearchModelClass',
+                'crudOverwriteRestControllerClass',
+                'crudOverwriteControllerClass',
                 'generateAccessFilterMigrations'
             ]
         );
@@ -458,6 +476,9 @@ class BatchController extends Controller
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
+                'overwriteSearchModelClass' => $this->crudOverwriteSearchModelClass,
+                'overwriteRestControllerClass' => $this->crudOverwriteRestControllerClass,
+                'overwriteControllerClass' => $this->crudOverwriteControllerClass,
                 'template' => $this->template,
                 'modelClass' => $this->modelNamespace . '\\' . $name,
                 'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
