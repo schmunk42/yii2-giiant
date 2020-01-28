@@ -72,9 +72,6 @@ if(!empty($enum)){
             echo '    const ' . $enum_value['const_name'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
         }
     }
-?>
-    var $enum_labels = false;
-<?php
 }
 ?>
     /**
