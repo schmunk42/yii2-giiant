@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.12.0
+
+ - Added support for `modelGenerateJunctionRelationMode`
+
 ### 0.11.0
 
  - *no changes*
