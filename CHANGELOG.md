@@ -4,7 +4,8 @@ Changelog
 ### 0.12.0
 
  - Added support for `modelGenerateJunctionRelationMode`
-
+ - Upgraded `yiisoft/yii2-gii` to version 2.2.0
+ 
 ### 0.11.0
 
  - *no changes*
