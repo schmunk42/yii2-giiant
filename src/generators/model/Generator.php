@@ -173,6 +173,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'baseClass',
             'db',
             'generateRelations',
+            'generateJunctionRelationMode',
             //'generateRelationsFromCurrentSchema',
             'generateLabelsFromComments',
             'generateHintsFromComments',
