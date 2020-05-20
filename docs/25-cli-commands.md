@@ -149,6 +149,9 @@ OPTIONS
 
 --removeDuplicateRelations: boolean, 0 or 1 (defaults to 0)
 
+--cacheRelationsData: boolean, 0 or 1 (defaults to 1)
+  Should relation data be cached when generating multiple models
+
 --savedForm: string
   Choose saved form ad load it data to form.
 

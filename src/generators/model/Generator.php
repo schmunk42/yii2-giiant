@@ -106,6 +106,9 @@ class Generator extends \yii\gii\generators\model\Generator
 
     public $removeDuplicateRelations = false;
 
+    /** @var bool Cache relations data between model generation */
+    public $cacheRelationsData = true;
+
     /**
      * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
@@ -119,6 +122,8 @@ class Generator extends \yii\gii\generators\model\Generator
     public $messageCategory = 'models';
 
     protected $classNames2;
+
+    protected static $_relationsCache = null;
 
     /**
      * {@inheritdoc}
@@ -253,7 +258,16 @@ class Generator extends \yii\gii\generators\model\Generator
     public function generate()
     {
         $files = [];
-        $relations = $this->generateRelations();
+
+        if ($this->cacheRelationsData) {
+            if (static::$_relationsCache === null) {
+                static::$_relationsCache = $this->generateRelations();
+            }
+            $relations = static::$_relationsCache;
+        } else {
+            $relations = $this->generateRelations();
+        }
+
         $db = $this->getDbConnection();
 
         foreach ($this->getTableNames() as $tableName) {

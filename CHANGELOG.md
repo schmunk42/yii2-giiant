@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 0.12.1
+
+ - Improved model generation performance (see`modelCacheRelationsData`)
+ 
 ### 0.12.0
 
  - Added support for `modelGenerateJunctionRelationMode`
