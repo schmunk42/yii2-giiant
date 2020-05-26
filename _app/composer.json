@@ -2,7 +2,11 @@
     "require": {
         "wikimedia/composer-merge-plugin": "~1.4"
     },
+    "autoload-dev": {
+        "\\schmunk42\\giiant": "/repo/src"
+    },
     "extra": {
+        "bootstrap": "schmunk42\\giiant\\Bootstrap",
         "merge-plugin": {
             "require": [
                 "/app/composer.json",

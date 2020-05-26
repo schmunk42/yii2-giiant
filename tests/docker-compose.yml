@@ -29,18 +29,19 @@ services:
       - ../composer.json:/repo/composer.json:ro
       - ../src:/repo/src:ro
       - ../tests:/repo/tests:rw
-      - ../vendor:/repo/tests/_app/vendor:rw
-      - ./_app/composer.lock:/repo/tests/_app/composer.lock:rw
-      - ./_app/src/config/local.php:/app/src/config/local.php:ro
-      - ./_app/src/components:/app/src/components:ro
-      - ./_app/src/rbac:/app/src/rbac:ro
+      - ../_app/vendor:/app/vendor:rw
+      - ../_app/composer.json:/app/composer.json:ro
+      - ../_app/composer.lock:/app/composer.lock:rw
+      - ../_app/src/config/local.php:/app/src/config/local.php:ro
+      - ../_app/src/components:/app/src/components:ro
+      - ../_app/src/rbac:/app/src/rbac:ro
       # host volumes for local debugging of generated files
-      - ./_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
-      - ./_app/_generated/common:/app/src/common
-      - ./_app/_generated/backend:/app/src/modules/backend
-      - ./_app/_generated/onlyCrud/controllers:/app/src/controllers/onlyCrud
-      - ./_app/_generated/onlyCrud/models:/app/src/models/onlyCrud
-      - ./_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
+      - ../_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
+      - ../_app/_generated/common:/app/src/common
+      - ../_app/_generated/backend:/app/src/modules/backend
+      - ../_app/_generated/onlyCrud/controllers:/app/src/controllers/onlyCrud
+      - ../_app/_generated/onlyCrud/models:/app/src/models/onlyCrud
+      - ../_app/_generated/onlyCrud/views:/app/src/views/onlyCrud
 
   mariadb:
     image: 'schmunk42/mariadb-example-databases:3.0.0-beta1'
@@ -55,10 +56,11 @@ services:
     #  - ./_mysql/test.cnf:/etc/mysql/conf.d/test.cnf
 
   seleniumfirefox:
-    image: 'selenium/standalone-firefox-debug:2.53.0'
+    image: 'selenium/standalone-firefox-debug:3.141.59-oxygen'
     dns: 8.8.4.4
     environment:
         - no_proxy=localhost
+        - VNC_NO_PASSWORD=1
     expose:
         - '4444'
     ports:

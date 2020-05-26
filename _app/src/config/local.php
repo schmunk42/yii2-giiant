@@ -1,11 +1,12 @@
 <?php
 
 use app\components\EditorIdentity;
+use schmunk42\giiant\Bootstrap;
 use yii\gii\Module;
 use yii\rbac\PhpManager;
 use yii\web\Application;
 
-$testVendorPath = '/repo/tests/_app/vendor';
+$testVendorPath = '/app/vendor';
 
 require($testVendorPath.'/autoload.php');
 
@@ -62,6 +63,7 @@ return [
     ],
     'bootstrap' => [
         'gii',
+        Bootstrap::class
     ],
     'on '.Application::EVENT_BEFORE_REQUEST => function (){
         if (php_sapi_name() != 'cli') {
