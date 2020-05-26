@@ -25,12 +25,14 @@ services:
       - mariadb
       - seleniumfirefox
     volumes:
-      - /app
       # host volume for local development
-      - ../:/repo
-      - ./_app/src/config/local.php:/app/src/config/local.php
-      - ./_app/src/components:/app/src/components
-      - ./_app/src/rbac:/app/src/rbac
+      - ../:/repo:ro
+      - ../_host-volumes/output:/repo/tests/./_output
+      - ../vendor:/repo/tests/_app/vendor:rw
+      - ./_app/composer.lock:/repo/tests/_app/composer.lock:rw
+      - ./_app/src/config/local.php:/app/src/config/local.php:ro
+      - ./_app/src/components:/app/src/components:ro
+      - ./_app/src/rbac:/app/src/rbac:ro
       # host volumes for local debugging of generated files
       - ./_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
       - ./_app/_generated/common:/app/src/common
