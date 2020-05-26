@@ -26,6 +26,7 @@ services:
       - seleniumfirefox
     volumes:
       # host volume for local development
+      - ../composer.json:/repo/composer.json:ro
       - ../src:/repo/src:ro
       - ../tests:/repo/tests:rw
       - ../vendor:/repo/tests/_app/vendor:rw
