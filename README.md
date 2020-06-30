@@ -71,8 +71,25 @@ The generators are registered automatically in the application bootstrap process
 Configuration
 -------------
 
+You will need to tell the Gii module where to find giiant's batch controller in order to use it. Wherever
+your Gii configuration resides, modify it like so:
+
+```php
+    'modules' => [
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'generators' => [
+                'giiant-model' => [
+                    'class' => 'schmunk42\giiant\generators\model\Generator',
+                ]
+            ],            
+        ],
+    ],
+```
+
 It's recommended to configure a customized `batch` command in your application CLI configuration.
 
+```php
     'controllerMap' => [
         'batch' => [
             'class' => 'schmunk42\giiant\commands\BatchController',
@@ -81,6 +98,7 @@ It's recommended to configure a customized `batch` command in your application C
             'crudTidyOutput' => true,
         ]
     ],
+```
 
 > Note: `yii giiant-batch` is an alias for the default configuration of `BatchController` registered by this extension.
 
