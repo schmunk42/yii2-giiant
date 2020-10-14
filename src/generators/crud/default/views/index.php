@@ -15,7 +15,8 @@ $nameAttribute = $generator->getNameAttribute();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 
-$modelName = Inflector::camel2words(Inflector::pluralize(StringHelper::basename($model::className())));
+$baseName = StringHelper::basename($model::className());
+$modelName = Inflector::camel2words($baseName);
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -94,14 +95,14 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
+        <?= "<?= Yii::t('{$generator->modelMessageCategory}.plural', '{$modelName}') ?>\n" ?>
         <small>
-            List
+            <?= "<?= Yii::t('{$generator->messageCategory}', 'List') ?>\n" ?>
         </small>
     </h1>
     <div class="clearfix crud-navigation">
 <?php
-if($generator->accessFilter){ 
+if($generator->accessFilter){
 	echo "<?php\n"
 ?>
 if(\Yii::$app->user->can('<?=$permisions['create']['name']?>', ['route' => true])){

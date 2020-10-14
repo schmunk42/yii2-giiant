@@ -33,11 +33,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('Edit') ?>;
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-update">
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
+        <?php $label = StringHelper::basename($generator->modelClass); ?>
+        <?= '<?= Html::encode($model->'.$generator->getModelNameAttribute($generator->modelClass).") ?>\n" ?>
 
         <small>
-            <?php $label = StringHelper::basename($generator->modelClass); ?>
-            <?= '<?= Html::encode($model->'.$generator->getModelNameAttribute($generator->modelClass).") ?>\n" ?>
+            <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>" ?>
         </small>
     </h1>
 
