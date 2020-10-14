@@ -209,7 +209,7 @@ PHP;
                         'aria-label' => Yii::t('{$generator->messageCategory}', 'View'),
                         'data-pjax' => '0',
                     ];
-                    return Html::a('<span class="glyphicon glyphicon-file"></span>', \$url, \$options);
+                    return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', \$url, \$options);
                 }
             ],
             'urlCreator' => function(\$action, \$model, \$key, \$index) {
@@ -222,11 +222,12 @@ PHP;
         ],
 PHP;
 
-        // action buttons first
-        echo $actionButtonColumn;
-
         $count = 0;
-        echo "\n"; // code-formatting
+        // action buttons first
+        if ($generator->actionButtonColumnPosition != 'right') {
+            echo $actionButtonColumn;
+            echo "\n"; // code-formatting
+        }
 
         foreach ($safeAttributes as $attribute) {
             $format = trim($generator->columnFormat($attribute, $model));
@@ -241,7 +242,11 @@ PHP;
         }
 
         ?>
-        ],
+        <?php if ($generator->actionButtonColumnPosition == 'right') {
+            echo $actionButtonColumn;
+            echo "\n"; // code-formatting
+        } ?>
+        ]
         ]); ?>
     </div>
 

@@ -25,8 +25,9 @@ With the config array...
             'crudViewPath' => '@project/modules/crud/views',
             'crudPathPrefix' => '/crud/',
             'crudTidyOutput' => true,
+            'crudActionButtonColumnPosition' => 'right', //left by default
             'crudProviders' => [
-                \schmunk42\giiant\generators\crud\providers\core\OptsProvider::class
+                \schmunk42\giiant\generators\crud\providers\core\OptsProvider::className()
             ],
             'tablePrefix' => 'app_',
             'tables' => [

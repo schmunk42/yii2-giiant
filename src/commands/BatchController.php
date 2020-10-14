@@ -34,6 +34,11 @@ class BatchController extends Controller
     public $useTimestampBehavior = true;
 
     /**
+     * @var string support user custom TimestampBehavior class
+     */
+    public $timestampBehaviorClass = 'yii\behaviors\TimestampBehavior';
+
+    /**
      * @var string the name of the column where the user who updated the entry is stored
      */
     public $createdAtColumn = 'created_at';
@@ -135,6 +140,11 @@ class BatchController extends Controller
     public $modelGenerateRelations = ModelGenerator::RELATIONS_ALL;
 
     /**
+     * @var
+     */
+    public $modelGenerateJunctionRelationMode = ModelGenerator::JUNCTION_RELATION_VIA_TABLE;
+
+    /**
      * @var bool whether the strings will be generated using `Yii::t()` or normal strings
      */
     public $enableI18N = true;
@@ -201,6 +211,26 @@ class BatchController extends Controller
      */
     public $crudAccessFilter;
 
+    /**
+     * @var bool whether to overwrite extended controller classes in crud generator
+     */
+    public $crudOverwriteControllerClass = false;
+
+    /**
+     * @var bool whether to overwrite rest/api controller classes in crud generator
+     */
+    public $crudOverwriteRestControllerClass = false;
+
+    /**
+     * @var bool whether to overwrite search classes in crud generator
+     */
+    public $crudOverwriteSearchModelClass = false;
+
+    /**
+     * @var bool whether to generate access filter migrations
+     */
+    public $generateAccessFilterMigrations;
+
     public $crudBaseTraits;
 
     public $crudTemplate = 'default';
@@ -210,6 +240,8 @@ class BatchController extends Controller
     public $crudIndexGridClass = 'yii\\grid\\GridView';
 
     public $crudFormLayout = 'horizontal';
+
+    public $crudActionButtonColumnPosition = 'left';
 
     /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
@@ -266,6 +298,7 @@ class BatchController extends Controller
                 'template',
                 'overwrite',
                 'useTimestampBehavior',
+                'timestampBehaviorClass',
                 'createdAtColumn',
                 'updatedAtColumn',
                 'useTranslatableBehavior',
@@ -289,6 +322,7 @@ class BatchController extends Controller
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
                 'modelGenerateRelations',
+                'modelGenerateJunctionRelationMode',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
                 'modelQueryBaseClass',
@@ -306,7 +340,11 @@ class BatchController extends Controller
                 'crudBaseControllerClass',
                 'crudAccessFilter',
                 'crudTemplate',
-                'crudFormLayout'
+                'crudFormLayout',
+                'crudOverwriteSearchModelClass',
+                'crudOverwriteRestControllerClass',
+                'crudOverwriteControllerClass',
+                'generateAccessFilterMigrations'
             ]
         );
     }
@@ -372,6 +410,7 @@ class BatchController extends Controller
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
                 'useTimestampBehavior' => $this->useTimestampBehavior,
+                'timestampBehaviorClass' => $this->timestampBehaviorClass,
                 'createdAtColumn' => $this->createdAtColumn,
                 'updatedAtColumn' => $this->updatedAtColumn,
                 'useTranslatableBehavior' => $this->useTranslatableBehavior,
@@ -398,6 +437,7 @@ class BatchController extends Controller
                 'baseTraits' => $this->modelBaseTraits,
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
                 'generateRelations' => $this->modelGenerateRelations,
+                'generateJunctionRelationMode' => $this->modelGenerateJunctionRelationMode,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
                 'queryNs' => $this->modelQueryNamespace,
@@ -432,12 +472,20 @@ class BatchController extends Controller
         $this->createDirectoryFromNamespace($this->crudSearchModelNamespace);
 
         foreach ($this->tables as $table) {
-            $table = str_replace($this->tablePrefix, '', $table);
-            $name = isset($this->tableNameMap[$table]) ? $this->tableNameMap[$table] :
-                $this->modelGenerator->generateClassName($table);
+
+            if (isset($this->tableNameMap[$table])) {
+                $tmp_name = $this->tableNameMap[$table];
+            } else {
+                $tmp_name = str_replace($this->tablePrefix, '', $table);
+            }
+            $name = $this->modelGenerator->generateClassName($tmp_name);
+
             $params = [
                 'interactive' => $this->interactive,
                 'overwrite' => $this->overwrite,
+                'overwriteSearchModelClass' => $this->crudOverwriteSearchModelClass,
+                'overwriteRestControllerClass' => $this->crudOverwriteRestControllerClass,
+                'overwriteControllerClass' => $this->crudOverwriteControllerClass,
                 'template' => $this->template,
                 'modelClass' => $this->modelNamespace . '\\' . $name,
                 'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
@@ -462,6 +510,8 @@ class BatchController extends Controller
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,
                 'formLayout' => $this->crudFormLayout,
+                'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
+                'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;

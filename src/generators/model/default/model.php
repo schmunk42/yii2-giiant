@@ -32,7 +32,7 @@ use dosamigos\translateable\TranslateableBehavior;
 use yii\behaviors\BlameableBehavior;
 <?php endif; ?>
 <?php if (!empty($timestamp)): ?>
-use yii\behaviors\TimestampBehavior;
+use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 <?php endif; ?>
 
 /**
@@ -72,9 +72,6 @@ if(!empty($enum)){
             echo '    const ' . $enum_value['const_name'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
         }
     }
-?>
-    var $enum_labels = false;
-<?php
 }
 ?>
     /**
@@ -236,11 +233,7 @@ if(!empty($enum)){
         return [
 <?php
         foreach($column_data['values'] as $k => $value){
-            if ($generator->enableI18N) {
-                echo '            '.'self::' . $value['const_name'] . ' => Yii::t(\'' . $generator->messageCategory . '\', self::' . $value['const_name'] . "),\n";
-            } else {
-                echo '            '.'self::' . $value['const_name'] . ' => self::' . $value['const_name'] . ",\n";
-            }
+            echo '            '.'self::' . $value['const_name'] . ' => ' . $generator->generateString($value['label']) . ",\n";
         }
 ?>
         ];

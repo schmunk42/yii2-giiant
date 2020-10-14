@@ -96,6 +96,11 @@ OPTIONS
   database contains too many tables, you may want to uncheck this option to
   accelerate the code generation process.
 
+--modelGenerateJunctionRelationMode: string (defaults to 'table')
+  This indicates whether junction relations are generated with `viaTable()` 
+  or `via()` relations, use 'table' or 'model' respectively.
+  Make sure you also generate the junction models when using the 'model' option.
+
 --help, -h: boolean, 0 or 1
   whether to display help information about current command.
 
