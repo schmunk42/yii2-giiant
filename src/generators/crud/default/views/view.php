@@ -44,7 +44,7 @@ use dmstr\bootstrap\Tabs;
 $copyParams = $model->attributes;
 
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>', '<?= Inflector::pluralize($modelName) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
@@ -72,20 +72,23 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
         <!-- menu buttons -->
         <div class='pull-left'>
-            <?= '<?= ' ?>Html::a(
+            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
             [ 'update', <?= $urlParams ?>],
-            ['class' => 'btn btn-info']) ?>
+            ['class' => 'btn btn-info'])
+          ?>
 
-            <?= '<?= ' ?>Html::a(
+            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
             ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
-            ['class' => 'btn btn-success']) ?>
+            ['class' => 'btn btn-success'])
+          ?>
 
-            <?= '<?= ' ?>Html::a(
+            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
             ['create'],
-            ['class' => 'btn btn-success']) ?>
+            ['class' => 'btn btn-success'])
+          ?>
         </div>
 
         <div class="pull-right">
@@ -103,7 +106,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= $generator->partialView('detail_prepend', $model); ?>
 
-    <?= '<?= ' ?>DetailView::widget([
+    <?= '<?php '.PHP_EOL.' echo ' ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
@@ -117,20 +120,22 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     }
     ?>
     ],
-    ]); ?>
+    ]);
+  ?>
 
     <?= $generator->partialView('detail_append', $model); ?>
 
     <hr/>
 
-    <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
+    <?= '<?php '.PHP_EOL.' echo ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
         'Delete'
     ) ?>, ['delete', <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
     'data-method' => 'post',
-    ]); ?>
+    ]);
+  ?>
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
@@ -173,14 +178,16 @@ EOS;
         // relation list, add, create buttons
         echo "<div style='position: relative'>\n<div style='position:absolute; right: 0px; top: 0px;'>\n";
 
-        echo "  <?= Html::a(
+        echo "  <?php
+        echo Html::a(
             '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
             Inflector::camel2words($name)."',
             ['".$generator->createRelationRoute($relation, 'index')."'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs
-        echo "  <?= Html::a(
+        echo "  <?php 
+        echo Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
             Inflector::singularize(Inflector::camel2words($name))."',
             ['".$generator->createRelationRoute($relation, 'create')."', '".
@@ -228,7 +235,8 @@ EOS;
 
     <?=
     // render tabs
-    "<?= Tabs::widget(
+    "<?php 
+        echo Tabs::widget(
                  [
                      'id' => 'relation-tabs',
                      'encodeLabels' => false,
