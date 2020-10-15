@@ -186,16 +186,24 @@ EOS;
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs
-        echo "  <?php 
-        echo Html::a(
+
+        // pivot check
+        if ($relation->via !== null) {
+            $url = "['".$generator->createRelationRoute($relation, 'create')."']";
+        } else {
+            $url = "['".$generator->createRelationRoute($relation, 'create')."', '".
+                Inflector::id2camel($generator->generateRelationTo($relation),
+                    '-',
+                    true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]]";
+        }
+
+            echo "  <?= Html::a(
             '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
-            Inflector::singularize(Inflector::camel2words($name))."',
-            ['".$generator->createRelationRoute($relation, 'create')."', '".
-            Inflector::id2camel($generator->generateRelationTo($relation),
-                '-',
-                true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]],
+                Inflector::camel2words($name)."',
+             {$url},
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
+
         echo $addButton;
 
         echo "</div>\n</div>\n"; #<div class='clearfix'></div>\n";
