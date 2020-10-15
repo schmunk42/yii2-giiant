@@ -1334,7 +1334,7 @@
             "source": {
                 "type": "git",
                 "url": "/repo",
-                "reference": "f9641f5194d07a266144e1d7ae8ed13681109d4b"
+                "reference": "b1fa9e5b03ad9fc5f84249e87329b6ae5bd410b3"
             },
             "require": {
                 "cmrcx/phptidy": "^3.1",
@@ -1382,7 +1382,7 @@
                 "gii",
                 "yii2"
             ],
-            "time": "2020-10-14T15:01:37+00:00"
+            "time": "2020-10-15T10:54:29+00:00"
         },
         {
             "name": "symfony/console",
@@ -3226,6 +3226,56 @@
                 "icon"
             ],
             "time": "2016-10-24T15:52:54+00:00"
+        },
+        {
+            "name": "fzaninotto/faker",
+            "version": "v1.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "fc10d778e4b84d5bd315dad194661e091d307c6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/fc10d778e4b84d5bd315dad194661e091d307c6f",
+                "reference": "fc10d778e4b84d5bd315dad194661e091d307c6f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0"
+            },
+            "require-dev": {
+                "ext-intl": "*",
+                "phpunit/phpunit": "^4.8.35 || ^5.7",
+                "squizlabs/php_codesniffer": "^2.9.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2019-12-12T13:22:17+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -5322,6 +5372,53 @@
                 "validate"
             ],
             "time": "2020-07-08T17:02:28+00:00"
+        },
+        {
+            "name": "yiisoft/yii2-faker",
+            "version": "2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-faker.git",
+                "reference": "3df62b1dcb272a8413f9c6e532c9d73f325ccde1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-faker/zipball/3df62b1dcb272a8413f9c6e532c9d73f325ccde1",
+                "reference": "3df62b1dcb272a8413f9c6e532c9d73f325ccde1",
+                "shasum": ""
+            },
+            "require": {
+                "fzaninotto/faker": "~1.4",
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\faker\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Jebri",
+                    "email": "mark.github@yandex.ru"
+                }
+            ],
+            "description": "Fixture generator. The Faker integration for the Yii framework.",
+            "keywords": [
+                "Fixture",
+                "faker",
+                "yii2"
+            ],
+            "time": "2018-02-19T20:27:10+00:00"
         }
     ],
     "aliases": [],
