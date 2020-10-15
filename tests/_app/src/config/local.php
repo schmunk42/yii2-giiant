@@ -5,6 +5,8 @@ use yii\gii\Module;
 use yii\rbac\PhpManager;
 use yii\web\Application;
 
+$testVendorPath = '/repo/tests/_app/vendor';
+
 // autoloading is done via default entrypoints; _app/vendor hostvolume
 
 switch (getenv('GIIANT_TEST_DB')) {
