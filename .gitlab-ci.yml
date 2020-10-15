@@ -21,7 +21,7 @@ test:
     - docker-compose up -d
     # workaround (wait for db)
     - sleep 10
-    - docker-compose run phpfpm setup.sh
+    - make all
     - set +e
     - docker-compose run --rm -e YII_ENV=dev phpfpm bash -c 'codecept run --steps --html=_report.html -g mandatory -g ${GIIANT_TEST_DB} -g onlyCrud cli,unit,acceptance' || TESTS_EXIT_CODE=1
     - cp -r _output /tmp/${BUILD_PREFIX}
