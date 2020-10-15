@@ -7,7 +7,7 @@ use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use Yii;
 use yii\codeception\TestCase;
 
-class BasicTest extends TestCase
+class BasicTest extends \Codeception\Test\Unit
 {
     use Specify;
 

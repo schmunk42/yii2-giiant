@@ -7,7 +7,7 @@
     ],
     "require": {
         "wikimedia/composer-merge-plugin": "~1.4",
-        "schmunk42/yii2-giiant": "dev-develop"
+        "schmunk42/yii2-giiant": "dev-feature/updated-headlines"
     },
     "extra": {
         "merge-plugin": {

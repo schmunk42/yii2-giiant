@@ -9,7 +9,7 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that crudOnly works (no access rules)');
 
 $I->amOnPage('/onlyCrud/country');
-$I->see('Countries', 'h1');
+$I->see('Country', 'h1');
 $I->makeScreenshot('crud-country');
 
 $I->expectTo('see view, edit and delete button');

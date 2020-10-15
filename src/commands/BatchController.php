@@ -7,6 +7,7 @@ use schmunk42\giiant\generators\model\Generator as ModelGenerator;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
+use Yii;
 
 /**
  * @author Tobias Munk <schmunk@usrbin.de>
@@ -133,6 +134,11 @@ class BatchController extends Controller
      * @var
      */
     public $modelRemoveDuplicateRelations = false;
+
+    /**
+     * @var
+     */
+    public $modelCacheRelationsData = true;
 
     /**
      * @var
@@ -321,6 +327,7 @@ class BatchController extends Controller
                 'modelBaseClassPrefix',
                 'modelBaseClassSuffix',
                 'modelRemoveDuplicateRelations',
+                'modelCacheRelationsData',
                 'modelGenerateRelations',
                 'modelGenerateJunctionRelationMode',
                 'modelGenerateQuery',
@@ -404,6 +411,8 @@ class BatchController extends Controller
      */
     public function actionModels()
     {
+        $startTime = microtime(true);
+
         // create models
         foreach ($this->tables as $table) {
             $params = [
@@ -436,6 +445,7 @@ class BatchController extends Controller
                 'baseClass' => $this->modelBaseClass,
                 'baseTraits' => $this->modelBaseTraits,
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
+                'cacheRelationsData' => $this->modelCacheRelationsData,
                 'generateRelations' => $this->modelGenerateRelations,
                 'generateJunctionRelationMode' => $this->modelGenerateJunctionRelationMode,
                 'tableNameMap' => $this->tableNameMap,
@@ -450,11 +460,17 @@ class BatchController extends Controller
             $app = \Yii::$app;
             $temp = new \yii\console\Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
-            $temp->get($this->modelDb)->close();
+            if (\Yii::$container->has($this->modelDb)) {
+                \Yii::$container->get($this->modelDb)->close();
+            } else {
+                $temp->get($this->modelDb)->close();
+            }
             unset($temp);
             \Yii::$app = $app;
             \Yii::$app->log->logger->flush(true);
         }
+
+        Yii::debug('Generated models in ' . round(microtime(true) - $startTime, 3) . ' seconds.', __METHOD__);
     }
 
     /**

@@ -3,7 +3,7 @@ namespace tests\codeception\unit\models;
 use schmunk42\giiant\helpers\GiiantFaker;
 use Codeception\Specify;
 
-class GiiantFakerTest extends \PHPUnit_Framework_TestCase
+class GiiantFakerTest extends \Codeception\Test\Unit
 {
     use Specify;
 
