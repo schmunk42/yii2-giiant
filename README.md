@@ -3,9 +3,7 @@ yii2-giiant
 
 > "Giiant is huge!"
 
-**PROJECT IS IN BETA STAGE!**
-
-[![Build Status](https://travis-ci.org/schmunk42/yii2-giiant.svg?branch=master)](https://travis-ci.org/schmunk42/yii2-giiant)
+[![Build Status](https://travis-ci.com/schmunk42/yii2-giiant.svg?branch=master)](https://travis-ci.com/schmunk42/yii2-giiant)
 
 What is this?
 -------------

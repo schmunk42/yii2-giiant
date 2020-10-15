@@ -31,6 +31,7 @@ services:
       - ./_app/src/config/local.php:/app/src/config/local.php
       - ./_app/src/components:/app/src/components
       - ./_app/src/rbac:/app/src/rbac
+      - ./_app/vendor:/app/vendor # autoloading for test-app
       # host volumes for local debugging of generated files
       - ./_app/_generated/${GIIANT_TEST_DB}:/app/src/modules/${GIIANT_TEST_DB}
       - ./_app/_generated/common:/app/src/common
