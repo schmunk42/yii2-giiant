@@ -118,6 +118,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
     public $messageCategory = 'models';
 
+    public $giiInfoPath = '.gii';
+
     protected $classNames2;
 
     /**
@@ -323,12 +325,12 @@ class Generator extends \yii\gii\generators\model\Generator
             $suffix = str_replace(' ', '', $this->getName());
             $formDataDir = Yii::getAlias('@'.str_replace('\\', '/', $this->ns));
             $formDataFile = StringHelper::dirname($formDataDir)
-                    .'/gii'
+                    .'/'.$this->giiInfoPath.'/'
                     .'/'.$tableName.$suffix.'.json';
             $generatorForm = (clone $this);
             $generatorForm->tableName = $tableName;
 			$generatorForm->modelClass = $className;
-            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()));
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()), JSON_PRETTY_PRINT);
             $files[] = new CodeFile($formDataFile, $formData);
         }
 

@@ -5,6 +5,7 @@ Changelog
 
  - Added support for `modelGenerateJunctionRelationMode`
  - Upgraded `yiisoft/yii2-gii` to version 2.2.0
+ - moved JSON form config tog `.gii` in base directory
  
 ### 0.11.0
 
