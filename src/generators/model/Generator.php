@@ -106,6 +106,9 @@ class Generator extends \yii\gii\generators\model\Generator
 
     public $removeDuplicateRelations = false;
 
+    /** @var bool Cache relations data between model generation */
+    public $cacheRelationsData = true;
+
     /**
      * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
@@ -118,7 +121,11 @@ class Generator extends \yii\gii\generators\model\Generator
 
     public $messageCategory = 'models';
 
+    public $giiInfoPath = '.gii';
+
     protected $classNames2;
+
+    protected static $_relationsCache = null;
 
     /**
      * {@inheritdoc}
@@ -253,7 +260,16 @@ class Generator extends \yii\gii\generators\model\Generator
     public function generate()
     {
         $files = [];
-        $relations = $this->generateRelations();
+
+        if ($this->cacheRelationsData) {
+            if (static::$_relationsCache === null) {
+                static::$_relationsCache = $this->generateRelations();
+            }
+            $relations = static::$_relationsCache;
+        } else {
+            $relations = $this->generateRelations();
+        }
+
         $db = $this->getDbConnection();
 
         foreach ($this->getTableNames() as $tableName) {
@@ -323,12 +339,12 @@ class Generator extends \yii\gii\generators\model\Generator
             $suffix = str_replace(' ', '', $this->getName());
             $formDataDir = Yii::getAlias('@'.str_replace('\\', '/', $this->ns));
             $formDataFile = StringHelper::dirname($formDataDir)
-                    .'/gii'
+                    .'/'.$this->giiInfoPath.'/'
                     .'/'.$tableName.$suffix.'.json';
             $generatorForm = (clone $this);
             $generatorForm->tableName = $tableName;
 			$generatorForm->modelClass = $className;
-            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()));
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()), JSON_PRETTY_PRINT);
             $files[] = new CodeFile($formDataFile, $formData);
         }
 

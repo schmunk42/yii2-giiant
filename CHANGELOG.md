@@ -1,10 +1,20 @@
 Changelog
 =========
 
+### 1.0.0-beta
+
+- do not use auto-pluralization in views, pluralize via I18N
+- Improved model generation performance (see`modelCacheRelationsData`)
+
+### 0.13.0
+
+- fixed pivot URLs
+
 ### 0.12.0
 
  - Added support for `modelGenerateJunctionRelationMode`
  - Upgraded `yiisoft/yii2-gii` to version 2.2.0
+ - moved JSON form config tog `.gii` in base directory
  
 ### 0.11.0
 
