@@ -2,6 +2,7 @@
 
 namespace schmunk42\giiant\helpers;
 
+use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
 class SaveForm
@@ -36,7 +37,7 @@ class SaveForm
      * @return array|bool
      * @throws \ReflectionException
      */
-    public static function loadSavedForms($generatorName)
+    public static function loadSavedForms($generatorName, $giiInfoPath)
     {
         $suffix = str_replace(' ', '', $generatorName);
 
@@ -48,8 +49,8 @@ class SaveForm
          * get all possible gii directories with out validation on existing
          */
         $forms = [];
-        self::buildJson(\Yii::getAlias('@app/gii'), $forms, $suffix, 'app');
-        if ($commonGiiDir = \Yii::getAlias('@common/gii', false)) {
+        self::buildJson(\Yii::getAlias('@app/' . $giiInfoPath), $forms, $suffix, 'app');
+        if ($commonGiiDir = \Yii::getAlias('@common/' . $giiInfoPath, false)) {
             self::buildJson($commonGiiDir, $forms, $suffix,  'common');
         }
         foreach (\Yii::$app->modules as $moduleId => $module) {
@@ -66,7 +67,7 @@ class SaveForm
                 $reflector = new \ReflectionClass($module['class']);
                 $basePath = StringHelper::dirname($reflector->getFileName());
             }
-            $basePath .= '/gii';
+            $basePath .= '/' . $giiInfoPath;
 
             self::buildJson($basePath, $forms, $suffix, $moduleId);
         }
@@ -109,10 +110,10 @@ class SaveForm
      *
      * @return array
      */
-    public static function getSavedFormsListbox($generatorName)
+    public static function getSavedFormsListbox($generatorName, $giiInfoPath)
     {
         $r = ['0' => ' - '];
-        foreach (self::loadSavedForms($generatorName) as $k => $row) {
+        foreach (self::loadSavedForms($generatorName, $giiInfoPath) as $k => $row) {
             $r[$k] = $row['label'];
         }
 
@@ -124,12 +125,12 @@ class SaveForm
      *
      * @return string
      */
-    public static function getSavedFormsJs($generatorName)
+    public static function getSavedFormsJs($generatorName, $giiInfoPath)
     {
         $js = [];
 
-        foreach (self::loadSavedForms($generatorName) as $k => $row) {
-            $js[] = $k.":'".$row['jsonData']."'";
+        foreach (self::loadSavedForms($generatorName, $giiInfoPath) as $k => $row) {
+            $js[] = $k.":'".Json::encode(Json::decode($row['jsonData']))."'";
         }
 
         return 'var savedForms = {'.str_replace('\\', '\\\\', implode(',', $js)).'};';
