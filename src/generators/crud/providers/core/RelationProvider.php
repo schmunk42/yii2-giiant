@@ -226,6 +226,8 @@ EOS;
             foreach ($pks as $attr) {
                 $paramArrayItems .= "'{$attr}' => \$rel->{$attr},";
             }
+            
+            $filter = isset($pks[0]) ? "'filter' => \yii\helpers\ArrayHelper::map(${relationClass}::find()->limit(100)->orderBy([ '{$title}'=>SORT_DESC])->asArray()->all(), '${pks[0]}', '{$title}')," : '';
 
             $filter = '';
             //params for filter
@@ -241,6 +243,7 @@ EOS;
 [
     'class' => yii\\grid\\DataColumn::className(),
     'attribute' => '{$column->name}',
+    ${filter}
     'value' => function (\$model) {
         if (\$rel = \$model->{$relationProperty}) {
             return Html::a(\$rel->{$title}, ['{$route}', {$paramArrayItems}], ['data-pjax' => 0]);
