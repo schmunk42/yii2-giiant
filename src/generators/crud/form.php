@@ -15,6 +15,7 @@ use schmunk42\giiant\helpers\SaveForm;
  */
 $this->registerJs(SaveForm::getSavedFormsJs($generator->getName(), $generator->giiInfoPath), yii\web\View::POS_END);
 $this->registerJs(SaveForm::jsFillForm(), yii\web\View::POS_END);
+$this->registerJs(SaveForm::jsPopulateCrudFields(), yii\web\View::POS_END);
 echo $form->field($generator, 'savedForm')->dropDownList(
         SaveForm::getSavedFormsListbox($generator->getName(), $generator->giiInfoPath), ['onchange' => 'fillForm(this.value)']
 );
