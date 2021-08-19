@@ -24,7 +24,7 @@
     "require-dev": {
         "codeception/codeception": "^2.2",
         "codeception/specify": "^0.4",
-        "dmstr/yii2-web": "^0.4.2",
+        "dmstr/yii2-web": "^0.4.2 || ^1.0.0",
         "yiisoft/yii2-faker": "2.*",
         "rmrevin/yii2-fontawesome": "2.*",
         "insolita/yii2-adminlte-widgets": "1.1.*"
