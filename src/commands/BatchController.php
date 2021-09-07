@@ -283,6 +283,12 @@ class BatchController extends Controller
      * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
     public $modelGenerateHintsFromComments = true;
+
+    /**
+     * @var bool Generate Relations from Current Schema
+    */
+    public $modelGenerateRelationsFromCurrentSchema = true;
+
     /**
      * @var array application configuration for creating temporary applications
      */
@@ -329,6 +335,7 @@ class BatchController extends Controller
                 'modelRemoveDuplicateRelations',
                 'modelCacheRelationsData',
                 'modelGenerateRelations',
+                'modelGenerateRelationsFromCurrentSchema',
                 'modelGenerateJunctionRelationMode',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
@@ -447,6 +454,7 @@ class BatchController extends Controller
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
                 'cacheRelationsData' => $this->modelCacheRelationsData,
                 'generateRelations' => $this->modelGenerateRelations,
+                'generateRelationsFromCurrentSchema' => $this->modelGenerateRelationsFromCurrentSchema,
                 'generateJunctionRelationMode' => $this->modelGenerateJunctionRelationMode,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
