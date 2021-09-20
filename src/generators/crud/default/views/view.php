@@ -158,7 +158,8 @@ EOS;
         $showAllRecords = false;
 
         if ($relation->via !== null) {
-            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+//            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+            $pivotName = $generator->getModelByTableName($relation->via->from[0]);
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
 

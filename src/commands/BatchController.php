@@ -156,6 +156,11 @@ class BatchController extends Controller
     public $enableI18N = true;
 
     /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
+
+    /**
      * @var bool whether the entity names will be singular or the same as the table name
      */
     public $singularEntities = true;
@@ -358,7 +363,8 @@ class BatchController extends Controller
                 'crudOverwriteSearchModelClass',
                 'crudOverwriteRestControllerClass',
                 'crudOverwriteControllerClass',
-                'generateAccessFilterMigrations'
+                'generateAccessFilterMigrations',
+                'disablePluralization'
             ]
         );
     }
@@ -462,6 +468,7 @@ class BatchController extends Controller
                 'queryBaseClass' => $this->modelQueryBaseClass,
                 'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
                 'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
+                'disablePluralization' => $this->disablePluralization
             ];
             $route = 'gii/giiant-model';
 

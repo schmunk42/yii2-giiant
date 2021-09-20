@@ -99,6 +99,11 @@ class Generator extends \yii\gii\generators\model\Generator
     public $baseClassSuffix = '';
 
     /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
+
+    /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
      */
     public $tableNameMap = [];
@@ -438,6 +443,9 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generateRelationName($relations, $table, $key, $multiple)
     {
+        if ($this->disablePluralization) {
+            $multiple = false;
+        }
         return parent::generateRelationName($relations, $table, $key, $multiple);
     }
 
@@ -449,6 +457,7 @@ class Generator extends \yii\gii\generators\model\Generator
         $ns = "\\{$this->ns}\\";
         foreach ($relations as $model => $relInfo) {
             foreach ($relInfo as $relName => $relData) {
+//                var_dump($model, $relName);exit;
 
                 // removed duplicated relations, eg. klientai, klientai0
                 if ($this->removeDuplicateRelations && is_numeric(substr($relName, -1))) {
