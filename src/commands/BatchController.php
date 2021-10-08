@@ -543,6 +543,7 @@ class BatchController extends Controller
                 'formLayout' => $this->crudFormLayout,
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
                 'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
+                'disablePluralization' => $this->disablePluralization
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;

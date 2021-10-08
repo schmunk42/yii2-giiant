@@ -152,14 +152,18 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 EOS;
 
-    foreach ($generator->getModelRelations($generator->modelClass, ['has_many', 'has_one']) as $name => $relation) {
+    $relations = $generator->getModelRelations($generator->modelClass, ['has_many', 'has_one']);
+    foreach ($relations as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;
-
         if ($relation->via !== null) {
-//            $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
-            $pivotName = $generator->getModelByTableName($relation->via->from[0]);
+
+           if ($generator->disablePluralization) {
+               $pivotName = $name;
+           } else {
+               $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+           }
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
 

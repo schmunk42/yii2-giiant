@@ -139,6 +139,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $fixOptions = '';
 
     /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
+
+    /**
      * @var string form field for selecting and loading saved gii forms
      */
     public $savedForm;

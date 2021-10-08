@@ -5,6 +5,7 @@
  * @copyright Copyright (c) 2014 herzog kommunikation GmbH
  * @license http://www.phundament.com/license/
  */
+
 namespace schmunk42\giiant\generators\model;
 
 use schmunk42\giiant\helpers\SaveForm;
@@ -156,15 +157,30 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [[
-                    'generateModelClass',
-                    'useTranslatableBehavior',
-                    'generateHintsFromComments',
-                    'useBlameableBehavior',
-                    'useTimestampBehavior',
-                    'singularEntities',
-                    ], 'boolean'],
-                [['languageTableName', 'languageCodeColumn', 'createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn', 'savedForm', 'timestampBehaviorClass'], 'string'],
+                [
+                    [
+                        'generateModelClass',
+                        'useTranslatableBehavior',
+                        'generateHintsFromComments',
+                        'useBlameableBehavior',
+                        'useTimestampBehavior',
+                        'singularEntities',
+                    ],
+                    'boolean'
+                ],
+                [
+                    [
+                        'languageTableName',
+                        'languageCodeColumn',
+                        'createdByColumn',
+                        'updatedByColumn',
+                        'createdAtColumn',
+                        'updatedAtColumn',
+                        'savedForm',
+                        'timestampBehaviorClass'
+                    ],
+                    'string'
+                ],
                 [['tablePrefix'], 'safe'],
             ]
         );
@@ -207,7 +223,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'createdAtColumn',
             'updatedAtColumn',
             'timestampBehaviorClass',
-            ];
+        ];
     }
 
     /**
@@ -313,7 +329,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $this->render('model.php', $params)
             );
 
-            $modelClassFile = Yii::getAlias('@'.str_replace('\\', '/', $this->ns)).'/'.$className.'.php';
+            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php';
             if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
                     $modelClassFile,
@@ -323,8 +339,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
             if ($queryClassName) {
                 $queryClassFile = Yii::getAlias(
-                        '@'.str_replace('\\', '/', $this->queryNs)
-                    ).'/'.$queryClassName.'.php';
+                        '@' . str_replace('\\', '/', $this->queryNs)
+                    ) . '/' . $queryClassName . '.php';
                 if ($this->generateModelClass || !is_file($queryClassFile)) {
                     $params = [
                         'className' => $queryClassName,
@@ -341,14 +357,15 @@ class Generator extends \yii\gii\generators\model\Generator
              * create gii/[name]GiiantModel.json with actual form data
              */
             $suffix = str_replace(' ', '', $this->getName());
-            $formDataDir = Yii::getAlias('@'.str_replace('\\', '/', $this->ns));
+            $formDataDir = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
             $formDataFile = StringHelper::dirname($formDataDir)
-                    .'/'.$this->giiInfoPath.'/'
-                    .'/'.$tableName.$suffix.'.json';
+                . '/' . $this->giiInfoPath . '/'
+                . '/' . $tableName . $suffix . '.json';
             $generatorForm = (clone $this);
             $generatorForm->tableName = $tableName;
-			$generatorForm->modelClass = $className;
-            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()), JSON_PRETTY_PRINT);
+            $generatorForm->modelClass = $className;
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()),
+                JSON_PRETTY_PRINT);
             $files[] = new CodeFile($formDataFile, $formData);
         }
 
@@ -393,7 +410,7 @@ class Generator extends \yii\gii\generators\model\Generator
             if (($pos = strrpos($pattern, '.')) !== false) {
                 $pattern = substr($pattern, $pos + 1);
             }
-            $patterns[] = '/^'.str_replace('*', '(\w+)', $pattern).'$/';
+            $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
         }
 
         $className = $tableName;
@@ -443,10 +460,15 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generateRelationName($relations, $table, $key, $multiple)
     {
+        $suffix = '';
         if ($this->disablePluralization) {
+            if ($multiple) {
+                $suffix = 'N';
+            }
             $multiple = false;
         }
-        return parent::generateRelationName($relations, $table, $key, $multiple);
+        $relationName = parent::generateRelationName($relations, $table, $key, $multiple);
+        return $relationName . $suffix;
     }
 
     protected function generateRelations()
@@ -457,7 +479,6 @@ class Generator extends \yii\gii\generators\model\Generator
         $ns = "\\{$this->ns}\\";
         foreach ($relations as $model => $relInfo) {
             foreach ($relInfo as $relName => $relData) {
-//                var_dump($model, $relName);exit;
 
                 // removed duplicated relations, eg. klientai, klientai0
                 if ($this->removeDuplicateRelations && is_numeric(substr($relName, -1))) {
@@ -493,8 +514,8 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
-            $enum[$column->name]['func_opts_name'] = 'opts'.$column_camel_name;
-            $enum[$column->name]['func_get_label_name'] = 'get'.$column_camel_name.'ValueLabel';
+            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
+            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
             $enum[$column->name]['values'] = [];
 
             $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
@@ -502,7 +523,7 @@ class Generator extends \yii\gii\generators\model\Generator
             foreach ($enum_values as $value) {
                 $value = trim($value, "()'");
 
-                $const_name = strtoupper($column->name.'_'.$value);
+                $const_name = strtoupper($column->name . '_' . $value);
                 $const_name = preg_replace('/\s+/', '_', $const_name);
                 $const_name = str_replace(['-', '_', ' '], '_', $const_name);
                 $const_name = preg_replace('/[^A-Z0-9_]/', '', $const_name);
@@ -560,19 +581,19 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($enum as $field_name => $field_details) {
             $ea = array();
             foreach ($field_details['values'] as $field_enum_values) {
-                $ea[] = 'self::'.$field_enum_values['const_name'];
+                $ea[] = 'self::' . $field_enum_values['const_name'];
             }
-            $rules[] = "['".$field_name."', 'in', 'range' => [\n                    ".implode(
+            $rules[] = "['" . $field_name . "', 'in', 'range' => [\n                    " . implode(
                     ",\n                    ",
                     $ea
-                ).",\n                ]\n            ]";
+                ) . ",\n                ]\n            ]";
         }
 
         // inject namespace for targetClass
         $parentRules = parent::generateRules($table);
         $ns = "\\{$this->ns}\\";
         $match = "'targetClass' => ";
-        $replace = $match.$ns;
+        $replace = $match . $ns;
         foreach ($parentRules as $k => $parentRule) {
             $parentRules[$k] = str_replace($match, $replace, $parentRule);
         }
@@ -710,8 +731,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
         if ($this->useTimestampBehavior && ($createdAt || $updatedAt)) {
             return [
-                'createdAtAttribute'     => $createdAt,
-                'updatedAtAttribute'     => $updatedAt,
+                'createdAtAttribute' => $createdAt,
+                'updatedAtAttribute' => $updatedAt,
                 'timestampBehaviorClass' => $this->timestampBehaviorClass,
             ];
         }
