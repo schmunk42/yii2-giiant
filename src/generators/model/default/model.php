@@ -171,7 +171,14 @@ if(!empty($enum)){
         ]);
     }
 <?php endif; ?>
-<?php foreach ($relations as $name => $relation): ?>
+<?php
+foreach ($relations as $name => $relation):
+    $name = $relation[1] ?? $name;
+
+if (isset($relation[2]) && $relation[2] === true) {
+    $name .= 'N';
+}
+    ?>
 
     /**
      * @return \yii\db\ActiveQuery
