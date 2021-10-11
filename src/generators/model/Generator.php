@@ -463,7 +463,7 @@ class Generator extends \yii\gii\generators\model\Generator
         $suffix = '';
         if ($this->disablePluralization) {
             if ($multiple) {
-                $suffix = 'N';
+//                $suffix = 'N';
             }
             $multiple = false;
         }

@@ -152,6 +152,7 @@ trait ModelTrait
             $model = $this;
         }
 
+
         // omit schema for NOSQL models
         if (method_exists($model,'getTableSchema') && $model->getTableSchema()) {
             return $model->getTableSchema()->getColumn($attribute);

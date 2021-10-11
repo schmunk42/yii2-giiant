@@ -141,7 +141,9 @@ EOS;
             $routeIndex = $this->generator->createRelationRoute($relation, 'index');
 
             $modelClass = $this->generator->modelClass;
-            $relationProperty = lcfirst((new ModelGenerator())->generateRelationName(
+            $relationProperty = lcfirst((new ModelGenerator([
+                'disablePluralization' => $this->generator->disablePluralization
+            ]))->generateRelationName(
                     [$relation],
                     $modelClass::getTableSchema(),
                     $column->name,
@@ -315,7 +317,7 @@ EOS;
     'class'      => '{$this->generator->actionButtonClass}',
     'template'   => '$template',
     'contentOptions' => ['nowrap'=>'nowrap'],
-    'urlCreator' => function (\$action, \$model, \$key, \$index) {
+    'urlCreator' => function (\$action, \$model, \$key) {
         // using the column name as key, not mapping to 'id' like the standard generator
         \$params = is_array(\$key) ? \$key : [\$model->primaryKey()[0] => (string) \$key];
         \$params[0] = '$controller' . '/' . \$action;
@@ -330,7 +332,7 @@ EOS;
 EOS;
 
         // add action column
-        if ($this->generator->actionButtonColumnPosition != 'right') {
+        if ($this->generator->actionButtonColumnPosition !== 'right') {
             $columns .= $actionColumn . ",\n";
         }
 
@@ -363,7 +365,7 @@ EOS;
             ++$counter;
         }
 
-        if ($this->generator->actionButtonColumnPosition == 'right') {
+        if ($this->generator->actionButtonColumnPosition === 'right') {
             $columns .= $actionColumn . ",\n";
         }
 

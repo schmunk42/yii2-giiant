@@ -159,10 +159,11 @@ EOS;
         $showAllRecords = false;
         if ($relation->via !== null) {
 
+            $modelNameByTable = $generator->getModelByTableName($relation->via->from[0]);
            if ($generator->disablePluralization) {
-               $pivotName = $name;
+               $pivotName = $modelNameByTable;
            } else {
-               $pivotName = Inflector::pluralize($generator->getModelByTableName($relation->via->from[0]));
+               $pivotName = Inflector::pluralize($modelNameByTable);
            }
             $pivotRelation = $model->{'get'.$pivotName}();
             $pivotPk = key($pivotRelation->link);
@@ -181,7 +182,8 @@ EOS;
         }
 
         // relation list, add, create buttons
-        echo "<div style='position: relative'>\n<div style='position:absolute; right: 0px; top: 0px;'>\n";
+//        echo "<div style='position: relative'>\n<div style='position:absolute; right: 0px; top: 0px;'>\n";
+        echo "<div style='float:right;'>\n";
 
         echo "  <?php
         echo Html::a(
@@ -211,7 +213,7 @@ EOS;
 
         echo $addButton;
 
-        echo "</div>\n</div>\n"; #<div class='clearfix'></div>\n";
+        echo "</div>\n<div class='clearfix'></div>"; #<div class='clearfix'></div>\n";
         // render pivot grid
         if ($relation->via !== null) {
             $pjaxId = "pjax-{$pivotName}";
