@@ -11,6 +11,8 @@ use yii\helpers\StringHelper;
  * @var schmunk42\giiant\generators\model\Generator $generator
  * @var string $tableName full table name
  * @var string $className class name
+ * @var string $ns class namespace
+ * @var string $queryClassName  queryclass name
  * @var yii\db\TableSchema $tableSchema
  * @var string[] $labels list of attribute labels (name => label)
  * @var string[] $rules list of validation rules
@@ -34,6 +36,9 @@ use yii\behaviors\BlameableBehavior;
 <?php if (!empty($timestamp)): ?>
 use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 <?php endif; ?>
+<?php if($queryClassName): ?>
+use <?php echo ($generator->ns .'\\base' === $generator->queryNs ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName) ?>;
+<?php endif; ?>
 
 /**
  * This is the base-model class for table "<?= $tableName ?>".
@@ -47,19 +52,15 @@ use <?php echo $timestamp['timestampBehaviorClass']; ?>;
  * @property \<?=$ns?>\<?= $relation[1] . ($relation[2] ? '[]' : '') . ' $' . lcfirst($name) . "\n" ?>
 <?php endforeach; ?>
 <?php endif; ?>
- * @property string $aliasModel
  */
 abstract class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
-
 <?php
     $traits = $generator->baseTraits;
     if ($traits) {
         echo "use {$traits};";
     }
 ?>
-
-
 <?php
 if(!empty($enum)){
 ?>
@@ -85,6 +86,7 @@ if(!empty($enum)){
 
     /**
      * @return \yii\db\Connection the database connection used by this AR class.
+     * @throws \yii\base\InvalidConfigException
      */
     public static function getDb()
     {
@@ -190,25 +192,20 @@ if(!empty($enum)){
     {
         <?= $translation['code'] . "\n"?>
     }
-<?php endif; ?>
 
+<?php endif; ?>
 <?php if ($queryClassName): ?>
-    <?php
-    $queryClassFullName = ($generator->ns .'\\base' === $generator->queryNs) ? $queryClassName : '\\' . $generator->queryNs . '\\' . $queryClassName;
-    echo "\n";
-    ?>
     /**
      * @inheritdoc
-     * @return <?= $queryClassFullName ?> the active query used by this AR class.
+     * @return <?= $queryClassName ?> the active query used by this AR class.
      */
     public static function find()
     {
-        return new <?= $queryClassFullName ?>(get_called_class());
+        return new <?= $queryClassName ?>(static::class);
     }
 <?php endif; ?>
-
 <?php
-    foreach($enum as $column_name => $column_data){
+    foreach($enum as $column_name => $column_data):
 ?>
 
     /**
@@ -238,10 +235,5 @@ if(!empty($enum)){
 ?>
         ];
     }
-<?php
-    }
-
-
-?>
-
+<?php endforeach; ?>
 }
