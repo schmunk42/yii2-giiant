@@ -95,6 +95,11 @@ class Generator extends \yii\gii\generators\model\Generator
     public $baseClassPrefix = '';
 
     /**
+     * @var string prefix to prepend to the many many relation methods
+     */
+    public $manyManyRelationSuffix = '';
+
+    /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
      */
     public $baseClassSuffix = '';
@@ -463,7 +468,7 @@ class Generator extends \yii\gii\generators\model\Generator
         $suffix = '';
         if ($this->disablePluralization) {
             if ($multiple) {
-//                $suffix = 'N';
+                $suffix = $this->manyManyRelationSuffix;
             }
             $multiple = false;
         }

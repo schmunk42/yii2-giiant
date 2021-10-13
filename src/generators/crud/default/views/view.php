@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 
     <h1>
-        <?= '<?= Html::encode($model->'.$generator->getModelNameAttribute($generator->modelClass).") ?>\n" ?>
+        <?= '<?= Html::encode($model->' . $generator->getModelNameAttribute($generator->modelClass) . ") ?>\n" ?>
         <small>
             <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
         </small>
@@ -72,23 +72,23 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
         <!-- menu buttons -->
         <div class='pull-left'>
-            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
+            <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
             [ 'update', <?= $urlParams ?>],
             ['class' => 'btn btn-info'])
-          ?>
+            ?>
 
-            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
+            <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
             ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
             ['class' => 'btn btn-success'])
-          ?>
+            ?>
 
-            <?= '<?php '.PHP_EOL.' echo ' ?>Html::a(
+            <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
             ['create'],
             ['class' => 'btn btn-success'])
-          ?>
+            ?>
         </div>
 
         <div class="pull-right">
@@ -106,7 +106,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= $generator->partialView('detail_prepend', $model); ?>
 
-    <?= '<?php '.PHP_EOL.' echo ' ?>DetailView::widget([
+    <?= '<?php ' . PHP_EOL . ' echo ' ?>DetailView::widget([
     'model' => $model,
     'attributes' => [
     <?php
@@ -115,19 +115,20 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         if (!$format) {
             continue;
         } else {
-            echo $format.",\n";
+            echo $format . ",\n";
         }
     }
     ?>
     ],
     ]);
-  ?>
+    ?>
 
     <?= $generator->partialView('detail_append', $model); ?>
 
     <hr/>
 
-    <?= '<?php '.PHP_EOL.' echo ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> ' . <?= $generator->generateString(
+    <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> '
+    . <?= $generator->generateString(
         'Delete'
     ) ?>, ['delete', <?= $urlParams ?>],
     [
@@ -135,7 +136,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
     'data-method' => 'post',
     ]);
-  ?>
+    ?>
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
     <?php
@@ -152,68 +153,67 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
 EOS;
 
-    $relations = $generator->getModelRelations($generator->modelClass, ['has_many', 'has_one']);
-    foreach ($relations as $name => $relation) {
+    foreach ($generator->getModelRelations($generator->modelClass, ['has_many', 'has_one']) as $name => $relation) {
         echo "\n<?php \$this->beginBlock('$name'); ?>\n";
 
         $showAllRecords = false;
         if ($relation->via !== null) {
-
-            $modelNameByTable = $generator->getModelByTableName($relation->via->from[0]);
-           if ($generator->disablePluralization) {
-               $pivotName = $modelNameByTable;
-           } else {
-               $pivotName = Inflector::pluralize($modelNameByTable);
-           }
-            $pivotRelation = $model->{'get'.$pivotName}();
+            $modelName = $generator->getModelByTableName($relation->via->from[0]);
+            if ($generator->disablePluralization) {
+                $pivotName = $name;
+            } else {
+                $pivotName = Inflector::pluralize($modelName);
+            }
+            $label = Inflector::camel2words($pivotName);
+            $pivotRelation = $model->{'get' . $pivotName}();
             $pivotPk = key($pivotRelation->link);
 
             $addButton = "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-link\"></span> ' . ".$generator->generateString('Attach')." . ' ".
-                Inflector::singularize(Inflector::camel2words($name)).
-                "', ['".$generator->createRelationRoute($pivotRelation, 'create')."', '".
-                Inflector::singularize($pivotName)."'=>['".key(
+            '<span class=\"glyphicon glyphicon-link\"></span> ' . " . $generator->generateString('Attach') . " . ' " .
+                $label .
+                "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
+                $modelName . "'=>['" . key(
                     $pivotRelation->link
-                )."'=>\$model->{$model->primaryKey()[0]}]],
+                ) . "'=>\$model->{$model->primaryKey()[0]}]],
             ['class'=>'btn btn-info btn-xs']
         ) ?>\n";
         } else {
             $addButton = '';
+            $label = Inflector::camel2words($name);
         }
 
         // relation list, add, create buttons
-//        echo "<div style='position: relative'>\n<div style='position:absolute; right: 0px; top: 0px;'>\n";
         echo "<div style='float:right;'>\n";
 
         echo "  <?php
         echo Html::a(
-            '<span class=\"glyphicon glyphicon-list\"></span> ' . ".$generator->generateString('List All')." . ' ".
-            Inflector::camel2words($name)."',
-            ['".$generator->createRelationRoute($relation, 'index')."'],
+            '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
+            $label . "',
+            ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
         // TODO: support multiple PKs
 
         // pivot check
         if ($relation->via !== null) {
-            $url = "['".$generator->createRelationRoute($relation, 'create')."']";
+            $url = "['" . $generator->createRelationRoute($relation, 'create') . "']";
         } else {
-            $url = "['".$generator->createRelationRoute($relation, 'create')."', '".
+            $url = "['" . $generator->createRelationRoute($relation, 'create') . "', '" .
                 Inflector::id2camel($generator->generateRelationTo($relation),
                     '-',
-                    true)."' => ['".key($relation->link)."' => \$model->".$model->primaryKey()[0]."]]";
+                    true) . "' => ['" . key($relation->link) . "' => \$model->" . $model->primaryKey()[0] . "]]";
         }
 
-            echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . ".$generator->generateString('New')." . ' ".
-                Inflector::camel2words($name)."',
+        echo "  <?= Html::a(
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New') . " . ' " .
+            $label . "',
              {$url},
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
 
         echo $addButton;
 
-        echo "</div>\n<div class='clearfix'></div>"; #<div class='clearfix'></div>\n";
+        echo "</div>\n<div class='clearfix'></div>";
         // render pivot grid
         if ($relation->via !== null) {
             $pjaxId = "pjax-{$pivotName}";
@@ -230,14 +230,12 @@ EOS;
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a']) ?>\n";
-            echo "<?=\n ".$output."\n?>\n";
+            echo "<?=\n " . $output . "\n?>\n";
             echo "<?php Pjax::end() ?>\n";
         endif;
 
         echo "<?php \$this->endBlock() ?>\n\n";
-
         // build tab items
-        $label = Inflector::camel2words($name);
         $items .= <<<EOS
 [
     'content' => \$this->blocks['$name'],

@@ -63,7 +63,7 @@ trait ModelTrait
      *
      * return values can be filtered by types 'belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'
      *
-     * @param ActiveRecord $modelClass
+     * @param \yii\db\ActiveRecord $modelClass
      * @param array        $types
      *
      * @return array
@@ -77,11 +77,11 @@ trait ModelTrait
             'disablePluralization' => $this->disablePluralization
         ]);
         foreach ($reflector->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if (in_array(substr($method->name, 3), $this->skipRelations)) {
+            if (in_array(substr($method->name, 3), $this->skipRelations, true)) {
                 continue;
             }
             // look for getters
-            if (substr($method->name, 0, 3) !== 'get') {
+            if (strpos($method->name, 'get') !== 0) {
                 continue;
             }
             // skip class specific getters
@@ -119,7 +119,7 @@ trait ModelTrait
                         $relationType = 'has_many';
                     }
                     // if types is empty, return all types -> no filter
-                    if ((count($types) == 0) || in_array($relationType, $types)) {
+                    if ((count($types) === 0) || in_array($relationType, $types, true)) {
                         if ($this->disablePluralization) {
                             $name = str_replace('get','', $method->name);
                         } else {
@@ -186,7 +186,6 @@ trait ModelTrait
                 '-',
                 true
             ).'/'.$action;
-
         return $route;
     }
 

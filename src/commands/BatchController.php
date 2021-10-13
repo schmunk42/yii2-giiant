@@ -161,6 +161,11 @@ class BatchController extends Controller
     public $disablePluralization = false;
 
     /**
+     * @var string prefix to prepend to the many many relation methods
+     */
+    public $modelManyManyRelationSuffix = '';
+
+    /**
      * @var bool whether the entity names will be singular or the same as the table name
      */
     public $singularEntities = true;
@@ -468,7 +473,8 @@ class BatchController extends Controller
                 'queryBaseClass' => $this->modelQueryBaseClass,
                 'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
                 'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
-                'disablePluralization' => $this->disablePluralization
+                'disablePluralization' => $this->disablePluralization,
+                'manyManyRelationSuffix' => $this->modelManyManyRelationSuffix
             ];
             $route = 'gii/giiant-model';
 
