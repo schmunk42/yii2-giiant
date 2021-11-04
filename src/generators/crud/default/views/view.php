@@ -1,15 +1,12 @@
 <?php
+/**
+ * @var yii\web\View $this
+ * @var schmunk42\giiant\generators\crud\Generator $generator
+ * @var \yii\db\ActiveRecord $model
+ */
 
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-
-/*
- * @var yii\web\View $this
- * @var schmunk42\giiant\generators\crud\Generator $generator
- */
-
-/** @var \yii\db\ActiveRecord $model */
-/** @var $generator \schmunk42\giiant\generators\crud\Generator */
 
 ## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
@@ -20,11 +17,11 @@ if (empty($safeAttributes)) {
     $safeAttributes = $model->safeAttributes();
 }
 if (empty($safeAttributes)) {
-    $safeAttributes = $model->getTableSchema()->columnNames;
+    $safeAttributes = $model::getTableSchema()->columnNames;
 }
 
-$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
 $className = $model::className();
+$modelName = Inflector::camel2words(StringHelper::basename($className));
 $urlParams = $generator->generateUrlParams();
 
 echo "<?php\n";
@@ -43,49 +40,36 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
+$this->title = <?= $generator->generateString($modelName) ?>;
+$this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString($modelName) ?>, 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
-    <!-- flash message -->
-    <?= "<?php if (\\Yii::\$app->session->getFlash('deleteError') !== null) : ?>
-        <span class=\"alert alert-info alert-dismissible\" role=\"alert\">
-            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
-            <span aria-hidden=\"true\">&times;</span></button>
-            <?= \\Yii::\$app->session->getFlash('deleteError') ?>
-        </span>
-    <?php endif; ?>" ?>
-
-
     <h1>
         <?= '<?= Html::encode($model->' . $generator->getModelNameAttribute($generator->modelClass) . ") ?>\n" ?>
-        <small>
-            <?= "<?= Yii::t('{$generator->modelMessageCategory}', '{$modelName}') ?>\n" ?>
-        </small>
+        <small><?= '<?= ' . $generator->generateString($modelName) . ' ?>' ?></small>
     </h1>
-
 
     <div class="clearfix crud-navigation">
 
         <!-- menu buttons -->
         <div class='pull-left'>
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
-            '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit') ?>,
+            '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit ' . $modelName) ?>,
             [ 'update', <?= $urlParams ?>],
             ['class' => 'btn btn-info'])
             ?>
 
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
-            '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy') ?>,
+            '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy ' . $modelName) ?>,
             ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
             ['class' => 'btn btn-success'])
             ?>
 
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
-            '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New') ?>,
+            '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New ' . $modelName) ?>,
             ['create'],
             ['class' => 'btn btn-success'])
             ?>
@@ -129,7 +113,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> '
     . <?= $generator->generateString(
-        'Delete'
+        'Delete ' . $modelName
     ) ?>, ['delete', <?= $urlParams ?>],
     [
     'class' => 'btn btn-danger',
@@ -169,9 +153,8 @@ EOS;
             $pivotPk = key($pivotRelation->link);
 
             $addButton = "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-link\"></span> ' . " . $generator->generateString('Attach') . " . ' " .
-                $label .
-                "', ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
+            '<span class=\"glyphicon glyphicon-link\"></span> ' . " . $generator->generateString('Attach ' . $label) .
+                ", ['" . $generator->createRelationRoute($pivotRelation, 'create') . "', '" .
                 $modelName . "'=>['" . key(
                     $pivotRelation->link
                 ) . "'=>\$model->{$model->primaryKey()[0]}]],
@@ -187,8 +170,7 @@ EOS;
 
         echo "  <?php
         echo Html::a(
-            '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All') . " . ' " .
-            $label . "',
+            '<span class=\"glyphicon glyphicon-list\"></span> ' . " . $generator->generateString('List All ' . $label) . ",
             ['" . $generator->createRelationRoute($relation, 'index') . "'],
             ['class'=>'btn text-muted btn-xs']
         ) ?>\n";
@@ -205,8 +187,7 @@ EOS;
         }
 
         echo "  <?= Html::a(
-            '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New') . " . ' " .
-            $label . "',
+            '<span class=\"glyphicon glyphicon-plus\"></span> ' . " . $generator->generateString('New ' . $label) . ",
              {$url},
             ['class'=>'btn btn-success btn-xs']
         ); ?>\n";
@@ -236,10 +217,11 @@ EOS;
 
         echo "<?php \$this->endBlock() ?>\n\n";
         // build tab items
+        $itemLabel = $generator->generateString($label);
         $items .= <<<EOS
 [
     'content' => \$this->blocks['$name'],
-    'label'   => '<small>$label <span class="badge badge-default">'. \$model->get{$name}()->count() . '</span></small>',
+    'label'   => '<small>' . $itemLabel .' <span class="badge badge-default">'. \$model->get{$name}()->count() . '</span></small>',
     'active'  => false,
 ],\n
 EOS;

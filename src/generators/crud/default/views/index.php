@@ -95,10 +95,8 @@ echo '?>';
     <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}.plural', '{$modelName}') ?>\n" ?>
-        <small>
-            <?= "<?= Yii::t('{$generator->messageCategory}', 'List') ?>\n" ?>
-        </small>
+        <?= "<?=" . $generator->generateString($modelName) . "?>\n" ?>
+        <small><?= "<?=" . $generator->generateString('List') . "?>\n" ?></small>
     </h1>
     <div class="clearfix crud-navigation">
 <?php
@@ -111,7 +109,7 @@ echo "?>\n"
 ?>
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
-                'New'
+                'New ' . $modelName
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
@@ -120,7 +118,7 @@ echo "?>\n"
 ?>
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
-                'New'
+                'New ' . $modelName
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
