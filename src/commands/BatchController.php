@@ -250,6 +250,11 @@ class BatchController extends Controller
     public $crudActionButtonColumnPosition = 'left';
 
     /**
+     * @var string Class name of the model generator
+     */
+    public $modelGeneratorClass = 'schmunk42\giiant\generators\model\Generator';
+
+    /**
      * @var bool indicates whether to generate ActiveQuery for the ActiveRecord class
      */
     public $modelGenerateQuery = true;
@@ -367,7 +372,7 @@ class BatchController extends Controller
     {
         $this->appConfig = $this->getYiiConfiguration();
         $this->appConfig['id'] = 'temp';
-        $this->modelGenerator = new ModelGenerator(['db' => $this->modelDb]);
+        $this->modelGenerator = Yii::createObject($this->modelGeneratorClass, ['db' => $this->modelDb]);
 
         if ($this->tables && $this->skipTables) {
             $this->stderr("Only one property of 'tables' or 'skipTables' can be set." . PHP_EOL);
