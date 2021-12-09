@@ -130,7 +130,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     $items = <<<EOS
 [
-    'label'   => '<b class=""># '.Html::encode(\$model->{$model->primaryKey()[0]}).'</b>',
+    'label'   => '<b>' . \Yii::t('{$generator->messageCategory}', '# {primaryKey}', ['primaryKey' => Html::encode(\$model->{$model->primaryKey()[0]})]) . '</b>',
     'content' => \$this->blocks['{$generator->modelClass}'],
     'active'  => true,
 ],
