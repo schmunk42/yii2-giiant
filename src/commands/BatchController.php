@@ -275,6 +275,11 @@ class BatchController extends Controller
     public $crudFixOutput = false;
 
     /**
+     * @var int maximum number of columns to show in grid
+     */
+    public $crudGridMaxColumns = 8;
+
+    /**
      * @var string the namespace of the ActiveQuery class to be generated
      */
     public $modelQueryNamespace = 'app\models\query';
@@ -523,7 +528,6 @@ class BatchController extends Controller
                 'overwriteSearchModelClass' => $this->crudOverwriteSearchModelClass,
                 'overwriteRestControllerClass' => $this->crudOverwriteRestControllerClass,
                 'overwriteControllerClass' => $this->crudOverwriteControllerClass,
-                'template' => $this->template,
                 'modelClass' => $this->modelNamespace . '\\' . $name,
                 'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
                 'controllerNs' => $this->crudControllerNamespace,
@@ -549,7 +553,8 @@ class BatchController extends Controller
                 'formLayout' => $this->crudFormLayout,
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
                 'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
-                'disablePluralization' => $this->disablePluralization
+                'disablePluralization' => $this->disablePluralization,
+                'gridMaxColumns' => $this->crudGridMaxColumns
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
