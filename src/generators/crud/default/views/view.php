@@ -10,7 +10,11 @@ use yii\helpers\StringHelper;
 
 ## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
-$model->setScenario('crud');
+if (array_key_exists('crud-view', $model->scenarios())) {
+    $model->setScenario('crud-view');
+} else {
+    $model->setScenario('crud');
+}
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
     $model->setScenario('default');

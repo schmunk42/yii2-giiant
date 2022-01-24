@@ -2,7 +2,7 @@
 
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
@@ -10,14 +10,18 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 ## TODO: move to generator (?); cleanup
 $model = new $generator->modelClass();
-$model->setScenario('crud');
+if (array_key_exists('crud-form', $model->scenarios())) {
+    $model->setScenario('crud-form');
+} else {
+    $model->setScenario('crud');
+}
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
     $model->setScenario('default');
     $safeAttributes = $model->safeAttributes();
 }
 if (empty($safeAttributes)) {
-    $safeAttributes = $model->getTableSchema()->columnNames;
+    $safeAttributes = $model::getTableSchema()->columnNames;
 }
 
 echo "<?php\n";

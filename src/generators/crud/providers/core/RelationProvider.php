@@ -337,14 +337,18 @@ EOS;
         }
 
         // prepare grid column formatters
-        $model->setScenario('crud');
+        if (array_key_exists('crud-list', $model->scenarios())) {
+            $model->setScenario('crud-list');
+        } else {
+            $model->setScenario('crud');
+        }
         $safeAttributes = $model->safeAttributes();
         if (empty($safeAttributes)) {
             $safeAttributes = $model->getTableSchema()->columnNames;
         }
         foreach ($safeAttributes as $attr) {
 
-            // max seven columns
+            // max defined amount of columns
             if ($counter > $this->generator->gridRelationMaxColumns) {
                 continue;
             }
@@ -353,12 +357,12 @@ EOS;
                 continue;
             }
             // don't show current model
-            if (key($relation->link) == $attr) {
+            if (key($relation->link) === $attr) {
                 continue;
             }
 
             $code = $this->generator->columnFormat($attr, $model);
-            if ($code == false) {
+            if ($code === false) {
                 continue;
             }
             $columns .= $code.",\n";

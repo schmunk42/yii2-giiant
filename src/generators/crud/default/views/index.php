@@ -3,9 +3,10 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var schmunk42\giiant\generators\crud\Generator $generator
+ * @var array $permisions
  */
 
 $urlParams = $generator->generateUrlParams();
@@ -13,7 +14,11 @@ $nameAttribute = $generator->getNameAttribute();
 
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
-$model->setScenario('crud');
+if (array_key_exists('crud-list', $model->scenarios())) {
+    $model->setScenario('crud-list');
+} else {
+    $model->setScenario('crud');
+}
 
 $baseName = StringHelper::basename($model::className());
 $modelName = Inflector::camel2words($baseName);
@@ -24,7 +29,7 @@ if (empty($safeAttributes)) {
     $model = new $generator->modelClass();
     $safeAttributes = $model->safeAttributes();
     if (empty($safeAttributes)) {
-        $safeAttributes = $model->getTableSchema()->columnNames;
+        $safeAttributes = $model::getTableSchema()->columnNames;
     }
 }
 
@@ -144,7 +149,7 @@ echo "?>\n"
                         true
                     );
                 $route = $generator->createRelationRoute($relation, 'index');
-                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
+                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-');
                 $items .= <<<PHP
             [
                 'url' => ['{$route}'],
@@ -222,25 +227,25 @@ PHP;
 
         $count = 0;
         // action buttons first
-        if ($generator->actionButtonColumnPosition != 'right') {
+        if ($generator->actionButtonColumnPosition !== 'right') {
             echo $actionButtonColumn;
             echo "\n"; // code-formatting
         }
+
 
         foreach ($safeAttributes as $attribute) {
             $format = trim($generator->columnFormat($attribute, $model));
             if ($format == false) {
                 continue;
             }
-            if (++$count < $generator->gridMaxColumns) {
+            if (++$count <= $generator->gridMaxColumns) {
                 echo "\t\t\t" . str_replace("\n", "\n\t\t\t", $format) . ",\n";
             } else {
                 echo "\t\t\t/*" . str_replace("\n", "\n\t\t\t", $format) . ",*/\n";
             }
         }
-
         ?>
-        <?php if ($generator->actionButtonColumnPosition == 'right') {
+        <?php if ($generator->actionButtonColumnPosition === 'right') {
             echo $actionButtonColumn;
             echo "\n"; // code-formatting
         } ?>
