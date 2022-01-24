@@ -40,9 +40,9 @@ use dmstr\bootstrap\Tabs;
 */
 $copyParams = $model->attributes;
 
-$this->title = <?= $generator->generateString($modelName) ?>;
-$this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString($modelName) ?>, 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getNameAttribute() ?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getModelNameAttribute($model)?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">

@@ -5,6 +5,7 @@ Changelog
 
 - do not use auto-pluralization in views, pluralize via I18N
 - Improved model generation performance (see`modelCacheRelationsData`)
+- updated php-cs-fixer to version 3
 
 ### 0.13.0
 
