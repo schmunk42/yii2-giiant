@@ -97,7 +97,7 @@ echo '?>';
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-    <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
+    <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a']) ?>\n"; ?>
 
     <h1>
         <?= "<?=" . $generator->generateString($modelName) . "?>\n" ?>
