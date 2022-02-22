@@ -351,6 +351,7 @@ EOS;
         if (empty($safeAttributes)) {
             $safeAttributes = $model->getTableSchema()->columnNames;
         }
+
         foreach ($safeAttributes as $attr) {
 
             // max defined amount of columns
@@ -362,7 +363,7 @@ EOS;
                 continue;
             }
             // don't show current model
-            if (key($relation->link) === $attr) {
+            if (key($relation->link) === $attr && !in_array($attr, $safeAttributes, true)) {
                 continue;
             }
 
