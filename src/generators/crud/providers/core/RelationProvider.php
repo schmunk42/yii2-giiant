@@ -5,6 +5,7 @@
  * Date: 14.03.14
  * Time: 10:21.
  */
+
 namespace schmunk42\giiant\generators\crud\providers\core;
 
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
@@ -54,7 +55,8 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
         if (is_string($column)) {
             return null;
         }
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to', 'has_one']);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column,
+            ['belongs_to', 'has_one']);
         if ($relation) {
             switch (true) {
                 case !$relation->multiple:
@@ -128,7 +130,8 @@ EOS;
             //return null; #TODO: double check with primary keys not named `id` of non-pivot tables
         }
 
-        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column, ['belongs_to', 'has_one']);
+        $relation = $this->generator->getRelationByColumn($this->generator->modelClass, $column,
+            ['belongs_to', 'has_one']);
         if ($relation) {
             if ($relation->multiple) {
                 return;
@@ -144,11 +147,11 @@ EOS;
             $relationProperty = lcfirst((new ModelGenerator([
                 'disablePluralization' => $this->generator->disablePluralization
             ]))->generateRelationName(
-                    [$relation],
-                    $modelClass::getTableSchema(),
-                    $column->name,
-                    $relation->multiple
-                ));
+                [$relation],
+                $modelClass::getTableSchema(),
+                $column->name,
+                $relation->multiple
+            ));
             $relationModel = new $relation->modelClass();
             $relationModelName = StringHelper::basename($modelClass);
             $pks = $relationModel->primaryKey();
@@ -216,11 +219,11 @@ EOS;
             $method = __METHOD__;
             $modelClass = $this->generator->modelClass;
             $relationProperty = lcfirst((new ModelGenerator())->generateRelationName(
-                    [$relation],
-                    $modelClass::getTableSchema(),
-                    $column->name,
-                    $relation->multiple
-                ));
+                [$relation],
+                $modelClass::getTableSchema(),
+                $column->name,
+                $relation->multiple
+            ));
             $relationModel = new $relation->modelClass();
             $pks = $relationModel->primaryKey();
             $paramArrayItems = '';
@@ -310,7 +313,7 @@ EOS;
         }
 
         $reflection = new \ReflectionClass($relation->modelClass);
-        $controller = $this->generator->pathPrefix.Inflector::camel2id($reflection->getShortName(), '-', true);
+        $controller = $this->generator->pathPrefix . Inflector::camel2id($reflection->getShortName(), '-', true);
         $relKey = key($relation->link);
         $actionColumn = <<<EOS
 [
@@ -337,7 +340,9 @@ EOS;
         }
 
         // prepare grid column formatters
-        if (array_key_exists('crud-list', $model->scenarios())) {
+        if (array_key_exists('crud-relation-list', $model->scenarios())) {
+            $model->setScenario('crud-relation-list');
+        } else if (array_key_exists('crud-list', $model->scenarios())) {
             $model->setScenario('crud-list');
         } else {
             $model->setScenario('crud');
@@ -365,7 +370,7 @@ EOS;
             if ($code === false) {
                 continue;
             }
-            $columns .= $code.",\n";
+            $columns .= $code . ",\n";
             ++$counter;
         }
 
