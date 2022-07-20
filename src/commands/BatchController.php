@@ -4,6 +4,7 @@ namespace schmunk42\giiant\commands;
 
 use schmunk42\giiant\generators\crud\Generator;
 use schmunk42\giiant\generators\model\Generator as ModelGenerator;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -463,13 +464,9 @@ class BatchController extends Controller
             $route = 'gii/giiant-model';
 
             $app = \Yii::$app;
-            $temp = new \yii\console\Application($this->appConfig);
+            $temp = new Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
-            if (\Yii::$container->has($this->modelDb)) {
-                \Yii::$container->get($this->modelDb)->close();
-            } else {
-                $temp->get($this->modelDb)->close();
-            }
+            $this->closeTempAppConnections($temp);
             unset($temp);
             \Yii::$app = $app;
             \Yii::$app->log->logger->flush(true);
@@ -536,8 +533,9 @@ class BatchController extends Controller
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
-            $temp = new \yii\console\Application($this->appConfig);
+            $temp = new Application($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
+            $this->closeTempAppConnections($temp);
             unset($temp);
             \Yii::$app = $app;
             \Yii::$app->log->logger->flush(true);
@@ -581,6 +579,35 @@ class BatchController extends Controller
         echo \Yii::getRootAlias($ns);
         $dir = \Yii::getAlias('@' . str_replace('\\', '/', ltrim($ns, '\\')));
         @mkdir($dir);
+    }
+
+    /**
+     * close modelDb and all defined yii\db\Connection components to prevent 'too many connections'
+     *
+     * @param $app
+     *
+     * @return void
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\di\NotInstantiableException
+     */
+    private function closeTempAppConnections(Application $app)
+    {
+        // if modelDb is set via DI - close
+        if (\Yii::$container->has($this->modelDb)) {
+            \Yii::$container->get($this->modelDb)->close();
+        } elseif($app->get($this->modelDb)) {
+            $app->get($this->modelDb)->close();
+        }
+        // and then we close all defined yii\db\Connection components to be on the safe side,
+        // since we don't know if there are any other than the "known" modelDb
+        if (isset($app->components)) {
+            foreach ($app->components as $cid => $component) {
+                $cObj = $app->get($cid);
+                if ($cObj instanceof \yii\db\Connection) {
+                    $cObj->close();
+                }
+            }
+        }
     }
 }
 
