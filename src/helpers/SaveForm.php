@@ -57,7 +57,7 @@ class SaveForm
             /*
              * get module base path
              */
-            if (method_exists($module, 'getBasePath')) {
+            if (!is_array($module) && method_exists($module, 'getBasePath')) {
                 $basePath = $module->getBasePath();
             } else {
                 if(!class_exists($module['class'])){
