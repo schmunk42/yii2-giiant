@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tobias
- * Date: 09.06.15
- * Time: 22:40.
+ * Deprecated. Use schmunk42\giiant\generators\crud\callbacks\kdn\Jsoneditor instead
  */
 namespace schmunk42\giiant\generators\crud\callbacks\devgroup;
 
