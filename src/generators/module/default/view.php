@@ -23,7 +23,7 @@ echo ListView::widget([
             'head' => $data['head'],
             'type' => $data['color'],
             'text' => $data['label'],
-            'footer' => 'Manage',
+            'footer' => <?php echo $generator->generateString('Manage') ?>,
             'footer_link' => $data['route'],
             'icon' => 'fa fa-' . $data['icon']
         ]);
