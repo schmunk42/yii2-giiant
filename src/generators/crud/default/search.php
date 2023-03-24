@@ -61,7 +61,16 @@ return Model::scenarios();
 */
 public function search($params)
 {
-$query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
+$query = <?= $modelAlias ?? $modelClass ?>::find();
+
+<?php if ($generator->hasTranslationRelation): ?>
+    $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(basename($modelClass))?>_id');
+<?php endif; ?>
+
+<?php if ($generator->hasTranslationMetaRelation): ?>
+    $query->leftJoin(<?= $generator->translationMetaModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationMetaModelClass?>::tableName() . '.<?= mb_strtolower(basename($modelClass))?>_id');
+<?php endif; ?>
+
 
 $dataProvider = new ActiveDataProvider([
 'query' => $query,
@@ -74,6 +83,9 @@ if (!$this->validate()) {
 // $query->where('0=1');
 return $dataProvider;
 }
+<?php if ($generator->hasTranslationRelation): ?>
+    $query->groupBy(<?= $modelAlias ?? $modelClass ?>::tableName() . '.id');
+<?php endif; ?>
 
 <?= implode("\n        ", $searchConditions) ?>
 

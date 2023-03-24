@@ -310,13 +310,15 @@ class BatchController extends Controller
     */
     public $modelGenerateRelationsFromCurrentSchema = true;
 
+    public $modelTranslationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false];
+
     /**
      * @var array application configuration for creating temporary applications
      */
     protected $appConfig;
 
     /**
-     * @var instance of class schmunk42\giiant\generators\model\Generator
+     * @var \schmunk42\giiant\generators\model\Generator instance of class schmunk42\giiant\generators\model\Generator
      */
     protected $modelGenerator;
 
@@ -357,6 +359,7 @@ class BatchController extends Controller
                 'modelCacheRelationsData',
                 'modelGenerateRelations',
                 'modelGenerateRelationsFromCurrentSchema',
+                'modelTranslationTableAdditions',
                 'modelGenerateJunctionRelationMode',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
@@ -477,6 +480,7 @@ class BatchController extends Controller
                 'cacheRelationsData' => $this->modelCacheRelationsData,
                 'generateRelations' => $this->modelGenerateRelations,
                 'generateRelationsFromCurrentSchema' => $this->modelGenerateRelationsFromCurrentSchema,
+                'translationTableAdditions' => $this->modelTranslationTableAdditions,
                 'generateJunctionRelationMode' => $this->modelGenerateJunctionRelationMode,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,

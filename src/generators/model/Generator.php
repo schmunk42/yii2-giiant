@@ -139,6 +139,24 @@ class Generator extends \yii\gii\generators\model\Generator
     protected static $_relationsCache = null;
 
     /**
+     * the names given here are used as suffixes to the base_translation table name, eg.
+     *
+     * $languageTableName = '{table}_translation';
+     * $translationTableAdditions = ['meta'];
+     *
+     * will process {table}_translation AND {table}_translation_meta
+     *
+     * to be able to set the 'fallbackLanguage' flag fot the behaviour of this translation, items can be arrays like:
+     *
+     * $translationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false]
+     *
+     * if fallbackLanguage is not specified, 'true' is used as default
+     *
+     * @var array af additional translation tables
+     */
+    public $translationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false];
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -627,10 +645,10 @@ class Generator extends \yii\gii\generators\model\Generator
     public function validateDb()
     {
         if (Yii::$container->has($this->db)) {
-            return true;
-        } else {
-            return parent::validateDb();
+            return;
         }
+
+        parent::validateDb();
     }
 
     /**
@@ -642,11 +660,65 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @param $relations all database's relations
+     * @return array associative array containing the extracted relations and the modified translations (from parent) + translations_meta fields if exists
+     */
+    protected function extractTranslations($tableName, $relations) {
+
+        $translations = [
+            'relations' => $relations,
+            'translations' => [],
+        ];
+
+        # check if we have base translations
+        $baseTranslations = $this->extractBaseTranslations($tableName, $relations);
+        // we do not want timestamp columns as translatable fields
+        $unsetFields = [$this->createdAtColumn, $this->updatedAtColumn, $this->createdByColumn, $this->updatedByColumn];
+        if (!empty($baseTranslations['translations']['fields'])) {
+            $translations = $baseTranslations;
+            $translations['translations']['fields'] = array_diff($baseTranslations['translations']['fields'], $unsetFields);
+        }
+
+        $baseLanguageTableName = $this->languageTableName;
+        foreach ($this->translationTableAdditions as $addition)  {
+
+            if (is_array($addition)) {
+                $additionName = $addition['name'];
+                $additionFallbackLanguage = $addition['fallbackLanguage'] ?? true;
+            } else {
+                $additionName = $addition;
+                $additionFallbackLanguage = true;
+            }
+
+            # in the following runs we must use possibly modified relations from previous extractTranslations() call
+            $prevRelations = $translations['relations'];
+            # to be able to reuse extractTranslations() set $this->languageTableName for one method call
+            $this->languageTableName .= '_' . $additionName;
+            # here we must use possibly modified relations from previous extractTranslations() call
+            $additionTranslations = $this->extractBaseTranslations($tableName, $prevRelations);
+
+            # if we get meta-translations fields, overwrite relations,
+            # otherwise we get the relation as <table_name>TranslationMetas and translationMetas
+            if (!empty($additionTranslations['translations']['fields'])) {
+                $translations['relations'] = $additionTranslations['relations'];
+                $translations['translations']['additions'][$additionName]['fields'] = array_diff($additionTranslations['translations']['fields'], $unsetFields);
+                $translations['translations']['additions'][$additionName]['code'] = $additionTranslations['translations']['code'];
+                # set flag if this addition should use the fallback language feature
+                $translations['translations']['additions'][$additionName]['fallbackLanguage'] = $additionFallbackLanguage;
+            }
+            # reset languageTableName to default value (without prefix)
+            $this->languageTableName = $baseLanguageTableName;
+        }
+
+        return $translations;
+
+    }
+
+    /**
+     * @param array $relations All database's relations
      *
      * @return array associative array containing the extracted relations and the modified translations
      */
-    protected function extractTranslations($tableName, $relations)
+    protected function extractBaseTranslations($tableName, $relations)
     {
         $langTableName = str_replace('{{table}}', $tableName, $this->languageTableName);
 
@@ -734,7 +806,18 @@ class Generator extends \yii\gii\generators\model\Generator
         $createdAt = $table->getColumn($this->createdAtColumn) !== null ? $this->createdAtColumn : false;
         $updatedAt = $table->getColumn($this->updatedAtColumn) !== null ? $this->updatedAtColumn : false;
 
+        #var_dump($table->getColumn($this->createdAtColumn)); exit;
         if ($this->useTimestampBehavior && ($createdAt || $updatedAt)) {
+            // check column type, if datetime set NOW() as Value
+            if ($table->getColumn($this->createdAtColumn)->type === 'datetime') {
+                return [
+                    'value' => 'new \yii\db\Expression(\'NOW()\')',
+                    'createdAtAttribute' => $createdAt,
+                    'updatedAtAttribute' => $updatedAt,
+                    'timestampBehaviorClass' => $this->timestampBehaviorClass,
+                ];
+
+            }
             return [
                 'createdAtAttribute' => $createdAt,
                 'updatedAtAttribute' => $updatedAt,

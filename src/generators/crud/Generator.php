@@ -163,6 +163,8 @@ class Generator extends \yii\gii\generators\crud\Generator
 
     private $_p = [];
 
+    public $translateRelations = ['translation', 'translation_meta'];
+
     /**
      * {@inheritdoc}
      */
@@ -370,12 +372,31 @@ class Generator extends \yii\gii\generators\crud\Generator
         $viewPath = $this->getViewPath();
         $templatePath = $this->getTemplatePath().'/views';
 
+        $model = Yii::createObject($this->modelClass);
+        if (array_key_exists('crud-form', $model->scenarios())) {
+            $model->setScenario('crud-form');
+        } else {
+            $model->setScenario('crud');
+        }
+
+        $safeAttributes = $model->safeAttributes();
+        if (empty($safeAttributes)) {
+            $model->setScenario('default');
+            $safeAttributes = $model->safeAttributes();
+        }
+        if (empty($safeAttributes)) {
+            $safeAttributes = $model::getTableSchema()->columnNames;
+        }
+
         foreach (scandir($templatePath) as $file) {
             if (empty($this->searchModelClass) && $file === '_search.php') {
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", ['permisions' => $permisions]));
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", [
+                    'model' => $model,
+                    'safeAttributes' => $safeAttributes
+                ]));
             }
         }
 
@@ -466,5 +487,83 @@ class Generator extends \yii\gii\generators\crud\Generator
             default:
                 return var_export($var, true);
         }
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function generateSearchRules()
+    {
+
+        $rules = parent::generateSearchRules();
+        $model = \Yii::createObject($this->modelClass);
+        foreach ($model->behaviors() as $key => $behavior) {
+            if (!empty($behavior['translationAttributes'])) {
+                $rules[] = "[['" . implode("', '", $behavior['translationAttributes']) . "'], 'safe']";
+            }
+        }
+        return $rules;
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function generateSearchConditions()
+    {
+
+        $searchConditions = parent::generateSearchConditions();
+        $model = \Yii::createObject($this->modelClass);
+        foreach ($model->behaviors() as $key => $behavior) {
+            if (!empty($behavior['translationAttributes'])) {
+                foreach ($behavior['translationAttributes'] as $translationAttribute) {
+                    $searchConditions[] = "\$query->andFilterWhere(['like','{$translationAttribute}', \$this->$translationAttribute]);";
+                }
+            }
+        }
+        return $searchConditions;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getTranslationRelationModels()
+    {
+        $translationRelationModels = [];
+        foreach ($this->translateRelations as $translateRelation) {
+            $translationRelationModels[] = $this->modelClass . Inflector::camelize($translateRelation);
+        }
+        return $translationRelationModels;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslationModelClass() {
+        return '\\' . $this->modelClass . Inflector::camelize('translation');
+    }
+    /**
+     * @return string
+     */
+    public function getTranslationMetaModelClass() {
+        return '\\' . $this->modelClass . Inflector::camelize('translation_meta');
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getHasTranslationRelation() {
+        return isset(\Yii::createObject($this->modelClass)->behaviors()['translation']);
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getHasTranslationMetaRelation() {
+        return isset(\Yii::createObject($this->modelClass)->behaviors()['translation_meta']);
     }
 }

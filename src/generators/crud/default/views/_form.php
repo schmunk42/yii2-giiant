@@ -5,31 +5,16 @@ use yii\helpers\StringHelper;
 /**
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
+ * @var \yii\db\ActiveRecord $model
+ * @var array $safeAttributes
  */
-
-/** @var \yii\db\ActiveRecord $model */
-## TODO: move to generator (?); cleanup
-$model = new $generator->modelClass();
-if (array_key_exists('crud-form', $model->scenarios())) {
-    $model->setScenario('crud-form');
-} else {
-    $model->setScenario('crud');
-}
-$safeAttributes = $model->safeAttributes();
-if (empty($safeAttributes)) {
-    $model->setScenario('default');
-    $safeAttributes = $model->safeAttributes();
-}
-if (empty($safeAttributes)) {
-    $safeAttributes = $model::getTableSchema()->columnNames;
-}
 
 echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use \dmstr\bootstrap\Tabs;
+use yii\bootstrap\Tabs;
 use yii\helpers\StringHelper;
 
 /**
@@ -55,7 +40,6 @@ use yii\helpers\StringHelper;
              'template' => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
              'horizontalCssClasses' => [
                  'label' => 'col-sm-2',
-                 #'offset' => 'col-sm-offset-4',
                  'wrapper' => 'col-sm-8',
                  'error' => '',
                  'hint' => '',
@@ -67,28 +51,9 @@ use yii\helpers\StringHelper;
 
     <div class="">
         <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
-
-        <p>
-            <?php
-            foreach ($safeAttributes as $attribute) {
-                echo "\n\n<!-- attribute $attribute -->";
-                $prepend = $generator->prependActiveField($attribute, $model);
-                $field = $generator->activeField($attribute, $model);
-                $append = $generator->appendActiveField($attribute, $model);
-
-                if ($prepend) {
-                    echo "\n\t\t\t".$prepend;
-                }
-                if ($field) {
-                    echo "\n\t\t\t<?= ".$field.' ?>';
-                }
-                if ($append) {
-                    echo "\n\t\t\t".$append;
-                }
-            }
-            ?>
-
-        </p>
+        <div class="form-fields">
+            <?php echo "<?php echo \$this->render('_form-fields', ['form' => \$form, 'model' => \$model])?>\n"?>
+        </div>
         <?php echo '<?php $this->endBlock(); ?>'; ?>
 
         <?php

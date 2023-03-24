@@ -36,7 +36,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\DetailView;
 use yii\widgets\Pjax;
-use dmstr\bootstrap\Tabs;
+use yii\bootstrap\Tabs;
 
 /**
 * @var yii\web\View $this
