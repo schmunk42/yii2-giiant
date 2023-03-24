@@ -101,7 +101,7 @@ if(!empty($enum)){
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(), [
 <?php if (!empty($blameable)): ?>
             [
                 'class' => BlameableBehavior::className(),
@@ -137,7 +137,7 @@ if(!empty($enum)){
                 ],
             ],
 <?php endif; ?>
-        ];
+        ]);
     }
 <?php endif; ?>
 
@@ -154,11 +154,11 @@ if(!empty($enum)){
      */
     public function attributeLabels()
     {
-        return [
+        return ArrayHelper::merge(parent::attributeLabels(), [
 <?php foreach ($labels as $name => $label): ?>
             <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
 <?php endforeach; ?>
-        ];
+        ]);
     }
 <?php if (!empty($hints)): ?>
 
@@ -167,7 +167,7 @@ if(!empty($enum)){
      */
     public function attributeHints()
     {
-        return array_merge(parent::attributeHints(), [
+        return ArrayHelper::merge(parent::attributeHints(), [
 <?php foreach ($hints as $name => $hint): ?>
             <?= "'$name' => " . $generator->generateString($hint) . ",\n" ?>
 <?php endforeach; ?>
