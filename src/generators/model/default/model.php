@@ -27,6 +27,7 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 <?php if (isset($translation)): ?>
 use dosamigos\translateable\TranslateableBehavior;
 <?php endif; ?>
@@ -145,7 +146,7 @@ if(!empty($enum)){
      */
     public function rules()
     {
-        return [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>];
+        return ArrayHelper::merge(parent::rules(), [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>]);
     }
 
     /**
