@@ -312,20 +312,20 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getModuleId()
     {
         if (!$this->moduleNs) {
-            $controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
-            $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($controllerNs, '\\'));
+            $controllerNs = StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+            $this->moduleNs = StringHelper::dirname(ltrim($controllerNs, '\\'));
         }
 
-        return \yii\helpers\StringHelper::basename($this->moduleNs);
+        return StringHelper::basename($this->moduleNs);
     }
 
     public function generate()
     {
         $accessDefinitions = require $this->getTemplatePath().'/access_definition.php';
 
-        $this->controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
-        $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
-        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass), 0, -10);
+        $this->controllerNs = StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+        $this->moduleNs = StringHelper::dirname(ltrim($this->controllerNs, '\\'));
+        $controllerName = substr(StringHelper::basename($this->controllerClass), 0, -10);
 
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
@@ -352,7 +352,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php', ['accessDefinitions' => $accessDefinitions]));
-        $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
+        $params['controllerClassName'] = StringHelper::basename($this->controllerClass);
 
         if ($this->overwriteControllerClass || !is_file($controllerFile)) {
             $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
@@ -389,7 +389,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         foreach (scandir($templatePath) as $file) {
-            if (empty($this->searchModelClass) && $file === '_search.php') {
+            if ($file === '_search.php' && !$this->getRenderWithSearch()) {
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
@@ -565,5 +565,10 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function getHasTranslationMetaRelation() {
         return isset(\Yii::createObject($this->modelClass)->behaviors()['translation_meta']);
+    }
+
+    public function getRenderWithSearch()
+    {
+        return $this->indexWidgetType !== 'grid' && $this->searchModelClass !== '';
     }
 }
