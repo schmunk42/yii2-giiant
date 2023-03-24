@@ -46,13 +46,13 @@ $copyParams = $model->attributes;
 
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator->getModelNameAttribute($model)?>, 'url' => ['view', <?= $urlParams ?>]];
+$this->params['breadcrumbs'][] = ['label' => (string)$model-><?= $generator::getModelNameAttribute($model)?>, 'url' => ['view', <?= $urlParams ?>]];
 $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-view">
 
     <h1>
-        <?= '<?= Html::encode($model->' . $generator->getModelNameAttribute($generator->modelClass) . ") ?>\n" ?>
+        <?= '<?= Html::encode($model->' . $generator::getModelNameAttribute($generator->modelClass) . ") ?>\n" ?>
         <small><?= '<?= ' . $generator->generateString($modelName) . ' ?>' ?></small>
     </h1>
 
