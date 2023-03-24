@@ -629,9 +629,14 @@ class BatchController extends Controller
         // since we don't know if there are any other than the "known" modelDb
         if (isset($app->components)) {
             foreach ($app->components as $cid => $component) {
-                $cObj = $app->get($cid);
-                if ($cObj instanceof \yii\db\Connection) {
-                    $cObj->close();
+                try {
+                    $cObj = $app->get($cid);
+                    if ($cObj instanceof \yii\db\Connection) {
+                        $cObj->close();
+                    }
+                } catch (\Throwable $e) {
+                    // ignore because we don't know if the component is a db connection
+                    Yii::warning($e->getMessage());
                 }
             }
         }
