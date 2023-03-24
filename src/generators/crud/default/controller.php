@@ -48,7 +48,6 @@ use yii\helpers\Url;
 <?php if($generator->accessFilter): ?>
 use yii\filters\AccessControl;
 <?php endif; ?>
-use dmstr\bootstrap\Tabs;
 use Yii;
 use yii\web\NotFoundHttpException;
 
@@ -65,12 +64,6 @@ if ($traits) {
 }
 ?>
 
-    /**
-     * @var boolean whether to enable CSRF validation for the actions in this controller.
-     * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
-     */
-    public $enableCsrfValidation = false;
-
 <?php if ($generator->accessFilter): ?>
     /**
     * @inheritdoc
@@ -81,7 +74,7 @@ if ($traits) {
     'access' => [
     'class' => AccessControl::className(),
     'rules' => [
-<?php 
+<?php
 foreach($accessDefinitions['roles'] as $roleName => $actions){
 ?>
     [
@@ -89,9 +82,9 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
                         'actions' => ['<?=implode("', '",$actions)?>'],
                         'roles' => ['<?=$roleName?>'],
                     ],
-<?php    
+<?php
 }
-?>    
+?>
                 ],
             ],
     ];
@@ -101,27 +94,23 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     /**
      * Lists all <?= $modelClass ?> models.
      *
+     * @throws yii\base\InvalidConfigException
      * @return string
      */
     public function actionIndex()
     {
     <?php if ($searchModelClass !== '') {
         ?>
-    $searchModel = new <?= $searchModelClassName ?>();
-        $dataProvider = $searchModel->search($_GET);
+    $searchModel = Yii::createObject(<?php echo $searchModelClassName ?>::class);
+        $dataProvider = $searchModel->search($this->request->get());
     <?php
     } else {
         ?>
-        $dataProvider = new \yii\data\ActiveDataProvider([
+        $dataProvider = new ActiveDataProvider([
         'query' => <?= $modelClass ?>::find(),
         ]);
     <?php
     } ?>
-
-        Tabs::clearLocalStorage();
-
-        Url::remember();
-        Yii::$app->session->set('__crudReturnUrl', null);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -141,9 +130,6 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
      */
     public function actionView(<?= $actionParams ?>)
     {
-        Yii::$app->session->set('__crudReturnUrl', Url::previous());
-        Url::remember();
-        Tabs::rememberActiveState();
         return $this->render('view', ['model' => $this->findModel(<?= $actionParams ?>)]);
     }
 
@@ -151,17 +137,18 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
      * Creates a new <?= $modelClass ?> model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
+     * @throws yii\base\InvalidConfigException
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new <?= $modelClass ?>();
+        $model = Yii::createObject(<?php echo $modelClass ?>::class);
         try {
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', <?= $urlParams ?>]);
             }
             if (!Yii::$app->request->isPost) {
-                $model->load(Yii::$app->request->get());
+                $model->load($this->request->get());
             }
         } catch (\Exception $e) {
             $model->addError('_exception', $e->errorInfo[2] ?? $e->getMessage());
@@ -174,13 +161,14 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
      * If update is successful, the browser will be redirected to the 'view' page.
      *
      * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-     * @return string|\yii\web\Response
+     *
      * @throws \yii\web\HttpException
+     * @return string|\yii\web\Response
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
         $model = $this->findModel(<?= $actionParams ?>);
-        if ($model->load($_POST) && $model->save()) {
+        if ($model->load($this->request->post()) && $model->save()) {
             return $this->redirect(Url::previous());
         }
         return $this->render('update', ['model' => $model]);
@@ -200,7 +188,6 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
             Yii::$app->getSession()->addFlash('error', $e->errorInfo[2] ?? $e->getMessage());
-            return $this->redirect(Url::previous());
         }
 
         return $this->redirect(['index']);
@@ -211,8 +198,9 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
      * If the model is not found, a 404 HTTP exception will be thrown.
      *
      * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
-     * @return <?= $modelClass ?> the loaded model
+     *
      * @throws NotFoundHttpException if the model cannot be found
+     * @return <?= $modelClass ?> the loaded model
      */
     protected function findModel(<?= $actionParams ?>)
     {
