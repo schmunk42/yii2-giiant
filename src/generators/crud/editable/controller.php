@@ -62,9 +62,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
-<?php 
+<?php
 foreach($accessDefinitions['roles'] as $roleName => $actions){
 ?>
                     [
@@ -74,7 +74,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
                         ],
                         'roles' => ['<?=$roleName?>'],
                     ],
-<?php    
+<?php
 }
 ?>                ],
             ],
@@ -85,12 +85,12 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     public function actions() {
         return [
             'editable-column-update' => [
-                'class' => EditableColumnAction::className(), // action class name
-                'modelClass' => <?=$modelClass?>::className(),
+                'class' => EditableColumnAction::class, // action class name
+                'modelClass' => <?=$modelClass?>::class,
             ],
         ];
-    }    
-    
+    }
+
     /**
     * Lists all <?= $modelClass ?> models.
     * @return mixed
@@ -101,13 +101,13 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     ?>
         $searchModel  = new <?= $searchModelClassName ?>;
         $dataProvider = $searchModel->search($_GET);
-<?php 
+<?php
 } else {
     ?>
         $dataProvider = new ActiveDataProvider([
         'query' => <?= $modelClass ?>::find(),
         ]);
-<?php 
+<?php
 } ?>
 
         Url::remember();
@@ -139,7 +139,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
 
     /**
      * Creates a new <?= $modelClass ?> model.
-     * If creation is successful, the browser will be redirected 
+     * If creation is successful, the browser will be redirected
      *  to the 'view' page or back, if parameter $goBack is true.
      * @return mixed
      */
@@ -148,12 +148,12 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         $model = new <?= $modelClass ?>;
         $model->load($_GET);
         $relAttributes = $model->attributes;
-        
+
         try {
             if ($model->load($_POST) && $model->save()) {
                 if($relAttributes){
                     return $this->goBack();
-                }      
+                }
                 return $this->redirect(['view', <?= $urlParams ?>]);
             } elseif (!\Yii::$app->request->isPost) {
                 $model->load($_GET);
@@ -162,13 +162,13 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
             $model->addError('_exception', $msg);
         }
-        
+
         return $this->render('create', [
             'model' => $model,
-            'relAttributes' => $relAttributes,            
+            'relAttributes' => $relAttributes,
             ]);
     }
-    
+
     /**
      * Add a new TestContacts record for relation grid and redirect back.
      * @return mixed
@@ -181,7 +181,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         $model->save();
         return $this->goBack();
     }
-    
+
     /**
     * Updates an existing <?= $modelClass ?> model.
     * If update is successful, the browser will be redirected to the 'view' page.
@@ -193,7 +193,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         $model = new <?= $modelClass ?>;
         $model->load($_GET);
         $relAttributes = $model->attributes;
-        
+
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load($_POST) && $model->save()) {
@@ -201,7 +201,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'relAttributes' => $relAttributes                
+                'relAttributes' => $relAttributes
             ]);
         }
     }
@@ -224,11 +224,11 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
 
         $model = new <?= $modelClass ?>;
         $model->load($_GET);
-        $relAttributes = $model->attributes;       
+        $relAttributes = $model->attributes;
         if($relAttributes){
             return $this->redirect(Url::previous());
-        }        
-        
+        }
+
         // TODO: improve detection
         $isPivot = strstr('<?= $actionParams ?>',',');
         if ($isPivot == true) {
@@ -248,23 +248,23 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     * Update <?= $modelClass ?> model record by editable.
     * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
     * @return mixed
-    */    
+    */
     public function actionEditable(<?= $actionParams ?>){
-        
+
         // Check if there is an Editable ajax request
         if (!isset($_POST['hasEditable'])) {
             return false;
         }
-        
+
         $post = [];
         foreach($_POST as $name => $value){
             //if(in_array($name,$this->editAbleFileds)){
                 $post[$name] = $value;
             //}
         }
-        
+
         // use Yii's response format to encode output as JSON
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;        
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         if(!$post){
             return ['output'=>'', 'message'=> <?=$generator->generateString('Can not update this field') ?>];
         }
@@ -288,16 +288,16 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
             $errors = [];
             foreach($model->errors as $field => $messages){
                 foreach($messages as $message){
-                    $errors[] = $model->getAttributeLabel($field) 
+                    $errors[] = $model->getAttributeLabel($field)
                             . ': '
                             . $message;
                 }
             }
             return ['output'=>'', 'message'=>implode('<br>',$errors)];
-            
+
         }
-        
-    }    
+
+    }
 
     /**
     * Finds the <?= $modelClass ?> model based on its primary key value.

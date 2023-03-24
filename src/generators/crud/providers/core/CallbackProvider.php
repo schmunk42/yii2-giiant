@@ -7,6 +7,8 @@
  */
 namespace schmunk42\giiant\generators\crud\providers\core;
 
+use yii\base\BaseObject;
+
 class CallbackProvider extends \schmunk42\giiant\base\Provider
 {
     public $activeFields = [];
@@ -66,7 +68,7 @@ class CallbackProvider extends \schmunk42\giiant\base\Provider
 
     private function getModelKey($attribute, $model)
     {
-        return $model::className().'.'.$attribute;
+        return $model::className() . '.' . $attribute;
     }
 
     private function findValue($subject, $array)

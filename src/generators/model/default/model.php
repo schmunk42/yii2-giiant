@@ -104,7 +104,7 @@ if(!empty($enum)){
         return ArrayHelper::merge(parent::behaviors(), [
 <?php if (!empty($blameable)): ?>
             [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
 <?php if ($blameable['createdByAttribute'] !== 'created_by'): ?>
                 'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
@@ -115,7 +115,7 @@ if(!empty($enum)){
 <?php endif; ?>
 <?php if (!empty($timestamp)): ?>
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
 <?php if ($timestamp['createdAtAttribute'] !== 'created_at'): ?>
                 'createdAtAttribute' => <?= $timestamp['createdAtAttribute'] ? "'" . $timestamp['createdAtAttribute'] . "'" : 'false' ?>,
 <?php endif; ?>
@@ -126,7 +126,7 @@ if(!empty($enum)){
 <?php endif; ?>
 <?php if (isset($translation)): ?>
             'translatable' => [
-                'class' => TranslateableBehavior::className(),
+                'class' => TranslateableBehavior::class,
                 // in case you renamed your relation, you can setup its name
                 // 'relation' => 'translations',
 <?php if ($generator->languageCodeColumn !== 'language'): ?>

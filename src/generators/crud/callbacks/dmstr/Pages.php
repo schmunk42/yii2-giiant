@@ -10,12 +10,12 @@ class Pages
     public static function dropdown()
     {
         return function () {
-            $input = TreeViewInput::className();
-            $tree = Tree::className();
+            $input = TreeViewInput::class;
+            $tree = Tree::class;
 
             return <<<CODE
 \$form->field(\$model, 'request_param')->widget(
-    {$input}::className(),
+    {$input}::class,
     [
         // single query fetch to render the tree
         'query'          => {$tree}::find()->addOrderBy('root, lft'),

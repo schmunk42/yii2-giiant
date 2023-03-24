@@ -3,7 +3,7 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var schmunk42\giiant\generators\crud\Generator $generator
  */
@@ -11,9 +11,9 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
 $model->setScenario('crud');
-$modelName = StringHelper::basename($model::className());
+$modelName = StringHelper::basename($model::class);
 
-$className = $model::className();
+$className = $model::class;
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -104,12 +104,12 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'attributes' => [
     <?php
     foreach ($safeAttributes as $attribute) {
-        
+
         //skip primeary key
         if($model->isPrimaryKey([$attribute])){
             continue;
-        }        
-        
+        }
+
         $format = $generator->attributeEditable($attribute);
         if (!$format) {
             continue;
@@ -156,10 +156,10 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             $pjaxId = "pjax-{$name}";
             $gridRelation = $relation;
             $gridName = $name;
-        }        
-        
-        $gridModel = new $gridRelation->modelClass();        
-        
+        }
+
+        $gridModel = new $gridRelation->modelClass();
+
         $showAllRecords = false;
 
         if ($relation->via !== null) {
@@ -181,7 +181,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         }
 
         // HEADER, relation list, add, create buttons
-        $headerLabel = Inflector::camel2words($name);        
+        $headerLabel = Inflector::camel2words($name);
         echo "
             <div class=\"clearfix crud-navigation\">
                 <div class=\"pull-left\">
@@ -218,7 +218,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         // render relation grid
         if (!empty($output)):
             echo "<?php Pjax::begin(['id'=>'pjax-{$name}', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-{$name} ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n";
-            echo '    <div class="table-responsive">'.PHP_EOL;    
+            echo '    <div class="table-responsive">'.PHP_EOL;
             echo '        <?php '.$output."?>\n";
             echo '    </div>'.PHP_EOL;
             echo "<?php Pjax::end() ?>\n";
@@ -235,7 +235,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
         <div class="col-md-4">
             <?='<?'?>=$this->blocks['<?=$generator->modelClass?>']?>
         </div>
-<?php 
+<?php
     foreach($relItems as $item){
 ?>
         <div class="col-md-8">
@@ -244,5 +244,5 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 <?php
     }
 ?>
-    </div>    
+    </div>
 </div>

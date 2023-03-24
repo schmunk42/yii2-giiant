@@ -27,7 +27,7 @@ use yii\helpers\StringHelper;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 * @var yii\widgets\ActiveForm $form
-* @var string $relAttributes relation fields names for disabling 
+* @var string $relAttributes relation fields names for disabling
 */
 
 ?>
@@ -79,11 +79,11 @@ use yii\helpers\StringHelper;
         <?php echo '<?php $this->endBlock(); ?>'; ?>
 
         <?php
-        $label = substr(strrchr($model::className(), '\\'), 1);
+        $label = substr(strrchr($model::class, '\\'), 1);
 
         $items = <<<EOS
 [
-    'label'   => Yii::t('$generator->messageCategory', StringHelper::basename('{$model::className()}')),
+    'label'   => Yii::t('$generator->messageCategory', StringHelper::basename('{$model::class}')),
     'content' => \$this->blocks['main'],
     'active'  => true,
 ],

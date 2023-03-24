@@ -12,8 +12,8 @@ class Jsoneditor
     public static function field()
     {
         return function ($attribute) {
-            $collapse = Collapse::className();
-            $editor = \devgroup\jsoneditor\Jsoneditor::className();
+            $collapse = Collapse::class;
+            $editor = \devgroup\jsoneditor\Jsoneditor::class;
 
             return <<<FORMAT
 '<div class="field-widget-{$attribute}">'.
@@ -39,7 +39,7 @@ FORMAT;
     public static function attribute()
     {
         return function ($attribute, $generator) {
-            $formattter = StringFormatter::className();
+            $formattter = StringFormatter::class;
             $method = __METHOD__;
 
             return <<<FORMAT

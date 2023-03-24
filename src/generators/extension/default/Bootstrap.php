@@ -11,19 +11,19 @@ class Bootstrap implements BootstrapInterface {
     /** @inheritdoc */
     public function bootstrap($app) {
 
-<?php 
+<?php
 if($generator->enableI18N){
-?>        
+?>
         if (!isset($app->get('i18n')->translations['<?= $generator->messageCategory ?>*'])) {
             $app->get('i18n')->translations['<?= $generator->messageCategory ?>*'] = [
-                'class' => PhpMessageSource::className(),
+                'class' => PhpMessageSource::class,
                 'basePath' => __DIR__ . '/messages',
                 'sourceLanguage' => 'en-US'
             ];
         }
 <?php
 }
-?>        
+?>
     }
 
 }

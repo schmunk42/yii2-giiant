@@ -92,7 +92,7 @@ use yii\helpers\StringHelper;
         <?php echo '<?php $this->endBlock(); ?>'; ?>
 
         <?php
-        $label = substr(strrchr($model::className(), '\\'), 1);
+        $label = substr(strrchr($model::class, '\\'), 1);
 
         $items = <<<EOS
 [

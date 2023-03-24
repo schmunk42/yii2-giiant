@@ -72,7 +72,7 @@ if ($traits) {
     {
     return [
     'access' => [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     'rules' => [
 <?php
 foreach($accessDefinitions['roles'] as $roleName => $actions){

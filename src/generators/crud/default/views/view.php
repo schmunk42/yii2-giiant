@@ -24,7 +24,7 @@ if (empty($safeAttributes)) {
     $safeAttributes = $model::getTableSchema()->columnNames;
 }
 
-$className = $model::className();
+$className = $model::class;
 $modelName = Inflector::camel2words(StringHelper::basename($className));
 $urlParams = $generator->generateUrlParams();
 

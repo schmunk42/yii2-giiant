@@ -20,7 +20,7 @@ if (array_key_exists('crud-list', $model->scenarios())) {
     $model->setScenario('crud');
 }
 
-$baseName = StringHelper::basename($model::className());
+$baseName = StringHelper::basename($model::class);
 $modelName = Inflector::camel2words($baseName);
 
 $safeAttributes = $model->safeAttributes();
@@ -190,7 +190,7 @@ PHP;
         <?= '<?= ' ?>GridView::widget([
         'dataProvider' => $dataProvider,
         'pager' => [
-        'class' => yii\widgets\LinkPager::className(),
+        'class' => yii\widgets\LinkPager::class,
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
         'lastPageLabel' => <?= $generator->generateString('Last').",\n" ?>
         ],
