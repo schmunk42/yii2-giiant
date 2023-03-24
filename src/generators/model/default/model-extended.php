@@ -24,13 +24,18 @@ use \<?= $generator->ns ?>\base\<?= $className ?> as Base<?= $className ?>;
  */
 class <?= $className ?> extends Base<?= $className . "\n" ?>
 {
-
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
         return $behaviors;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         $rules = parent::rules();
