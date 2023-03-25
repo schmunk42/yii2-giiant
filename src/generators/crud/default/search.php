@@ -67,10 +67,6 @@ $query = <?= $modelAlias ?? $modelClass ?>::find();
     $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(basename($modelClass))?>_id');
 <?php endif; ?>
 
-<?php if ($generator->hasTranslationMetaRelation): ?>
-    $query->leftJoin(<?= $generator->translationMetaModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationMetaModelClass?>::tableName() . '.<?= mb_strtolower(basename($modelClass))?>_id');
-<?php endif; ?>
-
 
 $dataProvider = new ActiveDataProvider([
 'query' => $query,

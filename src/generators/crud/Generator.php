@@ -544,12 +544,6 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getTranslationModelClass() {
         return '\\' . $this->modelClass . Inflector::camelize('translation');
     }
-    /**
-     * @return string
-     */
-    public function getTranslationMetaModelClass() {
-        return '\\' . $this->modelClass . Inflector::camelize('translation_meta');
-    }
 
     /**
      * @return bool
@@ -557,14 +551,6 @@ class Generator extends \yii\gii\generators\crud\Generator
      */
     public function getHasTranslationRelation() {
         return isset(\Yii::createObject($this->modelClass)->behaviors()['translation']);
-    }
-
-    /**
-     * @return bool
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function getHasTranslationMetaRelation() {
-        return isset(\Yii::createObject($this->modelClass)->behaviors()['translation_meta']);
     }
 
     public function getRenderWithSearch()
