@@ -49,32 +49,18 @@ use yii\helpers\StringHelper;
     );
     ?>
 
-    <div class="">
-        <?php echo "<?php \$this->beginBlock('main'); ?>\n"; ?>
-        <div class="form-fields">
-            <?php echo "<?php echo \$this->render('_form-fields', ['form' => \$form, 'model' => \$model])?>\n"?>
-        </div>
-        <?php echo '<?php $this->endBlock(); ?>'; ?>
-
         <?php
-        $label = substr(strrchr($model::class, '\\'), 1);
-
-        $items = <<<EOS
-[
-    'label'   => Yii::t('$generator->modelMessageCategory', '$label'),
-    'content' => \$this->blocks['main'],
-    'active'  => true,
-],
-EOS;
-        ?>
-
-        <?=
-        "<?=
+        $label = $generator->generateString(substr(strrchr($model::class, '\\'), 1));
+        echo "<?=
     Tabs::widget(
                  [
                     'encodeLabels' => false,
                     'items' => [ 
-                        $items
+                        [
+                            'label'   => $label,
+                            'content' => \$this->render('_form-fields', ['form' => \$form, 'model' => \$model]),
+                            'active'  => true,
+                        ]
                     ]
                  ]
     );
@@ -96,8 +82,6 @@ EOS;
         ?>
 
         <?= '<?php ' ?>ActiveForm::end(); ?>
-
-    </div>
 
 </div>
 
