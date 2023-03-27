@@ -2,6 +2,8 @@
 /**
  * This is the template for generating CRUD search class of the specified model.
  */
+
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
@@ -64,7 +66,7 @@ public function search($params)
 $query = <?= $modelAlias ?? $modelClass ?>::find();
 
 <?php if ($generator->hasTranslationRelation): ?>
-    $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(basename($modelClass))?>_id');
+    $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(Inflector::camel2id(basename($modelClass),'_'))?>_id');
 <?php endif; ?>
 
 
