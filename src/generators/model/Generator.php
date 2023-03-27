@@ -316,6 +316,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
         $db = $this->getDbConnection();
 
+        $generateTranslationTrait = false;
+
         foreach ($this->getTableNames() as $tableName) {
             list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
             $className = $this->modelClass === '' || php_sapi_name() === 'cli'
@@ -333,13 +335,16 @@ class Generator extends \yii\gii\generators\model\Generator
                 'labels' => $this->generateLabels($tableSchema),
                 'hints' => $this->generateHints($tableSchema),
                 'rules' => $this->generateRules($tableSchema),
-                'relations' => isset($relations[$tableName]) ? $relations[$tableName] : [],
+                'relations' => $relations[$tableName] ?? [],
                 'ns' => $this->ns,
                 'enum' => $this->getEnum($tableSchema->columns),
+                'traits' => (array)$this->baseTraits
             ];
 
             if (!empty($translations)) {
                 $params['translation'] = $translations;
+                $params['traits'][] =  '\\' . $this->ns . '\traits\TranslationAttributeRules';
+                $generateTranslationTrait = true;
             }
 
             $params['blameable'] = $this->generateBlameable($tableSchema);
@@ -391,6 +396,16 @@ class Generator extends \yii\gii\generators\model\Generator
                 JSON_PRETTY_PRINT);
             $files[] = new CodeFile($formDataFile, $formData);
         }
+
+        if ($generateTranslationTrait) {
+            $files[] = new CodeFile(
+                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/traits/TranslationAttributeRules.php',
+                $this->render('translation-trait.php', [
+                    'ns' => $this->ns . '\traits'
+                ])
+            );
+        }
+
 
         return $files;
     }

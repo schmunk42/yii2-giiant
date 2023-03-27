@@ -17,6 +17,8 @@ use yii\helpers\StringHelper;
  * @var string[] $labels list of attribute labels (name => label)
  * @var string[] $rules list of validation rules
  * @var array $relations list of relations (name => relation declaration)
+ * @var array $translation
+ * @var array $traits
  */
 
 $activeRecordClass = '\\' . ltrim($generator->baseClass, '\\');
@@ -60,11 +62,11 @@ use <?php echo ($generator->ns .'\\base' === $generator->queryNs ? $queryClassNa
 abstract class <?= $className ?> extends <?= $activeRecordClass . "\n" ?>
 {
 <?php
-    $traits = $generator->baseTraits;
-    if ($traits) {
-        echo "use {$traits};";
+    if (!empty($traits)) {
+        echo "\tuse " . implode(', ', $traits) . ';' . PHP_EOL;
     }
 ?>
+
 <?php
 if(!empty($enum)){
 ?>
@@ -104,21 +106,21 @@ if(!empty($enum)){
      */
     public function behaviors()
     {
-    $behaviors = parent::behaviors();
+        $behaviors = parent::behaviors();
     <?php if (!empty($blameable)): ?>
-        $behaviors['blameable'] = [
-        'class' => BlameableBehavior::class,
-        <?php if ($blameable['createdByAttribute'] !== 'created_by'): ?>
-            'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
-        <?php endif; ?>
-        <?php if ($blameable['updatedByAttribute'] !== 'updated_by'): ?>
-            'updatedByAttribute' => <?= $blameable['updatedByAttribute'] ? "'" . $blameable['updatedByAttribute'] . "'" : 'false' ?>,
-        <?php endif; ?>
-        ];
+    $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+    <?php if ($blameable['createdByAttribute'] !== 'created_by'): ?>
+        'createdByAttribute' => <?= $blameable['createdByAttribute'] ? "'" . $blameable['createdByAttribute'] . "'" : 'false' ?>,
+    <?php endif; ?>
+    <?php if ($blameable['updatedByAttribute'] !== 'updated_by'): ?>
+    'updatedByAttribute' => <?= $blameable['updatedByAttribute'] ? "'" . $blameable['updatedByAttribute'] . "'" : 'false' ?>,
+    <?php endif; ?>
+];
     <?php endif; ?>
     <?php if (!empty($timestamp)): ?>
-        $behaviors['timestamp'] = [
-        'class' => TimestampBehavior::class,
+$behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
         <?php if (!empty($timestamp['value'])): ?>
             'value' => <?= $timestamp['value'] ?>,
         <?php endif; ?>
@@ -128,14 +130,13 @@ if(!empty($enum)){
         <?php if ($timestamp['updatedAtAttribute'] !== 'updated_at'): ?>
             'updatedAtAttribute' => <?= $timestamp['updatedAtAttribute'] ? "'" . $timestamp['updatedAtAttribute'] . "'" : 'false' ?>,
         <?php endif; ?>
-        ];
+];
     <?php endif; ?>
     <?php if (isset($translation)): ?>
         <?php if (!empty($translation['fields'])): ?>
             <?php $translationExists = true; ?>
             $behaviors['translation'] = [
             'class' => TranslateableBehavior::class,
-            // in case you renamed your relation, you can setup its name
             // 'relation' => 'translations',
             <?php if ($generator->languageCodeColumn !== 'language'): ?>
                 'languageField' => '<?= $generator->languageCodeColumn ?>',
@@ -152,7 +153,6 @@ if(!empty($enum)){
             <?php $translationExists = true; ?>
             <?php foreach ($translation['additions'] as $name => $values): ?>
                 <?php if (!empty($values['fields'])): ?>
-                    <?php $translationExists = true; ?>
                     $behaviors['translation_<?= mb_strtolower($name) ?>'] = [
                     'class' => TranslateableBehavior::class,
                     'relation' => 'translation<?= ucfirst(mb_strtolower($name)) ?>s',
@@ -188,9 +188,9 @@ if(!empty($enum)){
     {
         $parentRules = parent::rules();
 <?php if ($translationExists): ?>
-    $parentRules += $this->importTranslationAttributeRules();
+        $parentRules += $this->importTranslationAttributeRules();
 <?php endif; ?>
-        return ArrayHelper::merge($parentRules, [<?= "\n            " . implode(",\n            ", $rules) . "\n        " ?>]);
+        return ArrayHelper::merge($parentRules, [<?php echo "\n            " . implode(",\n            ", $rules) . "\n        " ?>]);
     }
 
     /**
@@ -241,47 +241,15 @@ if(!empty($enum)){
     <?php if (!empty($translation['additions'])): ?>
         <?php foreach ($translation['additions'] as $name => $values): ?>
             <?php if (isset($values['code'])): ?>
-                /**
-                * @return \yii\db\ActiveQuery
-                */
-                public function getTranslation<?= ucfirst(mb_strtolower($name)) ?>s()
-                {
-                <?= $values['code'] . "\n"?>
-                }
+            /**
+             * @return \yii\db\ActiveQuery
+             */
+            public function getTranslation<?= ucfirst(mb_strtolower($name)) ?>s()
+            {
+            <?= $values['code'] . "\n"?>
+            }
             <?php endif; ?>
         <?php endforeach; ?>
-    <?php endif; ?>
-
-    <?php if ($translationExists): ?>
-        /**
-        * get validation rules from translation* relationModels
-        * @return array
-        */
-        protected function importTranslationAttributeRules() {
-
-        $rules = [];
-
-        foreach ($this->getBehaviors() as $key => $behavoir) {
-
-        if ($behavoir instanceof TranslateableBehavior) {
-
-        $translationModelClass = $this->getRelation($behavoir->relation)->modelClass;
-        $importRules = (new $translationModelClass)->rules();
-        foreach ($importRules as $rule) {
-        foreach ((array)$rule[0] as $rule_key => $attribute) {
-        if (!in_array($attribute, $behavoir->translationAttributes, true)) {
-        unset ($rule[0][$rule_key]);
-        }
-        }
-        if (!empty($rule[0])) {
-        $rules[] = $rule;
-        }
-        }
-        }
-        }
-
-        return $rules;
-        }
     <?php endif; ?>
 
 <?php endif; ?>
