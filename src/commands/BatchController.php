@@ -271,6 +271,11 @@ class BatchController extends Controller
     public $crudFixOutput = false;
 
     /**
+     * @var integer number of grid columns in crud generator
+     */
+    public $crudGridMaxColumns = 8;
+
+    /**
      * @var string the namespace of the ActiveQuery class to be generated
      */
     public $modelQueryNamespace = 'app\models\query';
@@ -528,6 +533,7 @@ class BatchController extends Controller
                 'indexWidgetType' => $this->crudIndexWidgetType,
                 'indexGridClass' => $this->crudIndexGridClass,
                 'formLayout' => $this->crudFormLayout,
+                'gridMaxColumns' => $this->crudGridMaxColumns,
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
                 'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
             ];

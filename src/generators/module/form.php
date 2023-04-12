@@ -8,5 +8,7 @@
 <?php
     echo $form->field($generator, 'moduleClass');
     echo $form->field($generator, 'moduleID');
+    echo $form->field($generator, 'enableI18N')->checkbox();
+    echo $form->field($generator, 'messageCategory');
 ?>
 </div>
