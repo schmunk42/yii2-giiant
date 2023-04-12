@@ -384,7 +384,7 @@ class Generator extends \yii\gii\generators\model\Generator
         $patterns[] = "/^{$db->tablePrefix}(.*?)$/";
         $patterns[] = "/^(.*?){$db->tablePrefix}$/";
 
-        if (strpos($this->tableName, '*') !== false) {
+        if (strpos((string)$this->tableName, '*') !== false) {
             $pattern = $this->tableName;
             if (($pos = strrpos($pattern, '.')) !== false) {
                 $pattern = substr($pattern, $pos + 1);
