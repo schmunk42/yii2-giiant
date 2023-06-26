@@ -509,7 +509,6 @@ class BatchController extends Controller
                 'overwriteSearchModelClass' => $this->crudOverwriteSearchModelClass,
                 'overwriteRestControllerClass' => $this->crudOverwriteRestControllerClass,
                 'overwriteControllerClass' => $this->crudOverwriteControllerClass,
-                'template' => $this->template,
                 'modelClass' => $this->modelNamespace . '\\' . $name,
                 'searchModelClass' => $this->crudSearchModelNamespace . '\\' . $name . $this->crudSearchModelSuffix,
                 'controllerNs' => $this->crudControllerNamespace,
