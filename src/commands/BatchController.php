@@ -16,6 +16,11 @@ use Yii;
 class BatchController extends Controller
 {
     /**
+     * @var string Console application class
+     */
+    public $applicationClass = 'yii\\console\\Application';
+
+    /**
      * @var string the generator template name
      */
     public $template = 'default';
@@ -469,7 +474,7 @@ class BatchController extends Controller
             $route = 'gii/giiant-model';
 
             $app = \Yii::$app;
-            $temp = new Application($this->appConfig);
+            $temp = new $this->applicationClass($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             $this->closeTempAppConnections($temp);
             unset($temp);
@@ -539,7 +544,7 @@ class BatchController extends Controller
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
-            $temp = new Application($this->appConfig);
+            $temp = new $this->applicationClass($this->appConfig);
             $temp->runAction(ltrim($route, '/'), $params);
             $this->closeTempAppConnections($temp);
             unset($temp);
