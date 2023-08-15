@@ -39,9 +39,17 @@ use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 /**
  * This is the base-model class for table "<?= $tableName ?>".
  *
-<?php foreach ($tableSchema->columns as $column): ?>
+<?php foreach ($tableSchema->columns as   $column): ?>
  * @property <?= "{$column->phpType} \${$column->name}\n" ?>
 <?php endforeach; ?>
+<?php
+if (isset($translation)) {
+    echo " * \n * Properties from TranslateableBehavior \n";
+    foreach ($translation['fields'] as $name => $type) {
+        echo " * @property $type \$$name \n";
+    }
+}
+?>
 <?php if (!empty($relations)): ?>
  *
 <?php foreach ($relations as $name => $relation): ?>
@@ -131,7 +139,7 @@ if(!empty($enum)){
                 'languageField' => '<?= $generator->languageCodeColumn ?>',
 <?php endif; ?>
                 'translationAttributes' => [
-                    <?= "'" . implode("',\n                    '", $translation['fields']) . "'\n" ?>
+                    <?= "'" . implode("',\n                    '", array_keys($translation['fields'])) . "'\n" ?>
                 ],
             ],
 <?php endif; ?>
