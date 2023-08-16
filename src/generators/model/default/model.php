@@ -39,7 +39,7 @@ use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 /**
  * This is the base-model class for table "<?= $tableName ?>".
  *
-<?php foreach ($tableSchema->columns as   $column): ?>
+<?php foreach ($tableSchema->columns as $column): ?>
  * @property <?= "{$column->phpType} \${$column->name}\n" ?>
 <?php endforeach; ?>
 <?php
