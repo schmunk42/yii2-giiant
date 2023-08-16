@@ -45,6 +45,7 @@ use <?php echo $timestamp['timestampBehaviorClass']; ?>;
 <?php
 if (isset($translation)) {
     echo " * \n * Properties from TranslateableBehavior \n";
+    echo " * @property string \${$generator->languageCodeColumn} \n";
     foreach ($translation['fields'] as $name => $type) {
         echo " * @property $type \$$name \n";
     }
