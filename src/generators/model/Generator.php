@@ -619,7 +619,7 @@ class Generator extends \yii\gii\generators\model\Generator
         if ($this->useTranslatableBehavior and isset($relations[$langTableName], $relations[$tableName])) {
             $db = $this->getDbConnection();
             $langTableSchema = $db->getTableSchema($langTableName);
-            $langTableColumns = $langTableSchema->getColumnNames();
+            $langTableColumns = $langTableSchema->columns;
             $langTableKeys = array_merge(
                 $langTableSchema->primaryKey,
                 array_map(
@@ -639,13 +639,13 @@ class Generator extends \yii\gii\generators\model\Generator
 
                     // collect fields which are not PK, FK nor language code
                     $fields = [];
-                    foreach ($langTableColumns as $columnName) {
-                        if (!in_array($columnName, $langTableKeys) and strcasecmp(
-                                $columnName,
+                    foreach ($langTableColumns as $column) {
+                        if (!in_array($column->name, $langTableKeys) and strcasecmp(
+                                $column->name,
                                 $this->languageCodeColumn
                             ) !== 0
                         ) {
-                            $fields[] = $columnName;
+                            $fields[$column->name] = $column->type;
                         }
                     }
 
@@ -711,4 +711,3 @@ class Generator extends \yii\gii\generators\model\Generator
         return [];
     }
 }
-
