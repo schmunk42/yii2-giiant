@@ -47,6 +47,9 @@ if (isset($translation)) {
     echo " * \n * Properties from TranslateableBehavior \n";
     echo " * @property string \${$generator->languageCodeColumn} \n";
     foreach ($translation['fields'] as $name => $type) {
+        if ($type === 'text') {
+            $type = 'string';
+        }
         echo " * @property $type \$$name \n";
     }
 }
