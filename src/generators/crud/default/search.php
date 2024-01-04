@@ -6,8 +6,9 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $this yii\web\View
+ * @var $generator schmunk42\giiant\generators\crud\Generator
+ */
 
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
@@ -65,7 +66,7 @@ public function search($params)
 {
 $query = <?= $modelAlias ?? $modelClass ?>::find();
 
-<?php if ($generator->hasTranslationRelation): ?>
+<?php if ($generator->getHasTranslationRelation()): ?>
     $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(Inflector::camel2id(basename($modelClass),'_'))?>_id');
 <?php endif; ?>
 
@@ -81,7 +82,7 @@ if (!$this->validate()) {
 // $query->where('0=1');
 return $dataProvider;
 }
-<?php if ($generator->hasTranslationRelation): ?>
+<?php if ($generator->getHasTranslationRelation()): ?>
     $query->groupBy(<?= $modelAlias ?? $modelClass ?>::tableName() . '.id');
 <?php endif; ?>
 
