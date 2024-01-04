@@ -100,7 +100,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
 <?php if ($searchModelClass !== '') {
     ?>
         $searchModel  = new <?= $searchModelClassName ?>;
-        $dataProvider = $searchModel->search($_GET);
+        $dataProvider = $searchModel->search($this->request->get());
 <?php
 } else {
     ?>
@@ -146,7 +146,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     public function actionCreate()
     {
         $model = new <?= $modelClass ?>;
-        $model->load($_GET);
+        $model->load($this->request->get());
         $relAttributes = $model->attributes;
 
         try {
@@ -156,7 +156,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
                 }
                 return $this->redirect(['view', <?= $urlParams ?>]);
             } elseif (!\Yii::$app->request->isPost) {
-                $model->load($_GET);
+                $model->load($this->request->get());
             }
         } catch (\Exception $e) {
             $msg = (isset($e->errorInfo[2]))?$e->errorInfo[2]:$e->getMessage();
@@ -176,7 +176,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     public function actionCreateForRel()
     {
         $model = new <?= $modelClass ?>;
-        $model->load($_GET);
+        $model->load($this->request->get());
         $relAttributes = $model->attributes;
         $model->save();
         return $this->goBack();
@@ -191,7 +191,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
     public function actionUpdate(<?= $actionParams ?>)
     {
         $model = new <?= $modelClass ?>;
-        $model->load($_GET);
+        $model->load($this->request->get());
         $relAttributes = $model->attributes;
 
         $model = $this->findModel(<?= $actionParams ?>);
@@ -223,7 +223,7 @@ foreach($accessDefinitions['roles'] as $roleName => $actions){
         }
 
         $model = new <?= $modelClass ?>;
-        $model->load($_GET);
+        $model->load($this->request->get());
         $relAttributes = $model->attributes;
         if($relAttributes){
             return $this->redirect(Url::previous());
