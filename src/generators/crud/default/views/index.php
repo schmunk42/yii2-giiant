@@ -231,8 +231,8 @@ PHP;
 
 
         foreach ($safeAttributes as $attribute) {
-            $format = trim($generator->columnFormat($attribute, $model));
-            if ($format == false) {
+            $format = trim((string)$generator->columnFormat($attribute, $model));
+            if (empty($format)) {
                 continue;
             }
             if (++$count <= $generator->gridMaxColumns) {
