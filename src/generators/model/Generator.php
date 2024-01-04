@@ -826,7 +826,7 @@ class Generator extends \yii\gii\generators\model\Generator
             // check column type, if datetime set NOW() as Value
             if ($table->getColumn($this->createdAtColumn)->type === 'datetime') {
                 return [
-                    'value' => 'new \yii\db\Expression(\'NOW()\')',
+                    'value' => '(new \DateTime())->format(\'Y-m-d H:i:s\')',
                     'createdAtAttribute' => $createdAt,
                     'updatedAtAttribute' => $updatedAt,
                     'timestampBehaviorClass' => $this->timestampBehaviorClass,
