@@ -7,6 +7,7 @@ use yii\helpers\StringHelper;
  *
  * @var yii\web\View $this
  * @var schmunk42\giiant\generators\crud\Generator $generator
+ * @var array $accessDefinitions
  */
 
 $controllerClass = StringHelper::basename($generator->controllerClass);
@@ -35,7 +36,6 @@ echo "<?php\n";
 
 namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>\base;
 
-use dmstr\bootstrap\Tabs;
 use <?= ltrim($generator->modelClass, '\\') ?>;
 <?php if ($searchModelClass !== ''): ?>
 use <?= ltrim(
@@ -47,9 +47,13 @@ use <?= ltrim(
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 <?php endif; ?>
+use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
-use yii\web\HttpException;
+<?php if($generator->accessFilter): ?>
+use yii\filters\AccessControl;
+<?php endif; ?>
+use yii\web\NotFoundHttpException;
 use yii\web\Request;
 use yii\web\Response;
 use Yii;
@@ -57,7 +61,7 @@ use Yii;
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
  *
- * @property Request $request
+ * @property-read Request $request
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass)."\n" ?>
 {
@@ -67,6 +71,7 @@ if ($traits) {
     echo "use {$traits};";
 }
 ?>
+
 <?php if ($generator->accessFilter): ?>
     /**
      * @inheritdoc
@@ -94,18 +99,23 @@ if ($traits) {
     /**
      * Lists all <?= $modelClass ?> models.
      *
+     * @throws InvalidConfigException
      * @return string
      */
     public function actionIndex()
     {
-    <?php if ($searchModelClass !== ''): ?>
-    $searchModel = new <?= $searchModelClassName ?>();
+    <?php if ($searchModelClass !== '') {
+        ?>
+    $searchModel = Yii::createObject(<?php echo $searchModelClassName ?>::class);
         $dataProvider = $searchModel->search($this->request->get());
-    <?php else: ?>
+    <?php
+    } else {
+        ?>
         $dataProvider = new ActiveDataProvider([
         'query' => <?= $modelClass ?>::find(),
         ]);
-    <?php endif ?>
+    <?php
+    } ?>
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -120,33 +130,31 @@ if ($traits) {
      *
      * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
      *
-     * @throws HttpException
+     * @throws NotFoundHttpException
      * @return string
      */
     public function actionView(<?= $actionParams ?>)
     {
-        Tabs::rememberActiveState();
+        return $this->render('view', ['model' => $this->findModel(<?= $actionParams ?>)]);
 
-        return $this->render('view', [
-            'model' => $this->findModel(<?= $actionParams ?>)
-        ]);
     }
 
     /**
      * Creates a new <?= $modelClass ?> model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      *
+     * @throws yii\base\InvalidConfigException
      * @return string|Response
      */
     public function actionCreate()
     {
-        $model = new <?= $modelClass ?>();
-
+        $model = Yii::createObject(<?php echo $modelClass ?>::class);
         try {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', <?= $urlParams ?>]);
-            } elseif (!$this->request->getIsPost()) {
-                $model->load($_GET);
+            }
+            if (!Yii::$app->request->isPost) {
+                $model->load($this->request->get());
             }
         } catch (\Exception $e) {
             $model->addError('_exception', $e->errorInfo[2] ?? $e->getMessage());
@@ -160,20 +168,16 @@ if ($traits) {
      *
      * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
      *
-     * @throws HttpException
+     * @throws NotFoundHttpException
      * @return string|Response
      */
     public function actionUpdate(<?= $actionParams ?>)
     {
         $model = $this->findModel(<?= $actionParams ?>);
-
-        if ($model->load($_POST) && $model->save()) {
+        if ($model->load($this->request->post()) && $model->save()) {
             return $this->redirect(Url::previous());
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
+        return $this->render('update', ['model' => $model]);
     }
 
     /**
@@ -193,6 +197,7 @@ if ($traits) {
             Yii::$app->getSession()->addFlash('error', $e->errorInfo[2] ?? $e->getMessage());
             return $this->goBack();
         }
+
         return $this->redirect(['index']);
     }
 
@@ -202,7 +207,7 @@ if ($traits) {
      *
      * <?= implode("\n\t * ", $actionParamComments)."\n" ?>
      *
-     * @throws HttpException if the model cannot be found
+     * @throws NotFoundHttpException if the model cannot be found
      * @return <?= $modelClass ?> the loaded model
      */
     protected function findModel(<?= $actionParams ?>)
@@ -218,10 +223,10 @@ if ($traits) {
         $condition = '['.implode(', ', $condition).']';
     }
     ?>
-    if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
+    $model = <?= $modelClass ?>::findOne(<?= $condition ?>);
+        if ($model !== null) {
             return $model;
-        } else {
-            throw new HttpException(404, <?php echo $generator->generateString('The requested page does not exist.') ?>);
         }
+        throw new NotFoundHttpException(<?= $generator->generateString('The requested page does not exist.')?>);
     }
 }

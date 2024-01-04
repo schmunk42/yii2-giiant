@@ -3,7 +3,7 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
@@ -11,7 +11,7 @@ use yii\helpers\StringHelper;
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
 $model->setScenario('crud');
-$modelName = StringHelper::basename($model::className());
+$modelName = StringHelper::basename($model::class);
 
 
 echo "<?php\n";
@@ -29,7 +29,7 @@ if(!isset($relAttributes)){
 }
 
 $this->title = <?= $generator->generateString('Create') ?>;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($model::className())) ?>'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->messageCategory ?>', '<?=Inflector::pluralize(StringHelper::basename($model::class)) ?>'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-create">

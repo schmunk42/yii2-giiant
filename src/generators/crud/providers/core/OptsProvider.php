@@ -42,7 +42,7 @@ EOS;
 
             case 'select2':
                 return <<<EOS
-                    \$form->field(\$model, '{$attribute}')->widget(\kartik\select2\Select2::classname(), [
+                    \$form->field(\$model, '{$attribute}')->widget(\kartik\select2\Select2::class, [
                         'name' => 'class_name',
                         'model' => \$model,
                         'attribute' => '{$attribute}',

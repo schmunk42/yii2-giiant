@@ -63,7 +63,7 @@ trait ModelTrait
      *
      * return values can be filtered by types 'belongs_to', 'many_many', 'has_many', 'has_one', 'pivot'
      *
-     * @param ActiveRecord $modelClass
+     * @param \yii\db\ActiveRecord $modelClass
      * @param array        $types
      *
      * @return array
@@ -73,13 +73,15 @@ trait ModelTrait
         $reflector = new \ReflectionClass($modelClass);
         $model = new $modelClass();
         $stack = [];
-        $modelGenerator = new ModelGenerator();
+        $modelGenerator = new ModelGenerator([
+            'disablePluralization' => $this->disablePluralization
+        ]);
         foreach ($reflector->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if (in_array(substr($method->name, 3), $this->skipRelations)) {
+            if (in_array(substr($method->name, 3), $this->skipRelations, true)) {
                 continue;
             }
             // look for getters
-            if (substr($method->name, 0, 3) !== 'get') {
+            if (strpos($method->name, 'get') !== 0) {
                 continue;
             }
             // skip class specific getters
@@ -117,13 +119,17 @@ trait ModelTrait
                         $relationType = 'has_many';
                     }
                     // if types is empty, return all types -> no filter
-                    if ((count($types) == 0) || in_array($relationType, $types)) {
-                        $name = $modelGenerator->generateRelationName(
-                            [$relation],
-                            $model->getTableSchema(),
-                            substr($method->name, 3),
-                            $relation->multiple
-                        );
+                    if ((count($types) === 0) || in_array($relationType, $types, true)) {
+                        if ($this->disablePluralization) {
+                            $name = str_replace('get','', $method->name);
+                        } else {
+                            $name = $modelGenerator->generateRelationName(
+                                [$relation],
+                                $model->getTableSchema(),
+                                substr($method->name, 3),
+                                $relation->multiple
+                            );
+                        }
                         $stack[$name] = $relation;
                     }
                 }
@@ -146,6 +152,7 @@ trait ModelTrait
             $model = $this;
         }
 
+
         // omit schema for NOSQL models
         if (method_exists($model,'getTableSchema') && $model->getTableSchema()) {
             return $model->getTableSchema()->getColumn($attribute);
@@ -164,12 +171,12 @@ trait ModelTrait
         $relations = $this->getModelRelations($model, $types);
         foreach ($relations as $relation) {
             // TODO: check multiple link(s)
-            if ($relation->link && reset($relation->link) == $column->name) {
+            if ($relation->link && reset($relation->link) === $column->name) {
                 return $relation;
             }
         }
 
-        return;
+        return null;
     }
 
     public function createRelationRoute($relation, $action)
@@ -179,7 +186,6 @@ trait ModelTrait
                 '-',
                 true
             ).'/'.$action;
-
         return $route;
     }
 

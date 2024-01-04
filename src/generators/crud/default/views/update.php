@@ -3,7 +3,7 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var yii\gii\generators\crud\Generator $generator
  */
@@ -11,8 +11,8 @@ use yii\helpers\StringHelper;
 $urlParams = $generator->generateUrlParams();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
-$className = $model::className();
-$modelName = Inflector::camel2words(StringHelper::basename($model::className()));
+$className = $model::class;
+$modelName = Inflector::camel2words(StringHelper::basename($model::class));
 
 echo "<?php\n";
 ?>

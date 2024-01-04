@@ -15,7 +15,7 @@ $nameAttribute = $generator->getNameAttribute();
 $model = new $generator->modelClass();
 $model->setScenario('crud');
 
-$modelName = Inflector::pluralize(StringHelper::basename($model::className()));
+$modelName = Inflector::pluralize(StringHelper::basename($model::class));
 
 $safeAttributes = $model->safeAttributes();
 if (empty($safeAttributes)) {
@@ -56,7 +56,7 @@ if($generator->accessFilter):
 */
 $actionColumnTemplates = [];
 
-if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) { 
+if (\Yii::$app->user->can('<?=$permisions['view']['name']?>')) {
     $actionColumnTemplates[] = '{view}';
 }
 
@@ -102,7 +102,7 @@ echo '?>';
     </h1>
     <div class="clearfix crud-navigation">
 <?php
-if($generator->accessFilter){ 
+if($generator->accessFilter){
 	echo "<?php\n"
 ?>
 if(\Yii::$app->user->can('<?=$permisions['create']['name']?>')){
@@ -187,7 +187,7 @@ PHP;
         'layout' => '{summary}{pager}{items}{pager}',
         'dataProvider' => $dataProvider,
         'pager' => [
-        'class' => yii\widgets\LinkPager::className(),
+        'class' => yii\widgets\LinkPager::class,
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
         'lastPageLabel' => <?= $generator->generateString('Last') ?>
         ],

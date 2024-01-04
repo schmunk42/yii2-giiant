@@ -3,9 +3,10 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/*
+/**
  * @var yii\web\View $this
  * @var schmunk42\giiant\generators\crud\Generator $generator
+ * @var array $permisions
  */
 
 $urlParams = $generator->generateUrlParams();
@@ -13,20 +14,24 @@ $nameAttribute = $generator->getNameAttribute();
 
 /** @var \yii\db\ActiveRecord $model */
 $model = new $generator->modelClass();
-$model->setScenario('crud');
+if (array_key_exists('crud-list', $model->scenarios())) {
+    $model->setScenario('crud-list');
+} else {
+    $model->setScenario('crud');
+}
 
-$baseName = StringHelper::basename($model::className());
+$baseName = StringHelper::basename($model::class);
 $modelName = Inflector::camel2words($baseName);
 
-$safeAttributes = $model->safeAttributes();
-if (empty($safeAttributes)) {
-    /** @var \yii\db\ActiveRecord $model */
-    $model = new $generator->modelClass();
-    $safeAttributes = $model->safeAttributes();
-    if (empty($safeAttributes)) {
-        $safeAttributes = $model->getTableSchema()->columnNames;
-    }
-}
+//$safeAttributes = $model->safeAttributes();
+//if (empty($safeAttributes)) {
+//    /** @var \yii\db\ActiveRecord $model */
+//    $model = new $generator->modelClass();
+//    $safeAttributes = $model->safeAttributes();
+//    if (empty($safeAttributes)) {
+//        $safeAttributes = $model::getTableSchema()->columnNames;
+//    }
+//}
 
 echo "<?php\n";
 ?>
@@ -51,7 +56,7 @@ if($generator->accessFilter):
 ?>
 
 /**
-* create action column template depending acces rights
+* create action column template depending on user's access rights
 */
 $actionColumnTemplates = [];
 
@@ -83,22 +88,17 @@ echo '?>';
 
 <div class="giiant-crud <?= Inflector::camel2id(StringHelper::basename($generator->modelClass), '-', true) ?>-index">
 
-    <?=
-    "<?php\n".($generator->indexWidgetType === 'grid' ? '// ' : '') ?>
-    <?php if ($generator->searchModelClass !== ''): ?>
-        echo $this->render('_search', ['model' =>$searchModel]);
-    <?php endif; ?>
-    ?>
+    <?php if ($generator->indexWidgetType !== 'grid' && $generator->searchModelClass !== '') {
+        echo "<?php echo \$this->render('_search', ['model' => \$searchModel]); ?>";
+    } ?>
 
     <?php if ($generator->indexWidgetType === 'grid'): ?>
 
-    <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a', 'clientOptions' => ['pjax:success'=>'function(){alert(\"yo\")}']]) ?>\n"; ?>
+    <?= "<?php \yii\widgets\Pjax::begin(['id'=>'pjax-main', 'enableReplaceState'=> false, 'linkSelector'=>'#pjax-main ul.pagination a, th a']) ?>\n"; ?>
 
     <h1>
-        <?= "<?= Yii::t('{$generator->modelMessageCategory}.plural', '{$modelName}') ?>\n" ?>
-        <small>
-            <?= "<?= Yii::t('{$generator->messageCategory}', 'List') ?>\n" ?>
-        </small>
+        <?= "<?=" . $generator->generateString($modelName) . "?>\n" ?>
+        <small><?= "<?=" . $generator->generateString('List') . "?>\n" ?></small>
     </h1>
     <div class="clearfix crud-navigation">
 <?php
@@ -111,7 +111,7 @@ echo "?>\n"
 ?>
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
-                'New'
+                'New ' . $modelName
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
@@ -120,7 +120,7 @@ echo "?>\n"
 ?>
         <div class="pull-left">
             <?= '<?= ' ?>Html::a('<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString(
-                'New'
+                'New ' . $modelName
             ) ?>, ['create'], ['class' => 'btn btn-success']) ?>
         </div>
 <?php
@@ -146,11 +146,12 @@ echo "?>\n"
                         true
                     );
                 $route = $generator->createRelationRoute($relation, 'index');
-                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-', true);
+                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-');
+                $i18nMessageLabel = $generator->generateString($label);
                 $items .= <<<PHP
             [
-                'url' => ['{$route}'],
-                'label' => '<i class="glyphicon glyphicon-{$iconType}"></i> ' . Yii::t('$generator->modelMessageCategory', '$label'),
+                'url' => ['$route'],
+                'label' => '<i class="glyphicon glyphicon-$iconType"></i> ' . $i18nMessageLabel,
             ],
                     
 PHP;
@@ -184,20 +185,19 @@ PHP;
     <hr />
 
     <div class="table-responsive">
-        <?= '<?= ' ?>GridView::widget([
+        <?= '<?php echo ' ?>GridView::widget([
         'dataProvider' => $dataProvider,
         'pager' => [
-        'class' => yii\widgets\LinkPager::className(),
+        'class' => yii\widgets\LinkPager::class,
         'firstPageLabel' => <?= $generator->generateString('First') ?>,
         'lastPageLabel' => <?= $generator->generateString('Last').",\n" ?>
         ],
         <?php if ($generator->searchModelClass !== ''): ?>
             'filterModel' => $searchModel,
         <?php endif; ?>
-        'tableOptions' => ['class' => 'table table-striped table-bordered table-hover'],
-        'headerRowOptions' => ['class'=>'x'],
         'columns' => [
         <?php
+        $i18nMessageView = $generator->generateString('View');
         $actionButtonColumn = <<<PHP
         [
             'class' => '{$generator->actionButtonClass}',
@@ -205,8 +205,8 @@ PHP;
             'buttons' => [
                 'view' => function (\$url, \$model, \$key) {
                     \$options = [
-                        'title' => Yii::t('{$generator->messageCategory}', 'View'),
-                        'aria-label' => Yii::t('{$generator->messageCategory}', 'View'),
+                        'title' => $i18nMessageView,
+                        'aria-label' => $i18nMessageView,
                         'data-pjax' => '0',
                     ];
                     return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', \$url, \$options);
@@ -224,25 +224,25 @@ PHP;
 
         $count = 0;
         // action buttons first
-        if ($generator->actionButtonColumnPosition != 'right') {
+        if ($generator->actionButtonColumnPosition !== 'right') {
             echo $actionButtonColumn;
             echo "\n"; // code-formatting
         }
+
 
         foreach ($safeAttributes as $attribute) {
             $format = trim($generator->columnFormat($attribute, $model));
             if ($format == false) {
                 continue;
             }
-            if (++$count < $generator->gridMaxColumns) {
+            if (++$count <= $generator->gridMaxColumns) {
                 echo "\t\t\t" . str_replace("\n", "\n\t\t\t", $format) . ",\n";
             } else {
                 echo "\t\t\t/*" . str_replace("\n", "\n\t\t\t", $format) . ",*/\n";
             }
         }
-
         ?>
-        <?php if ($generator->actionButtonColumnPosition == 'right') {
+        <?php if ($generator->actionButtonColumnPosition === 'right') {
             echo $actionButtonColumn;
             echo "\n"; // code-formatting
         } ?>
@@ -260,7 +260,7 @@ PHP;
     <?= '<?= ' ?> ListView::widget([
     'dataProvider' => $dataProvider,
     'itemOptions' => ['class' => 'item'],
-    'itemView' => function ($model, $key, $index, $widget) {
+    'itemView' => function ($model) {
     return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
     },
     ]); ?>

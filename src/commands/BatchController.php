@@ -162,6 +162,16 @@ class BatchController extends Controller
     public $enableI18N = true;
 
     /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
+
+    /**
+     * @var string prefix to prepend to the many many relation methods
+     */
+    public $modelManyManyRelationSuffix = '';
+
+    /**
      * @var bool whether the entity names will be singular or the same as the table name
      */
     public $singularEntities = true;
@@ -299,13 +309,21 @@ class BatchController extends Controller
      * @var bool This indicates whether the generator should generate attribute hints by using the comments of the corresponding DB columns
      */
     public $modelGenerateHintsFromComments = true;
+
+    /**
+     * @var bool Generate Relations from Current Schema
+    */
+    public $modelGenerateRelationsFromCurrentSchema = true;
+
+    public $modelTranslationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false];
+
     /**
      * @var array application configuration for creating temporary applications
      */
     protected $appConfig;
 
     /**
-     * @var instance of class schmunk42\giiant\generators\model\Generator
+     * @var \schmunk42\giiant\generators\model\Generator instance of class schmunk42\giiant\generators\model\Generator
      */
     protected $modelGenerator;
 
@@ -345,6 +363,8 @@ class BatchController extends Controller
                 'modelRemoveDuplicateRelations',
                 'modelCacheRelationsData',
                 'modelGenerateRelations',
+                'modelGenerateRelationsFromCurrentSchema',
+                'modelTranslationTableAdditions',
                 'modelGenerateJunctionRelationMode',
                 'modelGenerateQuery',
                 'modelQueryNamespace',
@@ -367,7 +387,8 @@ class BatchController extends Controller
                 'crudOverwriteSearchModelClass',
                 'crudOverwriteRestControllerClass',
                 'crudOverwriteControllerClass',
-                'generateAccessFilterMigrations'
+                'generateAccessFilterMigrations',
+                'disablePluralization'
             ]
         );
     }
@@ -463,6 +484,8 @@ class BatchController extends Controller
                 'removeDuplicateRelations' => $this->modelRemoveDuplicateRelations,
                 'cacheRelationsData' => $this->modelCacheRelationsData,
                 'generateRelations' => $this->modelGenerateRelations,
+                'generateRelationsFromCurrentSchema' => $this->modelGenerateRelationsFromCurrentSchema,
+                'translationTableAdditions' => $this->modelTranslationTableAdditions,
                 'generateJunctionRelationMode' => $this->modelGenerateJunctionRelationMode,
                 'tableNameMap' => $this->tableNameMap,
                 'generateQuery' => $this->modelGenerateQuery,
@@ -470,6 +493,8 @@ class BatchController extends Controller
                 'queryBaseClass' => $this->modelQueryBaseClass,
                 'generateLabelsFromComments' => $this->modelGenerateLabelsFromComments,
                 'generateHintsFromComments' => $this->modelGenerateHintsFromComments,
+                'disablePluralization' => $this->disablePluralization,
+                'manyManyRelationSuffix' => $this->modelManyManyRelationSuffix
             ];
             $route = 'gii/giiant-model';
 
@@ -540,6 +565,8 @@ class BatchController extends Controller
                 'gridMaxColumns' => $this->crudGridMaxColumns,
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
                 'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
+                'disablePluralization' => $this->disablePluralization,
+                'gridMaxColumns' => $this->crudGridMaxColumns
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;
@@ -612,9 +639,14 @@ class BatchController extends Controller
         // since we don't know if there are any other than the "known" modelDb
         if (isset($app->components)) {
             foreach ($app->components as $cid => $component) {
-                $cObj = $app->get($cid);
-                if ($cObj instanceof \yii\db\Connection) {
-                    $cObj->close();
+                try {
+                    $cObj = $app->get($cid);
+                    if ($cObj instanceof \yii\db\Connection) {
+                        $cObj->close();
+                    }
+                } catch (\Throwable $e) {
+                    // ignore because we don't know if the component is a db connection
+                    Yii::warning($e->getMessage());
                 }
             }
         }

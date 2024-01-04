@@ -5,6 +5,7 @@
  * @copyright Copyright (c) 2014 herzog kommunikation GmbH
  * @license http://www.phundament.com/license/
  */
+
 namespace schmunk42\giiant\generators\model;
 
 use schmunk42\giiant\helpers\SaveForm;
@@ -94,9 +95,19 @@ class Generator extends \yii\gii\generators\model\Generator
     public $baseClassPrefix = '';
 
     /**
+     * @var string prefix to prepend to the many many relation methods
+     */
+    public $manyManyRelationSuffix = '';
+
+    /**
      * @var string suffix to append to the base model, setting "Base" will result in a model named "PostBase"
      */
     public $baseClassSuffix = '';
+
+    /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
 
     /**
      * @var array key-value pairs for mapping a table-name to class-name, eg. 'prefix_FOObar' => 'FooBar'
@@ -128,6 +139,24 @@ class Generator extends \yii\gii\generators\model\Generator
     protected static $_relationsCache = null;
 
     /**
+     * the names given here are used as suffixes to the base_translation table name, eg.
+     *
+     * $languageTableName = '{table}_translation';
+     * $translationTableAdditions = ['meta'];
+     *
+     * will process {table}_translation AND {table}_translation_meta
+     *
+     * to be able to set the 'fallbackLanguage' flag fot the behaviour of this translation, items can be arrays like:
+     *
+     * $translationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false]
+     *
+     * if fallbackLanguage is not specified, 'true' is used as default
+     *
+     * @var array af additional translation tables
+     */
+    public $translationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false];
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -151,15 +180,30 @@ class Generator extends \yii\gii\generators\model\Generator
         return array_merge(
             parent::rules(),
             [
-                [[
-                    'generateModelClass',
-                    'useTranslatableBehavior',
-                    'generateHintsFromComments',
-                    'useBlameableBehavior',
-                    'useTimestampBehavior',
-                    'singularEntities',
-                    ], 'boolean'],
-                [['languageTableName', 'languageCodeColumn', 'createdByColumn', 'updatedByColumn', 'createdAtColumn', 'updatedAtColumn', 'savedForm', 'timestampBehaviorClass'], 'string'],
+                [
+                    [
+                        'generateModelClass',
+                        'useTranslatableBehavior',
+                        'generateHintsFromComments',
+                        'useBlameableBehavior',
+                        'useTimestampBehavior',
+                        'singularEntities',
+                    ],
+                    'boolean'
+                ],
+                [
+                    [
+                        'languageTableName',
+                        'languageCodeColumn',
+                        'createdByColumn',
+                        'updatedByColumn',
+                        'createdAtColumn',
+                        'updatedAtColumn',
+                        'savedForm',
+                        'timestampBehaviorClass'
+                    ],
+                    'string'
+                ],
                 [['tablePrefix'], 'safe'],
             ]
         );
@@ -181,7 +225,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'db',
             'generateRelations',
             'generateJunctionRelationMode',
-            //'generateRelationsFromCurrentSchema',
+            'generateRelationsFromCurrentSchema',
             'generateLabelsFromComments',
             'generateHintsFromComments',
             'generateModelClass',
@@ -202,7 +246,7 @@ class Generator extends \yii\gii\generators\model\Generator
             'createdAtColumn',
             'updatedAtColumn',
             'timestampBehaviorClass',
-            ];
+        ];
     }
 
     /**
@@ -272,9 +316,10 @@ class Generator extends \yii\gii\generators\model\Generator
 
         $db = $this->getDbConnection();
 
+        $generateTranslationTrait = false;
+
         foreach ($this->getTableNames() as $tableName) {
             list($relations, $translations) = array_values($this->extractTranslations($tableName, $relations));
-//var_dump($relations,$tableName);exit;
             $className = $this->modelClass === '' || php_sapi_name() === 'cli'
                 ? $this->generateClassName($tableName)
                 : $this->modelClass;
@@ -290,13 +335,16 @@ class Generator extends \yii\gii\generators\model\Generator
                 'labels' => $this->generateLabels($tableSchema),
                 'hints' => $this->generateHints($tableSchema),
                 'rules' => $this->generateRules($tableSchema),
-                'relations' => isset($relations[$tableName]) ? $relations[$tableName] : [],
+                'relations' => $relations[$tableName] ?? [],
                 'ns' => $this->ns,
                 'enum' => $this->getEnum($tableSchema->columns),
+                'traits' => (array)$this->baseTraits
             ];
 
             if (!empty($translations)) {
                 $params['translation'] = $translations;
+                $params['traits'][] =  '\\' . $this->ns . '\traits\TranslationAttributeRules';
+                $generateTranslationTrait = true;
             }
 
             $params['blameable'] = $this->generateBlameable($tableSchema);
@@ -309,7 +357,7 @@ class Generator extends \yii\gii\generators\model\Generator
                 $this->render('model.php', $params)
             );
 
-            $modelClassFile = Yii::getAlias('@'.str_replace('\\', '/', $this->ns)).'/'.$className.'.php';
+            $modelClassFile = Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/' . $className . '.php';
             if ($this->generateModelClass || !is_file($modelClassFile)) {
                 $files[] = new CodeFile(
                     $modelClassFile,
@@ -319,8 +367,8 @@ class Generator extends \yii\gii\generators\model\Generator
 
             if ($queryClassName) {
                 $queryClassFile = Yii::getAlias(
-                        '@'.str_replace('\\', '/', $this->queryNs)
-                    ).'/'.$queryClassName.'.php';
+                        '@' . str_replace('\\', '/', $this->queryNs)
+                    ) . '/' . $queryClassName . '.php';
                 if ($this->generateModelClass || !is_file($queryClassFile)) {
                     $params = [
                         'className' => $queryClassName,
@@ -337,16 +385,27 @@ class Generator extends \yii\gii\generators\model\Generator
              * create gii/[name]GiiantModel.json with actual form data
              */
             $suffix = str_replace(' ', '', $this->getName());
-            $formDataDir = Yii::getAlias('@'.str_replace('\\', '/', $this->ns));
+            $formDataDir = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
             $formDataFile = StringHelper::dirname($formDataDir)
-                    .'/'.$this->giiInfoPath.'/'
-                    .'/'.$tableName.$suffix.'.json';
+                . '/' . $this->giiInfoPath . '/'
+                . '/' . $tableName . $suffix . '.json';
             $generatorForm = (clone $this);
             $generatorForm->tableName = $tableName;
-			$generatorForm->modelClass = $className;
-            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()), JSON_PRETTY_PRINT);
+            $generatorForm->modelClass = $className;
+            $formData = json_encode(SaveForm::getFormAttributesValues($generatorForm, $this->formAttributes()),
+                JSON_PRETTY_PRINT);
             $files[] = new CodeFile($formDataFile, $formData);
         }
+
+        if ($generateTranslationTrait) {
+            $files[] = new CodeFile(
+                Yii::getAlias('@' . str_replace('\\', '/', $this->ns)) . '/traits/TranslationAttributeRules.php',
+                $this->render('translation-trait.php', [
+                    'ns' => $this->ns . '\traits'
+                ])
+            );
+        }
+
 
         return $files;
     }
@@ -389,7 +448,7 @@ class Generator extends \yii\gii\generators\model\Generator
             if (($pos = strrpos($pattern, '.')) !== false) {
                 $pattern = substr($pattern, $pos + 1);
             }
-            $patterns[] = '/^'.str_replace('*', '(\w+)', $pattern).'$/';
+            $patterns[] = '/^' . str_replace('*', '(\w+)', $pattern) . '$/';
         }
 
         $className = $tableName;
@@ -439,7 +498,15 @@ class Generator extends \yii\gii\generators\model\Generator
      */
     public function generateRelationName($relations, $table, $key, $multiple)
     {
-        return parent::generateRelationName($relations, $table, $key, $multiple);
+        $suffix = '';
+        if ($this->disablePluralization) {
+            if ($multiple) {
+                $suffix = $this->manyManyRelationSuffix;
+            }
+            $multiple = false;
+        }
+        $relationName = parent::generateRelationName($relations, $table, $key, $multiple);
+        return $relationName . $suffix;
     }
 
     protected function generateRelations()
@@ -485,8 +552,8 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
-            $enum[$column->name]['func_opts_name'] = 'opts'.$column_camel_name;
-            $enum[$column->name]['func_get_label_name'] = 'get'.$column_camel_name.'ValueLabel';
+            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
+            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
             $enum[$column->name]['values'] = [];
 
             $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
@@ -494,7 +561,7 @@ class Generator extends \yii\gii\generators\model\Generator
             foreach ($enum_values as $value) {
                 $value = trim($value, "()'");
 
-                $const_name = strtoupper($column->name.'_'.$value);
+                $const_name = strtoupper($column->name . '_' . $value);
                 $const_name = preg_replace('/\s+/', '_', $const_name);
                 $const_name = str_replace(['-', '_', ' '], '_', $const_name);
                 $const_name = preg_replace('/[^A-Z0-9_]/', '', $const_name);
@@ -552,19 +619,19 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($enum as $field_name => $field_details) {
             $ea = array();
             foreach ($field_details['values'] as $field_enum_values) {
-                $ea[] = 'self::'.$field_enum_values['const_name'];
+                $ea[] = 'self::' . $field_enum_values['const_name'];
             }
-            $rules[] = "['".$field_name."', 'in', 'range' => [\n                    ".implode(
+            $rules[] = "['" . $field_name . "', 'in', 'range' => [\n                    " . implode(
                     ",\n                    ",
                     $ea
-                ).",\n                ]\n            ]";
+                ) . ",\n                ]\n            ]";
         }
 
         // inject namespace for targetClass
         $parentRules = parent::generateRules($table);
         $ns = "\\{$this->ns}\\";
         $match = "'targetClass' => ";
-        $replace = $match.$ns;
+        $replace = $match . $ns;
         foreach ($parentRules as $k => $parentRule) {
             $parentRules[$k] = str_replace($match, $replace, $parentRule);
         }
@@ -593,10 +660,10 @@ class Generator extends \yii\gii\generators\model\Generator
     public function validateDb()
     {
         if (Yii::$container->has($this->db)) {
-            return true;
-        } else {
-            return parent::validateDb();
+            return;
         }
+
+        parent::validateDb();
     }
 
     /**
@@ -608,11 +675,65 @@ class Generator extends \yii\gii\generators\model\Generator
     }
 
     /**
-     * @param $relations all database's relations
+     * @return array associative array containing the extracted relations and the modified translations (from parent) + translations_meta fields if exists
+     */
+    protected function extractTranslations($tableName, $relations) {
+
+        $translations = [
+            'relations' => $relations,
+            'translations' => [],
+        ];
+
+        # check if we have base translations
+        $baseTranslations = $this->extractBaseTranslations($tableName, $relations);
+        // we do not want timestamp columns as translatable fields
+        $unsetFields = [$this->createdAtColumn, $this->updatedAtColumn, $this->createdByColumn, $this->updatedByColumn];
+        if (!empty($baseTranslations['translations']['fields'])) {
+            $translations = $baseTranslations;
+            $translations['translations']['fields'] = array_diff($baseTranslations['translations']['fields'], $unsetFields);
+        }
+
+        $baseLanguageTableName = $this->languageTableName;
+        foreach ($this->translationTableAdditions as $addition)  {
+
+            if (is_array($addition)) {
+                $additionName = $addition['name'];
+                $additionFallbackLanguage = $addition['fallbackLanguage'] ?? true;
+            } else {
+                $additionName = $addition;
+                $additionFallbackLanguage = true;
+            }
+
+            # in the following runs we must use possibly modified relations from previous extractTranslations() call
+            $prevRelations = $translations['relations'];
+            # to be able to reuse extractTranslations() set $this->languageTableName for one method call
+            $this->languageTableName .= '_' . $additionName;
+            # here we must use possibly modified relations from previous extractTranslations() call
+            $additionTranslations = $this->extractBaseTranslations($tableName, $prevRelations);
+
+            # if we get meta-translations fields, overwrite relations,
+            # otherwise we get the relation as <table_name>TranslationMetas and translationMetas
+            if (!empty($additionTranslations['translations']['fields'])) {
+                $translations['relations'] = $additionTranslations['relations'];
+                $translations['translations']['additions'][$additionName]['fields'] = array_diff($additionTranslations['translations']['fields'], $unsetFields);
+                $translations['translations']['additions'][$additionName]['code'] = $additionTranslations['translations']['code'];
+                # set flag if this addition should use the fallback language feature
+                $translations['translations']['additions'][$additionName]['fallbackLanguage'] = $additionFallbackLanguage;
+            }
+            # reset languageTableName to default value (without prefix)
+            $this->languageTableName = $baseLanguageTableName;
+        }
+
+        return $translations;
+
+    }
+
+    /**
+     * @param array $relations All database's relations
      *
      * @return array associative array containing the extracted relations and the modified translations
      */
-    protected function extractTranslations($tableName, $relations)
+    protected function extractBaseTranslations($tableName, $relations)
     {
         $langTableName = str_replace('{{table}}', $tableName, $this->languageTableName);
 
@@ -700,10 +821,21 @@ class Generator extends \yii\gii\generators\model\Generator
         $createdAt = $table->getColumn($this->createdAtColumn) !== null ? $this->createdAtColumn : false;
         $updatedAt = $table->getColumn($this->updatedAtColumn) !== null ? $this->updatedAtColumn : false;
 
+        #var_dump($table->getColumn($this->createdAtColumn)); exit;
         if ($this->useTimestampBehavior && ($createdAt || $updatedAt)) {
+            // check column type, if datetime set NOW() as Value
+            if ($table->getColumn($this->createdAtColumn)->type === 'datetime') {
+                return [
+                    'value' => 'new \yii\db\Expression(\'NOW()\')',
+                    'createdAtAttribute' => $createdAt,
+                    'updatedAtAttribute' => $updatedAt,
+                    'timestampBehaviorClass' => $this->timestampBehaviorClass,
+                ];
+
+            }
             return [
-                'createdAtAttribute'     => $createdAt,
-                'updatedAtAttribute'     => $updatedAt,
+                'createdAtAttribute' => $createdAt,
+                'updatedAtAttribute' => $updatedAt,
                 'timestampBehaviorClass' => $this->timestampBehaviorClass,
             ];
         }
