@@ -632,8 +632,22 @@ class Generator extends \yii\gii\generators\model\Generator
         $ns = "\\{$this->ns}\\";
         $match = "'targetClass' => ";
         $replace = $match . $ns;
+
+        
+        $replaceMap = [
+            [
+                'search' => "'targetClass' => ",
+                'replace' => "'targetClass' => " . $ns,
+            ],
+            [
+                'search' => "'unique', ",
+                'replace' => "'unique', 'targetClass' => " . $ns . $this->modelClass . '::class, ',
+            ]
+        ];
         foreach ($parentRules as $k => $parentRule) {
-            $parentRules[$k] = str_replace($match, $replace, $parentRule);
+            foreach ($replaceMap as $replaceItem) {
+                $parentRules[$k] = str_replace($replaceItem['search'], $replaceItem['replace'], $parentRule);
+            }
         }
 
         $rules = array_merge($parentRules, $rules);
