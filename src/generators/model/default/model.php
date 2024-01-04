@@ -122,7 +122,7 @@ if(!empty($enum)){
 $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
         <?php if (!empty($timestamp['value'])): ?>
-            'value' => <?= $timestamp['value'] ?>,
+    'value' => <?= $timestamp['value'] ?>,
         <?php endif; ?>
         <?php if ($timestamp['createdAtAttribute'] !== 'created_at'): ?>
             'createdAtAttribute' => <?= $timestamp['createdAtAttribute'] ? "'" . $timestamp['createdAtAttribute'] . "'" : 'false' ?>,
@@ -133,9 +133,9 @@ $behaviors['timestamp'] = [
 ];
     <?php endif; ?>
     <?php if (isset($translation)): ?>
-        <?php if (!empty($translation['fields'])): ?>
-            <?php $translationExists = true; ?>
-            $behaviors['translation'] = [
+<?php if (!empty($translation['fields'])): ?>
+<?php $translationExists = true; ?>
+$behaviors['translation'] = [
             'class' => TranslateableBehavior::class,
             // 'relation' => 'translations',
             <?php if ($generator->languageCodeColumn !== 'language'): ?>
@@ -147,7 +147,7 @@ $behaviors['timestamp'] = [
             ],
             'deleteEvent' => <?= $activeRecordClass ?>::EVENT_BEFORE_DELETE,
             'restrictDeletion' => TranslateableBehavior::DELETE_LAST
-            ];
+        ];
         <?php endif; ?>
         <?php if (!empty($translation['additions'])): ?>
             <?php $translationExists = true; ?>

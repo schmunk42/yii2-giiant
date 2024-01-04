@@ -30,8 +30,5 @@ use <?php echo $modelFullClassName ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\') . "\n" ?>
 {
-    /* public function active()
-    {
-        return $this->andWhere(['status' => 1]);
-    } */
+
 }
