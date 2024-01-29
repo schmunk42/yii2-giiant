@@ -395,7 +395,8 @@ class Generator extends \yii\gii\generators\crud\Generator
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
                 $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", [
                     'model' => $model,
-                    'safeAttributes' => $safeAttributes
+                    'safeAttributes' => $safeAttributes,
+                    'accessDefinitions' => $accessDefinitions
                 ]));
             }
         }

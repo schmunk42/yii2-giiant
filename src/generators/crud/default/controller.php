@@ -50,9 +50,6 @@ use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
-<?php if($generator->accessFilter): ?>
-use yii\filters\AccessControl;
-<?php endif; ?>
 use yii\web\NotFoundHttpException;
 use yii\web\Request;
 use yii\web\Response;
@@ -175,7 +172,7 @@ if ($traits) {
     {
         $model = $this->findModel(<?= $actionParams ?>);
         if ($model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(Url::previous());
+            return $this->redirect(['view', <?= $urlParams ?>]);
         }
         return $this->render('update', ['model' => $model]);
     }

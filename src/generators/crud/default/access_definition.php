@@ -13,7 +13,7 @@ $actions = ['index','view','create','update','delete'];
 /**
  * permissions - create name and descriptions
  */
-$permisions = [];
+$permissions = [];
 foreach ($actions as $k => $action){
     $name = $this->getModuleId() 
             . '_' . $this->getControllerID() 
@@ -21,7 +21,7 @@ foreach ($actions as $k => $action){
     $description = $this->getModuleId() 
             . '/' . $this->getControllerID() 
             . '/' . $action;
-    $permisions[$action] = [
+    $permissions[$action] = [
         'name' => $name,
         'description' => $description,
         ];
@@ -48,6 +48,6 @@ foreach($roles as $role => $roleActons){
 }
 
 return [
-    'permisions' => $permisions,
+    'permissions' => $permissions,
     'roles' => $roles,
 ];

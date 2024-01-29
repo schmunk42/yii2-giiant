@@ -27,6 +27,7 @@ if (empty($safeAttributes)) {
 $className = $model::class;
 $modelName = Inflector::camel2words(StringHelper::basename($className));
 $urlParams = $generator->generateUrlParams();
+$permissions = $accessDefinitions['permissions'];
 
 echo "<?php\n";
 ?>
@@ -60,22 +61,53 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
         <!-- menu buttons -->
         <div class='pull-left'>
+
+            <?php
+                if ($generator->accessFilter) {
+                  echo '<?php if(\Yii::$app->getUser()->can(\'' . $permissions['update']['name'] . '\')): ?>';
+                }
+            ?>
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-pencil"></span> ' . <?= $generator->generateString('Edit ' . $modelName) ?>,
             [ 'update', <?= $urlParams ?>],
             ['class' => 'btn btn-info'])
             ?>
+            <?php
+            if ($generator->accessFilter) {
+                echo '<?php endif ?>';
+            }
+            ?>
 
+            <?php
+            if ($generator->accessFilter) {
+                echo '<?php if(\Yii::$app->getUser()->can(\'' . $permissions['update']['name'] . '\')): ?>';
+            }
+            ?>
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy ' . $modelName) ?>,
             ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
             ['class' => 'btn btn-success'])
             ?>
+            <?php
+            if ($generator->accessFilter) {
+                echo '<?php endif ?>';
+            }
+            ?>
 
+            <?php
+            if ($generator->accessFilter) {
+                echo '<?php if(\Yii::$app->getUser()->can(\'' . $permissions['create']['name'] . '\')): ?>';
+            }
+            ?>
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-plus"></span> ' . <?= $generator->generateString('New ' . $modelName) ?>,
             ['create'],
             ['class' => 'btn btn-success'])
+            ?>
+            <?php
+            if ($generator->accessFilter) {
+                echo '<?php endif ?>';
+            }
             ?>
         </div>
 
@@ -115,6 +147,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
 
     <hr/>
 
+    <?php
+    if ($generator->accessFilter) {
+        echo '<?php if(\Yii::$app->getUser()->can(\'' . $permissions['delete']['name'] . '\')): ?>';
+    }
+    ?>
     <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a('<span class="glyphicon glyphicon-trash"></span> '
     . <?= $generator->generateString(
         'Delete ' . $modelName
@@ -124,6 +161,11 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
     'data-confirm' => '' . <?= $generator->generateString('Are you sure to delete this item?') ?> . '',
     'data-method' => 'post',
     ]);
+    ?>
+    <?php
+    if ($generator->accessFilter) {
+        echo '<?php endif ?>';
+    }
     ?>
     <?= "<?php \$this->endBlock(); ?>\n\n"; ?>
 
