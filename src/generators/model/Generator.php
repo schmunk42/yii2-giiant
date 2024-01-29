@@ -633,7 +633,7 @@ class Generator extends \yii\gii\generators\model\Generator
         $match = "'targetClass' => ";
         $replace = $match . $ns;
 
-        
+
         $replaceMap = [
             [
                 'search' => "'targetClass' => ",
@@ -647,6 +647,7 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($parentRules as $k => $parentRule) {
             foreach ($replaceMap as $replaceItem) {
                 $parentRules[$k] = str_replace($replaceItem['search'], $replaceItem['replace'], $parentRule);
+                break;
             }
         }
 
