@@ -192,7 +192,6 @@ if ($traits) {
             $this->findModel(<?= $actionParams ?>)->delete();
         } catch (\Exception $e) {
             Yii::$app->getSession()->addFlash('error', $e->errorInfo[2] ?? $e->getMessage());
-            return $this->goBack();
         }
 
         return $this->redirect(['index']);
