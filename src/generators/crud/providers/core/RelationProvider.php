@@ -62,7 +62,8 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
                 case !$relation->multiple:
                     $pk = key($relation->link);
                     $name = $this->generator->getModelNameAttribute($relation->modelClass);
-                    $method = __METHOD__;
+                    $isRequired = $relation->primaryModel->isAttributeRequired($column->name) ? 'false' : 'true';
+                     $method = __METHOD__;
                     switch ($this->inputWidget) {
                         case 'select2':
                             $code = <<<EOS
@@ -76,6 +77,9 @@ class RelationProvider extends \schmunk42\giiant\base\Provider
         'placeholder' => {$this->generator->generateString('Type to autocomplete')},
         'multiple' => false,
         'disabled' => (isset(\$relAttributes) && isset(\$relAttributes['{$column->name}'])),
+    ],
+    'pluginOptions' => [
+        'allowClear' => {$isRequired}
     ]
 ]);
 EOS;
