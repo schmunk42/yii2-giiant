@@ -92,7 +92,7 @@ trait ModelTrait
                 'getAttribute',
                 'getAttributeLabel',
                 'getAttributeHint',
-                'getOldAttribute',                                
+                'getOldAttribute',
                 'getErrorSummary',
             ];
             if (in_array($method->name, $skipMethods)) {

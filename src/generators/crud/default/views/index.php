@@ -20,18 +20,18 @@ if (array_key_exists('crud-list', $model->scenarios())) {
     $model->setScenario('crud');
 }
 
+
 $baseName = StringHelper::basename($model::class);
 $modelName = Inflector::camel2words($baseName);
 
-//$safeAttributes = $model->safeAttributes();
-//if (empty($safeAttributes)) {
-//    /** @var \yii\db\ActiveRecord $model */
-//    $model = new $generator->modelClass();
-//    $safeAttributes = $model->safeAttributes();
-//    if (empty($safeAttributes)) {
-//        $safeAttributes = $model::getTableSchema()->columnNames;
-//    }
-//}
+$safeAttributes = $model->safeAttributes();
+if (empty($safeAttributes)) {
+    $model->setScenario('default');
+    $safeAttributes = $model->safeAttributes();
+}
+if (empty($safeAttributes)) {
+    $safeAttributes = $model::getTableSchema()->columnNames;
+}
 
 echo "<?php\n";
 ?>
