@@ -43,7 +43,7 @@ use yii\bootstrap\Tabs;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
-$copyParams = $model->attributes;
+$copyParams = $model->hasMethod('getCopyParams') ? $model->getCopyParams() : $model->attributes;
 
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
