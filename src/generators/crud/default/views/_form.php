@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
 /**
@@ -50,7 +51,7 @@ use yii\helpers\StringHelper;
     ?>
 
         <?php
-        $label = $generator->generateString(substr(strrchr($model::class, '\\'), 1));
+        $label = $generator->generateString(Inflector::camel2words(StringHelper::basename($model::class)));
         echo "<?=
     Tabs::widget(
                  [
