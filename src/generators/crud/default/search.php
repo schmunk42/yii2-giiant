@@ -2,10 +2,13 @@
 /**
  * This is the template for generating CRUD search class of the specified model.
  */
+
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
+/* @var $this yii\web\View
+ * @var $generator schmunk42\giiant\generators\crud\Generator
+ */
 
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);
@@ -61,7 +64,12 @@ return Model::scenarios();
 */
 public function search($params)
 {
-$query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
+$query = <?= $modelAlias ?? $modelClass ?>::find();
+
+<?php if ($generator->getHasTranslationRelation()): ?>
+    $query->leftJoin(<?= $generator->translationModelClass?>::tableName(),<?= $modelAlias ?? $modelClass ?>::tableName() . '.id = ' . <?= $generator->translationModelClass?>::tableName() . '.<?= mb_strtolower(Inflector::camel2id(basename($modelClass),'_'))?>_id');
+<?php endif; ?>
+
 
 $dataProvider = new ActiveDataProvider([
 'query' => $query,
@@ -74,6 +82,9 @@ if (!$this->validate()) {
 // $query->where('0=1');
 return $dataProvider;
 }
+<?php if ($generator->getHasTranslationRelation()): ?>
+    $query->groupBy(<?= $modelAlias ?? $modelClass ?>::tableName() . '.id');
+<?php endif; ?>
 
 <?= implode("\n        ", $searchConditions) ?>
 

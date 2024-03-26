@@ -11,7 +11,7 @@ class DateTimeProvider extends \schmunk42\giiant\base\Provider
                 $this->generator->requires[] = 'zhuravljov/yii2-datetime-widgets';
 
                 return <<<EOS
-\$form->field(\$model, '{$attribute}')->widget(\zhuravljov\widgets\DateTimePicker::className(), [
+\$form->field(\$model, '{$attribute}')->widget(\zhuravljov\widgets\DateTimePicker::class, [
     'options' => ['class' => 'form-control'],
     'clientOptions' => [
         'autoclose' => true,

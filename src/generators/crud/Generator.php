@@ -139,6 +139,11 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $fixOptions = '';
 
     /**
+     * @var bool whether to enable or disable the pluralization of the models name
+     */
+    public $disablePluralization = false;
+
+    /**
      * @var string form field for selecting and loading saved gii forms
      */
     public $savedForm;
@@ -157,6 +162,10 @@ class Generator extends \yii\gii\generators\crud\Generator
     public $giiInfoPath = '.gii';
 
     private $_p = [];
+
+    public $translateRelations = ['translation', 'translation_meta'];
+    
+    public $enableCopy = true;
 
     /**
      * {@inheritdoc}
@@ -230,6 +239,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     'generateAccessFilterMigrations',
                     'singularEntities',
                     'modelMessageCategory',
+                    'enableCopy'
                 ],
                 'safe',
             ],
@@ -270,6 +280,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             'accessFilter',
             'singularEntities',
             'modelMessageCategory',
+            'enableCopy'
             ];
     }
 
@@ -305,20 +316,20 @@ class Generator extends \yii\gii\generators\crud\Generator
     public function getModuleId()
     {
         if (!$this->moduleNs) {
-            $controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
-            $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($controllerNs, '\\'));
+            $controllerNs = StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+            $this->moduleNs = StringHelper::dirname(ltrim($controllerNs, '\\'));
         }
 
-        return \yii\helpers\StringHelper::basename($this->moduleNs);
+        return StringHelper::basename($this->moduleNs);
     }
 
     public function generate()
     {
         $accessDefinitions = require $this->getTemplatePath().'/access_definition.php';
 
-        $this->controllerNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerClass, '\\'));
-        $this->moduleNs = \yii\helpers\StringHelper::dirname(ltrim($this->controllerNs, '\\'));
-        $controllerName = substr(\yii\helpers\StringHelper::basename($this->controllerClass), 0, -10);
+        $this->controllerNs = StringHelper::dirname(ltrim($this->controllerClass, '\\'));
+        $this->moduleNs = StringHelper::dirname(ltrim($this->controllerNs, '\\'));
+        $controllerName = substr(StringHelper::basename($this->controllerClass), 0, -10);
 
         if ($this->singularEntities) {
             $this->modelClass = Inflector::singularize($this->modelClass);
@@ -345,7 +356,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         }
 
         $files[] = new CodeFile($baseControllerFile, $this->render('controller.php', ['accessDefinitions' => $accessDefinitions]));
-        $params['controllerClassName'] = \yii\helpers\StringHelper::basename($this->controllerClass);
+        $params['controllerClassName'] = StringHelper::basename($this->controllerClass);
 
         if ($this->overwriteControllerClass || !is_file($controllerFile)) {
             $files[] = new CodeFile($controllerFile, $this->render('controller-extended.php', $params));
@@ -365,12 +376,32 @@ class Generator extends \yii\gii\generators\crud\Generator
         $viewPath = $this->getViewPath();
         $templatePath = $this->getTemplatePath().'/views';
 
+        $model = Yii::createObject($this->modelClass);
+        if (array_key_exists('crud-form', $model->scenarios())) {
+            $model->setScenario('crud-form');
+        } else {
+            $model->setScenario('crud');
+        }
+
+        $safeAttributes = $model->safeAttributes();
+        if (empty($safeAttributes)) {
+            $model->setScenario('default');
+            $safeAttributes = $model->safeAttributes();
+        }
+        if (empty($safeAttributes)) {
+            $safeAttributes = $model::getTableSchema()->columnNames;
+        }
+
         foreach (scandir($templatePath) as $file) {
-            if (empty($this->searchModelClass) && $file === '_search.php') {
+            if ($file === '_search.php' && !$this->getRenderWithSearch()) {
                 continue;
             }
             if (is_file($templatePath.'/'.$file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", ['permisions' => $permisions]));
+                $files[] = new CodeFile("$viewPath/$file", $this->render("views/$file", [
+                    'model' => $model,
+                    'safeAttributes' => $safeAttributes,
+                    'accessDefinitions' => $accessDefinitions
+                ]));
             }
         }
 
@@ -461,5 +492,74 @@ class Generator extends \yii\gii\generators\crud\Generator
             default:
                 return var_export($var, true);
         }
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function generateSearchRules()
+    {
+
+        $rules = parent::generateSearchRules();
+        $model = \Yii::createObject($this->modelClass);
+        foreach ($model->behaviors() as $key => $behavior) {
+            if (!empty($behavior['translationAttributes'])) {
+                $rules[] = "[['" . implode("', '", $behavior['translationAttributes']) . "'], 'safe']";
+            }
+        }
+        return $rules;
+    }
+
+    /**
+     * @return array
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function generateSearchConditions()
+    {
+
+        $searchConditions = parent::generateSearchConditions();
+        $model = \Yii::createObject($this->modelClass);
+        foreach ($model->behaviors() as $key => $behavior) {
+            if (!empty($behavior['translationAttributes'])) {
+                foreach ($behavior['translationAttributes'] as $translationAttribute) {
+                    $searchConditions[] = "\$query->andFilterWhere(['like','{$translationAttribute}', \$this->$translationAttribute]);";
+                }
+            }
+        }
+        return $searchConditions;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getTranslationRelationModels()
+    {
+        $translationRelationModels = [];
+        foreach ($this->translateRelations as $translateRelation) {
+            $translationRelationModels[] = $this->modelClass . Inflector::camelize($translateRelation);
+        }
+        return $translationRelationModels;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslationModelClass() {
+        return '\\' . $this->modelClass . Inflector::camelize('translation');
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getHasTranslationRelation() {
+        return isset(\Yii::createObject($this->modelClass)->behaviors()['translation']);
+    }
+
+    public function getRenderWithSearch()
+    {
+        return $this->indexWidgetType !== 'grid' && $this->searchModelClass !== '';
     }
 }

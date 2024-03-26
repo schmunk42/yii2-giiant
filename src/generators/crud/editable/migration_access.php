@@ -13,26 +13,26 @@ class <?=$generator->migrationClass?> extends Migration
     /**
      * @var array controller all actions
      */
-    public $permisions = <?=$generator->var_export54($accessDefinitions['permisions'],'    ')?>;
+    public $permissions = <?=$generator->var_export54($accessDefinitions['permissions'],'    ')?>;
     
     /**
-     * @var array roles and maping to actions/permisions
+     * @var array roles and maping to actions/permissions
      */
     public $roles = <?=$generator->var_export54($accessDefinitions['roles'],'    ')?>;
     
     public function up()
     {
         
-        $permisions = [];
+        $permissions = [];
         $auth = \Yii::$app->authManager;
 
         /**
-         * create permisions for each controller action
+         * create permissions for each controller action
          */
-        foreach ($this->permisions as $action => $permission) {
-            $permisions[$action] = $auth->createPermission($permission['name']);
-            $permisions[$action]->description = $permission['description'];
-            $auth->add($permisions[$action]);
+        foreach ($this->permissions as $action => $permission) {
+            $permissions[$action] = $auth->createPermission($permission['name']);
+            $permissions[$action]->description = $permission['description'];
+            $auth->add($permissions[$action]);
         }
 
         /**
@@ -46,7 +46,7 @@ class <?=$generator->migrationClass?> extends Migration
              *  to role assign permissions
              */
             foreach ($actions as $action) {
-                $auth->addChild($role, $permisions[$action]);
+                $auth->addChild($role, $permissions[$action]);
             }
         }
     }
@@ -59,7 +59,7 @@ class <?=$generator->migrationClass?> extends Migration
             $auth->remove($role);
         }
 
-        foreach ($this->permisions as $permission) {
+        foreach ($this->permissions as $permission) {
             $authItem = $auth->createPermission($permission['name']);
             $auth->remove($authItem);
         }

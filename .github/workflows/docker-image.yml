@@ -19,3 +19,9 @@ jobs:
         cd tests
         make all
         make test
+
+    - name: 'Upload Test Report'
+      uses: actions/upload-artifact@v4
+      with:
+        path: tests/_output
+        retention-days: 7

@@ -8,9 +8,10 @@
 /* @var $className string class name */
 /* @var $modelClassName string related model class name */
 
-$modelFullClassName = $modelClassName;
 if ($generator->ns !== $generator->queryNs) {
-    $modelFullClassName = '\\' . $generator->ns . '\\' . $modelFullClassName;
+    $modelFullClassName = '\\' . $generator->ns . '\\' . $modelClassName;
+} else {
+    $modelFullClassName = $modelClassName;
 }
 
 echo "<?php\n";
@@ -18,34 +19,16 @@ echo "<?php\n";
 
 namespace <?= $generator->queryNs ?>;
 
+use <?php echo $modelFullClassName ?>;
+
 /**
- * This is the ActiveQuery class for [[<?= $modelFullClassName ?>]].
+ * This is the ActiveQuery class for [[<?= $modelClassName ?>]].
  *
  * @see <?= $modelFullClassName . "\n" ?>
+ * @method <?= $modelClassName ?>[] all($db = null)
+ * @method <?= $modelClassName ?> one($db = null)
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\') . "\n" ?>
 {
-    /*public function active()
-    {
-        $this->andWhere('[[status]]=1');
-        return $this;
-    }*/
 
-    /**
-     * @inheritdoc
-     * @return <?= $modelFullClassName ?>[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
-
-    /**
-     * @inheritdoc
-     * @return <?= $modelFullClassName ?>|array|null
-     */
-    public function one($db = null)
-    {
-        return parent::one($db);
-    }
 }
