@@ -164,6 +164,8 @@ class Generator extends \yii\gii\generators\crud\Generator
     private $_p = [];
 
     public $translateRelations = ['translation', 'translation_meta'];
+    
+    public $enableCopy = true;
 
     /**
      * {@inheritdoc}
@@ -237,6 +239,7 @@ class Generator extends \yii\gii\generators\crud\Generator
                     'generateAccessFilterMigrations',
                     'singularEntities',
                     'modelMessageCategory',
+                    'enableCopy'
                 ],
                 'safe',
             ],
@@ -277,6 +280,7 @@ class Generator extends \yii\gii\generators\crud\Generator
             'accessFilter',
             'singularEntities',
             'modelMessageCategory',
+            'enableCopy'
             ];
     }
 

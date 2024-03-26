@@ -318,6 +318,11 @@ class BatchController extends Controller
     public $modelTranslationTableAdditions = ['name' => 'meta', 'fallbackLanguage' => false];
 
     /**
+     * Whether the copy functionality for a crud should be created or not
+    */
+    public $crudEnableCopy = true;
+
+    /**
      * @var array application configuration for creating temporary applications
      */
     protected $appConfig;
@@ -388,7 +393,8 @@ class BatchController extends Controller
                 'crudOverwriteRestControllerClass',
                 'crudOverwriteControllerClass',
                 'generateAccessFilterMigrations',
-                'disablePluralization'
+                'disablePluralization',
+                'crudEnableCopy'
             ]
         );
     }
@@ -566,7 +572,8 @@ class BatchController extends Controller
                 'generateAccessFilterMigrations' => $this->generateAccessFilterMigrations,
                 'actionButtonColumnPosition' => $this->crudActionButtonColumnPosition,
                 'disablePluralization' => $this->disablePluralization,
-                'gridMaxColumns' => $this->crudGridMaxColumns
+                'gridMaxColumns' => $this->crudGridMaxColumns,
+                'enableCopy' => $this->crudEnableCopy
             ];
             $route = 'gii/giiant-crud';
             $app = \Yii::$app;

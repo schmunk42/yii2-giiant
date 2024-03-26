@@ -43,7 +43,6 @@ use yii\bootstrap\Tabs;
 * @var yii\web\View $this
 * @var <?= ltrim($generator->modelClass, '\\') ?> $model
 */
-$copyParams = $model->hasMethod('getCopyParams') ? $model->getCopyParams() : $model->attributes;
 
 $this->title = Yii::t('<?= $generator->modelMessageCategory ?>', '<?= $modelName ?>');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('<?= $generator->modelMessageCategory ?>.plural', '<?= $modelName ?>'), 'url' => ['index']];
@@ -78,6 +77,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             }
             ?>
 
+            <?php if ($generator->enableCopy): ?>
             <?php
             if ($generator->accessFilter) {
                 echo '<?php if(\Yii::$app->getUser()->can(\'' . $permissions['update']['name'] . '\')): ?>';
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
             ?>
             <?= '<?php ' . PHP_EOL . ' echo ' ?>Html::a(
             '<span class="glyphicon glyphicon-copy"></span> ' . <?= $generator->generateString('Copy ' . $modelName) ?>,
-            ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=>$copyParams],
+            ['create', <?= $urlParams ?>, '<?= StringHelper::basename($generator->modelClass) ?>'=> $model->hasMethod('getCopyParams') ? $model->getCopyParams() : $model->attributes],
             ['class' => 'btn btn-success'])
             ?>
             <?php
@@ -93,6 +93,7 @@ $this->params['breadcrumbs'][] = <?= $generator->generateString('View') ?>;
                 echo '<?php endif ?>';
             }
             ?>
+            <?php endif ?>
 
             <?php
             if ($generator->accessFilter) {

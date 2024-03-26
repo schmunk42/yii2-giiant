@@ -67,6 +67,7 @@ $traits = $generator->baseTraits;
 if ($traits) {
     echo "use {$traits};";
 }
+
 ?>
 
 <?php if ($generator->accessFilter): ?>
