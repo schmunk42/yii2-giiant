@@ -1,6 +1,6 @@
 .PHONY: open bash test
 
-DOCKER_COMPOSE  ?= docker-compose
+DOCKER_COMPOSE  ?= docker compose
 
 PHP				?= phpfpm
 WEB				?= phpfpm
