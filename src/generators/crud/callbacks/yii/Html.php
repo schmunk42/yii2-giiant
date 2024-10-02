@@ -13,7 +13,7 @@ class Html
     'format' => 'html',
     'attribute' => '{$attribute}',
     'value'=> function(\$model){
-        return html_entity_decode(\$model->{$attribute});
+        return is_string(\$model->{$attribute}) ? html_entity_decode(\$model->{$attribute}) : \$model->{$attribute};
     }
 ]
 FORMAT;
@@ -28,7 +28,9 @@ FORMAT;
 [
     'format' => 'html',
     'attribute' => '{$attribute}',
-    'value' => html_entity_decode(\$model->{$attribute})
+    'value'=> function(\$model){
+        return is_string(\$model->{$attribute}) ? html_entity_decode(\$model->{$attribute}) : \$model->{$attribute};
+    }
 ]
 FORMAT;
         };
