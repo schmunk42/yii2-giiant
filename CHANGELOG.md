@@ -1,7 +1,11 @@
 Changelog
 =========
 
-### 1.0.0-beta
+### dev
+
+- Cancel url in create form now points to overview
+
+### 1.0.0
 
 - do not use auto-pluralization in views, pluralize via I18N
 - Improved model generation performance (see`modelCacheRelationsData`)
