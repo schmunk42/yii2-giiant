@@ -4,6 +4,7 @@ Changelog
 ### 1.0.1
 
 - Cancel url in create form now points to overview
+- Fix bug in Html provider for type string
 
 ### 1.0.0
 
