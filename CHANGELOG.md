@@ -1,7 +1,7 @@
 Changelog
 =========
 
-### dev
+### 1.0.1
 
 - Cancel url in create form now points to overview
 
