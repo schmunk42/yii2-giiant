@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= '<?= ' ?>
             Html::a(
             <?= $generator->generateString('Cancel') ?>,
-            \yii\helpers\Url::previous(),
+            ['index'],
             ['class' => 'btn btn-default']) ?>
         </div>
     </div>
