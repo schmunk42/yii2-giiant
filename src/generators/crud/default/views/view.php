@@ -264,7 +264,7 @@ EOS;
 
         echo "<?php \$this->endBlock() ?>\n\n";
         // build tab items
-        $itemLabel = $generator->generateString($name);
+        $itemLabel = $generator->generateString($label);
         $items .= <<<EOS
 [
     'content' => \$this->blocks['$name'],
