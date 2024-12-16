@@ -193,7 +193,7 @@ EOS;
             if ($generator->disablePluralization) {
                 $pivotName = $name;
             } else {
-                $pivotName = Inflector::pluralize($modelName);
+                $pivotName = Inflector::pluralize($name);
             }
             $label = Inflector::camel2words($pivotName);
             $pivotRelation = $model->{'get' . $pivotName}();
@@ -264,7 +264,7 @@ EOS;
 
         echo "<?php \$this->endBlock() ?>\n\n";
         // build tab items
-        $itemLabel = $generator->generateString($label);
+        $itemLabel = $generator->generateString($name);
         $items .= <<<EOS
 [
     'content' => \$this->blocks['$name'],
