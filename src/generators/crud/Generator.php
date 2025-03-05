@@ -350,7 +350,7 @@ class Generator extends \yii\gii\generators\crud\Generator
         $migrationDir = StringHelper::dirname(StringHelper::dirname($controllerFile))
                     .'/migrations';
 
-        if (file_exists($migrationDir) && $migrationDirFiles = glob($migrationDir.'/m*_'.$controllerName.'00_access.php')) {
+        if (is_dir($migrationDir) && $migrationDirFiles = glob($migrationDir.'/m*_'.$controllerName.'_access.php')) {
             $this->migrationClass = pathinfo($migrationDirFiles[0], PATHINFO_FILENAME);
         } else {
             $this->migrationClass = 'm'.date('ymd_Hi').'00_'.$controllerName.'_access';
