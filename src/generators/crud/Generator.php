@@ -13,6 +13,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use schmunk42\giiant\helpers\SaveForm;
+use yii\helpers\VarDumper;
 
 /**
  * This generator generates an extended version of CRUDs.
@@ -164,7 +165,7 @@ class Generator extends \yii\gii\generators\crud\Generator
     private $_p = [];
 
     public $translateRelations = ['translation', 'translation_meta'];
-    
+
     public $enableCopy = true;
 
     /**
@@ -411,7 +412,12 @@ class Generator extends \yii\gii\generators\crud\Generator
              * access migration
              */
             $migrationFile = $migrationDir.'/'.$this->migrationClass.'.php';
-            $files[] = new CodeFile($migrationFile, $this->render('migration_access.php', ['accessDefinitions' => $accessDefinitions]));
+
+            if (class_exists('dmstr\rbacMigration\Migration')) {
+                $files[] = new CodeFile($migrationFile, $this->render('hrzg-rbac-migration-access.php'));
+            } else {
+                $files[] = new CodeFile($migrationFile, $this->render('migration_access.php', ['accessDefinitions' => $accessDefinitions]));
+            }
 
             /*
              * access roles translation
@@ -471,27 +477,9 @@ class Generator extends \yii\gii\generators\crud\Generator
         parent::validateClass($attribute, $params);
     }
 
-    // TODO: replace with VarDumper::export
     public function var_export54($var, $indent = '')
     {
-        switch (gettype($var)) {
-            case 'string':
-                return '"'.addcslashes($var, "\\\$\"\r\n\t\v\f").'"';
-            case 'array':
-                $indexed = array_keys($var) === range(0, count($var) - 1);
-                $r = [];
-                foreach ($var as $key => $value) {
-                    $r[] = "$indent    "
-                         .($indexed ? '' : $this->var_export54($key).' => ')
-                         .$this->var_export54($value, "$indent    ");
-                }
-
-                return "[\n".implode(",\n", $r)."\n".$indent.']';
-            case 'boolean':
-                return $var ? 'TRUE' : 'FALSE';
-            default:
-                return var_export($var, true);
-        }
+        return VarDumper::export($var);
     }
 
     /**
