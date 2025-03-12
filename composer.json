@@ -22,7 +22,7 @@
         "dmstr/yii2-db": "*",
         "friendsofphp/php-cs-fixer": "1.* || 2.* || 3.*",
         "yiisoft/yii2": "~2.0.13",
-        "yiisoft/yii2-gii": "^2.2.0"
+        "yiisoft/yii2-gii": "^2.2.7"
     },
     "require-dev": {
         "codeception/codeception": "^2.2",
