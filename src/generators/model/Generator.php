@@ -552,7 +552,7 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
-            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
+            $enum[$column->name]['funcOptsName'] = 'opts' . $column_camel_name;
             $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
             $enum[$column->name]['values'] = [];
 
