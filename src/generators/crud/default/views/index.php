@@ -134,7 +134,15 @@ echo "?>\n"
             $model = new $generator->modelClass();
             ?>
             <?php foreach ($generator->getModelRelations($model) as $relation): ?>
+
                 <?php
+                $isVisibleCondition = true;
+                $relationName = StringHelper::basename($relation->modelClass);
+                if ($generator->accessFilter) {
+                    $controllerId = strtolower(Inflector::camel2id($relationName, '-', true));
+                    $permissionName = $generator->getModuleId() . '_' . $controllerId . '_index';
+                    $isVisibleCondition = "Yii::\$app->getUser()->can('" . $permissionName . "', ['route' => true])";
+                }
                 // relation dropdown links
                 $iconType = ($relation->multiple) ? 'arrow-right' : 'arrow-left';
                 if ($generator->isPivotRelation($relation)) {
@@ -146,12 +154,13 @@ echo "?>\n"
                         true
                     );
                 $route = $generator->createRelationRoute($relation, 'index');
-                $label = Inflector::titleize(StringHelper::basename($relation->modelClass), '-');
+                $label = Inflector::titleize($relationName, '-');
                 $i18nMessageLabel = $generator->generateString($label);
                 $items .= <<<PHP
             [
                 'url' => ['$route'],
                 'label' => '<i class="glyphicon glyphicon-$iconType"></i> ' . $i18nMessageLabel,
+                'visible' => $isVisibleCondition
             ],
                     
 PHP;
