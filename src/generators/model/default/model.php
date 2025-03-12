@@ -76,7 +76,7 @@ if(!empty($enum)){
 <?php
     foreach($enum as $column_name => $column_data){
         foreach ($column_data['values'] as $enum_value){
-            echo '    const ' . $enum_value['const_name'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
+            echo '    const ' . $enum_value['constName'] . ' = \'' . $enum_value['value'] . '\';' . PHP_EOL;
         }
     }
 }
@@ -272,7 +272,7 @@ $behaviors['translation'] = [
      * @param string $value
      * @return string
      */
-    public static function <?php echo $column_data['func_get_label_name']?>($value){
+    public static function <?php echo $column_data['funcGetLabelName']?>($value){
         $labels = self::<?php echo $column_data['funcOptsName']?>();
         if(isset($labels[$value])){
             return $labels[$value];
@@ -289,7 +289,7 @@ $behaviors['translation'] = [
         return [
 <?php
         foreach($column_data['values'] as $k => $value){
-            echo '            '.'self::' . $value['const_name'] . ' => ' . $generator->generateString($value['label']) . ",\n";
+            echo '            '.'self::' . $value['constName'] . ' => ' . $generator->generateString($value['label']) . ",\n";
         }
 ?>
         ];
