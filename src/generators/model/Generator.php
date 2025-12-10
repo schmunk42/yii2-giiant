@@ -515,25 +515,31 @@ class Generator extends \yii\gii\generators\model\Generator
 
         // inject namespace
         $ns = "\\{$this->ns}\\";
+        $rels = [];
         foreach ($relations as $model => $relInfo) {
+            // check for postgres
+            if (strpos($model, '.') !== false) {
+                $model = explode('.', $model)[1] ?? $model; // use only table name and not fqn including schema
+            }
+            $rels[$model] = $relInfo;
             foreach ($relInfo as $relName => $relData) {
 
                 // removed duplicated relations, eg. klientai, klientai0
                 if ($this->removeDuplicateRelations && is_numeric(substr($relName, -1))) {
-                    unset($relations[$model][$relName]);
+                    unset($rels[$model][$relName]);
                     continue;
                 }
 
-                $relations[$model][$relName][0] = preg_replace(
+                $rels[$model][$relName][0] = preg_replace(
                     '/(has[A-Za-z0-9]+\()([a-zA-Z0-9]+::)/',
                     '$1__NS__$2',
-                    $relations[$model][$relName][0]
+                    $rels[$model][$relName][0]
                 );
-                $relations[$model][$relName][0] = str_replace('__NS__', $ns, $relations[$model][$relName][0]);
+                $rels[$model][$relName][0] = str_replace('__NS__', $ns, $rels[$model][$relName][0]);
             }
         }
 
-        return $relations;
+        return $rels;
     }
 
     /**
