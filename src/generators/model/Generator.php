@@ -558,8 +558,8 @@ class Generator extends \yii\gii\generators\model\Generator
             }
 
             $column_camel_name = str_replace(' ', '', ucwords(implode(' ', explode('_', $column->name))));
-            $enum[$column->name]['func_opts_name'] = 'opts' . $column_camel_name;
-            $enum[$column->name]['func_get_label_name'] = 'get' . $column_camel_name . 'ValueLabel';
+            $enum[$column->name]['funcOptsName'] = 'opts' . $column_camel_name;
+            $enum[$column->name]['funcGetLabelName'] = 'get' . $column_camel_name . 'ValueLabel';
             $enum[$column->name]['values'] = [];
 
             $enum_values = explode(',', substr($column->dbType, 4, strlen($column->dbType) - 1));
@@ -576,7 +576,7 @@ class Generator extends \yii\gii\generators\model\Generator
 
                 $enum[$column->name]['values'][] = [
                     'value' => $value,
-                    'const_name' => $const_name,
+                    'constName' => $const_name,
                     'label' => $label,
                 ];
             }
@@ -625,7 +625,7 @@ class Generator extends \yii\gii\generators\model\Generator
         foreach ($enum as $field_name => $field_details) {
             $ea = array();
             foreach ($field_details['values'] as $field_enum_values) {
-                $ea[] = 'self::' . $field_enum_values['const_name'];
+                $ea[] = 'self::' . $field_enum_values['constName'];
             }
             $rules[] = "['" . $field_name . "', 'in', 'range' => [\n                    " . implode(
                     ",\n                    ",
