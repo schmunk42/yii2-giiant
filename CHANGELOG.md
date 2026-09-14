@@ -1,9 +1,22 @@
 Changelog
 =========
 
-### 1.0.5
+### 1.1.0
 
 - Generated `findModel()` now rejects primary key values which cannot be of the column's type with a 404, instead of letting the database raise an exception (500). Applies to `integer` columns and to Postgres `uuid` columns, in the `default` and `editable` CRUD controller templates
+
+### 1.0.4
+
+- Fixed relation generation on Postgres, schema-qualified table names are now reduced to the table name
+- Relation drop downs no longer show options the user has no access to
+
+### 1.0.3
+
+- Updated label for relation detail view tab
+
+### 1.0.2
+
+- Fixed mixed up model label in relation detail view tabs
 
 ### 1.0.1
 
