@@ -1,6 +1,10 @@
 Changelog
 =========
 
+### 1.0.5
+
+- Generated `findModel()` now rejects primary key values which cannot be of the column's type with a 404, instead of letting the database raise an exception (500). Applies to `integer` columns and to Postgres `uuid` columns, in the `default` and `editable` CRUD controller templates
+
 ### 1.0.1
 
 - Cancel url in create form now points to overview

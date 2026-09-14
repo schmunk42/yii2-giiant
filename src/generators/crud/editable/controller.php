@@ -318,6 +318,27 @@ if (count($pks) === 1) {
     }
     $condition = '['.implode(', ', $condition).']';
 }
+
+// Reject primary key values which cannot be of the column's type, so a
+// malformed key results in a 404 instead of a database exception.
+$schema = $generator->getTableSchema();
+foreach ($pks as $pk) {
+    $column = $schema ? ($schema->columns[$pk] ?? null) : null;
+    if ($column === null) {
+        continue;
+    }
+    if ($column->phpType === 'integer') {
+        $check = "filter_var(\$$pk, FILTER_VALIDATE_INT) === false";
+    } elseif ($column->dbType === 'uuid') {
+        $check = "!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+            ."\\z/i', (string) \$$pk)";
+    } else {
+        continue;
+    }
+    echo "        if ($check) {\n";
+    echo "            throw new HttpException(404, 'The requested page does not exist.');\n";
+    echo "        }\n";
+}
 ?>
         if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
             return $model;

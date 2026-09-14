@@ -209,7 +209,7 @@ if ($traits) {
      */
     protected function findModel(<?= $actionParams ?>)
     {
-    <?php
+<?php
     if (count($pks) === 1) {
         $condition = '$'.$pks[0];
     } else {
@@ -219,8 +219,30 @@ if ($traits) {
         }
         $condition = '['.implode(', ', $condition).']';
     }
-    ?>
-    $model = <?= $modelClass ?>::findOne(<?= $condition ?>);
+
+    // Reject primary key values which cannot be of the column's type, so a
+    // malformed key results in a 404 instead of a database exception.
+    $schema = $generator->getTableSchema();
+    foreach ($pks as $pk) {
+        $column = $schema ? ($schema->columns[$pk] ?? null) : null;
+        if ($column === null) {
+            continue;
+        }
+        if ($column->phpType === 'integer') {
+            $check = "filter_var(\$$pk, FILTER_VALIDATE_INT) === false";
+        } elseif ($column->dbType === 'uuid') {
+            $check = "!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+                ."\\z/i', (string) \$$pk)";
+        } else {
+            continue;
+        }
+        echo "        if ($check) {\n";
+        echo '            throw new NotFoundHttpException('
+            .$generator->generateString('The requested page does not exist.').");\n";
+        echo "        }\n";
+    }
+?>
+        $model = <?= $modelClass ?>::findOne(<?= $condition ?>);
         if ($model !== null) {
             return $model;
         }
